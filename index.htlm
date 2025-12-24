@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Secure Access | Shwari Payroll</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --saf-green: #43B02A;
+            --saf-dark: #002b13;
+            --glass: rgba(255, 255, 255, 0.15);
+        }
+
+        body, html { 
+            margin: 0; padding: 0; 
+            height: 100dvh; width: 100%; 
+            overflow: hidden; 
+            background-color: var(--saf-dark);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* BACKGROUND VIDEO */
+        #bg-video {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 1; opacity: 0; transition: opacity 0.5s ease;
+        }
+        #bg-video.video-ready { opacity: 1; }
+
+        .video-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0, 43, 19, 0.9), rgba(0,0,0,0.8));
+            z-index: 2;
+            backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+        }
+
+        /* LOADER CONTAINER */
+        #loader-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            z-index: 999;
+            transform: translate3d(0,0,0);
+            transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.2s ease;
+            will-change: transform, opacity;
+        }
+
+        /* GLASS CARD */
+        .loader-card {
+            text-align: center; padding: 30px; border-radius: 20px;
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            width: 85%; max-width: 340px;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* LOGO ANIMATION */
+        .brand-logo {
+            font-size: 3rem; color: var(--saf-green); margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px rgba(67, 176, 42, 0.5));
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .brand-name {
+            color: white; font-size: 1.5rem; font-weight: 800;
+            letter-spacing: 1.5px; margin-bottom: 25px; text-transform: uppercase;
+        }
+
+        /* PROGRESS BAR */
+        .progress-box { width: 100%; margin: 15px 0; }
+        .progress-track {
+            width: 100%; height: 4px; background: rgba(255,255,255,0.15);
+            border-radius: 10px; overflow: hidden;
+        }
+        #progress-fill {
+            height: 100%; width: 0%; 
+            background: linear-gradient(90deg, #43B02A, #89ff70);
+            box-shadow: 0 0 15px rgba(67, 176, 42, 0.6);
+            transition: width 0.05s linear; 
+        }
+        .percentage {
+            color: var(--saf-green); font-weight: 700; font-size: 1.2rem;
+            margin-top: 8px; display: block;
+        }
+        .status-msg {
+            color: rgba(255,255,255,0.8); font-size: 0.85rem;
+            margin-top: 5px; height: 1.2rem; font-weight: 400;
+            white-space: nowrap; 
+        }
+
+        /* DISCLAIMER FOOTER */
+        .disclaimer-box {
+            position: absolute; bottom: 30px;
+            font-size: 10px; color: rgba(255,255,255,0.5);
+            text-align: center; width: 100%; line-height: 1.4;
+        }
+        .disclaimer-highlight {
+            color: var(--saf-green); font-weight: 700; letter-spacing: 1px;
+        }
+
+        /* IFRAME CONTAINER */
+        .app-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
+            z-index: 10; opacity: 0; transform: scale(1.02);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none; -webkit-overflow-scrolling: touch; 
+        }
+
+        iframe { width: 100%; height: 100%; border: none; background: #fff; }
+
+        /* LOADED STATE */
+        .loaded #loader-screen { transform: translateY(-100%) translate3d(0,0,0); opacity: 0; pointer-events: none; }
+        .loaded .app-container { opacity: 1; transform: scale(1) translate3d(0,0,0); pointer-events: all; }
+
+        /* TOAST NOTIFICATION */
+        .toast-container {
+            position: fixed; top: 20px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999; 
+            display: flex; flex-direction: column; gap: 10px;
+            pointer-events: none; 
+            width: 90%; max-width: 350px;
+        }
+
+        .toast {
+            background: rgba(0, 43, 19, 0.95);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.95rem; font-weight: 500;
+            border: 1px solid rgba(67, 176, 42, 0.3);
+            backdrop-filter: blur(8px);
+            opacity: 0; transform: translateY(-20px);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast i { color: var(--saf-green); font-size: 1.1rem; }
+
+    </style>
+</head>
+<body>
+
+    <div class="toast-container" id="toast-wrapper"></div>
+
+    <video autoplay muted loop playsinline preload="auto" id="bg-video">
+        <source src="https://v.ftcdn.net/02/21/06/61/700_F_221066170_ktt9WcxAOvbTc3iSEBGJjGY0NwfK3D8d_ST.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div id="loader-screen">
+        <div class="loader-card">
+            <div class="brand-logo"><i class="fas fa-shield-halved"></i></div>
+            <div class="brand-name">Shwari Finance</div>
+            <div class="progress-box">
+                <div class="progress-track"><div id="progress-fill"></div></div>
+                <span class="percentage" id="percent-text">0%</span>
+                <div class="status-msg" id="status-msg">Initializing...</div>
+            </div>
+        </div>
+        <div class="disclaimer-box">
+            PROPERTY OF <span class="disclaimer-highlight">SHWARI MOVERS AND CLEANERS LTD</span><br>
+            Finance Team • Employee payroll @ 2026
+        </div>
+    </div>
+
+    <div class="app-container" id="app-wrapper">
+        <iframe 
+            src="https://script.google.com/macros/s/AKfycbwXG91eRRm__cUz_9kP4SZC9-mOyVbrV4rgMclF6K3Z_UuOw2SNizFtI8gLIjrYTHwj/exec" 
+            id="payroll-frame">
+        </iframe>
+    </div>
+
+    <script>
+        // Video Loader
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('bg-video');
+            video.play().then(() => video.classList.add('video-ready')).catch(e => {});
+        });
+
+        // 5-Second Timer Logic
+        let progress = 0;
+        const fill = document.getElementById('progress-fill');
+        const text = document.getElementById('percent-text');
+        const status = document.getElementById('status-msg');
+        
+        const TOTAL_DURATION = 5000;
+        const INTERVAL_TIME = 50;
+        const INCREMENT = 1; 
+
+        const timer = setInterval(() => {
+            if (progress >= 100) {
+                clearInterval(timer);
+                completeLoading();
+            } else {
+                progress += INCREMENT;
+                updateUI(progress);
+            }
+        }, INTERVAL_TIME);
+
+        function updateUI(val) {
+            let p = Math.floor(val);
+            fill.style.width = p + "%";
+            text.innerText = p + "%";
+
+            // Status Cycle
+            if (p < 25) { status.innerText = "Establishing connection..."; } 
+            else if (p < 50) { status.innerText = "Linking database..."; } 
+            else if (p < 75) { status.innerText = "Preparing ledger accounts..."; } 
+            else { status.innerText = "Disclosing information..."; }
+        }
+
+        // Completion Trigger
+        function completeLoading() {
+            status.innerText = "Access Granted";
+            fill.style.width = "100%";
+            text.innerText = "100%";
+
+            requestAnimationFrame(() => {
+                document.body.classList.add('loaded');
+                // Only one toast: Welcome back
+                setTimeout(() => showToast('Welcome back', 'user'), 600);
+            });
+        }
+
+        // Toast Logic
+        function showToast(message, iconName) {
+            const container = document.getElementById('toast-wrapper');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-${iconName}-circle"></i> ${message}`;
+            
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => { toast.classList.add('show'); });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500); 
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
