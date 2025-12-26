@@ -18,12 +18,12 @@
     <meta property="og:site_name" content="Shwari Finance Department">
     <meta property="og:title" content="Shwari Payroll Portal | Secure Access">
     <meta property="og:description" content="Authorized Personnel Only. Login to access Shwari financial records and payroll systems.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://shwari-tech.github.io/Shwari-Finance/">
     
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002b13">
@@ -78,15 +78,21 @@
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
 
+        /* UPDATED LOGO STYLING */
         .brand-logo {
-            font-size: 3rem; color: var(--saf-green); margin-bottom: 10px;
-            filter: drop-shadow(0 0 15px rgba(67, 176, 42, 0.5));
-            animation: pulse 1.5s infinite ease-in-out;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        
+        .brand-logo img {
+            width: 140px; /* Adjust logo size */
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
         }
 
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.08); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 0.9; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -227,7 +233,11 @@
 
     <div id="loader-screen">
         <div class="loader-card">
-            <div class="brand-logo"><i class="fas fa-shield-halved"></i></div>
+            <div class="brand-logo">
+                <img src="logo.png" alt="Shwari Logo" onerror="this.style.display='none'; document.querySelector('.fa-fallback').style.display='block';">
+                <i class="fas fa-shield-halved fa-fallback" style="display:none; font-size: 3rem; color: #43B02A;"></i>
+            </div>
+            
             <div class="brand-name">Shwari Finance</div>
             <div class="progress-box">
                 <div class="progress-track"><div id="progress-fill"></div></div>
