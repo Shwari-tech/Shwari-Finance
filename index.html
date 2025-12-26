@@ -225,7 +225,7 @@
     <div id="security-lock">
         <div class="lock-icon"><i class="fas fa-lock"></i></div>
         <div class="lock-title">Session Locked</div>
-        <div class="lock-desc">System locked due to inactivity.<br>Shwari Movers & Cleaners data is secure.</div>
+        <div class="lock-desc">System locked due to inactivity.<br>Financial Data data secured.</div>
         <button class="unlock-btn" onclick="unlockSystem()">Resume Session</button>
     </div>
 
@@ -301,7 +301,7 @@
             text.innerText = "100%";
             requestAnimationFrame(() => {
                 document.body.classList.add('loaded');
-                setTimeout(() => showToast('Welcome to Shwari Movers & Cleaners', 'user'), 600);
+                setTimeout(() => showToast('Connected to Finance Database', 'user'), 600);
                 startInactivityTimer(); // START SECURITY TIMER
             });
         }
