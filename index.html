@@ -6,7 +6,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-CHLXKJTZN8');
     </script>
 
@@ -23,17 +22,13 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://shwari-tech.github.io/Shwari-Finance/">
     
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Shwari Finance Department">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002b13">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -313,18 +308,16 @@
         let idleTime = 0;
         let isLocked = false;
         
-        // Count every second
         const idleInterval = setInterval(timerIncrement, 1000); 
 
         // Reset timer on any interaction
         const resetEvents = ['mousemove', 'keypress', 'click', 'touchstart', 'scroll'];
         resetEvents.forEach(evt => {
             document.addEventListener(evt, () => {
-                if (!isLocked) idleTime = 0; // Only reset if not locked
+                if (!isLocked) idleTime = 0; 
             });
         });
 
-        // Add event listener to iframe to detect clicks inside it
         window.addEventListener('blur', () => {
             if (!isLocked && document.activeElement === document.getElementById('payroll-frame')) {
                 idleTime = 0;
@@ -332,7 +325,6 @@
         });
 
         function timerIncrement() {
-            // Only count if system is fully loaded
             if (document.body.classList.contains('loaded')) {
                 idleTime = idleTime + 1;
                 // LOCK AFTER 60 SECONDS
