@@ -24,8 +24,8 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://shwari-tech.github.io/Shwari-Finance/">
     
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/logo.png">
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002b13">
@@ -81,14 +81,14 @@
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
 
-        /* UPDATED LOGO STYLING */
+        /* LOGO STYLING */
         .brand-logo {
             margin-bottom: 15px;
             animation: pulse 2s infinite ease-in-out;
         }
         
         .brand-logo img {
-            width: 140px; /* Adjust logo size */
+            width: 140px; 
             height: auto;
             filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
         }
@@ -100,7 +100,7 @@
         }
 
         .brand-name {
-            color: white; font-size: 1.3rem; /* Slightly smaller to fit long name */
+            color: white; font-size: 1.3rem; 
             font-weight: 800;
             letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase;
             line-height: 1.4;
@@ -152,8 +152,8 @@
 
         #security-lock {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 20, 10, 0.85); /* Dark overlay */
-            z-index: 10000; /* Highest priority */
+            background: rgba(0, 20, 10, 0.85); 
+            z-index: 10000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease;
@@ -225,7 +225,7 @@
     <div id="security-lock">
         <div class="lock-icon"><i class="fas fa-lock"></i></div>
         <div class="lock-title">Session Locked</div>
-        <div class="lock-desc">System locked due to inactivity.<br>Financial Data data secured.</div>
+        <div class="lock-desc">System locked due to inactivity.<br>Financial Data secured.</div>
         <button class="unlock-btn" onclick="unlockSystem()">Resume Session</button>
     </div>
 
@@ -239,7 +239,7 @@
     <div id="loader-screen">
         <div class="loader-card">
             <div class="brand-logo">
-                <img src="logo.png" alt="Shwari Logo" onerror="this.style.display='none'; document.querySelector('.fa-fallback').style.display='block';">
+                <img src="images/logo.png" alt="Shwari Logo" onerror="this.style.display='none'; document.querySelector('.fa-fallback').style.display='block';">
                 <i class="fas fa-shield-halved fa-fallback" style="display:none; font-size: 3rem; color: #43B02A;"></i>
             </div>
             
@@ -366,6 +366,18 @@
 
         function startInactivityTimer() {
             idleTime = 0;
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // The { scope: './' } is CRITICAL. 
+                // It ensures this app does not block your other Shwari projects.
+                navigator.serviceWorker.register('./sw.js', { scope: './' })
+                    .then(reg => console.log('Shwari Finance App Registered', reg))
+                    .catch(err => console.log('Registration failed:', err));
+            });
         }
     </script>
 </body>
