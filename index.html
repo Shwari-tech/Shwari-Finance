@@ -12,13 +12,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>Shwari Finance Department | Shwari Payroll Portal</title>
-    <meta name="description" content="Official Shwari Finance Department employee portal. Access Shwari Payroll records and Shwari Finance documents securely." />
+    <title>Shwari Movers & Cleaners | Finance Portal</title>
+    <meta name="description" content="Official Shwari Movers and Cleaners finance portal. Secure access for payroll and accounting records." />
     
-    <meta property="og:site_name" content="Shwari Finance Department">
-    <meta property="og:title" content="Shwari Payroll Portal | Secure Access">
-    <meta property="og:description" content="Authorized Personnel Only. Login to access Shwari financial records and payroll systems.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80">
+    <meta property="og:site_name" content="Shwari Movers & Cleaners">
+    <meta property="og:title" content="Shwari Movers & Cleaners | Finance Access">
+    <meta property="og:description" content="🔐 Authorized Personnel Only. Click to login to the secure payroll and finance system.">
+    <meta property="og:image" content="https://img.freepik.com/premium-photo/payroll-business-finance-concept-business-team-analyzing-financial-data-with-payroll-icon-vr-screen-financial-accounting_1296497-806.jpg?semt=ais_hybrid&w=740&q=80">
+    <meta property="og:image:width" content="740">
+    <meta property="og:image:height" content="493">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://shwari-tech.github.io/Shwari-Finance/">
     
@@ -31,6 +33,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
             --saf-green: #43B02A;
@@ -97,8 +100,10 @@
         }
 
         .brand-name {
-            color: white; font-size: 1.5rem; font-weight: 800;
-            letter-spacing: 1.5px; margin-bottom: 25px; text-transform: uppercase;
+            color: white; font-size: 1.3rem; /* Slightly smaller to fit long name */
+            font-weight: 800;
+            letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase;
+            line-height: 1.4;
         }
 
         /* PROGRESS BAR */
@@ -220,7 +225,7 @@
     <div id="security-lock">
         <div class="lock-icon"><i class="fas fa-lock"></i></div>
         <div class="lock-title">Session Locked</div>
-        <div class="lock-desc">System locked due to inactivity.<br>Your financial data is secure.</div>
+        <div class="lock-desc">System locked due to inactivity.<br>Shwari Movers & Cleaners data is secure.</div>
         <button class="unlock-btn" onclick="unlockSystem()">Resume Session</button>
     </div>
 
@@ -238,7 +243,7 @@
                 <i class="fas fa-shield-halved fa-fallback" style="display:none; font-size: 3rem; color: #43B02A;"></i>
             </div>
             
-            <div class="brand-name">Shwari Finance</div>
+            <div class="brand-name">Shwari Movers & Cleaners</div>
             <div class="progress-box">
                 <div class="progress-track"><div id="progress-fill"></div></div>
                 <span class="percentage" id="percent-text">0%</span>
@@ -246,8 +251,8 @@
             </div>
         </div>
         <div class="disclaimer-box">
-            PROPERTY OF <span class="disclaimer-highlight">SHWARI FINANCE DEPARTMENT</span><br>
-            Secure Payroll System • Employee Access @ 2026
+            PROPERTY OF <span class="disclaimer-highlight">SHWARI MOVERS & CLEANERS</span><br>
+            Secure Finance & Payroll System • 2026
         </div>
     </div>
 
@@ -296,7 +301,7 @@
             text.innerText = "100%";
             requestAnimationFrame(() => {
                 document.body.classList.add('loaded');
-                setTimeout(() => showToast('Welcome to Shwari Finance', 'user'), 600);
+                setTimeout(() => showToast('Welcome to Shwari Movers & Cleaners', 'user'), 600);
                 startInactivityTimer(); // START SECURITY TIMER
             });
         }
