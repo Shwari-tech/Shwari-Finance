@@ -15,7 +15,17 @@
     
     <title>Shwari Finance Department | Shwari Payroll Portal</title>
     <meta name="description" content="Official Shwari Finance Department employee portal. Access Shwari Payroll records and Shwari Finance documents securely." />
-    <meta name="keywords" content="Shwari Finance, Shwari Payroll, Shwari Finance Department, Shwari Employee Portal" />
+    
+    <meta property="og:site_name" content="Shwari Finance Department">
+    <meta property="og:title" content="Shwari Payroll Portal | Secure Access">
+    <meta property="og:description" content="Authorized Personnel Only. Login to access Shwari financial records and payroll systems.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shwari-tech.github.io/Shwari-Finance/">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shwari Finance Department">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80">
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002b13">
@@ -24,32 +34,6 @@
     
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FinancialService",
-      "name": "Shwari Finance Department",
-      "alternateName": "Shwari Payroll",
-      "url": "https://shwari-tech.github.io/Shwari-Finance/",
-      "description": "Official finance department and payroll portal for Shwari movers and cleaners.",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Nairobi",
-        "addressCountry": "KE"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "Kenya"
-      },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "finance department",
-        "areaServed": "KE",
-        "availableLanguage": "English"
-      }
-    }
-    </script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -65,14 +49,7 @@
             overflow: hidden; 
             background-color: var(--saf-dark);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
-        }
-
-        /* SEO HIDDEN CONTAINER */
-        #seo-content {
-            position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
-            overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; z-index: -100;
         }
 
         /* BACKGROUND VIDEO */
@@ -96,7 +73,6 @@
             z-index: 999;
             transform: translate3d(0,0,0);
             transition: transform 0.25s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.2s ease;
-            will-change: transform, opacity;
         }
 
         .loader-card {
@@ -143,7 +119,6 @@
         .status-msg {
             color: rgba(255,255,255,0.8); font-size: 0.85rem;
             margin-top: 5px; height: 1.2rem; font-weight: 400;
-            white-space: nowrap; 
         }
 
         .disclaimer-box {
@@ -159,31 +134,73 @@
         .app-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
             z-index: 10; opacity: 0; transform: scale(1.02);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
             pointer-events: none; -webkit-overflow-scrolling: touch; 
         }
 
+        /* --- SECURITY LOCK STYLES --- */
+        .app-container.security-blur {
+            filter: blur(20px);
+            transform: scale(0.95);
+        }
+
+        #security-lock {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 20, 10, 0.85); /* Dark overlay */
+            z-index: 10000; /* Highest priority */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        #security-lock.locked {
+            opacity: 1; pointer-events: all;
+        }
+
+        .lock-icon {
+            font-size: 4rem; color: #fff; margin-bottom: 20px;
+            background: var(--saf-green); width: 100px; height: 100px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(67, 176, 42, 0.4);
+        }
+
+        .lock-title {
+            color: white; font-size: 1.5rem; font-weight: 700; margin-bottom: 10px;
+        }
+
+        .lock-desc {
+            color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 30px; text-align: center;
+            max-width: 80%;
+        }
+
+        .unlock-btn {
+            padding: 12px 40px; border-radius: 30px; border: none;
+            background: white; color: var(--saf-dark); font-weight: 700;
+            font-size: 1rem; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+        .unlock-btn:active { transform: scale(0.95); }
+
         iframe { width: 100%; height: 100%; border: none; background: #fff; }
 
-        /* INSTANT EXIT STATE */
+        /* LOADED STATE */
         .loaded #loader-screen { transform: translateY(-100%) translate3d(0,0,0); opacity: 0; pointer-events: none; }
         .loaded .app-container { opacity: 1; transform: scale(1) translate3d(0,0,0); pointer-events: all; }
 
-        /* --- TOAST NOTIFICATION STYLES --- */
+        /* TOAST */
         .toast-container {
             position: fixed; top: 20px; left: 50%;
             transform: translateX(-50%);
             z-index: 9999; 
             display: flex; flex-direction: column; gap: 10px;
-            pointer-events: none; 
-            width: 90%; max-width: 350px;
+            pointer-events: none; width: 90%; max-width: 350px;
         }
 
         .toast {
             background: rgba(0, 43, 19, 0.95);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
+            color: white; padding: 12px 20px; border-radius: 50px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: flex; align-items: center; gap: 12px;
             font-size: 0.95rem; font-weight: 500;
@@ -192,7 +209,6 @@
             opacity: 0; transform: translateY(-20px);
             transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
-
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast i { color: var(--saf-green); font-size: 1.1rem; }
 
@@ -200,22 +216,11 @@
 </head>
 <body>
 
-    <div id="seo-content">
-        <header>
-            <h1>Shwari Finance Department</h1>
-            <h2>Shwari Payroll Employee Portal</h2>
-        </header>
-        <section>
-            <p>
-                Welcome to the <strong>Shwari Finance Department</strong>. 
-                This is the dedicated <strong>Shwari Employee Portal</strong> for accessing 
-                financial records.
-            </p>
-            <p>
-                Authorized personnel can login to view <strong>Shwari Payroll</strong> 
-                details and manage <strong>Shwari Finance</strong> records.
-            </p>
-        </section>
+    <div id="security-lock">
+        <div class="lock-icon"><i class="fas fa-lock"></i></div>
+        <div class="lock-title">Session Locked</div>
+        <div class="lock-desc">System locked due to inactivity.<br>Your financial data is secure.</div>
+        <button class="unlock-btn" onclick="unlockSystem()">Resume Session</button>
     </div>
 
     <div class="toast-container" id="toast-wrapper"></div>
@@ -249,87 +254,111 @@
     </div>
 
     <script>
-        // 1. VIDEO
+        // --- 1. LOADER LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             const video = document.getElementById('bg-video');
             video.play().then(() => video.classList.add('video-ready')).catch(e => {});
         });
 
-        // 2. TIMED LOADER (EXACTLY 5 SECONDS)
         let progress = 0;
         const fill = document.getElementById('progress-fill');
         const text = document.getElementById('percent-text');
         const status = document.getElementById('status-msg');
         
-        // 5000ms total / 50ms interval = 100 steps
-        // 100% / 100 steps = 1% per step
-        const TOTAL_DURATION = 5000;
-        const INTERVAL_TIME = 50;
-        const INCREMENT = 1; 
-
         const timer = setInterval(() => {
             if (progress >= 100) {
                 clearInterval(timer);
                 completeLoading();
             } else {
-                progress += INCREMENT;
+                progress += 1;
                 updateUI(progress);
             }
-        }, INTERVAL_TIME);
+        }, 50);
 
         function updateUI(val) {
             let p = Math.floor(val);
             fill.style.width = p + "%";
             text.innerText = p + "%";
-
-            // --- TEXT CYCLE LOGIC (Synced to 5s) ---
-            // 0-1.25s
-            if (p < 25) {
-                status.innerText = "Authenticating Shwari ID...";
-            } 
-            // 1.25s-2.5s
-            else if (p < 50) {
-                status.innerText = "Linking Finance Database...";
-            } 
-            // 2.5s-3.75s
-            else if (p < 75) {
-                status.innerText = "Verifying Payroll Records...";
-            } 
-            // 3.75s-5s
-            else {
-                status.innerText = "Decrypting Finance Portal...";
-            }
+            if (p < 25) status.innerText = "Authenticating Shwari ID...";
+            else if (p < 50) status.innerText = "Linking Finance Database...";
+            else if (p < 75) status.innerText = "Verifying Payroll Records...";
+            else status.innerText = "Decrypting Finance Portal...";
         }
 
-        // 3. EXIT TRIGGER (Runs when timer hits 100%)
         function completeLoading() {
             status.innerText = "Access Granted";
             fill.style.width = "100%";
             text.innerText = "100%";
-
             requestAnimationFrame(() => {
                 document.body.classList.add('loaded');
                 setTimeout(() => showToast('Welcome to Shwari Finance', 'user'), 600);
+                startInactivityTimer(); // START SECURITY TIMER
             });
         }
 
-        // 4. TOAST FUNCTION
         function showToast(message, iconName) {
             const container = document.getElementById('toast-wrapper');
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.innerHTML = `<i class="fas fa-${iconName}-circle"></i> ${message}`;
-            
             container.appendChild(toast);
-
-            requestAnimationFrame(() => {
-                toast.classList.add('show');
-            });
-
+            requestAnimationFrame(() => toast.classList.add('show'));
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 500); 
             }, 4000);
+        }
+
+        // --- 2. SECURITY AUTO-LOCK FEATURE ---
+        let idleTime = 0;
+        let isLocked = false;
+        
+        // Count every second
+        const idleInterval = setInterval(timerIncrement, 1000); 
+
+        // Reset timer on any interaction
+        const resetEvents = ['mousemove', 'keypress', 'click', 'touchstart', 'scroll'];
+        resetEvents.forEach(evt => {
+            document.addEventListener(evt, () => {
+                if (!isLocked) idleTime = 0; // Only reset if not locked
+            });
+        });
+
+        // Add event listener to iframe to detect clicks inside it
+        window.addEventListener('blur', () => {
+            if (!isLocked && document.activeElement === document.getElementById('payroll-frame')) {
+                idleTime = 0;
+            }
+        });
+
+        function timerIncrement() {
+            // Only count if system is fully loaded
+            if (document.body.classList.contains('loaded')) {
+                idleTime = idleTime + 1;
+                // LOCK AFTER 60 SECONDS
+                if (idleTime >= 60 && !isLocked) { 
+                    lockSystem();
+                }
+            }
+        }
+
+        function lockSystem() {
+            isLocked = true;
+            document.getElementById('security-lock').classList.add('locked');
+            document.getElementById('app-wrapper').classList.add('security-blur');
+            showToast('System Locked for Security', 'lock');
+        }
+
+        function unlockSystem() {
+            isLocked = false;
+            idleTime = 0;
+            document.getElementById('security-lock').classList.remove('locked');
+            document.getElementById('app-wrapper').classList.remove('security-blur');
+            showToast('Session Resumed', 'check');
+        }
+
+        function startInactivityTimer() {
+            idleTime = 0;
         }
     </script>
 </body>
