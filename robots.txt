@@ -1,4 +1,3 @@
 User-agent: *
+Disallow: /Shwari-Finance/sitemap.xml
 Allow: /
-
-Sitemap: https://shwari-tech.github.io/Shwari-Finance/sitemap.xml
