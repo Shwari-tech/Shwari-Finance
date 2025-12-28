@@ -1,3 +1,33 @@
 User-agent: *
-Disallow: /Shwari-Finance/sitemap.xml   <-- Blocks ONLY the file
-Allow: /                                <-- OPENS the rest of the site
+Allow: /
+
+# Explicitly Allow Google AI
+User-agent: Google-Extended
+Allow: /
+User-agent: Googlebot
+Allow: /
+
+# Explicitly Allow ChatGPT & OpenAI
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# Explicitly Allow Anthropic (Claude)
+User-agent: anthropic-ai
+Allow: /
+User-agent: Claude-Web
+Allow: /
+
+# Explicitly Allow Meta AI
+User-agent: FacebookBot
+Allow: /
+User-agent: Facebot
+Allow: /
+
+# Explicitly Allow Common Crawl (Used by many models)
+User-agent: CCBot
+Allow: /
+
+# Sitemap Location
+Sitemap: https://shwari-tech.github.io/Shwari-Finance/sitemap.xml
