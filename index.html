@@ -410,8 +410,8 @@
         function timerIncrement() {
             if (document.body.classList.contains('loaded')) {
                 idleTime = idleTime + 1;
-                // LOCK AFTER 60 SECONDS
-                if (idleTime >= 60 && !isLocked) { 
+                // LOCK AFTER 5 MINUTES (300 SECONDS)
+                if (idleTime >= 300 && !isLocked) { 
                     lockSystem();
                 }
             }
