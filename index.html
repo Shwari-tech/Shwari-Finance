@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#000000">
     <title>Shwari Finance | Secure Access</title>
 
-    <link rel="preload" as="image" href="https://www.arrantconstruction.com/wp-content/uploads/2024/07/Women-in-Construction-The-Current-Industry-in-2024.jpeg">
+    <link rel="preload" as="image" href="https://www.austintec.com/wp-content/uploads/2023/10/jobs-for-women-in-construction.jpg">
     <link rel="preconnect" href="https://script.google.com">
     
     <link rel="icon" type="image/png" href="images/logo.png">
@@ -20,12 +20,13 @@
 
         body, html {
             margin: 0; padding: 0;
-            /* Dynamic height handles mobile address bars better */
+            /* dvh = Dynamic Viewport Height (Best for mobile browsers with shifting URL bars) */
             height: 100dvh; width: 100%;
             overflow: hidden;
             background: #000;
             font-family: 'Inter', sans-serif;
             color: white;
+            /* Removes gray tap highlight on mobile */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -76,14 +77,13 @@
         /* HERO TEXT */
         .hero-section {
             margin-top: auto;
-            /* Adjusted for mobile balance */
             margin-bottom: 60px; 
             max-width: 800px;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            /* Tuned clamp for better mobile scaling */
+            /* Tuned clamp for smooth scaling */
             font-size: clamp(3.8rem, 11vw, 4.5rem);
             line-height: 1.3;
             margin-bottom: 90px; 
@@ -100,7 +100,6 @@
 
         /* --- BOTTOM AREA --- */
         .bottom-area {
-            /* Reduced height slightly for mobile compactness */
             height: 100px; 
             display: flex; justify-content: center; align-items: center;
             position: relative;
@@ -176,19 +175,23 @@
             will-change: transform;
         }
         .app-iframe.active { transform: translate3d(0, 0, 0); }
-        iframe { width: 100%; height: 100%; border: none; display: block; }
+        
+        iframe { 
+            width: 100%; height: 100%; border: none; display: block;
+            /* NEW: Opacity transition for smooth content load */
+            opacity: 0; 
+            transition: opacity 0.6s ease-in;
+        }
+        iframe.loaded { opacity: 1; }
 
         /* --- MOBILE MEDIA QUERIES --- */
-        
-        /* 1. Small Mobile Screens (iPhone SE, Older Androids) */
         @media (max-width: 380px) {
             h1 { font-size: 2.8rem; margin-bottom: 25px; }
-            .hero-section { margin-bottom: 40px; } /* Pull text closer to button */
+            .hero-section { margin-bottom: 40px; }
             .dept-name { font-size: 1rem; }
             .subtitle { font-size: 0.95rem; }
         }
 
-        /* 2. Short Screens (Landscape or small phones) */
         @media (max-height: 700px) {
             .hero-section { margin-bottom: 30px; }
             .bottom-area { height: 90px; }
@@ -217,7 +220,7 @@
         </div>
 
         <div class="bottom-area">
-            <button class="round-btn" onclick="startLoading(this)">
+            <button class="round-btn" onclick="startLoading(this)" aria-label="Enter Portal">
                 <div class="pulse-ring"></div>
                 <div class="pulse-ring"></div>
                 <i class="fas fa-arrow-right"></i>
@@ -226,7 +229,11 @@
     </div>
 
     <div class="app-iframe" id="app-view">
-        <iframe loading="eager" src="https://script.google.com/macros/s/AKfycbwP4RUVmgY7oL8b5ohERz0_QVFn1zR2VO8uGp3PGDIh5N6fHi70ipyniCJNKe64TqOT/exec"></iframe>
+        <iframe 
+            loading="eager" 
+            onload="this.classList.add('loaded')" 
+            src="https://script.google.com/macros/s/AKfycbwP4RUVmgY7oL8b5ohERz0_QVFn1zR2VO8uGp3PGDIh5N6fHi70ipyniCJNKe64TqOT/exec">
+        </iframe>
     </div>
 
     <script>
