@@ -20,6 +20,7 @@
 
         body, html {
             margin: 0; padding: 0;
+            /* Dynamic height handles mobile address bars better */
             height: 100dvh; width: 100%;
             overflow: hidden;
             background: #000;
@@ -58,7 +59,9 @@
             width: 100%; height: 100%;
             display: flex; flex-direction: column;
             justify-content: space-between;
-            padding: 30px 25px;
+            /* SAFE AREA PADDING FOR IPHONES/NOTCHES */
+            padding: max(30px, env(safe-area-inset-top)) 25px max(30px, env(safe-area-inset-bottom)) 25px;
+            box-sizing: border-box;
             animation: fadeIn 0.8s ease-out forwards;
         }
 
@@ -73,16 +76,17 @@
         /* HERO TEXT */
         .hero-section {
             margin-top: auto;
-            margin-bottom: 80px; 
+            /* Adjusted for mobile balance */
+            margin-bottom: 60px; 
             max-width: 600px;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(3.2rem, 12vw, 4rem);
-            line-height: 1.2;
-            /* UPDATED: Increased margin-bottom for more space */
-            margin-bottom: 35px; 
+            /* Tuned clamp for better mobile scaling */
+            font-size: clamp(2.8rem, 11vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 30px; 
             text-shadow: 0 10px 40px rgba(0,0,0,0.7);
             background: linear-gradient(to right, #fff, #ccc);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -96,7 +100,8 @@
 
         /* --- BOTTOM AREA --- */
         .bottom-area {
-            height: 120px; 
+            /* Reduced height slightly for mobile compactness */
+            height: 100px; 
             display: flex; justify-content: center; align-items: center;
             position: relative;
         }
@@ -115,7 +120,7 @@
             display: flex; justify-content: center; align-items: center;
             transition: transform 0.2s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            -webkit-tap-highlight-color: transparent; /* Remove blue highlight on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .round-btn:active { transform: scale(0.9); }
@@ -140,7 +145,7 @@
             100% { width: 220%; height: 220%; opacity: 0; border-width: 0px; }
         }
 
-        /* LOADING STATE: RAINBOW RING */
+        /* LOADING STATE */
         .round-btn.loading .pulse-ring { display: none; }
         .round-btn.loading i { opacity: 0; }
 
@@ -150,10 +155,10 @@
             inset: -4px;
             border-radius: 50%;
             border: 4px solid transparent;
-            border-top-color: #43B02A; /* Green */
-            border-right-color: #EA4335; /* Red */
-            border-bottom-color: #FBBC05; /* Yellow */
-            border-left-color: #4285F4; /* Blue */
+            border-top-color: #43B02A; 
+            border-right-color: #EA4335; 
+            border-bottom-color: #FBBC05; 
+            border-left-color: #4285F4; 
             animation: spinRainbow 0.8s linear infinite;
         }
 
@@ -172,6 +177,24 @@
         }
         .app-iframe.active { transform: translate3d(0, 0, 0); }
         iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        /* --- MOBILE MEDIA QUERIES --- */
+        
+        /* 1. Small Mobile Screens (iPhone SE, Older Androids) */
+        @media (max-width: 380px) {
+            h1 { font-size: 2.8rem; margin-bottom: 25px; }
+            .hero-section { margin-bottom: 40px; } /* Pull text closer to button */
+            .dept-name { font-size: 1rem; }
+            .subtitle { font-size: 0.95rem; }
+        }
+
+        /* 2. Short Screens (Landscape or small phones) */
+        @media (max-height: 700px) {
+            .hero-section { margin-bottom: 30px; }
+            .bottom-area { height: 90px; }
+            .round-btn { width: 70px; height: 70px; font-size: 1.3rem; }
+            h1 { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
@@ -188,7 +211,7 @@
         </header>
 
         <div class="hero-section">
-            <h1>Empowering<br>Our Society</h1>
+            <h1>Empowering<br>the Society</h1>
             
             <div class="subtitle">Shwari Movers and Cleaners Ltd</div>
         </div>
