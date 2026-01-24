@@ -58,7 +58,7 @@
             width: 100%; height: 100%;
             display: flex; flex-direction: column;
             justify-content: space-between;
-            padding: max(30px, env(safe-area-inset-top)) 25px max(30px, env(safe-area-inset-bottom)) 25px;
+            padding: max(30px, env(safe-area-inset-top)) 25px max(20px, env(safe-area-inset-bottom)) 25px;
             box-sizing: border-box;
             opacity: 0;
             animation: containerFadeIn 1s ease-out forwards;
@@ -69,137 +69,223 @@
         }
 
         /* HEADER */
-        .header { display: flex; align-items: flex-start; }
-        .dept-info { border-left: 3px solid var(--brand-green); padding-left: 15px; }
-        .dept-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9; margin-bottom: 5px; display: block; font-weight: 600;}
-        .dept-name { font-size: 1.1rem; font-weight: 700; }
+        .header { 
+            display: flex; 
+            align-items: flex-start;
+            opacity: 0;
+            animation: slideHeaderIn 0.8s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes slideHeaderIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .dept-info { 
+            border-left: 3px solid var(--brand-green); 
+            padding-left: 15px;
+            overflow: hidden;
+        }
+
+        .dept-title { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            opacity: 0; 
+            margin-bottom: 5px; 
+            display: block; 
+            font-weight: 600;
+            animation: textReveal 0.6s 0.4s ease-out forwards;
+        }
+
+        .dept-name { 
+            font-size: 1.1rem; 
+            font-weight: 700;
+            opacity: 0;
+            animation: textReveal 0.6s 0.5s ease-out forwards;
+        }
+
+        @keyframes textReveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* HERO TEXT AREA */
         .hero-section {
             margin-top: auto;
-            margin-bottom: 60px; 
+            margin-bottom: 40px; 
             max-width: 800px;
             perspective: 1000px;
         }
 
-        /* H1 Styling - VISIBILITY FIX */
+        /* Title container */
+        .title-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* H1 Styling - VISIBILITY FIX APPLIED */
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(3.8rem, 11vw, 4.5rem);
             line-height: 1.2;
-            margin-bottom: 90px; 
+            margin-bottom: 60px; 
             
-            /* REMOVED GRADIENT TEXT TO FIX VISIBILITY */
-            color: #ffffff; 
+            /* VISIBILITY FIX: Solid color instead of transparent gradient */
+            color: #ffffff;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
             
-            /* Ensure container is visible */
             opacity: 1;
-            
-            /* Apply the water float to the whole block */
-            animation: waterFloat 6s ease-in-out infinite; 
+            position: relative;
+            z-index: 2;
         }
 
         /* LETTER ANIMATION STYLES */
         .char-span {
             display: inline-block;
-            /* Start hidden, but use animation-fill-mode to hold final state */
-            opacity: 0; 
-            transform: translateY(20px) scale(0.5);
-            
-            /* The Animation */
-            animation: typeLetter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px) scale(0.8);
+            /* Force opacity to 1 at end of animation */
+            animation: popLetter 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         
-        /* Fallback: If JS fails, show standard text */
-        h1:not(.js-active) {
-            opacity: 1 !important;
+        @keyframes popLetter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.5) rotateX(-90deg);
+                filter: blur(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0deg);
+                filter: blur(0px);
+            }
         }
-        
+
+        /* Space between words */
         .char-space {
             display: inline-block;
             width: 0.3em;
         }
 
-        /* Keyframes: Letters popping in */
-        @keyframes typeLetter {
-            0% {
-                opacity: 0;
-                transform: translateY(20px) scale(0.5);
-                filter: blur(5px);
-            }
-            100% {
-                opacity: 1; /* Force visibility */
-                transform: translateY(0) scale(1);
-                filter: blur(0px);
-            }
+        /* Word container animation */
+        .word-container {
+            display: inline-block;
+            opacity: 1; /* Keep container visible, animate children */
         }
 
-        /* Keyframes: The Water Float */
-        @keyframes waterFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(0.5deg); }
+        /* Water float effect for completed title */
+        .title-float {
+            animation: titleFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Underline animation */
+        .title-underline {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--brand-green), transparent);
+            animation: underlineExpand 1.5s 2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+
+        @keyframes underlineExpand {
+            from { width: 0; opacity: 0; }
+            to { width: 100%; opacity: 1; }
         }
 
         .subtitle {
-            font-size: 1.1rem; font-weight: 300; opacity: 0;
-            display: flex; align-items: center; gap: 12px;
-            animation: slideUp 0.8s ease-out forwards;
-            animation-delay: 2s; /* Wait for writing to finish */
+            font-size: 1.1rem; 
+            font-weight: 300; 
+            opacity: 0;
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            animation: subtitleSlide 0.8s ease-out forwards;
+            animation-delay: 2.3s;
+            position: relative;
         }
         
-        .subtitle::before { content:''; width: 30px; height: 2px; background: var(--brand-green); }
+        .subtitle::before { 
+            content:''; 
+            width: 0; 
+            height: 2px; 
+            background: var(--brand-green); 
+            animation: lineExpand 0.8s 2.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes subtitleSlide {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 0.9; transform: translateY(0); }
+        }
+
+        @keyframes lineExpand {
+            to { width: 30px; }
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;
+        }
+
+        .particle {
+            position: absolute; width: 2px; height: 2px; background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%; animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
         }
 
         /* --- BOTTOM AREA --- */
         .bottom-area {
-            height: 100px; 
             display: flex; justify-content: center; align-items: center;
+            opacity: 0;
+            margin-bottom: 20px;
+            animation: bottomAppear 0.8s 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes bottomAppear {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ROUND BUTTON */
         .round-btn {
-            position: relative;
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.3);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            transition: transform 0.2s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            -webkit-tap-highlight-color: transparent;
-            
-            opacity: 0;
-            animation: popInBtn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            animation-delay: 2.2s;
+            position: relative; width: 80px; height: 80px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.3); background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px); color: white; font-size: 1.5rem;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            -webkit-tap-highlight-color: transparent; transform: scale(0);
+            animation: buttonPop 0.8s 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
-        @keyframes popInBtn {
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes buttonPop {
+            from { opacity: 0; transform: scale(0.5) rotate(-180deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
-        .round-btn:active { transform: scale(0.9); }
-        .round-btn i { transition: opacity 0.3s; }
+        .round-btn:hover {
+            transform: scale(1.1); border-color: var(--brand-green);
+            background: rgba(67, 176, 42, 0.15);
+        }
+        .round-btn:active { transform: scale(0.95); }
 
+        /* PULSE RINGS */
         .pulse-ring {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.4);
-            animation: ripple 2s infinite;
-            z-index: -1;
-            pointer-events: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4);
+            animation: ripple 2s infinite; z-index: -1; pointer-events: none;
         }
         .pulse-ring:nth-child(2) { animation-delay: 1s; }
 
@@ -211,54 +297,54 @@
         /* LOADING STATE */
         .round-btn.loading .pulse-ring { display: none; }
         .round-btn.loading i { opacity: 0; }
-
         .round-btn.loading::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            border: 4px solid transparent;
-            border-top-color: #43B02A; 
-            border-right-color: #EA4335; 
-            border-bottom-color: #FBBC05; 
-            border-left-color: #4285F4; 
-            animation: spinRainbow 0.8s linear infinite;
+            content: ''; position: absolute; inset: -4px; border-radius: 50%;
+            border: 4px solid transparent; border-top-color: #43B02A; border-right-color: #EA4335; 
+            border-bottom-color: #FBBC05; border-left-color: #4285F4; animation: spinRainbow 0.8s linear infinite;
+        }
+        @keyframes spinRainbow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- FOOTER --- */
+        .footer {
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            animation: fadeInFooter 1s ease-out forwards;
+            animation-delay: 3.2s;
         }
 
-        @keyframes spinRainbow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .footer p {
+            margin: 2px 0;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+        }
+
+        @keyframes fadeInFooter {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* APP IFRAME */
         .app-iframe {
             position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
-            background: #fff; z-index: 100;
-            transform: translate3d(0, 100%, 0);
-            transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1);
-            will-change: transform;
+            background: #fff; z-index: 100; transform: translate3d(0, 100%, 0);
+            transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1); will-change: transform;
         }
         .app-iframe.active { transform: translate3d(0, 0, 0); }
-        
-        iframe { 
-            width: 100%; height: 100%; border: none; display: block;
-            opacity: 0; 
-            transition: opacity 0.6s ease-in;
-        }
+        iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; transition: opacity 0.6s ease-in; }
         iframe.loaded { opacity: 1; }
 
         /* --- MOBILE MEDIA QUERIES --- */
         @media (max-width: 380px) {
             h1 { font-size: 2.8rem; margin-bottom: 25px; }
-            .hero-section { margin-bottom: 40px; }
+            .hero-section { margin-bottom: 30px; }
             .dept-name { font-size: 1rem; }
             .subtitle { font-size: 0.95rem; }
         }
-
         @media (max-height: 700px) {
-            .hero-section { margin-bottom: 30px; }
-            .bottom-area { height: 90px; }
-            .round-btn { width: 70px; height: 70px; font-size: 1.3rem; }
+            .hero-section { margin-bottom: 20px; }
             h1 { font-size: 2.5rem; }
         }
     </style>
@@ -267,6 +353,7 @@
 
     <div class="bg-layer"></div>
     <div class="overlay"></div>
+    <div class="particles" id="particles"></div>
 
     <div class="ui-container" id="ui-main">
         <header class="header">
@@ -277,19 +364,29 @@
         </header>
 
         <div class="hero-section">
-            <h1 id="hero-title">
-                Employee<br>Action Hub
-            </h1>
+            <div class="title-container" id="title-container">
+                <h1 id="hero-title">
+                    Employee<br>Action Hub
+                </h1>
+                <div class="title-underline"></div>
+            </div>
             
             <div class="subtitle">Empowering our Future Society</div>
         </div>
 
-        <div class="bottom-area">
-            <button class="round-btn" onclick="startLoading(this)" aria-label="Enter Portal">
-                <div class="pulse-ring"></div>
-                <div class="pulse-ring"></div>
-                <i class="fas fa-arrow-right"></i>
-            </button>
+        <div>
+            <div class="bottom-area">
+                <button class="round-btn" onclick="startLoading(this)" aria-label="Enter Portal">
+                    <div class="pulse-ring"></div>
+                    <div class="pulse-ring"></div>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <footer class="footer">
+                <p>Property of Shwari Movers and Cleaners Ltd</p>
+                <p>All rights reserved &copy; 2026</p>
+            </footer>
         </div>
     </div>
 
@@ -302,73 +399,110 @@
     </div>
 
     <script>
-        function typeWriterEffect() {
-            const titleElement = document.getElementById('hero-title');
-            if (!titleElement) return;
-
-            // Mark that JS is active so CSS knows to use animation
-            titleElement.classList.add('js-active');
-
-            const lines = ["Employee", "Action Hub"];
+        // Create floating background particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
             
-            // Clear existing text
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.width = `${Math.random() * 2 + 1}px`;
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = `${Math.random() * 15}s`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Enhanced letter-by-letter animation
+        function animateTitle() {
+            const titleElement = document.getElementById('hero-title');
+            const titleContainer = document.getElementById('title-container');
+            
+            const lines = ["Employee", "Action Hub"];
             titleElement.innerHTML = '';
             
-            let globalDelay = 0.5; // Start writing after 0.5s
+            let globalDelay = 0.5;
+            let totalLetters = 0;
 
             lines.forEach((lineText, lineIndex) => {
                 const words = lineText.split(' ');
                 
                 words.forEach((word, wordIndex) => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'word-container';
+                    
                     const letters = word.split('');
                     
-                    letters.forEach((letter) => {
+                    letters.forEach((letter, letterIndex) => {
                         const span = document.createElement('span');
                         span.textContent = letter;
                         span.className = 'char-span';
-                        // Stagger delay
-                        span.style.animationDelay = `${globalDelay}s`;
-                        titleElement.appendChild(span);
-                        globalDelay += 0.08; 
+                        
+                        // Staggered delay for letters
+                        span.style.animationDelay = `${globalDelay + (wordIndex * 0.2) + (letterIndex * 0.06)}s`;
+                        
+                        wordSpan.appendChild(span);
+                        totalLetters++;
                     });
 
-                    // Add space between words
+                    titleElement.appendChild(wordSpan);
+
                     if (wordIndex < words.length - 1) {
                         const space = document.createElement('span');
                         space.className = 'char-space';
+                        space.textContent = ' ';
                         titleElement.appendChild(space);
                     }
                 });
 
-                // Add line break
                 if (lineIndex < lines.length - 1) {
                     titleElement.appendChild(document.createElement('br'));
                 }
+                
+                globalDelay += 0.5;
             });
+
+            // Add final float animation after writing is done
+            const totalAnimationTime = (totalLetters * 0.06) + 1.5;
+            setTimeout(() => {
+                titleElement.classList.add('title-float');
+            }, totalAnimationTime * 1000);
+
+            createParticles();
         }
 
-        // Run immediately
-        document.addEventListener('DOMContentLoaded', typeWriterEffect);
-
-        // Backup: Run again on window load just in case DOMContentLoaded fired too early
-        window.onload = typeWriterEffect;
-
-        // Button Loading Logic
+        // Start loading animation
         function startLoading(btnElement) {
             const ui = document.getElementById('ui-main');
             const app = document.getElementById('app-view');
+            const title = document.getElementById('hero-title');
+
+            // Exit animations
+            const elements = document.querySelectorAll('.header, .hero-section, .bottom-area, .footer');
+            elements.forEach(el => {
+                el.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                el.style.transform = 'translateY(-30px)';
+                el.style.opacity = '0';
+            });
 
             btnElement.classList.add('loading');
 
+            const bgLayer = document.querySelector('.bg-layer');
+            bgLayer.style.transition = 'all 1s ease-in-out';
+            bgLayer.style.filter = 'brightness(0.4) blur(8px)';
+
             setTimeout(() => {
-                ui.style.transition = "opacity 0.4s ease";
-                ui.style.opacity = "0";
-                
-                setTimeout(() => {
-                    app.classList.add('active');
-                }, 100);
-            }, 1500); 
+                app.classList.add('active');
+            }, 1200);
         }
+
+        window.addEventListener('load', () => {
+            animateTitle();
+        });
     </script>
 </body>
 </html>
