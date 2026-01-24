@@ -20,13 +20,11 @@
 
         body, html {
             margin: 0; padding: 0;
-            /* dvh = Dynamic Viewport Height (Best for mobile browsers with shifting URL bars) */
             height: 100dvh; width: 100%;
             overflow: hidden;
             background: #000;
             font-family: 'Inter', sans-serif;
             color: white;
-            /* Removes gray tap highlight on mobile */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -60,13 +58,15 @@
             width: 100%; height: 100%;
             display: flex; flex-direction: column;
             justify-content: space-between;
-            /* SAFE AREA PADDING FOR IPHONES/NOTCHES */
             padding: max(30px, env(safe-area-inset-top)) 25px max(30px, env(safe-area-inset-bottom)) 25px;
             box-sizing: border-box;
-            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+            animation: containerFadeIn 1s ease-out forwards;
         }
 
-        @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+        @keyframes containerFadeIn { 
+            from{ opacity:0; } to{ opacity:1; } 
+        }
 
         /* HEADER */
         .header { display: flex; align-items: flex-start; }
@@ -74,35 +74,91 @@
         .dept-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9; margin-bottom: 5px; display: block; font-weight: 600;}
         .dept-name { font-size: 1.1rem; font-weight: 700; }
 
-        /* HERO TEXT */
+        /* HERO TEXT AREA */
         .hero-section {
             margin-top: auto;
             margin-bottom: 60px; 
             max-width: 800px;
+            perspective: 1000px;
         }
 
+        /* H1 Styling - VISIBILITY FIX */
         h1 {
             font-family: 'Playfair Display', serif;
-            /* Tuned clamp for smooth scaling */
             font-size: clamp(3.8rem, 11vw, 4.5rem);
-            line-height: 1.3;
+            line-height: 1.2;
             margin-bottom: 90px; 
-            text-shadow: 0 20px 40px rgba(0,0,0,0.7);
-            background: linear-gradient(to right, #fff, #ccc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            
+            /* REMOVED GRADIENT TEXT TO FIX VISIBILITY */
+            color: #ffffff; 
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            
+            /* Ensure container is visible */
+            opacity: 1;
+            
+            /* Apply the water float to the whole block */
+            animation: waterFloat 6s ease-in-out infinite; 
+        }
+
+        /* LETTER ANIMATION STYLES */
+        .char-span {
+            display: inline-block;
+            /* Start hidden, but use animation-fill-mode to hold final state */
+            opacity: 0; 
+            transform: translateY(20px) scale(0.5);
+            
+            /* The Animation */
+            animation: typeLetter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        /* Fallback: If JS fails, show standard text */
+        h1:not(.js-active) {
+            opacity: 1 !important;
+        }
+        
+        .char-space {
+            display: inline-block;
+            width: 0.3em;
+        }
+
+        /* Keyframes: Letters popping in */
+        @keyframes typeLetter {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.5);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1; /* Force visibility */
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+        }
+
+        /* Keyframes: The Water Float */
+        @keyframes waterFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
         }
 
         .subtitle {
-            font-size: 1.1rem; font-weight: 300; opacity: 0.9;
+            font-size: 1.1rem; font-weight: 300; opacity: 0;
             display: flex; align-items: center; gap: 12px;
+            animation: slideUp 0.8s ease-out forwards;
+            animation-delay: 2s; /* Wait for writing to finish */
         }
+        
         .subtitle::before { content:''; width: 30px; height: 2px; background: var(--brand-green); }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
 
         /* --- BOTTOM AREA --- */
         .bottom-area {
             height: 100px; 
             display: flex; justify-content: center; align-items: center;
-            position: relative;
         }
 
         /* ROUND BUTTON */
@@ -120,12 +176,20 @@
             transition: transform 0.2s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             -webkit-tap-highlight-color: transparent;
+            
+            opacity: 0;
+            animation: popInBtn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 2.2s;
+        }
+
+        @keyframes popInBtn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .round-btn:active { transform: scale(0.9); }
         .round-btn i { transition: opacity 0.3s; }
 
-        /* PULSING RINGS */
         .pulse-ring {
             position: absolute;
             top: 50%; left: 50%;
@@ -178,7 +242,6 @@
         
         iframe { 
             width: 100%; height: 100%; border: none; display: block;
-            /* NEW: Opacity transition for smooth content load */
             opacity: 0; 
             transition: opacity 0.6s ease-in;
         }
@@ -214,7 +277,9 @@
         </header>
 
         <div class="hero-section">
-            <h1>Employee<br>Action Hub</h1>
+            <h1 id="hero-title">
+                Employee<br>Action Hub
+            </h1>
             
             <div class="subtitle">Empowering our Future Society</div>
         </div>
@@ -237,14 +302,64 @@
     </div>
 
     <script>
+        function typeWriterEffect() {
+            const titleElement = document.getElementById('hero-title');
+            if (!titleElement) return;
+
+            // Mark that JS is active so CSS knows to use animation
+            titleElement.classList.add('js-active');
+
+            const lines = ["Employee", "Action Hub"];
+            
+            // Clear existing text
+            titleElement.innerHTML = '';
+            
+            let globalDelay = 0.5; // Start writing after 0.5s
+
+            lines.forEach((lineText, lineIndex) => {
+                const words = lineText.split(' ');
+                
+                words.forEach((word, wordIndex) => {
+                    const letters = word.split('');
+                    
+                    letters.forEach((letter) => {
+                        const span = document.createElement('span');
+                        span.textContent = letter;
+                        span.className = 'char-span';
+                        // Stagger delay
+                        span.style.animationDelay = `${globalDelay}s`;
+                        titleElement.appendChild(span);
+                        globalDelay += 0.08; 
+                    });
+
+                    // Add space between words
+                    if (wordIndex < words.length - 1) {
+                        const space = document.createElement('span');
+                        space.className = 'char-space';
+                        titleElement.appendChild(space);
+                    }
+                });
+
+                // Add line break
+                if (lineIndex < lines.length - 1) {
+                    titleElement.appendChild(document.createElement('br'));
+                }
+            });
+        }
+
+        // Run immediately
+        document.addEventListener('DOMContentLoaded', typeWriterEffect);
+
+        // Backup: Run again on window load just in case DOMContentLoaded fired too early
+        window.onload = typeWriterEffect;
+
+        // Button Loading Logic
         function startLoading(btnElement) {
             const ui = document.getElementById('ui-main');
             const app = document.getElementById('app-view');
 
-            // Start animation
             btnElement.classList.add('loading');
 
-            // Wait 1.5s then Launch
             setTimeout(() => {
                 ui.style.transition = "opacity 0.4s ease";
                 ui.style.opacity = "0";
