@@ -60,11 +60,13 @@
             justify-content: space-between;
             padding: max(30px, env(safe-area-inset-top)) 25px max(20px, env(safe-area-inset-bottom)) 25px;
             box-sizing: border-box;
+            
+            /* Simple Fade In for Container */
             opacity: 0;
-            animation: containerFadeIn 1s ease-out forwards;
+            animation: simpleFadeIn 1s ease-out forwards;
         }
 
-        @keyframes containerFadeIn { 
+        @keyframes simpleFadeIn { 
             from{ opacity:0; } to{ opacity:1; } 
         }
 
@@ -72,42 +74,29 @@
         .header { 
             display: flex; 
             align-items: flex-start;
+            /* Static Fade */
             opacity: 0;
-            animation: slideHeaderIn 0.8s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        @keyframes slideHeaderIn {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
+            animation: simpleFadeIn 1s ease-out 0.2s forwards;
         }
 
         .dept-info { 
             border-left: 3px solid var(--brand-green); 
             padding-left: 15px;
-            overflow: hidden;
         }
 
         .dept-title { 
             font-size: 0.75rem; 
             text-transform: uppercase; 
             letter-spacing: 2px; 
-            opacity: 0; 
+            opacity: 0.9; 
             margin-bottom: 5px; 
             display: block; 
             font-weight: 600;
-            animation: textReveal 0.6s 0.4s ease-out forwards;
         }
 
         .dept-name { 
             font-size: 1.1rem; 
             font-weight: 700;
-            opacity: 0;
-            animation: textReveal 0.6s 0.5s ease-out forwards;
-        }
-
-        @keyframes textReveal {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* HERO TEXT AREA */
@@ -115,119 +104,64 @@
             margin-top: auto;
             margin-bottom: 40px; 
             max-width: 800px;
-            perspective: 1000px;
         }
 
-        /* Title container */
-        .title-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        /* H1 Styling - VISIBILITY FIX APPLIED */
+        /* H1 Styling - REMOVED JS TYPING FOR SMOOTHNESS */
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(3.8rem, 11vw, 4.5rem);
             line-height: 1.2;
             margin-bottom: 60px; 
-            
-            /* VISIBILITY FIX: Solid color instead of transparent gradient */
             color: #ffffff;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
             
-            opacity: 1;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* LETTER ANIMATION STYLES */
-        .char-span {
-            display: inline-block;
-            position: relative;
+            /* Simple Slide Up Animation */
             opacity: 0;
-            transform: translateY(30px) scale(0.8);
-            /* Force opacity to 1 at end of animation */
-            animation: popLetter 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        
-        @keyframes popLetter {
-            0% {
-                opacity: 0;
-                transform: translateY(30px) scale(0.5) rotateX(-90deg);
-                filter: blur(8px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1) rotateX(0deg);
-                filter: blur(0px);
-            }
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out 0.4s forwards;
         }
 
-        /* Space between words */
-        .char-space {
-            display: inline-block;
-            width: 0.3em;
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Word container animation */
-        .word-container {
-            display: inline-block;
-            opacity: 1; /* Keep container visible, animate children */
-        }
-
-        /* Water float effect for completed title */
-        .title-float {
-            animation: titleFloat 8s ease-in-out infinite;
-        }
-
-        @keyframes titleFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* Underline animation */
-        .title-underline {
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--brand-green), transparent);
-            animation: underlineExpand 1.5s 2s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-        }
-
-        @keyframes underlineExpand {
-            from { width: 0; opacity: 0; }
-            to { width: 100%; opacity: 1; }
-        }
-
+        /* SUBTITLE & GREEN ANIMATION */
         .subtitle {
             font-size: 1.1rem; 
             font-weight: 300; 
-            opacity: 0;
             display: flex; 
             align-items: center; 
-            gap: 12px;
-            animation: subtitleSlide 0.8s ease-out forwards;
-            animation-delay: 2.3s;
-            position: relative;
+            gap: 15px;
+            
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out 0.6s forwards;
         }
         
+        /* The Green Line Animation */
         .subtitle::before { 
             content:''; 
-            width: 0; 
-            height: 2px; 
+            width: 40px; 
+            height: 3px; 
             background: var(--brand-green); 
-            animation: lineExpand 0.8s 2.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+            border-radius: 2px;
+            
+            /* Enhanced Neon Pulse Animation */
+            box-shadow: 0 0 5px var(--brand-green);
+            animation: greenPulse 2.5s infinite alternate;
         }
 
-        @keyframes subtitleSlide {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 0.9; transform: translateY(0); }
-        }
-
-        @keyframes lineExpand {
-            to { width: 30px; }
+        @keyframes greenPulse {
+            0% {
+                width: 40px;
+                opacity: 0.7;
+                box-shadow: 0 0 5px var(--brand-green);
+            }
+            100% {
+                width: 55px; /* Slight expansion */
+                opacity: 1;
+                box-shadow: 0 0 15px var(--brand-green), 0 0 25px var(--brand-green);
+            }
         }
 
         /* Particles */
@@ -249,14 +183,11 @@
         /* --- BOTTOM AREA --- */
         .bottom-area {
             display: flex; justify-content: center; align-items: center;
-            opacity: 0;
             margin-bottom: 20px;
-            animation: bottomAppear 0.8s 2.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        @keyframes bottomAppear {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out 0.8s forwards;
         }
 
         /* ROUND BUTTON */
@@ -266,18 +197,13 @@
             backdrop-filter: blur(15px); color: white; font-size: 1.5rem;
             cursor: pointer; display: flex; justify-content: center; align-items: center;
             transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            -webkit-tap-highlight-color: transparent; transform: scale(0);
-            animation: buttonPop 0.8s 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        @keyframes buttonPop {
-            from { opacity: 0; transform: scale(0.5) rotate(-180deg); }
-            to { opacity: 1; transform: scale(1) rotate(0deg); }
+            -webkit-tap-highlight-color: transparent;
         }
 
         .round-btn:hover {
-            transform: scale(1.1); border-color: var(--brand-green);
+            transform: scale(1.05); border-color: var(--brand-green);
             background: rgba(67, 176, 42, 0.15);
+            box-shadow: 0 0 20px rgba(67, 176, 42, 0.3);
         }
         .round-btn:active { transform: scale(0.95); }
 
@@ -309,8 +235,7 @@
             text-align: center;
             width: 100%;
             opacity: 0;
-            animation: fadeInFooter 1s ease-out forwards;
-            animation-delay: 3.2s;
+            animation: fadeInUp 1s ease-out 1s forwards;
         }
 
         .footer p {
@@ -319,11 +244,6 @@
             letter-spacing: 0.5px;
             color: rgba(255, 255, 255, 0.6);
             font-weight: 300;
-        }
-
-        @keyframes fadeInFooter {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* APP IFRAME */
@@ -364,12 +284,9 @@
         </header>
 
         <div class="hero-section">
-            <div class="title-container" id="title-container">
-                <h1 id="hero-title">
-                    Employee<br>Action Hub
-                </h1>
-                <div class="title-underline"></div>
-            </div>
+            <h1 id="hero-title">
+                Employee<br>Action Hub
+            </h1>
             
             <div class="subtitle">Empowering our Future Society</div>
         </div>
@@ -399,7 +316,7 @@
     </div>
 
     <script>
-        // Create floating background particles
+        // BACKGROUND PARTICLES (Lightweight JS)
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 20;
@@ -417,75 +334,16 @@
             }
         }
 
-        // Enhanced letter-by-letter animation
-        function animateTitle() {
-            const titleElement = document.getElementById('hero-title');
-            const titleContainer = document.getElementById('title-container');
-            
-            const lines = ["Employee", "Action Hub"];
-            titleElement.innerHTML = '';
-            
-            let globalDelay = 0.5;
-            let totalLetters = 0;
-
-            lines.forEach((lineText, lineIndex) => {
-                const words = lineText.split(' ');
-                
-                words.forEach((word, wordIndex) => {
-                    const wordSpan = document.createElement('span');
-                    wordSpan.className = 'word-container';
-                    
-                    const letters = word.split('');
-                    
-                    letters.forEach((letter, letterIndex) => {
-                        const span = document.createElement('span');
-                        span.textContent = letter;
-                        span.className = 'char-span';
-                        
-                        // Staggered delay for letters
-                        span.style.animationDelay = `${globalDelay + (wordIndex * 0.2) + (letterIndex * 0.06)}s`;
-                        
-                        wordSpan.appendChild(span);
-                        totalLetters++;
-                    });
-
-                    titleElement.appendChild(wordSpan);
-
-                    if (wordIndex < words.length - 1) {
-                        const space = document.createElement('span');
-                        space.className = 'char-space';
-                        space.textContent = ' ';
-                        titleElement.appendChild(space);
-                    }
-                });
-
-                if (lineIndex < lines.length - 1) {
-                    titleElement.appendChild(document.createElement('br'));
-                }
-                
-                globalDelay += 0.5;
-            });
-
-            // Add final float animation after writing is done
-            const totalAnimationTime = (totalLetters * 0.06) + 1.5;
-            setTimeout(() => {
-                titleElement.classList.add('title-float');
-            }, totalAnimationTime * 1000);
-
-            createParticles();
-        }
-
         // Start loading animation
         function startLoading(btnElement) {
             const ui = document.getElementById('ui-main');
             const app = document.getElementById('app-view');
-            const title = document.getElementById('hero-title');
 
-            // Exit animations
+            // Fade out UI Elements
             const elements = document.querySelectorAll('.header, .hero-section, .bottom-area, .footer');
             elements.forEach(el => {
                 el.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-                el.style.transform = 'translateY(-30px)';
+                el.style.transform = 'translateY(-20px)';
                 el.style.opacity = '0';
             });
 
@@ -501,7 +359,7 @@
         }
 
         window.addEventListener('load', () => {
-            animateTitle();
+            createParticles();
         });
     </script>
 </body>
