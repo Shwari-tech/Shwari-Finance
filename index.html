@@ -60,9 +60,8 @@
             justify-content: space-between;
             padding: max(30px, env(safe-area-inset-top)) 25px max(20px, env(safe-area-inset-bottom)) 25px;
             box-sizing: border-box;
-            
-            /* Simple Fade In for Container */
             opacity: 0;
+            transition: opacity 0.5s ease; /* Added for smooth fade out */
             animation: simpleFadeIn 1s ease-out forwards;
         }
 
@@ -74,7 +73,6 @@
         .header { 
             display: flex; 
             align-items: flex-start;
-            /* Static Fade */
             opacity: 0;
             animation: simpleFadeIn 1s ease-out 0.2s forwards;
         }
@@ -106,7 +104,6 @@
             max-width: 800px;
         }
 
-        /* H1 Styling - REMOVED JS TYPING FOR SMOOTHNESS */
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(3.8rem, 11vw, 4.5rem);
@@ -114,8 +111,6 @@
             margin-bottom: 60px; 
             color: #ffffff;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            
-            /* Simple Slide Up Animation */
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1s ease-out 0.4s forwards;
@@ -125,55 +120,40 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* SUBTITLE & GREEN ANIMATION */
         .subtitle {
             font-size: 1.1rem; 
             font-weight: 300; 
             display: flex; 
             align-items: center; 
             gap: 15px;
-            
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1s ease-out 0.6s forwards;
         }
         
-        /* The Green Line Animation */
         .subtitle::before { 
             content:''; 
             width: 40px; 
             height: 3px; 
             background: var(--brand-green); 
             border-radius: 2px;
-            
-            /* Enhanced Neon Pulse Animation */
             box-shadow: 0 0 5px var(--brand-green);
             animation: greenPulse 2.5s infinite alternate;
         }
 
         @keyframes greenPulse {
-            0% {
-                width: 40px;
-                opacity: 0.7;
-                box-shadow: 0 0 5px var(--brand-green);
-            }
-            100% {
-                width: 55px; /* Slight expansion */
-                opacity: 1;
-                box-shadow: 0 0 15px var(--brand-green), 0 0 25px var(--brand-green);
-            }
+            0% { width: 40px; opacity: 0.7; box-shadow: 0 0 5px var(--brand-green); }
+            100% { width: 55px; opacity: 1; box-shadow: 0 0 15px var(--brand-green), 0 0 25px var(--brand-green); }
         }
 
         /* Particles */
         .particles {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;
         }
-
         .particle {
             position: absolute; width: 2px; height: 2px; background: rgba(255, 255, 255, 0.5);
             border-radius: 50%; animation: float 15s infinite linear;
         }
-
         @keyframes float {
             0% { transform: translateY(100vh); opacity: 0; }
             10% { opacity: 1; }
@@ -184,7 +164,6 @@
         .bottom-area {
             display: flex; justify-content: center; align-items: center;
             margin-bottom: 20px;
-            
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1s ease-out 0.8s forwards;
@@ -198,6 +177,7 @@
             cursor: pointer; display: flex; justify-content: center; align-items: center;
             transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             -webkit-tap-highlight-color: transparent;
+            z-index: 20; /* Ensure button stays above layers */
         }
 
         .round-btn:hover {
@@ -232,36 +212,51 @@
 
         /* --- FOOTER --- */
         .footer {
-            text-align: center;
-            width: 100%;
-            opacity: 0;
+            text-align: center; width: 100%; opacity: 0;
             animation: fadeInUp 1s ease-out 1s forwards;
         }
-
         .footer p {
-            margin: 2px 0;
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 300;
+            margin: 2px 0; font-size: 0.65rem; letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.6); font-weight: 300;
         }
 
-        /* APP IFRAME */
+        /* --- NEW RIPPLE TRANSITION ELEMENT --- */
+        .ripple-overlay {
+            position: fixed;
+            background: #ffffff; /* Matches iframe bg */
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50; /* Above UI, below Iframe */
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); /* Ease-in-out */
+            will-change: transform;
+        }
+
+        .ripple-overlay.expand {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* --- APP IFRAME --- */
         .app-iframe {
             position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
-            background: #fff; z-index: 100; transform: translate3d(0, 100%, 0);
-            transition: transform 0.5s cubic-bezier(0.8, 0, 0.2, 1); will-change: transform;
+            background: #fff; 
+            z-index: 100; /* Highest */
+            opacity: 0; /* Hidden initially */
+            pointer-events: none;
+            transition: opacity 0.5s ease-in; /* Fade in over the white ripple */
         }
-        .app-iframe.active { transform: translate3d(0, 0, 0); }
+        .app-iframe.active { 
+            opacity: 1; 
+            pointer-events: auto;
+        }
         iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; transition: opacity 0.6s ease-in; }
         iframe.loaded { opacity: 1; }
 
-        /* --- MOBILE MEDIA QUERIES --- */
+        /* --- MEDIA QUERIES --- */
         @media (max-width: 380px) {
             h1 { font-size: 2.8rem; margin-bottom: 25px; }
             .hero-section { margin-bottom: 30px; }
             .dept-name { font-size: 1rem; }
-            .subtitle { font-size: 0.95rem; }
         }
         @media (max-height: 700px) {
             .hero-section { margin-bottom: 20px; }
@@ -293,7 +288,7 @@
 
         <div>
             <div class="bottom-area">
-                <button class="round-btn" onclick="startLoading(this)" aria-label="Enter Portal">
+                <button id="enter-btn" class="round-btn" onclick="startRippleTransition(this)" aria-label="Enter Portal">
                     <div class="pulse-ring"></div>
                     <div class="pulse-ring"></div>
                     <i class="fas fa-arrow-right"></i>
@@ -316,7 +311,7 @@
     </div>
 
     <script>
-        // BACKGROUND PARTICLES (Lightweight JS)
+        // BACKGROUND PARTICLES
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 20;
@@ -334,28 +329,64 @@
             }
         }
 
-        // Start loading animation
-        function startLoading(btnElement) {
-            const ui = document.getElementById('ui-main');
-            const app = document.getElementById('app-view');
-
-            // Fade out UI Elements
-            const elements = document.querySelectorAll('.header, .hero-section, .bottom-area, .footer');
-            elements.forEach(el => {
-                el.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-                el.style.transform = 'translateY(-20px)';
-                el.style.opacity = '0';
-            });
-
+        // RIPPLE TRANSITION LOGIC
+        function startRippleTransition(btnElement) {
+            // 1. Show Loading State
             btnElement.classList.add('loading');
 
-            const bgLayer = document.querySelector('.bg-layer');
-            bgLayer.style.transition = 'all 1s ease-in-out';
-            bgLayer.style.filter = 'brightness(0.4) blur(8px)';
-
+            // 2. Wait briefly to let the user see the spin (optional aesthetics)
             setTimeout(() => {
+                triggerRipple(btnElement);
+            }, 600);
+        }
+
+        function triggerRipple(btn) {
+            // Calculate coordinates relative to viewport
+            const rect = btn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // Calculate distance to furthest corner to ensure full coverage
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const maxDist = Math.max(
+                Math.hypot(centerX, centerY),                      // Top-Left
+                Math.hypot(screenWidth - centerX, centerY),        // Top-Right
+                Math.hypot(centerX, screenHeight - centerY),       // Bottom-Left
+                Math.hypot(screenWidth - centerX, screenHeight - centerY) // Bottom-Right
+            );
+            const radius = maxDist * 2.2; // 2.2x to be absolutely safe
+
+            // Create and style the ripple element
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple-overlay');
+            ripple.style.width = `${radius}px`;
+            ripple.style.height = `${radius}px`;
+            ripple.style.left = `${centerX}px`;
+            ripple.style.top = `${centerY}px`;
+
+            document.body.appendChild(ripple);
+
+            // Force browser reflow to ensure start position is registered before animating
+            ripple.getBoundingClientRect();
+
+            // Start Animation
+            ripple.classList.add('expand');
+
+            // Fade out the old UI slightly while ripple expands
+            const ui = document.getElementById('ui-main');
+            ui.style.opacity = '0';
+
+            // Reveal Iframe after transition
+            // The expansion takes 0.8s, we switch the active views near the end
+            setTimeout(() => {
+                const app = document.getElementById('app-view');
                 app.classList.add('active');
-            }, 1200);
+                
+                // Cleanup: The ripple can stay or be removed. 
+                // Since it's white and the app is white, we can leave it or remove it behind the z-index.
+                // setTimeout(() => ripple.remove(), 1000); 
+            }, 700); 
         }
 
         window.addEventListener('load', () => {
