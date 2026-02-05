@@ -10,8 +10,10 @@
     <link rel="preconnect" href="https://script.google.com">
     
     <link rel="icon" type="image/png" href="images/logo.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -47,7 +49,7 @@
 
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.1) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
             z-index: 1;
             pointer-events: none;
         }
@@ -61,7 +63,7 @@
             padding: max(30px, env(safe-area-inset-top)) 25px max(20px, env(safe-area-inset-bottom)) 25px;
             box-sizing: border-box;
             opacity: 0;
-            transition: opacity 0.5s ease; /* Added for smooth fade out */
+            transition: opacity 0.5s ease;
             animation: simpleFadeIn 1s ease-out forwards;
         }
 
@@ -100,7 +102,7 @@
         /* HERO TEXT AREA */
         .hero-section {
             margin-top: auto;
-            margin-bottom: 40px; 
+            margin-bottom: 30px; 
             max-width: 800px;
         }
 
@@ -108,7 +110,7 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(3.8rem, 11vw, 4.5rem);
             line-height: 1.2;
-            margin-bottom: 60px; 
+            margin-bottom: 50px; 
             color: #ffffff;
             text-shadow: 0 10px 30px rgba(0,0,0,0.5);
             opacity: 0;
@@ -162,73 +164,131 @@
 
         /* --- BOTTOM AREA --- */
         .bottom-area {
-            display: flex; justify-content: center; align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             margin-bottom: 20px;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 1s ease-out 0.8s forwards;
+            gap: 30px;
         }
 
-        /* ROUND BUTTON */
+        /* ROUND BUTTON (NEW ENTER DESIGN) */
         .round-btn {
-            position: relative; width: 80px; height: 80px; border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.3); background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px); color: white; font-size: 1.5rem;
+            position: relative; 
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.4); 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px); 
+            color: white; 
             cursor: pointer; display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             -webkit-tap-highlight-color: transparent;
-            z-index: 20; /* Ensure button stays above layers */
+            z-index: 20; 
+            overflow: visible;
+        }
+
+        .btn-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 2;
         }
 
         .round-btn:hover {
-            transform: scale(1.05); border-color: var(--brand-green);
-            background: rgba(67, 176, 42, 0.15);
-            box-shadow: 0 0 20px rgba(67, 176, 42, 0.3);
+            transform: scale(1.1); 
+            border-color: var(--brand-green);
+            background: rgba(67, 176, 42, 0.2);
+            box-shadow: 0 0 30px rgba(67, 176, 42, 0.4);
         }
+        
         .round-btn:active { transform: scale(0.95); }
 
         /* PULSE RINGS */
         .pulse-ring {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4);
-            animation: ripple 2s infinite; z-index: -1; pointer-events: none;
+            width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3);
+            animation: ripple 2.5s infinite; z-index: 1; pointer-events: none;
         }
-        .pulse-ring:nth-child(2) { animation-delay: 1s; }
+        .pulse-ring:nth-child(2) { animation-delay: 0.8s; }
 
         @keyframes ripple {
-            0% { width: 100%; height: 100%; opacity: 0.8; border-width: 2px; }
-            100% { width: 220%; height: 220%; opacity: 0; border-width: 0px; }
+            0% { width: 100%; height: 100%; opacity: 0.6; border-width: 1px; }
+            100% { width: 240%; height: 240%; opacity: 0; border-width: 0px; }
         }
 
         /* LOADING STATE */
         .round-btn.loading .pulse-ring { display: none; }
-        .round-btn.loading i { opacity: 0; }
+        .round-btn.loading .btn-text { opacity: 0; transition: opacity 0.2s; }
         .round-btn.loading::after {
-            content: ''; position: absolute; inset: -4px; border-radius: 50%;
-            border: 4px solid transparent; border-top-color: #43B02A; border-right-color: #EA4335; 
+            content: ''; position: absolute; inset: -3px; border-radius: 50%;
+            border: 3px solid transparent; border-top-color: #43B02A; border-right-color: #EA4335; 
             border-bottom-color: #FBBC05; border-left-color: #4285F4; animation: spinRainbow 0.8s linear infinite;
         }
         @keyframes spinRainbow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- FOOTER --- */
+        /* --- FOOTER & SOCIALS --- */
         .footer {
             text-align: center; width: 100%; opacity: 0;
             animation: fadeInUp 1s ease-out 1s forwards;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
         }
-        .footer p {
-            margin: 2px 0; font-size: 0.65rem; letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.6); font-weight: 300;
+        
+        /* Social Media Icons */
+        .social-links {
+            display: flex; gap: 25px;
+            margin-bottom: 5px;
+        }
+        
+        .social-links a {
+            color: #ffffff; /* FORCE WHITE COLOR */
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); /* INCREASED VISIBILITY */
+            border: 1px solid rgba(255,255,255,0.2); /* BRIGHTER BORDER */
         }
 
-        /* --- NEW RIPPLE TRANSITION ELEMENT --- */
+        .social-links a:hover {
+            color: white;
+            background: var(--brand-green);
+            border-color: var(--brand-green);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(67, 176, 42, 0.4);
+        }
+
+        /* Staggered animation for icons */
+        .social-links a { opacity: 0; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .social-links a:nth-child(1) { animation-delay: 1.1s; }
+        .social-links a:nth-child(2) { animation-delay: 1.2s; }
+        .social-links a:nth-child(3) { animation-delay: 1.3s; }
+        .social-links a:nth-child(4) { animation-delay: 1.4s; }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .copyright-text p {
+            margin: 2px 0; font-size: 0.65rem; letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.4); font-weight: 300;
+        }
+
+        /* --- RIPPLE OVERLAY --- */
         .ripple-overlay {
             position: fixed;
-            background: #ffffff; /* Matches iframe bg */
+            background: #ffffff; 
             border-radius: 50%;
             pointer-events: none;
-            z-index: 50; /* Above UI, below Iframe */
+            z-index: 50; 
             transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); /* Ease-in-out */
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); 
             will-change: transform;
         }
 
@@ -240,10 +300,10 @@
         .app-iframe {
             position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
             background: #fff; 
-            z-index: 100; /* Highest */
-            opacity: 0; /* Hidden initially */
+            z-index: 100; 
+            opacity: 0; 
             pointer-events: none;
-            transition: opacity 0.5s ease-in; /* Fade in over the white ripple */
+            transition: opacity 0.5s ease-in; 
         }
         .app-iframe.active { 
             opacity: 1; 
@@ -261,6 +321,7 @@
         @media (max-height: 700px) {
             .hero-section { margin-bottom: 20px; }
             h1 { font-size: 2.5rem; }
+            .round-btn { width: 80px; height: 80px; } 
         }
     </style>
 </head>
@@ -291,13 +352,22 @@
                 <button id="enter-btn" class="round-btn" onclick="startRippleTransition(this)" aria-label="Enter Portal">
                     <div class="pulse-ring"></div>
                     <div class="pulse-ring"></div>
-                    <i class="fas fa-arrow-right"></i>
+                    <span class="btn-text">ENTER</span>
                 </button>
             </div>
 
             <footer class="footer">
-                <p>Property of Shwari Movers and Cleaners Ltd</p>
-                <p>All rights reserved &copy; 2026</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <div class="copyright-text">
+                    <p>Property of Shwari Movers and Cleaners Ltd</p>
+                    <p>All rights reserved &copy; 2026</p>
+                </div>
             </footer>
         </div>
     </div>
@@ -331,33 +401,27 @@
 
         // RIPPLE TRANSITION LOGIC
         function startRippleTransition(btnElement) {
-            // 1. Show Loading State
             btnElement.classList.add('loading');
-
-            // 2. Wait briefly to let the user see the spin (optional aesthetics)
             setTimeout(() => {
                 triggerRipple(btnElement);
             }, 600);
         }
 
         function triggerRipple(btn) {
-            // Calculate coordinates relative to viewport
             const rect = btn.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
 
-            // Calculate distance to furthest corner to ensure full coverage
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const maxDist = Math.max(
-                Math.hypot(centerX, centerY),                      // Top-Left
-                Math.hypot(screenWidth - centerX, centerY),        // Top-Right
-                Math.hypot(centerX, screenHeight - centerY),       // Bottom-Left
-                Math.hypot(screenWidth - centerX, screenHeight - centerY) // Bottom-Right
+                Math.hypot(centerX, centerY),
+                Math.hypot(screenWidth - centerX, centerY),
+                Math.hypot(centerX, screenHeight - centerY),
+                Math.hypot(screenWidth - centerX, screenHeight - centerY)
             );
-            const radius = maxDist * 2.2; // 2.2x to be absolutely safe
+            const radius = maxDist * 2.2;
 
-            // Create and style the ripple element
             const ripple = document.createElement('div');
             ripple.classList.add('ripple-overlay');
             ripple.style.width = `${radius}px`;
@@ -366,26 +430,15 @@
             ripple.style.top = `${centerY}px`;
 
             document.body.appendChild(ripple);
-
-            // Force browser reflow to ensure start position is registered before animating
             ripple.getBoundingClientRect();
-
-            // Start Animation
             ripple.classList.add('expand');
 
-            // Fade out the old UI slightly while ripple expands
             const ui = document.getElementById('ui-main');
             ui.style.opacity = '0';
 
-            // Reveal Iframe after transition
-            // The expansion takes 0.8s, we switch the active views near the end
             setTimeout(() => {
                 const app = document.getElementById('app-view');
                 app.classList.add('active');
-                
-                // Cleanup: The ripple can stay or be removed. 
-                // Since it's white and the app is white, we can leave it or remove it behind the z-index.
-                // setTimeout(() => ripple.remove(), 1000); 
             }, 700); 
         }
 
