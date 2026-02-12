@@ -2,449 +2,223 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <title>Shwari Finance | Secure Access</title>
-
-    <link rel="preload" as="image" href="https://www.austintec.com/wp-content/uploads/2023/10/jobs-for-women-in-construction.jpg">
-    <link rel="preconnect" href="https://script.google.com">
-    
-    <link rel="icon" type="image/png" href="images/logo.png">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shwari Finance · 2.5s · link at 0.5s</title>
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --brand-green: #43B02A;
-        }
-
-        body, html {
-            margin: 0; padding: 0;
-            height: 100dvh; width: 100%;
-            overflow: hidden;
-            background: #000;
-            font-family: 'Inter', sans-serif;
-            color: white;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* --- BACKGROUND --- */
-        .bg-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://img.freepik.com/fotos-premium/um-caminhao-esta-dirigindo-em-uma-longa-rodovia-de-asfalto-ao-por-do-sol_1029465-6173.jpg?semt=ais_hybrid&w=740&q=80');
-            background-size: cover;
-            background-position: center;
-            z-index: 0;
-            filter: brightness(0.85) contrast(1.1);
-            will-change: transform;
-            animation: breathe 30s ease-in-out infinite alternate;
-        }
-
-        @keyframes breathe {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.15); }
-        }
-
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 0%; height: 0%;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* --- UI CONTAINER --- */
-        .ui-container {
-            position: relative; z-index: 10;
-            width: 100%; height: 100%;
-            display: flex; flex-direction: column;
-            justify-content: space-between;
-            padding: max(30px, env(safe-area-inset-top)) 25px max(20px, env(safe-area-inset-bottom)) 25px;
+        /* -----------------------------------------------------------------
+           TOTAL ANIMATION 2.5 SECONDS – MACRO OPENS AT 0.5 SEC
+           - UI pop‑in (0.5s) fast and crisp
+           - at 0.5s → app becomes active (scale+fade)
+           - UI fades out over 2.0s → fully hidden at 2.5s
+        ----------------------------------------------------------------- */
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            animation: simpleFadeIn 1s ease-out forwards;
         }
 
-        @keyframes simpleFadeIn { 
-            from{ opacity:0; } to{ opacity:1; } 
+        html, body {
+            height: 100%;
+            background: #ffffff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* HEADER */
-        .header { 
-            display: flex; 
-            align-items: flex-start;
-            opacity: 0;
-            animation: simpleFadeIn 1s ease-out 0.2s forwards;
-        }
-
-        .dept-info { 
-            border-left: 3px solid var(--brand-green); 
-            padding-left: 15px;
-        }
-
-        .dept-title { 
-            font-size: 0.75rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            opacity: 0.9; 
-            margin-bottom: 5px; 
-            display: block; 
-            font-weight: 600;
-        }
-
-        .dept-name { 
-            font-size: 1.1rem; 
-            font-weight: 700;
-        }
-
-        /* HERO TEXT AREA */
-        .hero-section {
-            margin-top: auto;
-            margin-bottom: 30px; 
-            max-width: 800px;
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(3.8rem, 11vw, 4.5rem);
-            line-height: 1.2;
-            margin-bottom: 50px; 
-            color: #ffffff;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease-out 0.4s forwards;
-        }
-
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .subtitle {
-            font-size: 1.1rem; 
-            font-weight: 300; 
-            display: flex; 
-            align-items: center; 
-            gap: 15px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease-out 0.6s forwards;
-        }
-        
-        .subtitle::before { 
-            content:''; 
-            width: 40px; 
-            height: 3px; 
-            background: var(--brand-green); 
-            border-radius: 2px;
-            box-shadow: 0 0 5px var(--brand-green);
-            animation: greenPulse 2.5s infinite alternate;
-        }
-
-        @keyframes greenPulse {
-            0% { width: 40px; opacity: 0.7; box-shadow: 0 0 5px var(--brand-green); }
-            100% { width: 55px; opacity: 1; box-shadow: 0 0 15px var(--brand-green), 0 0 25px var(--brand-green); }
-        }
-
-        /* Particles */
-        .particles {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;
-        }
-        .particle {
-            position: absolute; width: 2px; height: 2px; background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%; animation: float 15s infinite linear;
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh); opacity: 0; }
-            10% { opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
-        }
-
-        /* --- BOTTOM AREA --- */
-        .bottom-area {
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            margin-bottom: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease-out 0.8s forwards;
-            gap: 30px;
-        }
-
-        /* ROUND BUTTON (NEW ENTER DESIGN) */
-        .round-btn {
-            position: relative; 
-            width: 90px; height: 90px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.4); 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px); 
-            color: white; 
-            cursor: pointer; display: flex; justify-content: center; align-items: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            -webkit-tap-highlight-color: transparent;
-            z-index: 20; 
-            overflow: visible;
-        }
-
-        .btn-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            z-index: 2;
-        }
-
-        .round-btn:hover {
-            transform: scale(1.1); 
-            border-color: var(--brand-green);
-            background: rgba(67, 176, 42, 0.2);
-            box-shadow: 0 0 30px rgba(67, 176, 42, 0.4);
-        }
-        
-        .round-btn:active { transform: scale(0.95); }
-
-        /* PULSE RINGS */
-        .pulse-ring {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100%; height: 100%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3);
-            animation: ripple 2.5s infinite; z-index: 1; pointer-events: none;
-        }
-        .pulse-ring:nth-child(2) { animation-delay: 0.8s; }
-
-        @keyframes ripple {
-            0% { width: 100%; height: 100%; opacity: 0.6; border-width: 1px; }
-            100% { width: 240%; height: 240%; opacity: 0; border-width: 0px; }
-        }
-
-        /* LOADING STATE */
-        .round-btn.loading .pulse-ring { display: none; }
-        .round-btn.loading .btn-text { opacity: 0; transition: opacity 0.2s; }
-        .round-btn.loading::after {
-            content: ''; position: absolute; inset: -3px; border-radius: 50%;
-            border: 3px solid transparent; border-top-color: #43B02A; border-right-color: #EA4335; 
-            border-bottom-color: #FBBC05; border-left-color: #4285F4; animation: spinRainbow 0.8s linear infinite;
-        }
-        @keyframes spinRainbow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- FOOTER & SOCIALS --- */
-        .footer {
-            text-align: center; width: 100%; opacity: 0;
-            animation: fadeInUp 1s ease-out 1s forwards;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
-        }
-        
-        /* Social Media Icons */
-        .social-links {
-            display: flex; gap: 25px;
-            margin-bottom: 5px;
-        }
-        
-        .social-links a {
-            color: #ffffff; /* FORCE WHITE COLOR */
-            font-size: 1.2rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
+        /* ---------- CENTER WRAPPER (orbits + user) ---------- */
+        .wrapper {
             position: relative;
-            display: flex; justify-content: center; align-items: center;
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255,255,255,0.1); /* INCREASED VISIBILITY */
-            border: 1px solid rgba(255,255,255,0.2); /* BRIGHTER BORDER */
+            width: 260px;
+            height: 260px;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 2s ease, transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* 2s fade – will be triggered at 0.5s, ends at 2.5s */
+            will-change: transform, opacity;
         }
 
-        .social-links a:hover {
-            color: white;
-            background: var(--brand-green);
-            border-color: var(--brand-green);
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(67, 176, 42, 0.4);
-        }
-
-        /* Staggered animation for icons */
-        .social-links a { opacity: 0; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .social-links a:nth-child(1) { animation-delay: 1.1s; }
-        .social-links a:nth-child(2) { animation-delay: 1.2s; }
-        .social-links a:nth-child(3) { animation-delay: 1.3s; }
-        .social-links a:nth-child(4) { animation-delay: 1.4s; }
-
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.5); }
+        /* POP-IN animation – first 0.5s */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.4); }
+            70% { opacity: 1; transform: scale(1.08); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        .copyright-text p {
-            margin: 2px 0; font-size: 0.65rem; letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.4); font-weight: 300;
+        .wrapper.pop-in {
+            animation: popIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.98) forwards;
         }
 
-        /* --- RIPPLE OVERLAY --- */
-        .ripple-overlay {
-            position: fixed;
-            background: #ffffff; 
-            border-radius: 50%;
+        /* Fade-out state – activated at 0.5s, takes 2s */
+        .wrapper.fade-out {
+            opacity: 0;
+            transform: scale(0.86);
             pointer-events: none;
-            z-index: 50; 
-            transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); 
+        }
+
+        /* main icon – user */
+        .main-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #f4f8fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,.08);
+            z-index: 5;
+        }
+
+        .main-icon i {
+            font-size: 5rem;
+            color: #0b2d3b;
+        }
+
+        /* orbit container – continuous rotation */
+        .orbit-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: rotate 4s linear infinite;
             will-change: transform;
         }
 
-        .ripple-overlay.expand {
-            transform: translate(-50%, -50%) scale(1);
+        .orbit {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,.05);
+            font-size: 1.4rem;
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* --- APP IFRAME --- */
-        .app-iframe {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100dvh;
-            background: #fff; 
-            z-index: 100; 
-            opacity: 0; 
+        .orbit1 { top: 0; left: 50%; transform: translate(-50%, -50%); color: #c89d2b; }
+        .orbit2 { right: 0; top: 50%; transform: translate(50%, -50%); color: #116aa3; }
+        .orbit3 { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #5c4db0; }
+        .orbit4 { left: 0; top: 50%; transform: translate(-50%, -50%); color: #2c7a47; }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* ---------- APP IFRAME – appears at 0.5s (fast pop) ---------- */
+        .app {
+            position: fixed;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.92);
+            background: #fff;
+            z-index: 1000;
+            transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s linear 0.45s;
+            will-change: transform, opacity;
+            box-shadow: 0 0 30px rgba(0,0,0,0.02);
+        }
+
+        .app.active {
+            opacity: 1;
+            transform: scale(1);
+            visibility: visible;
+            transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s linear 0s;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* subtle loading hint – fades out after app opens */
+        .app::after {
+            content: "opening macro…";
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30, 138, 62, 0.08);
+            padding: 8px 22px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            color: #1e6b3b;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(30,138,62,0.2);
+            transition: opacity 0.3s;
             pointer-events: none;
-            transition: opacity 0.5s ease-in; 
+            z-index: 1002;
         }
-        .app-iframe.active { 
-            opacity: 1; 
-            pointer-events: auto;
-        }
-        iframe { width: 100%; height: 100%; border: none; display: block; opacity: 0; transition: opacity 0.6s ease-in; }
-        iframe.loaded { opacity: 1; }
 
-        /* --- MEDIA QUERIES --- */
-        @media (max-width: 380px) {
-            h1 { font-size: 2.8rem; margin-bottom: 25px; }
-            .hero-section { margin-bottom: 30px; }
-            .dept-name { font-size: 1rem; }
+        .app.active::after {
+            opacity: 0;
         }
-        @media (max-height: 700px) {
-            .hero-section { margin-bottom: 20px; }
-            h1 { font-size: 2.5rem; }
-            .round-btn { width: 80px; height: 80px; } 
-        }
+
+        /* no green – pure timeline */
     </style>
 </head>
 <body>
 
-    <div class="bg-layer"></div>
-    <div class="overlay"></div>
-    <div class="particles" id="particles"></div>
-
-    <div class="ui-container" id="ui-main">
-        <header class="header">
-            <div class="dept-info">
-                <span class="dept-title">Shwari Finance Department</span>
-                <span class="dept-name">Internal Portal - Logistics</span>
-            </div>
-        </header>
-
-        <div class="hero-section">
-            <h1 id="hero-title">
-                Employee<br>Action Hub
-            </h1>
-            
-            <div class="subtitle">Empowering our Future Society</div>
+    <!-- MAIN UI: orbiting icons + central user -->
+    <div class="wrapper" id="ui">
+        <div class="main-icon">
+            <i class="fas fa-user-tie"></i>
         </div>
-
-        <div>
-            <div class="bottom-area">
-                <button id="enter-btn" class="round-btn" onclick="startRippleTransition(this)" aria-label="Enter Portal">
-                    <div class="pulse-ring"></div>
-                    <div class="pulse-ring"></div>
-                    <span class="btn-text">ENTER</span>
-                </button>
-            </div>
-
-            <footer class="footer">
-                <div class="social-links">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                </div>
-
-                <div class="copyright-text">
-                    <p>Property of Shwari Movers and Cleaners Ltd</p>
-                    <p>All rights reserved &copy; 2026</p>
-                </div>
-            </footer>
+        <div class="orbit-container">
+            <div class="orbit orbit1"><i class="fas fa-coins"></i></div>
+            <div class="orbit orbit2"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="orbit orbit3"><i class="fas fa-calculator"></i></div>
+            <div class="orbit orbit4"><i class="fas fa-money-bill-wave"></i></div>
         </div>
     </div>
 
-    <div class="app-iframe" id="app-view">
-        <iframe 
-            loading="eager" 
-            onload="this.classList.add('loaded')" 
-            src="https://script.google.com/macros/s/AKfycbylK199M9K67T1yKAch3dwoiPBjlCB6zR8dm4ByNgSoolePigtAKpv0B8A3iIQjGg1S/exec">
-        </iframe>
+    <!-- IFRAME APP – Google Apps Script macro -->
+    <div class="app" id="app">
+        <iframe src="https://script.google.com/macros/s/AKfycbylK199M9K67T1yKAch3dwoiPBjlCB6zR8dm4ByNgSoolePigtAKpv0B8A3iIQjGg1S/exec"></iframe>
     </div>
 
     <script>
-        // BACKGROUND PARTICLES
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 20;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.width = `${Math.random() * 2 + 1}px`;
-                particle.style.height = particle.style.width;
-                particle.style.animationDelay = `${Math.random() * 15}s`;
-                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
-                particle.style.opacity = Math.random() * 0.3 + 0.1;
-                particlesContainer.appendChild(particle);
-            }
-        }
+        (function() {
+            "use strict";
 
-        // RIPPLE TRANSITION LOGIC
-        function startRippleTransition(btnElement) {
-            btnElement.classList.add('loading');
+            // ----- 2.5 SECOND TIMELINE – LINK OPENS AT 0.5s -----
+            const ui = document.getElementById('ui');
+            const app = document.getElementById('app');
+
+            // 1. UI pops in (0.5s) – starts immediately
+            ui.classList.add('pop-in');
+
+            // 2. At exactly 0.5s: 
+            //    - app becomes active (fast pop, link visible)
+            //    - UI starts 2s fade-out (ends at 2.5s)
             setTimeout(() => {
-                triggerRipple(btnElement);
-            }, 600);
-        }
-
-        function triggerRipple(btn) {
-            const rect = btn.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-            const maxDist = Math.max(
-                Math.hypot(centerX, centerY),
-                Math.hypot(screenWidth - centerX, centerY),
-                Math.hypot(centerX, screenHeight - centerY),
-                Math.hypot(screenWidth - centerX, screenHeight - centerY)
-            );
-            const radius = maxDist * 2.2;
-
-            const ripple = document.createElement('div');
-            ripple.classList.add('ripple-overlay');
-            ripple.style.width = `${radius}px`;
-            ripple.style.height = `${radius}px`;
-            ripple.style.left = `${centerX}px`;
-            ripple.style.top = `${centerY}px`;
-
-            document.body.appendChild(ripple);
-            ripple.getBoundingClientRect();
-            ripple.classList.add('expand');
-
-            const ui = document.getElementById('ui-main');
-            ui.style.opacity = '0';
-
-            setTimeout(() => {
-                const app = document.getElementById('app-view');
+                // show macro iframe
                 app.classList.add('active');
-            }, 700); 
-        }
+                
+                // begin fade-out of UI (2s duration, thanks to CSS transition)
+                ui.classList.add('fade-out');
+            }, 2500); // 500ms = 0.5s
 
-        window.addEventListener('load', () => {
-            createParticles();
-        });
+            // Iframe src is already set – loads immediately.
+        })();
     </script>
+
+    <!-- performance hint -->
+    <style>
+        .wrapper, .app, .orbit-container {
+            will-change: transform, opacity;
+        }
+    </style>
 </body>
 </html>
