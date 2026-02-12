@@ -247,7 +247,7 @@
             100% { transform: translate(-50%, -50%) rotate(0deg); }
         }
 
-        /* ----- APP IFRAME (fullscreen dashboard) ----- */
+        /* ----- APP IFRAME (fullscreen dashboard) – NO LOADER ----- */
         .app {
             position: fixed;
             inset: 0;
@@ -273,31 +273,6 @@
             border: none;
             background: white;
         }
-
-        /* subtle loading indicator for iframe (optional) */
-        .app::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 36px;
-            height: 36px;
-            margin: -18px 0 0 -18px;
-            border: 3px solid rgba(11,69,89,0.1);
-            border-top-color: #0b2d3b;
-            border-radius: 50%;
-            animation: spin 0.9s infinite;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 2001;
-        }
-
-        .app.active::after {
-            opacity: 0.4;    /* shows while iframe loads */
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* everything responsive – no content shift */
         @media (max-width: 500px) {
@@ -354,10 +329,10 @@
         </div>
     </div>
 
-    <!-- ===== DASHBOARD IFRAME ===== -->
+    <!-- ===== DASHBOARD IFRAME – no loader overlay ===== -->
     <div class="app" id="app">
         <!-- Your live Google Apps Script web app (secure) -->
-        <iframe src="https://script.google.com/macros/s/AKfycby6GjRjOzzfLbnXRLeoaDf8hjJdTcJdVBDgv1i3WUatxmhneWZTWEtqHvxZr_Qi_jVf/exec"
+        <iframe src="https://script.google.com/macros/s/AKfycbxR5l9RIetpkSIYXJTA26-R0Xp28q-G1-uWBQbTkEABZvRqbKLOsI9F2o3ds-1xfZ5J/exec"
                 title="Shwari Finance Dashboard"
                 loading="lazy">
         </iframe>
@@ -402,23 +377,21 @@
                 uiWrapper.classList.add('fade-out'); // orbits dissolve gracefully
             }, 5300);       // 4.3s – enough to enjoy the rotation
 
-            // --- tiny extra: ensure iframe gets no click while fading (non-blocking)
-            // also remove welcome from tab order after hidden
+            // --- tiny extra: ensure welcome not tabbable after fade ---
             welcome.addEventListener('transitionend', (e) => {
                 if (e.propertyName === 'opacity' && welcome.classList.contains('hidden')) {
                     welcome.style.visibility = 'hidden';
                 }
             });
 
-            // --- edge case: if iframe loads slowly, we keep the spinner (CSS only)
-            // no further action required – everything declarative
+            // no loader – iframe appears directly
         })();
     </script>
 
     <!-- 
         Shwari Finance – animated welcome with orbiting brand icons.
+        Loader completely removed: no spinner, no keyframes spin.
         Fully responsive, centered orbits, fixed container stacking.
-        Preserves original Google Apps Script iframe, adds refined fade-out.
     -->
 </body>
 </html>
