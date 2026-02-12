@@ -3,16 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shwari Finance · 2.5s · link at 0.5s</title>
-    <!-- Font Awesome 6 -->
+    <title>Shwari Finance · Social Connected</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        /* -----------------------------------------------------------------
-           TOTAL ANIMATION 2.5 SECONDS – MACRO OPENS AT 0.5 SEC
-           - UI pop‑in (0.5s) fast and crisp
-           - at 0.5s → app becomes active (scale+fade)
-           - UI fades out over 2.0s → fully hidden at 2.5s
-        ----------------------------------------------------------------- */
         * {
             margin: 0;
             padding: 0;
@@ -29,22 +22,25 @@
             font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* ---------- CENTER WRAPPER (orbits + user) ---------- */
+        /* --- WRAPPER --- */
+        /* Increased size to 460px to fit the outer social ring */
         .wrapper {
             position: relative;
-            width: 260px;
-            height: 260px;
+            width: 460px;
+            height: 460px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             opacity: 1;
             transform: scale(1);
             transition: opacity 2s ease, transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            /* 2s fade – will be triggered at 0.5s, ends at 2.5s */
             will-change: transform, opacity;
         }
 
-        /* POP-IN animation – first 0.5s */
+        /* Pop-in Animation */
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.4); }
-            70% { opacity: 1; transform: scale(1.08); }
+            60% { opacity: 1; transform: scale(1.05); }
             100% { opacity: 1; transform: scale(1); }
         }
 
@@ -52,69 +48,135 @@
             animation: popIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.98) forwards;
         }
 
-        /* Fade-out state – activated at 0.5s, takes 2s */
         .wrapper.fade-out {
             opacity: 0;
-            transform: scale(0.86);
+            transform: scale(0.9);
             pointer-events: none;
         }
 
-        /* main icon – user */
+        /* --- CENTER ICON --- */
         .main-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 140px;
-            height: 140px;
+            position: relative;
+            width: 120px; /* Slightly smaller to give breathing room */
+            height: 120px;
             border-radius: 50%;
             background: #f4f8fb;
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 20px 40px rgba(0,0,0,.08);
-            z-index: 5;
+            z-index: 20;
         }
 
         .main-icon i {
-            font-size: 5rem;
+            font-size: 4rem;
             color: #0b2d3b;
+            z-index: 21;
         }
 
-        /* orbit container – continuous rotation */
-        .orbit-container {
+        /* Center Ripples */
+        .main-icon::before,
+        .main-icon::after {
+            content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            animation: rotate 4s linear infinite;
-            will-change: transform;
-        }
-
-        .orbit {
-            position: absolute;
-            width: 55px;
-            height: 55px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
             border-radius: 50%;
-            background: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,.05);
-            font-size: 1.4rem;
-            border: 1px solid rgba(255,255,255,0.5);
+            border: 1px solid rgba(17, 106, 163, 0.3);
+            background: rgba(17, 106, 163, 0.05);
+            z-index: -1;
+            animation: ripple 2s linear infinite;
+        }
+        .main-icon::after { animation-delay: 1s; }
+
+        @keyframes ripple {
+            0% { width: 100%; height: 100%; opacity: 0.8; border-width: 2px; }
+            100% { width: 250%; height: 250%; opacity: 0; border-width: 0px; }
         }
 
-        .orbit1 { top: 0; left: 50%; transform: translate(-50%, -50%); color: #c89d2b; }
-        .orbit2 { right: 0; top: 50%; transform: translate(50%, -50%); color: #116aa3; }
-        .orbit3 { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #5c4db0; }
-        .orbit4 { left: 0; top: 50%; transform: translate(-50%, -50%); color: #2c7a47; }
+        /* --- INNER ORBIT (Finance) --- */
+        .orbit-inner {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            animation: rotateClockwise 5s linear infinite;
+            z-index: 10;
+        }
 
-        @keyframes rotate {
+        .orb-fin {
+            position: absolute;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+
+        /* Inner Positioning (Top/Right/Bottom/Left) */
+        .orb-fin:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); color: #c89d2b; }
+        .orb-fin:nth-child(2) { right: 0; top: 50%; transform: translate(50%, -50%); color: #116aa3; }
+        .orb-fin:nth-child(3) { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #5c4db0; }
+        .orb-fin:nth-child(4) { left: 0; top: 50%; transform: translate(-50%, -50%); color: #2c7a47; }
+
+        .orb-fin i { animation: rotateCounter 5s linear infinite; }
+
+        /* --- OUTER ORBIT (Social Media) --- */
+        .orbit-outer {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            /* Rotating opposite direction (Counter-Clockwise) */
+            animation: rotateCounter 8s linear infinite; 
+            z-index: 5;
+            border-radius: 50%;
+            border: 1px dashed rgba(0,0,0,0.05); /* Subtle guide line */
+        }
+
+        .orb-soc {
+            position: absolute;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #f0f0f0;
+            
+            /* Positioning logic for 5 items in a circle */
+            top: 50%; left: 50%;
+            margin-top: -22.5px; margin-left: -22.5px; /* Centering offset */
+        }
+
+        /* Positioning 5 items on a circle using transforms:
+           rotate(angle) -> push out(radius) -> rotate back(to keep upright)
+        */
+        .orb-soc:nth-child(1) { transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; /* FB */ }
+        .orb-soc:nth-child(2) { transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000; /* X */ }
+        .orb-soc:nth-child(3) { transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; /* Whatsapp */ }
+        .orb-soc:nth-child(4) { transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000; /* Threads */ }
+        .orb-soc:nth-child(5) { transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; /* Insta */ }
+
+        /* Counter-rotate icons inside the outer ring so they stay upright 
+           Since the container rotates Counter-Clockwise, icons must rotate Clockwise */
+        .orb-soc i {
+            animation: rotateClockwise 8s linear infinite;
+        }
+
+        /* --- KEYFRAMES --- */
+        @keyframes rotateClockwise {
             from { transform: rotate(0deg); }
             to   { transform: rotate(360deg); }
         }
 
-        /* ---------- APP IFRAME – appears at 0.5s (fast pop) ---------- */
+        @keyframes rotateCounter {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(-360deg); }
+        }
+
+        /* --- APP IFRAME --- */
         .app {
             position: fixed;
             inset: 0;
@@ -124,8 +186,6 @@
             background: #fff;
             z-index: 1000;
             transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s linear 0.45s;
-            will-change: transform, opacity;
-            box-shadow: 0 0 30px rgba(0,0,0,0.02);
         }
 
         .app.active {
@@ -135,90 +195,50 @@
             transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s linear 0s;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
-
-        /* subtle loading hint – fades out after app opens */
-        .app::after {
-            content: "opening macro…";
-            position: absolute;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(30, 138, 62, 0.08);
-            padding: 8px 22px;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            color: #1e6b3b;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(30,138,62,0.2);
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 1002;
-        }
-
-        .app.active::after {
-            opacity: 0;
-        }
-
-        /* no green – pure timeline */
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <!-- MAIN UI: orbiting icons + central user -->
     <div class="wrapper" id="ui">
         <div class="main-icon">
             <i class="fas fa-user-tie"></i>
         </div>
-        <div class="orbit-container">
-            <div class="orbit orbit1"><i class="fas fa-coins"></i></div>
-            <div class="orbit orbit2"><i class="fas fa-file-invoice-dollar"></i></div>
-            <div class="orbit orbit3"><i class="fas fa-calculator"></i></div>
-            <div class="orbit orbit4"><i class="fas fa-money-bill-wave"></i></div>
+
+        <div class="orbit-inner">
+            <div class="orb-fin"><i class="fas fa-coins"></i></div>
+            <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="orb-fin"><i class="fas fa-calculator"></i></div>
+            <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
+        </div>
+
+        <div class="orbit-outer">
+            <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
+            <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
+            <div class="orb-soc"><i class="fab fa-whatsapp"></i></div>
+            <div class="orb-soc"><i class="fab fa-threads"></i></div>
+            <div class="orb-soc"><i class="fab fa-instagram"></i></div>
         </div>
     </div>
 
-    <!-- IFRAME APP – Google Apps Script macro -->
     <div class="app" id="app">
-        <iframe src="https://script.google.com/macros/s/AKfycbylK199M9K67T1yKAch3dwoiPBjlCB6zR8dm4ByNgSoolePigtAKpv0B8A3iIQjGg1S/exec"></iframe>
+        <iframe src="https://script.google.com/macros/s/AKfycbyaHyhAVqAXWEaJ04QVRjHI_TrYiKO4c0FRg8rw2joANfW_rT9SopnaoHKBREKwYp6K/exec"></iframe>
     </div>
 
     <script>
         (function() {
-            "use strict";
-
-            // ----- 2.5 SECOND TIMELINE – LINK OPENS AT 0.5s -----
             const ui = document.getElementById('ui');
             const app = document.getElementById('app');
 
-            // 1. UI pops in (0.5s) – starts immediately
+            // 1. Pop-in UI
             ui.classList.add('pop-in');
 
-            // 2. At exactly 0.5s: 
-            //    - app becomes active (fast pop, link visible)
-            //    - UI starts 2s fade-out (ends at 2.5s)
+            // 2. Open App at 0.5s
             setTimeout(() => {
-                // show macro iframe
                 app.classList.add('active');
-                
-                // begin fade-out of UI (2s duration, thanks to CSS transition)
                 ui.classList.add('fade-out');
-            }, 2500); // 500ms = 0.5s
-
-            // Iframe src is already set – loads immediately.
+            }, 3500);
         })();
     </script>
-
-    <!-- performance hint -->
-    <style>
-        .wrapper, .app, .orbit-container {
-            will-change: transform, opacity;
-        }
-    </style>
 </body>
 </html>
