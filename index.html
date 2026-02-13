@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Shwari Finance · pre‑loaded auto‑launch</title>
+    <title>Shwari Finance · refined animations</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -27,7 +27,7 @@
             position: relative;
         }
 
-        /* ----- MAIN WRAPPER: ORBIT & CORE (centered) ----- */
+        /* ----- MAIN WRAPPER: ORBIT & CORE ----- */
         .wrapper {
             position: relative;
             width: min(500px, 92vw);
@@ -36,27 +36,27 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.45) translateY(50px);
-            transition: opacity 0.65s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.4s;
+            transform: scale(0.45) translateY(50px) rotate(-5deg);  /* added subtle rotation */
+            transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.4s;
             will-change: transform, opacity;
             pointer-events: none;
         }
 
-        /* pop-in animation – activated immediately via JS */
+        /* pop-in – now with a clean rotation to upright */
         .wrapper.pop-in {
             opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: scale(1) translateY(0) rotate(0deg);
         }
 
-        /* fade out when dashboard appears */
+        /* fade out when dashboard launches – smoother exit */
         .wrapper.fade-out {
             opacity: 0 !important;
-            transform: scale(0.8) translateY(20px);
+            transform: scale(0.8) translateY(20px) rotate(2deg);
             visibility: hidden;
             transition: opacity 0.6s ease, transform 0.7s ease, visibility 0s 0.6s;
         }
 
-        /* ----- MAIN ICON (professional user) ----- */
+        /* ----- MAIN ICON with gentle pulse ----- */
         .main-icon {
             position: relative;
             width: 110px;
@@ -69,6 +69,7 @@
             box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 4px 12px rgba(0,0,0,0.02);
             border: 3px solid white;
             z-index: 60;
+            animation: corePulse 3.5s infinite ease-in-out;  /* new subtle life */
         }
 
         .main-icon i {
@@ -77,7 +78,12 @@
             filter: drop-shadow(0 2px 6px rgba(17,106,163,0.2));
         }
 
-        /* ----- FLOATING PARTICLES (subtle) ----- */
+        @keyframes corePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 20px 40px rgba(11,59,71,0.1); }
+            50% { transform: scale(1.02); box-shadow: 0 24px 48px rgba(11,59,71,0.18); }
+        }
+
+        /* ----- FLOATING PARTICLES (calm & continuous) ----- */
         .particle {
             position: absolute;
             background: #1a6c9e;
@@ -97,7 +103,7 @@
             50% { transform: translateY(-20px) rotate(4deg); }
         }
 
-        /* ----- ORBIT INNER (finance icons) ----- */
+        /* ----- ORBIT INNER (finance icons) – icons now pop with stagger ----- */
         .orbit-inner {
             position: absolute;
             top: 50%;
@@ -130,11 +136,25 @@
         .orb-fin:nth-child(3) { bottom: 0; left: 50%; margin: 0 0 -24px -24px; color: #4a3b8a; background: #f3f1fd; }
         .orb-fin:nth-child(4) { top: 50%; left: 0; margin: -24px 0 0 -24px; color: #1f6e3f; background: #f1f9ec; }
 
+        /* icon inside – starts tiny, pops to full size with delay */
         .orb-fin i {
-            animation: rotateCounter 8s linear infinite;
+            transform: scale(0);
+            opacity: 0;
+            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: calc(0.12s * var(--i, 1));
+        }
+        .orb-fin:nth-child(1) i { --i: 1; }
+        .orb-fin:nth-child(2) i { --i: 2; }
+        .orb-fin:nth-child(3) i { --i: 3; }
+        .orb-fin:nth-child(4) i { --i: 4; }
+
+        /* keep icons upright while orbiting */
+        .orb-fin i {
+            animation: rotateCounter 8s linear infinite, iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0s, calc(0.12s * var(--i, 1)); /* counter-rotation starts immediately, pop delayed */
         }
 
-        /* ----- ORBIT OUTER (social/financial network) ----- */
+        /* ----- ORBIT OUTER (social icons) – same staggered pop ----- */
         .orbit-outer {
             position: absolute;
             top: 50%;
@@ -171,9 +191,31 @@
         .orb-soc:nth-child(5) { transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
 
         .orb-soc i {
-            animation: rotateClockwise 14s linear infinite;
+            transform: scale(0);
+            opacity: 0;
+            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: calc(0.1s * var(--j, 1));
+        }
+        .orb-soc:nth-child(1) i { --j: 1; }
+        .orb-soc:nth-child(2) i { --j: 2; }
+        .orb-soc:nth-child(3) i { --j: 3; }
+        .orb-soc:nth-child(4) i { --j: 4; }
+        .orb-soc:nth-child(5) i { --j: 5; }
+
+        /* keep social icons upright */
+        .orb-soc i {
+            animation: rotateClockwise 14s linear infinite, iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0s, calc(0.1s * var(--j, 1));
         }
 
+        /* icon pop keyframe – bounce scale + fade */
+        @keyframes iconPop {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* rotation keyframes */
         @keyframes rotateClockwise {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -184,13 +226,13 @@
             100% { transform: translate(-50%, -50%) rotate(0deg); }
         }
 
-        /* ----- DASHBOARD IFRAME – hidden until 4s, but LOADS IMMEDIATELY ----- */
+        /* ----- DASHBOARD IFRAME – pre‑loaded, appears with slide & fade ----- */
         .app {
             position: fixed;
             inset: 0;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.96);
+            transform: scale(0.96) translateY(8px);  /* added subtle slide */
             background: #ffffff;
             z-index: 2000;
             transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
@@ -199,7 +241,7 @@
 
         .app.active {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
             visibility: visible;
             transition-delay: 0s, 0s, 0s;
         }
@@ -237,12 +279,12 @@
         <div class="particle p3"></div>
         <div class="particle p4"></div>
 
-        <!-- core icon – financial advisor -->
+        <!-- core icon – now with pulse -->
         <div class="main-icon">
             <i class="fas fa-user-tie"></i>
         </div>
 
-        <!-- INNER ORBIT – finance tools -->
+        <!-- INNER ORBIT – finance tools, icons pop in one by one -->
         <div class="orbit-inner">
             <div class="orb-fin"><i class="fas fa-coins"></i></div>
             <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
@@ -250,7 +292,7 @@
             <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
         </div>
 
-        <!-- OUTER ORBIT – social / community -->
+        <!-- OUTER ORBIT – social icons, staggered pop -->
         <div class="orbit-outer">
             <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
             <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
@@ -260,9 +302,8 @@
         </div>
     </div>
 
-    <!-- ===== DASHBOARD IFRAME – LOADS INSTANTLY (no lazy), but stays hidden for 4s ===== -->
+    <!-- ===== DASHBOARD IFRAME – LOADS INSTANTLY, REVEALED SMOOTHLY AFTER 4S ===== -->
     <div class="app" id="app">
-        <!-- loading="eager" is default; we explicitly remove lazy to ensure immediate fetch -->
         <iframe src="https://script.google.com/macros/s/AKfycbwdS2YvhcDnvYAOnqsc1MhdHDuaj9aZyjEGxlrFsF18ICCkJeYiNqbR6IuCzXQ7oA7Y/exec"
                 title="Shwari Finance Dashboard">
         </iframe>
@@ -275,26 +316,28 @@
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // --- 1. POP IN THE ORBIT ANIMATION IMMEDIATELY ---
+            // --- 1. POP IN THE ORBIT WITH FULL ANIMATION ---
             requestAnimationFrame(() => {
                 uiWrapper.classList.add('pop-in');
             });
 
             // --- 2. AUTO‑LAUNCH DASHBOARD AFTER 4 SECONDS ---
-            // The iframe is already loading in the background (no lazy, eager by default)
             setTimeout(() => {
-                appPanel.classList.add('active');    // dashboard fades in (already preloaded)
-                uiWrapper.classList.add('fade-out'); // orbit fades out
-            }, 4000);  // 4 seconds – smooth reveal, no loading hitch
+                appPanel.classList.add('active');    // dashboard fades in (already pre‑rendered)
+                uiWrapper.classList.add('fade-out'); // orbit fades out with refined exit
+            }, 4000);
 
         })();
     </script>
 
     <!-- 
-        Shwari Finance – zero‑lag dashboard reveal.
-        ✅ Iframe starts loading immediately (loading="lazy" removed).
-        ✅ Orbit animates for 4s.
-        ✅ Dashboard becomes visible after 4s – already fully loaded, no haggling.
+        ✦ SHWARI FINANCE – ANIMATION UPGRADE ✦
+        - Main icon pulses gently.
+        - Wrapper pops in with a subtle rotation.
+        - Every orbit icon bursts in with a staggered, bouncy scale.
+        - Dashboard now slides up as it fades in.
+        - Pre‑loaded iframe → zero lag at 4s reveal.
+        All while keeping the 4‑second auto‑launch and clean code.
     -->
 </body>
 </html>
