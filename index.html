@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Shwari Finance · Digital Assimilation Load</title>
+    <title>Shwari Finance · Digital Assimilation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         * {
@@ -34,14 +34,14 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.45) translateY(50px) rotate(-5deg);
-            transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0.8);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
         }
 
         .wrapper.pop-in {
             opacity: 1;
-            transform: scale(1) translateY(0) rotate(0deg);
+            transform: scale(1);
         }
 
         /* ----- MAIN ICON (CORE) ----- */
@@ -71,10 +71,13 @@
         .particle {
             position: absolute;
             border-radius: 50%;
-            opacity: 0.18;
+            opacity: 0; /* Hidden initially */
             animation: float 5s infinite ease-in-out;
             z-index: 20;
+            transition: opacity 0.5s;
         }
+        
+        .wrapper.pop-in .particle { opacity: 0.18; }
 
         .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
         .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #116aa3; animation-duration: 6s; }
@@ -94,7 +97,7 @@
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 40;
-            transition: transform 1s cubic-bezier(0.6, -0.28, 0.735, 0.045), width 1s, height 1s; 
+            /* removed transition on transform to prevent fighting with animation */
         }
 
         .orbit-inner {
@@ -119,7 +122,11 @@
             align-items: center;
             background: white;
             box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-            transition: transform 0.8s ease-in, opacity 0.5s ease-in; 
+            /* Ensure smooth transition for the assimilation phase */
+            transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1), 
+                        top 0.6s cubic-bezier(0.2, 0, 0.2, 1),
+                        left 0.6s cubic-bezier(0.2, 0, 0.2, 1),
+                        opacity 0.4s ease; 
         }
 
         /* Inner Items (Finance) */
@@ -128,7 +135,12 @@
             height: 48px;
             font-size: 1.3rem;
             border: 1.5px solid rgba(255,255,255,0.7);
+            z-index: 45;
         }
+        /* Positioning logic: 
+           We use Top/Left/Transform combos. 
+           Note: To center them smoothly later, we will override these.
+        */
         .orb-fin:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); color: #b78a1a; background: #fefcf0; }
         .orb-fin:nth-child(2) { top: 50%; right: 0; transform: translate(50%, -50%); color: #0e6291; background: #f0f7ff; }
         .orb-fin:nth-child(3) { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #4a3b8a; background: #f3f1fd; }
@@ -140,14 +152,23 @@
             height: 44px;
             font-size: 1.3rem;
             color: #2c3e4e;
+            z-index: 35;
+            /* Standard placement */
+            top: 50%; left: 50%;
+            margin-top: -22px; /* Half height */
+            margin-left: -22px; /* Half width */
         }
-        .orb-soc:nth-child(1) { top: 50%; left: 50%; transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
-        .orb-soc:nth-child(2) { top: 50%; left: 50%; transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000000; }
-        .orb-soc:nth-child(3) { top: 50%; left: 50%; transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; }
-        .orb-soc:nth-child(4) { top: 50%; left: 50%; transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000000; }
-        .orb-soc:nth-child(5) { top: 50%; left: 50%; transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
+        
+        /* Using pure transforms for circular placement. 
+           The second rotate cancels the rotation of the placement, keeping icons upright relative to the ring (mostly).
+        */
+        .orb-soc:nth-child(1) { transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
+        .orb-soc:nth-child(2) { transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000000; }
+        .orb-soc:nth-child(3) { transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; }
+        .orb-soc:nth-child(4) { transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000000; }
+        .orb-soc:nth-child(5) { transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
 
-        /* Pop-in animation */
+        /* Icon pop-in animation on load */
         .orb-fin i, .orb-soc i {
             animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -161,52 +182,67 @@
            === DIGITAL ASSIMILATION (STAGGERED ZIP) EFFECT ===
            ========================================================================== */
 
-        /* 1. Freeze orbits instantly */
-        .wrapper.pull-active .orbit-inner,
-        .wrapper.pull-active .orbit-outer {
-            animation: none;
-        }
+        /* CRITICAL FIX: 
+           Do NOT set 'animation: none' on the rings. 
+           If you do, they snap to 0deg instantly. 
+           Let them spin while the items detach.
+        */
 
         /* 2. Turn icons into glowing data packets and zip to center */
-        .wrapper.pull-active .orb-fin,
+        /* We use !important to override the specific nth-child transform rules */
+        .wrapper.pull-active .orb-fin, 
         .wrapper.pull-active .orb-soc {
+            /* Move to center. 
+               Since the parent ring is rotating, these will spiral in visually.
+            */
             top: 50% !important;
             left: 50% !important;
-            background: #116aa3 !important; /* Pure tech blue */
+            right: auto !important;
+            bottom: auto !important;
+            margin: 0 !important; /* Reset margins used for centering */
+            
+            background: #116aa3 !important;
             border-color: #116aa3 !important;
-            box-shadow: 0 0 20px #116aa3;
-            transform: translate(-50%, -50%) scale(0.1) !important; /* Shrink to packet size */
-            opacity: 0;
-            transition: all 0.3s ease-in;
+            box-shadow: 0 0 15px #116aa3;
+            
+            /* Scale down to look like a data packet */
+            transform: translate(-50%, -50%) scale(0.2) !important; 
+            
+            opacity: 0; /* Fade out as they hit the center */
+            
+            /* Use a "suction" easing: start slow, snap fast */
+            transition: all 0.5s cubic-bezier(0.7, 0, 0.84, 0);
         }
         
-        /* Hide the internal font-awesome icons during the zip */
+        /* Hide the internal icons immediately so we just see the "packet" */
         .wrapper.pull-active .orb-fin i, 
-        .wrapper.pull-active .orb-soc i { opacity: 0; transition: 0.1s; }
+        .wrapper.pull-active .orb-soc i { 
+            opacity: 0; 
+            transition: opacity 0.1s ease; 
+        }
 
         /* 3. Rapid Staggered Delays (Machine Gun Effect) */
-        .wrapper.pull-active .orb-fin:nth-child(1) { transition-delay: 0.05s; }
-        .wrapper.pull-active .orb-soc:nth-child(1) { transition-delay: 0.15s; }
-        .wrapper.pull-active .orb-fin:nth-child(2) { transition-delay: 0.25s; }
-        .wrapper.pull-active .orb-soc:nth-child(2) { transition-delay: 0.30s; }
-        .wrapper.pull-active .orb-fin:nth-child(3) { transition-delay: 0.35s; }
-        .wrapper.pull-active .orb-soc:nth-child(3) { transition-delay: 0.45s; }
-        .wrapper.pull-active .orb-fin:nth-child(4) { transition-delay: 0.50s; }
-        .wrapper.pull-active .orb-soc:nth-child(4) { transition-delay: 0.55s; }
-        .wrapper.pull-active .orb-soc:nth-child(5) { transition-delay: 0.60s; }
+        /* Adjusted delays for a tighter sequence */
+        .wrapper.pull-active .orb-fin:nth-child(1) { transition-delay: 0.00s; }
+        .wrapper.pull-active .orb-soc:nth-child(1) { transition-delay: 0.08s; }
+        .wrapper.pull-active .orb-fin:nth-child(2) { transition-delay: 0.16s; }
+        .wrapper.pull-active .orb-soc:nth-child(2) { transition-delay: 0.24s; }
+        .wrapper.pull-active .orb-fin:nth-child(3) { transition-delay: 0.32s; }
+        .wrapper.pull-active .orb-soc:nth-child(3) { transition-delay: 0.40s; }
+        .wrapper.pull-active .orb-fin:nth-child(4) { transition-delay: 0.48s; }
+        .wrapper.pull-active .orb-soc:nth-child(4) { transition-delay: 0.56s; }
+        .wrapper.pull-active .orb-soc:nth-child(5) { transition-delay: 0.64s; }
 
         /* 4. Core "Processing" Pulse */
         .wrapper.pull-active .main-icon {
-            animation: dataProcess 1.2s linear forwards;
+            animation: dataProcess 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         @keyframes dataProcess {
-            0% { transform: scale(1); }
-            20% { transform: scale(1.1); box-shadow: 0 0 20px #116aa3; }
-            40% { transform: scale(1.05); }
-            60% { transform: scale(1.15); box-shadow: 0 0 30px #116aa3; }
-            80% { transform: scale(1.1); }
-            100% { transform: scale(50); opacity: 0; background: white; } /* Final expansion into app */
+            0% { transform: scale(1); border-color: white; }
+            30% { transform: scale(0.9); box-shadow: 0 0 10px #116aa3; border-color: #116aa3; } /* Anticipation */
+            60% { transform: scale(1.1); box-shadow: 0 0 40px #116aa3; background: #fff; } /* Energy buildup */
+            100% { transform: scale(40); opacity: 0; } /* Explosion to white */
         }
 
 
@@ -218,7 +254,7 @@
             visibility: hidden;
             background: #ffffff;
             z-index: 2000;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease-in; /* Slower fade in for smoothness */
         }
 
         .app.active {
@@ -288,25 +324,25 @@
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // 1. Pop in the initial orbit sequence
+            // 1. Pop in the initial orbit sequence immediately
             requestAnimationFrame(() => {
                 uiWrapper.classList.add('pop-in');
             });
 
-            // 2. Trigger the "Digital Assimilation" effect after 3.5 seconds
+            // 2. Trigger the "Digital Assimilation" effect after 3.0 seconds
             setTimeout(() => {
                 uiWrapper.classList.add('pull-active');
 
-                // 3. Reveal Dashboard (Timed perfectly with the end of the data Process animation)
+                // 3. Reveal Dashboard (Timed with the explosion)
                 setTimeout(() => {
                     appPanel.classList.add('active');
                     
-                    // Optional: hide the UI entirely after it fades out to prevent background clicking
-                    setTimeout(() => { uiWrapper.style.display = 'none'; }, 500);
+                    // Cleanup UI to save resources after fade out
+                    setTimeout(() => { uiWrapper.style.display = 'none'; }, 1000);
                     
-                }, 1200); // Wait 1.2s for staggered packets and final pulse to complete
+                }, 1100); // 1.1s allows the packets to hit center and pulse to fire
 
-            }, 3500); 
+            }, 3000); 
 
         })();
     </script>
