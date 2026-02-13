@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Shwari Finance · Vortex Load</title>
+    <title>Shwari Finance · Digital Assimilation Load</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         html, body {
             height: 100%;
@@ -21,7 +25,7 @@
             position: relative;
         }
 
-        /* ----- WRAPPER ----- */
+        /* ----- ORBIT WRAPPER ----- */
         .wrapper {
             position: relative;
             width: min(500px, 92vw);
@@ -38,13 +42,6 @@
         .wrapper.pop-in {
             opacity: 1;
             transform: scale(1) translateY(0) rotate(0deg);
-        }
-
-        .wrapper.fade-out {
-            opacity: 0 !important;
-            transform: scale(1.1); /* Expands out like a shockwave dissipation */
-            filter: blur(4px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         /* ----- MAIN ICON (CORE) ----- */
@@ -70,7 +67,7 @@
             transition: color 0.3s;
         }
 
-        /* ----- PARTICLES ----- */
+        /* ----- FLOATING PARTICLES ----- */
         .particle {
             position: absolute;
             border-radius: 50%;
@@ -78,6 +75,7 @@
             animation: float 5s infinite ease-in-out;
             z-index: 20;
         }
+
         .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
         .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #116aa3; animation-duration: 6s; }
         .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #d4a017; animation-duration: 5.4s; }
@@ -96,7 +94,6 @@
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 40;
-            /* Allow transform transitions for the suction effect */
             transition: transform 1s cubic-bezier(0.6, -0.28, 0.735, 0.045), width 1s, height 1s; 
         }
 
@@ -122,11 +119,10 @@
             align-items: center;
             background: white;
             box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-            /* Important: We now transition transform to create the "stretch" effect */
             transition: transform 0.8s ease-in, opacity 0.5s ease-in; 
         }
 
-        /* Inner Items */
+        /* Inner Items (Finance) */
         .orb-fin {
             width: 48px;
             height: 48px;
@@ -138,21 +134,20 @@
         .orb-fin:nth-child(3) { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #4a3b8a; background: #f3f1fd; }
         .orb-fin:nth-child(4) { top: 50%; left: 0; transform: translate(-50%, -50%); color: #1f6e3f; background: #f1f9ec; }
 
-        /* Outer Items */
+        /* Outer Items (Social) */
         .orb-soc {
             width: 44px;
             height: 44px;
             font-size: 1.3rem;
             color: #2c3e4e;
         }
-        /* Positioning using transforms allows for cleaner rotation logic */
         .orb-soc:nth-child(1) { top: 50%; left: 50%; transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
         .orb-soc:nth-child(2) { top: 50%; left: 50%; transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000000; }
         .orb-soc:nth-child(3) { top: 50%; left: 50%; transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; }
         .orb-soc:nth-child(4) { top: 50%; left: 50%; transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000000; }
         .orb-soc:nth-child(5) { top: 50%; left: 50%; transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
 
-        /* Initial Pop-in for Icons */
+        /* Pop-in animation */
         .orb-fin i, .orb-soc i {
             animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
@@ -161,65 +156,61 @@
         @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg); } }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
+
         /* ==========================================================================
-           === IMPROVED VORTEX SUCTION ANIMATION ===
+           === DIGITAL ASSIMILATION (STAGGERED ZIP) EFFECT ===
            ========================================================================== */
 
-        /* 1. The Container Collapse (The Black Hole) */
-        .wrapper.pull-active .orbit-inner {
-            animation: none; /* Stop the infinite linear spin */
-            /* Spin 2x fast (720deg) and shrink to 0 size simultaneously */
-            transform: translate(-50%, -50%) rotate(720deg) scale(0);
-            transition: transform 0.8s cubic-bezier(0.7, 0, 0.84, 0); /* Vacuum curve */
-        }
-
+        /* 1. Freeze orbits instantly */
+        .wrapper.pull-active .orbit-inner,
         .wrapper.pull-active .orbit-outer {
             animation: none;
-            /* Outer spins opposite, slightly slower delay to create depth */
-            transform: translate(-50%, -50%) rotate(-500deg) scale(0);
-            transition: transform 0.9s cubic-bezier(0.7, 0, 0.84, 0);
         }
 
-        /* 2. Spaghettification (Stretching the icons into the hole) */
-        .wrapper.pull-active .orb-fin {
-            /* Stretch width, shrink height to look like a light streak */
-            transform: translate(-50%, -50%) scale(3, 0.2) !important;
-            opacity: 0;
-            /* Transition happens fast */
-            transition: transform 0.6s ease-in, opacity 0.5s ease-in;
-        }
-
-        /* Outer icons stretch differently because of their rotational positioning */
+        /* 2. Turn icons into glowing data packets and zip to center */
+        .wrapper.pull-active .orb-fin,
         .wrapper.pull-active .orb-soc {
-            /* We override the specific rotation transforms with a generic suck-in stretch */
-            transform: rotate(0) translate(0) scale(0.1) !important; 
-            margin: 0 !important;
-            top: 50%; 
-            left: 50%;
+            top: 50% !important;
+            left: 50% !important;
+            background: #116aa3 !important; /* Pure tech blue */
+            border-color: #116aa3 !important;
+            box-shadow: 0 0 20px #116aa3;
+            transform: translate(-50%, -50%) scale(0.1) !important; /* Shrink to packet size */
             opacity: 0;
-            transition: all 0.7s cubic-bezier(0.6, -0.28, 0.735, 0.045);
-        }
-
-        /* 3. The Core Reaction (Shockwave) */
-        .wrapper.pull-active .main-icon {
-            animation: coreShockwave 0.8s ease-out forwards;
-            background: #ffffff;
-            border-color: #116aa3;
+            transition: all 0.3s ease-in;
         }
         
-        .wrapper.pull-active .main-icon i {
-            color: #116aa3;
-            transform: scale(0.8); /* Icon braces for impact */
+        /* Hide the internal font-awesome icons during the zip */
+        .wrapper.pull-active .orb-fin i, 
+        .wrapper.pull-active .orb-soc i { opacity: 0; transition: 0.1s; }
+
+        /* 3. Rapid Staggered Delays (Machine Gun Effect) */
+        .wrapper.pull-active .orb-fin:nth-child(1) { transition-delay: 0.05s; }
+        .wrapper.pull-active .orb-soc:nth-child(1) { transition-delay: 0.15s; }
+        .wrapper.pull-active .orb-fin:nth-child(2) { transition-delay: 0.25s; }
+        .wrapper.pull-active .orb-soc:nth-child(2) { transition-delay: 0.30s; }
+        .wrapper.pull-active .orb-fin:nth-child(3) { transition-delay: 0.35s; }
+        .wrapper.pull-active .orb-soc:nth-child(3) { transition-delay: 0.45s; }
+        .wrapper.pull-active .orb-fin:nth-child(4) { transition-delay: 0.50s; }
+        .wrapper.pull-active .orb-soc:nth-child(4) { transition-delay: 0.55s; }
+        .wrapper.pull-active .orb-soc:nth-child(5) { transition-delay: 0.60s; }
+
+        /* 4. Core "Processing" Pulse */
+        .wrapper.pull-active .main-icon {
+            animation: dataProcess 1.2s linear forwards;
         }
 
-        @keyframes coreShockwave {
-            0% { transform: scale(1); box-shadow: 0 0 0 rgba(11,59,71,0); }
-            40% { transform: scale(0.9); box-shadow: 0 0 50px rgba(17,106,163, 0.8); } /* Absorbing energy */
-            50% { transform: scale(1.3); border-width: 0px; } /* Explosion */
-            100% { transform: scale(50); opacity: 0; } /* Fill screen transition */
+        @keyframes dataProcess {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.1); box-shadow: 0 0 20px #116aa3; }
+            40% { transform: scale(1.05); }
+            60% { transform: scale(1.15); box-shadow: 0 0 30px #116aa3; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(50); opacity: 0; background: white; } /* Final expansion into app */
         }
 
-        /* ----- APP ----- */
+
+        /* ----- DASHBOARD IFRAME ----- */
         .app {
             position: fixed;
             inset: 0;
@@ -235,14 +226,36 @@
             visibility: visible;
         }
 
-        iframe { width: 100%; height: 100%; border: none; }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 500px) {
+            .main-icon { width: 90px; height: 90px; }
+            .main-icon i { font-size: 3rem; }
+            .orbit-inner { width: 190px; height: 190px; }
+            .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; }
+            .orbit-outer { width: 300px; height: 300px; }
+            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; }
+            .orb-soc:nth-child(1) { transform: rotate(0deg) translate(150px) rotate(0deg); }
+            .orb-soc:nth-child(2) { transform: rotate(72deg) translate(150px) rotate(-72deg); }
+            .orb-soc:nth-child(3) { transform: rotate(144deg) translate(150px) rotate(-144deg); }
+            .orb-soc:nth-child(4) { transform: rotate(216deg) translate(150px) rotate(-216deg); }
+            .orb-soc:nth-child(5) { transform: rotate(288deg) translate(150px) rotate(-288deg); }
+        }
     </style>
 </head>
 <body>
 
     <div class="wrapper" id="ui">
-        <div class="particle p1"></div><div class="particle p2"></div>
-        <div class="particle p3"></div><div class="particle p4"></div>
+        <div class="particle p1"></div>
+        <div class="particle p2"></div>
+        <div class="particle p3"></div>
+        <div class="particle p4"></div>
 
         <div class="main-icon">
             <i class="fas fa-user-tie"></i>
@@ -265,32 +278,36 @@
     </div>
 
     <div class="app" id="app">
-        <iframe src="https://script.google.com/macros/s/AKfycbxI9eMQ2befpwPoreW0ppC7-auiombw2G3r4JBw0h9jzwE36N7CwfnOxbDmERQd-aEd/exec"></iframe>
+        <iframe src="https://script.google.com/macros/s/AKfycbzRiS24RUWXcqnN2k9Pz6j2v-RGLVlxls_bUnD68TEH0PpZKCSQ0EbIdk4P9EIZOlR9/exec" title="Shwari Finance Dashboard"></iframe>
     </div>
 
     <script>
         (function() {
             "use strict";
+
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // 1. Entrance
-            requestAnimationFrame(() => { uiWrapper.classList.add('pop-in'); });
+            // 1. Pop in the initial orbit sequence
+            requestAnimationFrame(() => {
+                uiWrapper.classList.add('pop-in');
+            });
 
-            // 2. Trigger Suction after 3.5s
+            // 2. Trigger the "Digital Assimilation" effect after 3.5 seconds
             setTimeout(() => {
                 uiWrapper.classList.add('pull-active');
 
-                // 3. Reveal Dashboard (synchronized with the shockwave expansion)
+                // 3. Reveal Dashboard (Timed perfectly with the end of the data Process animation)
                 setTimeout(() => {
-                    // No need for fade-out class anymore, the shockwave covers the screen
                     appPanel.classList.add('active');
                     
-                    // Cleanup (optional, just to stop rendering)
+                    // Optional: hide the UI entirely after it fades out to prevent background clicking
                     setTimeout(() => { uiWrapper.style.display = 'none'; }, 500);
-                }, 800); // 800ms matches the Shockwave animation timing
+                    
+                }, 1200); // Wait 1.2s for staggered packets and final pulse to complete
 
-            }, 3500);
+            }, 3500); 
+
         })();
     </script>
 </body>
