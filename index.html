@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Shwari Finance · magnetic pull (1s)</title>
-    <!-- Font Awesome 6 -->
+    <title>Shwari Finance · Vortex Load</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
             height: 100%;
             width: 100%;
             background: #fcfdfe;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -26,7 +21,7 @@
             position: relative;
         }
 
-        /* ----- ORBIT WRAPPER (centered) ----- */
+        /* ----- WRAPPER ----- */
         .wrapper {
             position: relative;
             width: min(500px, 92vw);
@@ -36,8 +31,7 @@
             align-items: center;
             opacity: 0;
             transform: scale(0.45) translateY(50px) rotate(-5deg);
-            transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.4s;
-            will-change: transform, opacity;
+            transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
         }
 
@@ -48,12 +42,12 @@
 
         .wrapper.fade-out {
             opacity: 0 !important;
-            transform: scale(0.8) translateY(20px) rotate(2deg);
-            visibility: hidden;
-            transition: opacity 0.6s ease, transform 0.7s ease, visibility 0s 0.6s;
+            transform: scale(1.1); /* Expands out like a shockwave dissipation */
+            filter: blur(4px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        /* ----- MAIN ICON – magnetic core with pulse ----- */
+        /* ----- MAIN ICON (CORE) ----- */
         .main-icon {
             position: relative;
             width: 110px;
@@ -66,235 +60,189 @@
             box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 4px 12px rgba(0,0,0,0.02);
             border: 3px solid white;
             z-index: 60;
-            animation: corePulse 3.5s infinite ease-in-out;
+            transition: transform 0.3s ease;
         }
 
         .main-icon i {
             font-size: 3.8rem;
             color: #0b2d3b;
             filter: drop-shadow(0 2px 6px rgba(17,106,163,0.2));
+            transition: color 0.3s;
         }
 
-        @keyframes corePulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 20px 40px rgba(11,59,71,0.1); }
-            50% { transform: scale(1.02); box-shadow: 0 24px 48px rgba(11,59,71,0.18); }
-        }
-
-        /* ----- FLOATING PARTICLES ----- */
+        /* ----- PARTICLES ----- */
         .particle {
             position: absolute;
-            background: #1a6c9e;
             border-radius: 50%;
             opacity: 0.18;
             animation: float 5s infinite ease-in-out;
             z-index: 20;
         }
-
-        .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; opacity: 0.2; animation-duration: 4.2s; }
-        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #116aa3; opacity: 0.25; animation-duration: 6s; }
-        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #d4a017; opacity: 0.15; animation-duration: 5.4s; }
-        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #5c4db0; opacity: 0.2; animation-duration: 7s; }
+        .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
+        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #116aa3; animation-duration: 6s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #d4a017; animation-duration: 5.4s; }
+        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #5c4db0; animation-duration: 7s; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(4deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        /* ----- ORBIT INNER – finance icons (1s magnetic transition) ----- */
-        .orbit-inner {
+        /* ----- ORBIT RINGS ----- */
+        .orbit-inner, .orbit-outer {
             position: absolute;
             top: 50%;
             left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 40;
+            /* Allow transform transitions for the suction effect */
+            transition: transform 1s cubic-bezier(0.6, -0.28, 0.735, 0.045), width 1s, height 1s; 
+        }
+
+        .orbit-inner {
             width: 220px;
             height: 220px;
-            transform: translate(-50%, -50%) rotate(0deg);
-            animation: rotateClockwise 8s linear infinite;
-            z-index: 40;
-            transition: none;
+            animation: rotateClockwise 12s linear infinite;
         }
 
-        .orb-fin {
-            position: absolute;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.3rem;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.04), 0 2px 0 #fff inset;
-            border: 1.5px solid rgba(255,255,255,0.7);
-            backdrop-filter: blur(2px);
-            color: #1e3f4a;
-            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);  /* 1 second magnetic pull */
-            will-change: top, left, margin, transform, opacity;
-        }
-
-        .orb-fin:nth-child(1) { top: 0; left: 50%; margin: -24px 0 0 -24px; color: #b78a1a; background: #fefcf0; }
-        .orb-fin:nth-child(2) { top: 50%; right: 0; margin: -24px -24px 0 0; color: #0e6291; background: #f0f7ff; }
-        .orb-fin:nth-child(3) { bottom: 0; left: 50%; margin: 0 0 -24px -24px; color: #4a3b8a; background: #f3f1fd; }
-        .orb-fin:nth-child(4) { top: 50%; left: 0; margin: -24px 0 0 -24px; color: #1f6e3f; background: #f1f9ec; }
-
-        .orb-fin i {
-            transform: scale(0);
-            opacity: 0;
-            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, rotateCounter 8s linear infinite;
-            animation-delay: calc(0.12s * var(--i, 1)), 0s;
-        }
-        .orb-fin:nth-child(1) i { --i: 1; }
-        .orb-fin:nth-child(2) i { --i: 2; }
-        .orb-fin:nth-child(3) i { --i: 3; }
-        .orb-fin:nth-child(4) i { --i: 4; }
-
-        /* ----- ORBIT OUTER – social icons (1s magnetic transition) ----- */
         .orbit-outer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
             width: 380px;
             height: 380px;
-            transform: translate(-50%, -50%) rotate(0deg);
-            animation: rotateCounter 14s linear infinite;
             z-index: 30;
-            transition: none;
+            animation: rotateCounter 18s linear infinite;
         }
 
-        .orb-soc {
+        /* ----- ORBIT ITEMS ----- */
+        .orb-fin, .orb-soc {
             position: absolute;
-            width: 44px;
-            height: 44px;
             border-radius: 50%;
-            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: white;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+            /* Important: We now transition transform to create the "stretch" effect */
+            transition: transform 0.8s ease-in, opacity 0.5s ease-in; 
+        }
+
+        /* Inner Items */
+        .orb-fin {
+            width: 48px;
+            height: 48px;
             font-size: 1.3rem;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.04);
-            border: 1px solid #f0f2f5;
-            top: 50%;
-            left: 50%;
-            margin: -22px 0 0 -22px;
+            border: 1.5px solid rgba(255,255,255,0.7);
+        }
+        .orb-fin:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); color: #b78a1a; background: #fefcf0; }
+        .orb-fin:nth-child(2) { top: 50%; right: 0; transform: translate(50%, -50%); color: #0e6291; background: #f0f7ff; }
+        .orb-fin:nth-child(3) { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #4a3b8a; background: #f3f1fd; }
+        .orb-fin:nth-child(4) { top: 50%; left: 0; transform: translate(-50%, -50%); color: #1f6e3f; background: #f1f9ec; }
+
+        /* Outer Items */
+        .orb-soc {
+            width: 44px;
+            height: 44px;
+            font-size: 1.3rem;
             color: #2c3e4e;
-            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);  /* 1 second magnetic pull */
-            will-change: transform, margin, opacity;
+        }
+        /* Positioning using transforms allows for cleaner rotation logic */
+        .orb-soc:nth-child(1) { top: 50%; left: 50%; transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
+        .orb-soc:nth-child(2) { top: 50%; left: 50%; transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000000; }
+        .orb-soc:nth-child(3) { top: 50%; left: 50%; transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; }
+        .orb-soc:nth-child(4) { top: 50%; left: 50%; transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000000; }
+        .orb-soc:nth-child(5) { top: 50%; left: 50%; transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
+
+        /* Initial Pop-in for Icons */
+        .orb-fin i, .orb-soc i {
+            animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
-        .orb-soc:nth-child(1) { transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
-        .orb-soc:nth-child(2) { transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000000; }
-        .orb-soc:nth-child(3) { transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; }
-        .orb-soc:nth-child(4) { transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000000; }
-        .orb-soc:nth-child(5) { transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
+        @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg); } }
+        @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .orb-soc i {
-            transform: scale(0);
-            opacity: 0;
-            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, rotateClockwise 14s linear infinite;
-            animation-delay: calc(0.1s * var(--j, 1)), 0s;
-        }
-        .orb-soc:nth-child(1) i { --j: 1; }
-        .orb-soc:nth-child(2) i { --j: 2; }
-        .orb-soc:nth-child(3) i { --j: 3; }
-        .orb-soc:nth-child(4) i { --j: 4; }
-        .orb-soc:nth-child(5) i { --j: 5; }
+        /* ==========================================================================
+           === IMPROVED VORTEX SUCTION ANIMATION ===
+           ========================================================================== */
 
-        @keyframes iconPop {
-            0% { transform: scale(0); opacity: 0; }
-            70% { transform: scale(1.2); opacity: 0.9; }
-            100% { transform: scale(1); opacity: 1; }
+        /* 1. The Container Collapse (The Black Hole) */
+        .wrapper.pull-active .orbit-inner {
+            animation: none; /* Stop the infinite linear spin */
+            /* Spin 2x fast (720deg) and shrink to 0 size simultaneously */
+            transform: translate(-50%, -50%) rotate(720deg) scale(0);
+            transition: transform 0.8s cubic-bezier(0.7, 0, 0.84, 0); /* Vacuum curve */
         }
 
-        @keyframes rotateClockwise {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes rotateCounter {
-            0% { transform: translate(-50%, -50%) rotate(360deg); }
-            100% { transform: translate(-50%, -50%) rotate(0deg); }
-        }
-
-        /* ========== MAGNETIC PULL (1s animation) ========== */
-        .wrapper.pull-active .orbit-inner,
         .wrapper.pull-active .orbit-outer {
-            animation: none;           /* stop spinning */
+            animation: none;
+            /* Outer spins opposite, slightly slower delay to create depth */
+            transform: translate(-50%, -50%) rotate(-500deg) scale(0);
+            transition: transform 0.9s cubic-bezier(0.7, 0, 0.84, 0);
         }
 
-        .wrapper.pull-active .orb-fin,
+        /* 2. Spaghettification (Stretching the icons into the hole) */
+        .wrapper.pull-active .orb-fin {
+            /* Stretch width, shrink height to look like a light streak */
+            transform: translate(-50%, -50%) scale(3, 0.2) !important;
+            opacity: 0;
+            /* Transition happens fast */
+            transition: transform 0.6s ease-in, opacity 0.5s ease-in;
+        }
+
+        /* Outer icons stretch differently because of their rotational positioning */
         .wrapper.pull-active .orb-soc {
-            top: 50% !important;
-            left: 50% !important;
-            right: auto !important;
-            bottom: auto !important;
+            /* We override the specific rotation transforms with a generic suck-in stretch */
+            transform: rotate(0) translate(0) scale(0.1) !important; 
             margin: 0 !important;
-            transform: translate(-50%, -50%) scale(0) rotate(0deg) !important;
-            opacity: 0 !important;
-            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+            top: 50%; 
+            left: 50%;
+            opacity: 0;
+            transition: all 0.7s cubic-bezier(0.6, -0.28, 0.735, 0.045);
         }
 
-        /* central icon pulses for 1s */
+        /* 3. The Core Reaction (Shockwave) */
         .wrapper.pull-active .main-icon {
-            animation: magneticPulse 1s ease-out;
+            animation: coreShockwave 0.8s ease-out forwards;
+            background: #ffffff;
+            border-color: #116aa3;
+        }
+        
+        .wrapper.pull-active .main-icon i {
+            color: #116aa3;
+            transform: scale(0.8); /* Icon braces for impact */
         }
 
-        @keyframes magneticPulse {
-            0% { transform: scale(1); box-shadow: 0 20px 40px rgba(11,59,71,0.1); }
-            30% { transform: scale(1.15); box-shadow: 0 0 30px rgba(17,106,163,0.5); }
-            70% { transform: scale(1.08); }
-            100% { transform: scale(1); box-shadow: 0 20px 40px rgba(11,59,71,0.1); }
+        @keyframes coreShockwave {
+            0% { transform: scale(1); box-shadow: 0 0 0 rgba(11,59,71,0); }
+            40% { transform: scale(0.9); box-shadow: 0 0 50px rgba(17,106,163, 0.8); } /* Absorbing energy */
+            50% { transform: scale(1.3); border-width: 0px; } /* Explosion */
+            100% { transform: scale(50); opacity: 0; } /* Fill screen transition */
         }
 
-        /* ----- DASHBOARD IFRAME – pre‑loaded ----- */
+        /* ----- APP ----- */
         .app {
             position: fixed;
             inset: 0;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.96) translateY(8px);
             background: #ffffff;
             z-index: 2000;
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
-            box-shadow: 0 0 40px rgba(0,0,0,0.06);
+            transition: opacity 0.5s ease;
         }
 
         .app.active {
             opacity: 1;
-            transform: scale(1) translateY(0);
             visibility: visible;
-            transition-delay: 0s, 0s, 0s;
         }
 
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
-
-        /* ----- RESPONSIVE ----- */
-        @media (max-width: 500px) {
-            .main-icon { width: 90px; height: 90px; }
-            .main-icon i { font-size: 3rem; }
-            .orbit-inner { width: 190px; height: 190px; }
-            .orb-fin { width: 42px; height: 42px; margin: -21px; font-size: 1.2rem; }
-            .orbit-outer { width: 300px; height: 300px; }
-            .orb-soc { width: 38px; height: 38px; margin: -19px; font-size: 1.1rem; }
-            .orb-soc:nth-child(1) { transform: rotate(0deg) translate(150px) rotate(0deg); }
-            .orb-soc:nth-child(2) { transform: rotate(72deg) translate(150px) rotate(-72deg); }
-            .orb-soc:nth-child(3) { transform: rotate(144deg) translate(150px) rotate(-144deg); }
-            .orb-soc:nth-child(4) { transform: rotate(216deg) translate(150px) rotate(-216deg); }
-            .orb-soc:nth-child(5) { transform: rotate(288deg) translate(150px) rotate(-288deg); }
-        }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <!-- ===== ORBIT VISUAL ===== -->
     <div class="wrapper" id="ui">
-        <div class="particle p1"></div>
-        <div class="particle p2"></div>
-        <div class="particle p3"></div>
-        <div class="particle p4"></div>
+        <div class="particle p1"></div><div class="particle p2"></div>
+        <div class="particle p3"></div><div class="particle p4"></div>
 
         <div class="main-icon">
             <i class="fas fa-user-tie"></i>
@@ -316,47 +264,34 @@
         </div>
     </div>
 
-    <!-- ===== DASHBOARD IFRAME – pre‑loaded ===== -->
     <div class="app" id="app">
-        <iframe src="https://script.google.com/macros/s/AKfycbzRiS24RUWXcqnN2k9Pz6j2v-RGLVlxls_bUnD68TEH0PpZKCSQ0EbIdk4P9EIZOlR9/exec"
-                title="Shwari Finance Dashboard">
-        </iframe>
+        <iframe src="https://script.google.com/macros/s/AKfycbxI9eMQ2befpwPoreW0ppC7-auiombw2G3r4JBw0h9jzwE36N7CwfnOxbDmERQd-aEd/exec"></iframe>
     </div>
 
     <script>
         (function() {
             "use strict";
-
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // --- 1. POP IN THE ORBIT ---
-            requestAnimationFrame(() => {
-                uiWrapper.classList.add('pop-in');
-            });
+            // 1. Entrance
+            requestAnimationFrame(() => { uiWrapper.classList.add('pop-in'); });
 
-            // --- 2. AFTER 4 SECONDS: MAGNETIC PULL (1s duration) ---
+            // 2. Trigger Suction after 3.5s
             setTimeout(() => {
-                // stop orbits, start magnetic suction
                 uiWrapper.classList.add('pull-active');
 
-                // after 1s (pull completes), fade out orbit & reveal dashboard
+                // 3. Reveal Dashboard (synchronized with the shockwave expansion)
                 setTimeout(() => {
-                    uiWrapper.classList.add('fade-out');
+                    // No need for fade-out class anymore, the shockwave covers the screen
                     appPanel.classList.add('active');
-                }, 1000); // exactly 1 second – matches CSS transition
+                    
+                    // Cleanup (optional, just to stop rendering)
+                    setTimeout(() => { uiWrapper.style.display = 'none'; }, 500);
+                }, 800); // 800ms matches the Shockwave animation timing
 
-            }, 4000); // 4 seconds of beautiful orbit spinning
-
+            }, 3500);
         })();
     </script>
-
-    <!-- 
-        ✦ SHWARI FINANCE – 1‑SECOND MAGNETIC PULL ✦
-        • At 4s, all orbiting icons are sucked into the centre over 1 second.
-        • Orbits freeze instantly, icons slide & shrink with custom easing.
-        • Core pulses strongly throughout the 1s pull.
-        • Dashboard glides in immediately after – pre‑loaded, zero lag.
-    -->
 </body>
 </html>
