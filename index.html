@@ -15,7 +15,7 @@
         html, body {
             height: 100%;
             width: 100%;
-            background: #fcfdfe;
+            background: radial-gradient(circle at center, #ffffff 0%, #eef5f9 100%);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
@@ -23,6 +23,7 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
+            perspective: 1000px; /* Added for 3D depth */
         }
 
         /* ----- ORBIT WRAPPER ----- */
@@ -34,14 +35,14 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.8);
+            transform: scale(0.8) rotateX(0deg) rotateY(0deg);
             transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
+            transform-style: preserve-3d;
         }
 
         .wrapper.pop-in {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) rotateX(0deg) rotateY(0deg);
         }
 
         /* ----- MAIN ICON (CORE) ----- */
@@ -54,10 +55,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 0 15px rgba(17, 106, 163, 0.2);
             border: 3px solid white;
             z-index: 60;
-            transition: transform 0.3s ease;
+            animation: breathe 3s ease-in-out infinite; /* Organic breathing */
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 0 15px rgba(17, 106, 163, 0.2); }
+            50% { transform: scale(1.05); box-shadow: 0 25px 50px rgba(11, 59, 71, 0.15), 0 0 30px rgba(17, 106, 163, 0.4); }
         }
 
         .main-icon i {
@@ -67,17 +73,32 @@
             transition: color 0.3s;
         }
 
+        /* ----- SHOCKWAVE RIPPLE ----- */
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #116aa3;
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
         /* ----- FLOATING PARTICLES ----- */
         .particle {
             position: absolute;
             border-radius: 50%;
-            opacity: 0; /* Hidden initially */
+            opacity: 0;
             animation: float 5s infinite ease-in-out;
             z-index: 20;
-            transition: opacity 0.5s;
+            transition: all 0.5s;
         }
         
-        .wrapper.pop-in .particle { opacity: 0.18; }
+        .wrapper.pop-in .particle { opacity: 0.3; }
 
         .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
         .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #116aa3; animation-duration: 6s; }
@@ -85,8 +106,8 @@
         .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #5c4db0; animation-duration: 7s; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.2); }
         }
 
         /* ----- ORBIT RINGS ----- */
@@ -97,20 +118,20 @@
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 40;
-            /* removed transition on transform to prevent fighting with animation */
+            transform-style: preserve-3d;
         }
 
         .orbit-inner {
             width: 220px;
             height: 220px;
-            animation: rotateClockwise 12s linear infinite;
+            animation: rotateClockwise 14s linear infinite; /* Slightly slower for elegance */
         }
 
         .orbit-outer {
             width: 380px;
             height: 380px;
             z-index: 30;
-            animation: rotateCounter 18s linear infinite;
+            animation: rotateCounter 20s linear infinite;
         }
 
         /* ----- ORBIT ITEMS ----- */
@@ -121,12 +142,8 @@
             justify-content: center;
             align-items: center;
             background: white;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-            /* Ensure smooth transition for the assimilation phase */
-            transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1), 
-                        top 0.6s cubic-bezier(0.2, 0, 0.2, 1),
-                        left 0.6s cubic-bezier(0.2, 0, 0.2, 1),
-                        opacity 0.4s ease; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            will-change: transform, top, left; /* Performance optimization */
         }
 
         /* Inner Items (Finance) */
@@ -134,17 +151,23 @@
             width: 48px;
             height: 48px;
             font-size: 1.3rem;
-            border: 1.5px solid rgba(255,255,255,0.7);
+            border: 1.5px solid rgba(255,255,255,0.9);
             z-index: 45;
+            
+            top: var(--y, 50%);
+            left: var(--x, 50%);
+            --s: 1; 
+            transform: translate(-50%, -50%) scale(var(--s));
+            transition: top 0.4s cubic-bezier(0.7, 0, 0.84, 0), 
+                        left 0.4s cubic-bezier(0.7, 0, 0.84, 0), 
+                        transform 0.4s cubic-bezier(0.7, 0, 0.84, 0), 
+                        background 0.2s, opacity 0.3s, filter 0.3s;
         }
-        /* Positioning logic: 
-           We use Top/Left/Transform combos. 
-           Note: To center them smoothly later, we will override these.
-        */
-        .orb-fin:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); color: #b78a1a; background: #fefcf0; }
-        .orb-fin:nth-child(2) { top: 50%; right: 0; transform: translate(50%, -50%); color: #0e6291; background: #f0f7ff; }
-        .orb-fin:nth-child(3) { bottom: 0; left: 50%; transform: translate(-50%, 50%); color: #4a3b8a; background: #f3f1fd; }
-        .orb-fin:nth-child(4) { top: 50%; left: 0; transform: translate(-50%, -50%); color: #1f6e3f; background: #f1f9ec; }
+
+        .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
+        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #0e6291; background: #f0f7ff; }
+        .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
+        .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
 
         /* Outer Items (Social) */
         .orb-soc {
@@ -153,98 +176,105 @@
             font-size: 1.3rem;
             color: #2c3e4e;
             z-index: 35;
-            /* Standard placement */
             top: 50%; left: 50%;
-            margin-top: -22px; /* Half height */
-            margin-left: -22px; /* Half width */
+            margin-top: -22px; margin-left: -22px;
+            
+            --rot: 0deg;
+            --offset: 190px;
+            --s: 1;
+            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s));
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.84, 0), background 0.2s, opacity 0.4s, filter 0.3s;
         }
         
-        /* Using pure transforms for circular placement. 
-           The second rotate cancels the rotation of the placement, keeping icons upright relative to the ring (mostly).
-        */
-        .orb-soc:nth-child(1) { transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
-        .orb-soc:nth-child(2) { transform: rotate(72deg) translate(190px) rotate(-72deg); color: #000000; }
-        .orb-soc:nth-child(3) { transform: rotate(144deg) translate(190px) rotate(-144deg); color: #25D366; }
-        .orb-soc:nth-child(4) { transform: rotate(216deg) translate(190px) rotate(-216deg); color: #000000; }
-        .orb-soc:nth-child(5) { transform: rotate(288deg) translate(190px) rotate(-288deg); color: #E1306C; }
+        .orb-soc:nth-child(1) { --rot: 0deg; color: #1877F2; }
+        .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; }
+        .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
+        .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
+        .orb-soc:nth-child(5) { --rot: 288deg; color: #E1306C; }
 
-        /* Icon pop-in animation on load */
         .orb-fin i, .orb-soc i {
-            animation: iconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: opacity 0.1s ease;
         }
 
         @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg); } }
         @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg); } }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-
         /* ==========================================================================
            === DIGITAL ASSIMILATION (STAGGERED ZIP) EFFECT ===
            ========================================================================== */
 
-        /* CRITICAL FIX: 
-           Do NOT set 'animation: none' on the rings. 
-           If you do, they snap to 0deg instantly. 
-           Let them spin while the items detach.
-        */
+        /* Override parallax JS smoothly when pulling */
+        .wrapper.pull-active {
+            transform: scale(1) rotateX(0deg) rotateY(0deg) !important;
+            transition: transform 0.5s ease-in-out;
+        }
 
-        /* 2. Turn icons into glowing data packets and zip to center */
-        /* We use !important to override the specific nth-child transform rules */
-        .wrapper.pull-active .orb-fin, 
-        .wrapper.pull-active .orb-soc {
-            /* Move to center. 
-               Since the parent ring is rotating, these will spiral in visually.
-            */
-            top: 50% !important;
-            left: 50% !important;
-            right: auto !important;
-            bottom: auto !important;
-            margin: 0 !important; /* Reset margins used for centering */
-            
-            background: #116aa3 !important;
-            border-color: #116aa3 !important;
-            box-shadow: 0 0 15px #116aa3;
-            
-            /* Scale down to look like a data packet */
-            transform: translate(-50%, -50%) scale(0.2) !important; 
-            
-            opacity: 0; /* Fade out as they hit the center */
-            
-            /* Use a "suction" easing: start slow, snap fast */
+        /* Pull Particles */
+        .wrapper.pull-active .particle {
+            top: 50% !important; left: 50% !important;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
             transition: all 0.5s cubic-bezier(0.7, 0, 0.84, 0);
         }
-        
-        /* Hide the internal icons immediately so we just see the "packet" */
-        .wrapper.pull-active .orb-fin i, 
-        .wrapper.pull-active .orb-soc i { 
-            opacity: 0; 
-            transition: opacity 0.1s ease; 
+
+        /* Pull Inner & Outer Orbits with Motion Blur */
+        .wrapper.pull-active .orb-fin {
+            --y: 50% !important; --x: 50% !important; --s: 0.1 !important;
+            background: #fff !important;
+            border-color: #116aa3 !important;
+            box-shadow: 0 0 30px #116aa3;
+            filter: blur(3px) brightness(1.5); /* MOTION BLUR */
+            opacity: 0;
         }
 
-        /* 3. Rapid Staggered Delays (Machine Gun Effect) */
-        /* Adjusted delays for a tighter sequence */
-        .wrapper.pull-active .orb-fin:nth-child(1) { transition-delay: 0.00s; }
-        .wrapper.pull-active .orb-soc:nth-child(1) { transition-delay: 0.08s; }
-        .wrapper.pull-active .orb-fin:nth-child(2) { transition-delay: 0.16s; }
-        .wrapper.pull-active .orb-soc:nth-child(2) { transition-delay: 0.24s; }
-        .wrapper.pull-active .orb-fin:nth-child(3) { transition-delay: 0.32s; }
-        .wrapper.pull-active .orb-soc:nth-child(3) { transition-delay: 0.40s; }
-        .wrapper.pull-active .orb-fin:nth-child(4) { transition-delay: 0.48s; }
-        .wrapper.pull-active .orb-soc:nth-child(4) { transition-delay: 0.56s; }
-        .wrapper.pull-active .orb-soc:nth-child(5) { transition-delay: 0.64s; }
+        .wrapper.pull-active .orb-soc {
+            --offset: 0px !important; --s: 0.1 !important;
+            background: #fff !important;
+            border-color: #116aa3 !important;
+            box-shadow: 0 0 30px #116aa3;
+            filter: blur(4px) brightness(1.5); /* MOTION BLUR */
+            opacity: 0;
+        }
+        
+        .wrapper.pull-active .orb-fin i, 
+        .wrapper.pull-active .orb-soc i { opacity: 0; }
 
-        /* 4. Core "Processing" Pulse */
+        /* Rapid Staggered Delays */
+        .wrapper.pull-active .orb-fin:nth-child(1) { transition-delay: 0.00s; }
+        .wrapper.pull-active .orb-soc:nth-child(1) { transition-delay: 0.05s; }
+        .wrapper.pull-active .orb-fin:nth-child(2) { transition-delay: 0.10s; }
+        .wrapper.pull-active .orb-soc:nth-child(2) { transition-delay: 0.15s; }
+        .wrapper.pull-active .orb-fin:nth-child(3) { transition-delay: 0.20s; }
+        .wrapper.pull-active .orb-soc:nth-child(3) { transition-delay: 0.25s; }
+        .wrapper.pull-active .orb-fin:nth-child(4) { transition-delay: 0.30s; }
+        .wrapper.pull-active .orb-soc:nth-child(4) { transition-delay: 0.35s; }
+        .wrapper.pull-active .orb-soc:nth-child(5) { transition-delay: 0.40s; }
+
+        /* Core "Processing" Pulse */
         .wrapper.pull-active .main-icon {
-            animation: dataProcess 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: dataProcess 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.4s; 
+        }
+
+        /* Shockwave Activation */
+        .wrapper.pull-active .shockwave {
+            animation: rippleOut 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.5s; /* Triggers exactly as center expands */
         }
 
         @keyframes dataProcess {
-            0% { transform: scale(1); border-color: white; }
-            30% { transform: scale(0.9); box-shadow: 0 0 10px #116aa3; border-color: #116aa3; } /* Anticipation */
-            60% { transform: scale(1.1); box-shadow: 0 0 40px #116aa3; background: #fff; } /* Energy buildup */
-            100% { transform: scale(40); opacity: 0; } /* Explosion to white */
+            0% { transform: scale(1); border-color: white; filter: brightness(1); }
+            30% { transform: scale(0.8); box-shadow: 0 0 20px #116aa3; border-color: #116aa3; filter: brightness(1.2); } 
+            60% { transform: scale(1.2); box-shadow: 0 0 80px #116aa3; background: #fff; filter: brightness(2); } 
+            100% { transform: scale(60); opacity: 0; } 
         }
 
+        @keyframes rippleOut {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; }
+            100% { transform: translate(-50%, -50%) scale(20); opacity: 0; border-width: 0px; }
+        }
 
         /* ----- DASHBOARD IFRAME ----- */
         .app {
@@ -254,7 +284,7 @@
             visibility: hidden;
             background: #ffffff;
             z-index: 2000;
-            transition: opacity 0.8s ease-in; /* Slower fade in for smoothness */
+            transition: opacity 0.5s ease-in; 
         }
 
         .app.active {
@@ -276,18 +306,15 @@
             .orbit-inner { width: 190px; height: 190px; }
             .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; }
             .orbit-outer { width: 300px; height: 300px; }
-            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; }
-            .orb-soc:nth-child(1) { transform: rotate(0deg) translate(150px) rotate(0deg); }
-            .orb-soc:nth-child(2) { transform: rotate(72deg) translate(150px) rotate(-72deg); }
-            .orb-soc:nth-child(3) { transform: rotate(144deg) translate(150px) rotate(-144deg); }
-            .orb-soc:nth-child(4) { transform: rotate(216deg) translate(150px) rotate(-216deg); }
-            .orb-soc:nth-child(5) { transform: rotate(288deg) translate(150px) rotate(-288deg); }
+            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
         }
     </style>
 </head>
 <body>
 
     <div class="wrapper" id="ui">
+        <div class="shockwave"></div>
+        
         <div class="particle p1"></div>
         <div class="particle p2"></div>
         <div class="particle p3"></div>
@@ -324,25 +351,46 @@
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // 1. Pop in the initial orbit sequence immediately
+            // 1. Interactive Parallax Effect (Tracks Mouse/Touch)
+            const handleMove = (e) => {
+                if (!uiWrapper.classList.contains('pull-active')) {
+                    // Normalize mouse coordinates based on screen center
+                    const x = e.clientX || (e.touches && e.touches[0].clientX);
+                    const y = e.clientY || (e.touches && e.touches[0].clientY);
+                    
+                    const xAxis = (window.innerWidth / 2 - x) / 25; // Division controls tilt intensity
+                    const yAxis = (window.innerHeight / 2 - y) / 25;
+                    
+                    uiWrapper.style.transform = `scale(1) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                }
+            };
+
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('touchmove', handleMove);
+
+            // 2. Pop in the initial orbit sequence immediately
             requestAnimationFrame(() => {
                 uiWrapper.classList.add('pop-in');
             });
 
-            // 2. Trigger the "Digital Assimilation" effect after 3.0 seconds
+            // 3. Trigger the "Digital Assimilation" effect after 4.0 seconds (allows time to see parallax)
             setTimeout(() => {
                 uiWrapper.classList.add('pull-active');
+                
+                // Remove event listeners to stop calculating parallax once animation starts
+                document.removeEventListener('mousemove', handleMove);
+                document.removeEventListener('touchmove', handleMove);
 
-                // 3. Reveal Dashboard (Timed with the explosion)
+                // 4. Reveal Dashboard timed precisely with the shockwave and explosion
                 setTimeout(() => {
                     appPanel.classList.add('active');
                     
-                    // Cleanup UI to save resources after fade out
-                    setTimeout(() => { uiWrapper.style.display = 'none'; }, 1000);
+                    // Cleanup UI to save resources
+                    setTimeout(() => { uiWrapper.style.display = 'none'; }, 800);
                     
-                }, 1100); // 1.1s allows the packets to hit center and pulse to fire
+                }, 1000); 
 
-            }, 3000); 
+            }, 4000); 
 
         })();
     </script>
