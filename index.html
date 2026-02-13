@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Shwari Finance · refined animations</title>
+    <title>Shwari Finance · magnetic pull (1s)</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        /* ----- RESET & GLOBAL ----- */
         * {
             margin: 0;
             padding: 0;
@@ -27,7 +26,7 @@
             position: relative;
         }
 
-        /* ----- MAIN WRAPPER: ORBIT & CORE ----- */
+        /* ----- ORBIT WRAPPER (centered) ----- */
         .wrapper {
             position: relative;
             width: min(500px, 92vw);
@@ -36,19 +35,17 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.45) translateY(50px) rotate(-5deg);  /* added subtle rotation */
+            transform: scale(0.45) translateY(50px) rotate(-5deg);
             transition: opacity 0.7s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.4s;
             will-change: transform, opacity;
             pointer-events: none;
         }
 
-        /* pop-in – now with a clean rotation to upright */
         .wrapper.pop-in {
             opacity: 1;
             transform: scale(1) translateY(0) rotate(0deg);
         }
 
-        /* fade out when dashboard launches – smoother exit */
         .wrapper.fade-out {
             opacity: 0 !important;
             transform: scale(0.8) translateY(20px) rotate(2deg);
@@ -56,7 +53,7 @@
             transition: opacity 0.6s ease, transform 0.7s ease, visibility 0s 0.6s;
         }
 
-        /* ----- MAIN ICON with gentle pulse ----- */
+        /* ----- MAIN ICON – magnetic core with pulse ----- */
         .main-icon {
             position: relative;
             width: 110px;
@@ -69,7 +66,7 @@
             box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 4px 12px rgba(0,0,0,0.02);
             border: 3px solid white;
             z-index: 60;
-            animation: corePulse 3.5s infinite ease-in-out;  /* new subtle life */
+            animation: corePulse 3.5s infinite ease-in-out;
         }
 
         .main-icon i {
@@ -83,7 +80,7 @@
             50% { transform: scale(1.02); box-shadow: 0 24px 48px rgba(11,59,71,0.18); }
         }
 
-        /* ----- FLOATING PARTICLES (calm & continuous) ----- */
+        /* ----- FLOATING PARTICLES ----- */
         .particle {
             position: absolute;
             background: #1a6c9e;
@@ -103,7 +100,7 @@
             50% { transform: translateY(-20px) rotate(4deg); }
         }
 
-        /* ----- ORBIT INNER (finance icons) – icons now pop with stagger ----- */
+        /* ----- ORBIT INNER – finance icons (1s magnetic transition) ----- */
         .orbit-inner {
             position: absolute;
             top: 50%;
@@ -113,6 +110,7 @@
             transform: translate(-50%, -50%) rotate(0deg);
             animation: rotateClockwise 8s linear infinite;
             z-index: 40;
+            transition: none;
         }
 
         .orb-fin {
@@ -129,6 +127,8 @@
             border: 1.5px solid rgba(255,255,255,0.7);
             backdrop-filter: blur(2px);
             color: #1e3f4a;
+            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);  /* 1 second magnetic pull */
+            will-change: top, left, margin, transform, opacity;
         }
 
         .orb-fin:nth-child(1) { top: 0; left: 50%; margin: -24px 0 0 -24px; color: #b78a1a; background: #fefcf0; }
@@ -136,25 +136,18 @@
         .orb-fin:nth-child(3) { bottom: 0; left: 50%; margin: 0 0 -24px -24px; color: #4a3b8a; background: #f3f1fd; }
         .orb-fin:nth-child(4) { top: 50%; left: 0; margin: -24px 0 0 -24px; color: #1f6e3f; background: #f1f9ec; }
 
-        /* icon inside – starts tiny, pops to full size with delay */
         .orb-fin i {
             transform: scale(0);
             opacity: 0;
-            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: calc(0.12s * var(--i, 1));
+            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, rotateCounter 8s linear infinite;
+            animation-delay: calc(0.12s * var(--i, 1)), 0s;
         }
         .orb-fin:nth-child(1) i { --i: 1; }
         .orb-fin:nth-child(2) i { --i: 2; }
         .orb-fin:nth-child(3) i { --i: 3; }
         .orb-fin:nth-child(4) i { --i: 4; }
 
-        /* keep icons upright while orbiting */
-        .orb-fin i {
-            animation: rotateCounter 8s linear infinite, iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 0s, calc(0.12s * var(--i, 1)); /* counter-rotation starts immediately, pop delayed */
-        }
-
-        /* ----- ORBIT OUTER (social icons) – same staggered pop ----- */
+        /* ----- ORBIT OUTER – social icons (1s magnetic transition) ----- */
         .orbit-outer {
             position: absolute;
             top: 50%;
@@ -164,6 +157,7 @@
             transform: translate(-50%, -50%) rotate(0deg);
             animation: rotateCounter 14s linear infinite;
             z-index: 30;
+            transition: none;
         }
 
         .orb-soc {
@@ -182,6 +176,8 @@
             left: 50%;
             margin: -22px 0 0 -22px;
             color: #2c3e4e;
+            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);  /* 1 second magnetic pull */
+            will-change: transform, margin, opacity;
         }
 
         .orb-soc:nth-child(1) { transform: rotate(0deg) translate(190px) rotate(0deg); color: #1877F2; }
@@ -193,8 +189,8 @@
         .orb-soc i {
             transform: scale(0);
             opacity: 0;
-            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: calc(0.1s * var(--j, 1));
+            animation: iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, rotateClockwise 14s linear infinite;
+            animation-delay: calc(0.1s * var(--j, 1)), 0s;
         }
         .orb-soc:nth-child(1) i { --j: 1; }
         .orb-soc:nth-child(2) i { --j: 2; }
@@ -202,20 +198,12 @@
         .orb-soc:nth-child(4) i { --j: 4; }
         .orb-soc:nth-child(5) i { --j: 5; }
 
-        /* keep social icons upright */
-        .orb-soc i {
-            animation: rotateClockwise 14s linear infinite, iconPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 0s, calc(0.1s * var(--j, 1));
-        }
-
-        /* icon pop keyframe – bounce scale + fade */
         @keyframes iconPop {
             0% { transform: scale(0); opacity: 0; }
             70% { transform: scale(1.2); opacity: 0.9; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* rotation keyframes */
         @keyframes rotateClockwise {
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
@@ -226,13 +214,43 @@
             100% { transform: translate(-50%, -50%) rotate(0deg); }
         }
 
-        /* ----- DASHBOARD IFRAME – pre‑loaded, appears with slide & fade ----- */
+        /* ========== MAGNETIC PULL (1s animation) ========== */
+        .wrapper.pull-active .orbit-inner,
+        .wrapper.pull-active .orbit-outer {
+            animation: none;           /* stop spinning */
+        }
+
+        .wrapper.pull-active .orb-fin,
+        .wrapper.pull-active .orb-soc {
+            top: 50% !important;
+            left: 50% !important;
+            right: auto !important;
+            bottom: auto !important;
+            margin: 0 !important;
+            transform: translate(-50%, -50%) scale(0) rotate(0deg) !important;
+            opacity: 0 !important;
+            transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* central icon pulses for 1s */
+        .wrapper.pull-active .main-icon {
+            animation: magneticPulse 1s ease-out;
+        }
+
+        @keyframes magneticPulse {
+            0% { transform: scale(1); box-shadow: 0 20px 40px rgba(11,59,71,0.1); }
+            30% { transform: scale(1.15); box-shadow: 0 0 30px rgba(17,106,163,0.5); }
+            70% { transform: scale(1.08); }
+            100% { transform: scale(1); box-shadow: 0 20px 40px rgba(11,59,71,0.1); }
+        }
+
+        /* ----- DASHBOARD IFRAME – pre‑loaded ----- */
         .app {
             position: fixed;
             inset: 0;
             opacity: 0;
             visibility: hidden;
-            transform: scale(0.96) translateY(8px);  /* added subtle slide */
+            transform: scale(0.96) translateY(8px);
             background: #ffffff;
             z-index: 2000;
             transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
@@ -253,7 +271,7 @@
             background: white;
         }
 
-        /* ----- RESPONSIVE (small screens) ----- */
+        /* ----- RESPONSIVE ----- */
         @media (max-width: 500px) {
             .main-icon { width: 90px; height: 90px; }
             .main-icon i { font-size: 3rem; }
@@ -271,20 +289,17 @@
 </head>
 <body>
 
-    <!-- ===== ORBIT VISUAL – pops in immediately ===== -->
+    <!-- ===== ORBIT VISUAL ===== -->
     <div class="wrapper" id="ui">
-        <!-- floating particles -->
         <div class="particle p1"></div>
         <div class="particle p2"></div>
         <div class="particle p3"></div>
         <div class="particle p4"></div>
 
-        <!-- core icon – now with pulse -->
         <div class="main-icon">
             <i class="fas fa-user-tie"></i>
         </div>
 
-        <!-- INNER ORBIT – finance tools, icons pop in one by one -->
         <div class="orbit-inner">
             <div class="orb-fin"><i class="fas fa-coins"></i></div>
             <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
@@ -292,7 +307,6 @@
             <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
         </div>
 
-        <!-- OUTER ORBIT – social icons, staggered pop -->
         <div class="orbit-outer">
             <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
             <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
@@ -302,7 +316,7 @@
         </div>
     </div>
 
-    <!-- ===== DASHBOARD IFRAME – LOADS INSTANTLY, REVEALED SMOOTHLY AFTER 4S ===== -->
+    <!-- ===== DASHBOARD IFRAME – pre‑loaded ===== -->
     <div class="app" id="app">
         <iframe src="https://script.google.com/macros/s/AKfycbzRiS24RUWXcqnN2k9Pz6j2v-RGLVlxls_bUnD68TEH0PpZKCSQ0EbIdk4P9EIZOlR9/exec"
                 title="Shwari Finance Dashboard">
@@ -316,28 +330,33 @@
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // --- 1. POP IN THE ORBIT WITH FULL ANIMATION ---
+            // --- 1. POP IN THE ORBIT ---
             requestAnimationFrame(() => {
                 uiWrapper.classList.add('pop-in');
             });
 
-            // --- 2. AUTO‑LAUNCH DASHBOARD AFTER 4 SECONDS ---
+            // --- 2. AFTER 4 SECONDS: MAGNETIC PULL (1s duration) ---
             setTimeout(() => {
-                appPanel.classList.add('active');    // dashboard fades in (already pre‑rendered)
-                uiWrapper.classList.add('fade-out'); // orbit fades out with refined exit
-            }, 4000);
+                // stop orbits, start magnetic suction
+                uiWrapper.classList.add('pull-active');
+
+                // after 1s (pull completes), fade out orbit & reveal dashboard
+                setTimeout(() => {
+                    uiWrapper.classList.add('fade-out');
+                    appPanel.classList.add('active');
+                }, 1000); // exactly 1 second – matches CSS transition
+
+            }, 4000); // 4 seconds of beautiful orbit spinning
 
         })();
     </script>
 
     <!-- 
-        ✦ SHWARI FINANCE – ANIMATION UPGRADE ✦
-        - Main icon pulses gently.
-        - Wrapper pops in with a subtle rotation.
-        - Every orbit icon bursts in with a staggered, bouncy scale.
-        - Dashboard now slides up as it fades in.
-        - Pre‑loaded iframe → zero lag at 4s reveal.
-        All while keeping the 4‑second auto‑launch and clean code.
+        ✦ SHWARI FINANCE – 1‑SECOND MAGNETIC PULL ✦
+        • At 4s, all orbiting icons are sucked into the centre over 1 second.
+        • Orbits freeze instantly, icons slide & shrink with custom easing.
+        • Core pulses strongly throughout the 1s pull.
+        • Dashboard glides in immediately after – pre‑loaded, zero lag.
     -->
 </body>
 </html>
