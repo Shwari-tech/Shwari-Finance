@@ -15,7 +15,7 @@
         html, body {
             height: 100%;
             width: 100%;
-            background: radial-gradient(circle at center, #ffffff 0%, #eef5f9 100%);
+            background: radial-gradient(circle at center, #ffffff 0%, #e2e2e2 100%);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
@@ -23,7 +23,7 @@
             justify-content: center;
             overflow: hidden;
             position: relative;
-            perspective: 1000px; /* Added for 3D depth */
+            perspective: 1200px;
         }
 
         /* ----- ORBIT WRAPPER ----- */
@@ -36,13 +36,14 @@
             align-items: center;
             opacity: 0;
             transform: scale(0.8) rotateX(0deg) rotateY(0deg);
-            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: opacity 1s ease-out, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-style: preserve-3d;
+            will-change: transform, opacity;
         }
 
         .wrapper.pop-in {
             opacity: 1;
-            transform: scale(1) rotateX(0deg) rotateY(0deg);
+            transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0);
         }
 
         /* ----- MAIN ICON (CORE) ----- */
@@ -51,26 +52,26 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #f6fbfd, #ffffff);
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 0 15px rgba(17, 106, 163, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05);
             border: 3px solid white;
             z-index: 60;
-            animation: breathe 3s ease-in-out infinite; /* Organic breathing */
+            animation: breathe 4s ease-in-out infinite;
+            will-change: transform, box-shadow;
         }
 
         @keyframes breathe {
-            0%, 100% { transform: scale(1); box-shadow: 0 20px 40px rgba(11, 59, 71, 0.1), 0 0 15px rgba(17, 106, 163, 0.2); }
-            50% { transform: scale(1.05); box-shadow: 0 25px 50px rgba(11, 59, 71, 0.15), 0 0 30px rgba(17, 106, 163, 0.4); }
+            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05); }
+            50% { transform: scale(1.03) translateZ(0); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 25px rgba(0, 0, 0, 0.1); }
         }
 
         .main-icon i {
             font-size: 3.8rem;
-            color: #0b2d3b;
-            filter: drop-shadow(0 2px 6px rgba(17,106,163,0.2));
-            transition: color 0.3s;
+            color: #222222; 
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
         }
 
         /* ----- SHOCKWAVE RIPPLE ----- */
@@ -81,7 +82,7 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            border: 2px solid #116aa3;
+            border: 2px solid #333333;
             transform: translate(-50%, -50%) scale(0.5);
             opacity: 0;
             z-index: 10;
@@ -96,18 +97,19 @@
             animation: float 5s infinite ease-in-out;
             z-index: 20;
             transition: all 0.5s;
+            will-change: transform;
         }
         
-        .wrapper.pop-in .particle { opacity: 0.3; }
+        .wrapper.pop-in .particle { opacity: 0.4; }
 
         .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
-        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #116aa3; animation-duration: 6s; }
-        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #d4a017; animation-duration: 5.4s; }
-        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #5c4db0; animation-duration: 7s; }
+        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #555555; animation-duration: 6s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #b78a1a; animation-duration: 5.4s; }
+        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7s; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.2); }
+            0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
+            50% { transform: translateY(-15px) scale(1.1) translateZ(0); }
         }
 
         /* ----- ORBIT RINGS ----- */
@@ -124,14 +126,14 @@
         .orbit-inner {
             width: 220px;
             height: 220px;
-            animation: rotateClockwise 14s linear infinite; /* Slightly slower for elegance */
+            animation: rotateClockwise 16s linear infinite;
         }
 
         .orbit-outer {
             width: 380px;
             height: 380px;
             z-index: 30;
-            animation: rotateCounter 20s linear infinite;
+            animation: rotateCounter 22s linear infinite;
         }
 
         /* ----- ORBIT ITEMS ----- */
@@ -143,7 +145,7 @@
             align-items: center;
             background: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            will-change: transform, top, left; /* Performance optimization */
+            will-change: transform, top, left, opacity;
         }
 
         /* Inner Items (Finance) */
@@ -153,19 +155,18 @@
             font-size: 1.3rem;
             border: 1.5px solid rgba(255,255,255,0.9);
             z-index: 45;
-            
             top: var(--y, 50%);
             left: var(--x, 50%);
             --s: 1; 
-            transform: translate(-50%, -50%) scale(var(--s));
-            transition: top 0.4s cubic-bezier(0.7, 0, 0.84, 0), 
-                        left 0.4s cubic-bezier(0.7, 0, 0.84, 0), 
-                        transform 0.4s cubic-bezier(0.7, 0, 0.84, 0), 
-                        background 0.2s, opacity 0.3s, filter 0.3s;
+            transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
+            transition: top 0.5s cubic-bezier(0.8, -0.2, 0.2, 1), 
+                        left 0.5s cubic-bezier(0.8, -0.2, 0.2, 1), 
+                        transform 0.5s cubic-bezier(0.8, -0.2, 0.2, 1), 
+                        background 0.3s, opacity 0.3s, filter 0.3s;
         }
 
         .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
-        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #0e6291; background: #f0f7ff; }
+        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #444444; background: #f5f5f5; }
         .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
         .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
 
@@ -178,37 +179,35 @@
             z-index: 35;
             top: 50%; left: 50%;
             margin-top: -22px; margin-left: -22px;
-            
             --rot: 0deg;
             --offset: 190px;
             --s: 1;
-            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s));
-            transition: transform 0.5s cubic-bezier(0.7, 0, 0.84, 0), background 0.2s, opacity 0.4s, filter 0.3s;
+            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0);
+            transition: transform 0.6s cubic-bezier(0.8, -0.2, 0.2, 1), background 0.3s, opacity 0.4s, filter 0.3s;
         }
         
-        .orb-soc:nth-child(1) { --rot: 0deg; color: #1877F2; }
+        .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; }
         .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; }
         .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
         .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
-        .orb-soc:nth-child(5) { --rot: 288deg; color: #E1306C; }
+        .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
 
         .orb-fin i, .orb-soc i {
             animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             transition: opacity 0.1s ease;
         }
 
-        @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg); } }
-        @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg); } }
+        @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg) translateZ(0); } }
+        @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* ==========================================================================
            === DIGITAL ASSIMILATION (STAGGERED ZIP) EFFECT ===
            ========================================================================== */
 
-        /* Override parallax JS smoothly when pulling */
         .wrapper.pull-active {
             transform: scale(1) rotateX(0deg) rotateY(0deg) !important;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Pull Particles */
@@ -216,25 +215,25 @@
             top: 50% !important; left: 50% !important;
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-            transition: all 0.5s cubic-bezier(0.7, 0, 0.84, 0);
+            transition: all 0.5s cubic-bezier(0.8, 0, 0.2, 1);
         }
 
-        /* Pull Inner & Outer Orbits with Motion Blur */
+        /* Dark Motion Blur Pull for Orbits */
         .wrapper.pull-active .orb-fin {
             --y: 50% !important; --x: 50% !important; --s: 0.1 !important;
             background: #fff !important;
-            border-color: #116aa3 !important;
-            box-shadow: 0 0 30px #116aa3;
-            filter: blur(3px) brightness(1.5); /* MOTION BLUR */
+            border-color: #333333 !important;
+            box-shadow: 0 0 30px #444444;
+            filter: blur(3px); 
             opacity: 0;
         }
 
         .wrapper.pull-active .orb-soc {
             --offset: 0px !important; --s: 0.1 !important;
             background: #fff !important;
-            border-color: #116aa3 !important;
-            box-shadow: 0 0 30px #116aa3;
-            filter: blur(4px) brightness(1.5); /* MOTION BLUR */
+            border-color: #333333 !important;
+            box-shadow: 0 0 30px #444444;
+            filter: blur(4px);
             opacity: 0;
         }
         
@@ -254,26 +253,26 @@
 
         /* Core "Processing" Pulse */
         .wrapper.pull-active .main-icon {
-            animation: dataProcess 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: dataProcess 1.4s cubic-bezier(0.5, 0, 0, 1) forwards;
             animation-delay: 0.4s; 
         }
 
         /* Shockwave Activation */
         .wrapper.pull-active .shockwave {
-            animation: rippleOut 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            animation-delay: 0.5s; /* Triggers exactly as center expands */
+            animation: rippleOut 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.6s; 
         }
 
         @keyframes dataProcess {
             0% { transform: scale(1); border-color: white; filter: brightness(1); }
-            30% { transform: scale(0.8); box-shadow: 0 0 20px #116aa3; border-color: #116aa3; filter: brightness(1.2); } 
-            60% { transform: scale(1.2); box-shadow: 0 0 80px #116aa3; background: #fff; filter: brightness(2); } 
-            100% { transform: scale(60); opacity: 0; } 
+            20% { transform: scale(0.7); box-shadow: 0 0 30px #555555; border-color: #333333; filter: brightness(0.9); } 
+            50% { transform: scale(1.3); box-shadow: 0 0 100px #222222; background: #ffffff; filter: brightness(1.2); } 
+            100% { transform: scale(150); opacity: 0; display: none; } 
         }
 
         @keyframes rippleOut {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; }
-            100% { transform: translate(-50%, -50%) scale(20); opacity: 0; border-width: 0px; }
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; }
+            100% { transform: translate(-50%, -50%) scale(25); opacity: 0; border-width: 0px; border-color: #000; }
         }
 
         /* ----- DASHBOARD IFRAME ----- */
@@ -284,7 +283,7 @@
             visibility: hidden;
             background: #ffffff;
             z-index: 2000;
-            transition: opacity 0.5s ease-in; 
+            transition: opacity 0.8s ease-in; 
         }
 
         .app.active {
@@ -314,7 +313,6 @@
 
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
-        
         <div class="particle p1"></div>
         <div class="particle p2"></div>
         <div class="particle p3"></div>
@@ -351,46 +349,67 @@
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
 
-            // 1. Interactive Parallax Effect (Tracks Mouse/Touch)
+            // Animation state controllers
+            let isParallaxActive = true;
+            let targetX = 0, targetY = 0;
+            let currentX = 0, currentY = 0;
+            let animationFrameId;
+
             const handleMove = (e) => {
-                if (!uiWrapper.classList.contains('pull-active')) {
-                    // Normalize mouse coordinates based on screen center
-                    const x = e.clientX || (e.touches && e.touches[0].clientX);
-                    const y = e.clientY || (e.touches && e.touches[0].clientY);
-                    
-                    const xAxis = (window.innerWidth / 2 - x) / 25; // Division controls tilt intensity
-                    const yAxis = (window.innerHeight / 2 - y) / 25;
-                    
-                    uiWrapper.style.transform = `scale(1) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-                }
+                if (!isParallaxActive) return;
+                const x = e.clientX || (e.touches && e.touches[0].clientX);
+                const y = e.clientY || (e.touches && e.touches[0].clientY);
+                
+                targetX = (window.innerWidth / 2 - x) / 30; 
+                targetY = (window.innerHeight / 2 - y) / 30;
             };
 
-            document.addEventListener('mousemove', handleMove);
-            document.addEventListener('touchmove', handleMove);
+            const animateParallax = () => {
+                if (!isParallaxActive) return; // Hard stop prevents memory leaks
+                
+                currentX += (targetX - currentX) * 0.08;
+                currentY += (targetY - currentY) * 0.08;
+                
+                uiWrapper.style.transform = `scale(1) rotateY(${currentX}deg) rotateX(${currentY}deg) translateZ(0)`;
+                animationFrameId = requestAnimationFrame(animateParallax);
+            };
 
-            // 2. Pop in the initial orbit sequence immediately
+            // Event listeners attached passively for scroll/touch performance
+            document.addEventListener('mousemove', handleMove, { passive: true });
+            document.addEventListener('touchmove', handleMove, { passive: true });
+
+            // Initial render
             requestAnimationFrame(() => {
                 uiWrapper.classList.add('pop-in');
+                animateParallax(); 
             });
 
-            // 3. Trigger the "Digital Assimilation" effect after 4.0 seconds (allows time to see parallax)
+            // Master Timeline Controller
             setTimeout(() => {
-                uiWrapper.classList.add('pull-active');
-                
-                // Remove event listeners to stop calculating parallax once animation starts
+                // 1. Hard stop the parallax loop and clear events
+                isParallaxActive = false;
+                cancelAnimationFrame(animationFrameId);
                 document.removeEventListener('mousemove', handleMove);
                 document.removeEventListener('touchmove', handleMove);
+                
+                // 2. Trigger final CSS animation
+                uiWrapper.classList.add('pull-active');
 
-                // 4. Reveal Dashboard timed precisely with the shockwave and explosion
+                // 3. Fade in dashboard exactly as screen fills
                 setTimeout(() => {
                     appPanel.classList.add('active');
                     
-                    // Cleanup UI to save resources
-                    setTimeout(() => { uiWrapper.style.display = 'none'; }, 800);
+                    // 4. DESTROY PROTOCOL: Physically remove the animation from the DOM
+                    // This guarantees zero hanging or background CPU usage once the app is loaded
+                    setTimeout(() => { 
+                        if(uiWrapper.parentNode) {
+                            uiWrapper.parentNode.removeChild(uiWrapper);
+                        }
+                    }, 800);
                     
-                }, 1000); 
+                }, 1300); 
 
-            }, 4000); 
+            }, 4500); // 4.5 seconds before transition starts
 
         })();
     </script>
