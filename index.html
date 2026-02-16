@@ -138,7 +138,7 @@
             animation: rotateCounter 22s linear infinite;
         }
 
-        /* ----- ORBIT ITEMS ----- */
+        /* ----- ORBIT ITEMS (BASE STATE) ----- */
         .orb-fin, .orb-soc {
             position: absolute;
             border-radius: 50%;
@@ -161,10 +161,11 @@
             left: var(--x, 50%);
             --s: 1; 
             transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
-            transition: top 0.6s cubic-bezier(0.8, -0.2, 0.2, 1), 
-                        left 0.6s cubic-bezier(0.8, -0.2, 0.2, 1), 
-                        transform 0.6s cubic-bezier(0.8, -0.2, 0.2, 1), 
-                        background 0.3s, opacity 0.3s, filter 0.3s, box-shadow 0.3s, border-color 0.3s;
+            /* Ensure transition properties are set for the pull-in effect */
+            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
+                        left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
+                        transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
+                        background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
         }
 
         .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
@@ -185,7 +186,8 @@
             --offset: 190px;
             --s: 1;
             transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0);
-            transition: transform 0.7s cubic-bezier(0.8, -0.2, 0.2, 1), background 0.3s, opacity 0.4s, filter 0.3s, box-shadow 0.3s, border-color 0.3s;
+             /* Ensure transition properties are set for the pull-in effect */
+            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s;
         }
         
         .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; }
@@ -196,7 +198,7 @@
 
         .orb-fin i, .orb-soc i {
             animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            transition: opacity 0.15s ease;
+            transition: opacity 0.3s ease;
         }
 
         @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg) translateZ(0); } }
@@ -204,7 +206,7 @@
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* ==========================================================================
-           === DIGITAL ASSIMILATION (STAGGERED ZIP) EFFECT ===
+           === DIGITAL ASSIMILATION (IMPLOSION & EXPLOSION) EFFECT ===
            ========================================================================== */
 
         .wrapper.pull-active {
@@ -212,62 +214,70 @@
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Pull Particles */
+        /* PHASE 1: The Implosion (Pulling icons to center) */
+
+        /* Pull Particles quickly */
         .wrapper.pull-active .particle {
             top: 50% !important; left: 50% !important;
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
+            transition-duration: 0.4s;
         }
 
-        /* Dark Motion Blur Pull for Orbits */
+        /* Pull Inner Orbits to center */
         .wrapper.pull-active .orb-fin {
-            --y: 50% !important; --x: 50% !important; --s: 0.1 !important;
-            background: #fff !important;
+            /* Move to center coordiantes */
+            --y: 50% !important; 
+            --x: 50% !important; 
+            /* Scale down slightly on arrival */
+            --s: 0.3 !important;
+            /* Turn white and transparent to blend into core */
+            background: #ffffff !important;
             border-color: transparent !important;
-            box-shadow: 0 0 20px #444444;
-            filter: blur(3px); 
-            opacity: 0;
+            color: transparent !important; /* Hides the icon char */
+            box-shadow: none !important;
         }
 
+        /* Pull Outer Orbits to center */
         .wrapper.pull-active .orb-soc {
-            --offset: 0px !important; --s: 0.1 !important;
-            background: #fff !important;
-            border-color: transparent !important;
-            box-shadow: 0 0 20px #444444;
-            filter: blur(4px);
-            opacity: 0;
+            /* Set offset to 0 to pull to center point */
+            --offset: 0px !important; 
+            --s: 0.3 !important;
+            /* Turn white and transparent */
+            background: #ffffff !important;
+            color: transparent !important;
+            box-shadow: none !important;
         }
         
+        /* Ensure the font icons inside fade out during the pull */
         .wrapper.pull-active .orb-fin i, 
-        .wrapper.pull-active .orb-soc i { opacity: 0; }
-
-        /* Rapid Staggered Delays */
-        .wrapper.pull-active .orb-fin:nth-child(1) { transition-delay: 0.00s; }
-        .wrapper.pull-active .orb-soc:nth-child(1) { transition-delay: 0.04s; }
-        .wrapper.pull-active .orb-fin:nth-child(2) { transition-delay: 0.08s; }
-        .wrapper.pull-active .orb-soc:nth-child(2) { transition-delay: 0.12s; }
-        .wrapper.pull-active .orb-fin:nth-child(3) { transition-delay: 0.16s; }
-        .wrapper.pull-active .orb-soc:nth-child(3) { transition-delay: 0.20s; }
-        .wrapper.pull-active .orb-fin:nth-child(4) { transition-delay: 0.24s; }
-        .wrapper.pull-active .orb-soc:nth-child(4) { transition-delay: 0.28s; }
-        .wrapper.pull-active .orb-soc:nth-child(5) { transition-delay: 0.32s; }
-
-        /* Hide the central icon right before explosion so it doesn't pixelate */
-        .wrapper.pull-active .main-icon i {
-            opacity: 0;
-            transition-delay: 0.3s;
+        .wrapper.pull-active .orb-soc i { 
+            opacity: 0; 
+            transition-duration: 0.3s;
         }
 
-        /* Core "Processing" Pulse -> Fixed to prevent GPU hang */
+
+        /* PHASE 2: The Central Explosion (Delayed until icons arrive) */
+
+        /* Hide the central icon right before explosion */
+        .wrapper.pull-active .main-icon i {
+            opacity: 0;
+            /* Wait for orbiting icons to arrive (approx 0.8s) before fading center icon */
+            transition-delay: 0.85s;
+        }
+
+        /* Core "Processing" Pulse & Explosion */
         .wrapper.pull-active .main-icon {
             animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
-            animation-delay: 0.35s; 
+            /* Wait for orbiting icons to arrive completely before exploding */
+            animation-delay: 0.9s; 
         }
 
         /* Shockwave Activation */
         .wrapper.pull-active .shockwave {
             animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            animation-delay: 0.5s; 
+            /* Sync with explosion */
+            animation-delay: 1.0s; 
         }
 
         /* FIXED ANIMATION: Drops box shadow before scaling massively */
@@ -348,7 +358,7 @@
     </div>
 
     <div class="app" id="app">
-        <iframe src="https://script.google.com/macros/s/AKfycbxVAXYDX0CTwON4TnMVygiLBej0ui__p1MhhfLCht0hnE9068-6Cz_4juma1MMZFN38/exec" title="Shwari Finance Dashboard"></iframe>
+        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbxVAXYDX0CTwON4TnMVygiLBej0ui__p1MhhfLCht0hnE9068-6Cz_4juma1MMZFN38/exec" title="Shwari Finance Dashboard"></iframe>
     </div>
 
     <script>
@@ -357,6 +367,7 @@
 
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
+            const macroIframe = document.getElementById('macro-frame');
 
             // Animation state controllers
             let isParallaxActive = true;
@@ -393,36 +404,57 @@
                 animateParallax(); 
             });
 
-            // Master Timeline Controller
-            setTimeout(() => {
-                // 1. Hard stop the parallax loop and clear events
+            // Master Transition Function
+            const executeTransition = () => {
+                if (!isParallaxActive) return;
+
+                // 1. Hard stop parallax
                 isParallaxActive = false;
                 cancelAnimationFrame(animationFrameId);
                 document.removeEventListener('mousemove', handleMove);
                 document.removeEventListener('touchmove', handleMove);
                 
-                // 2. CRITICAL FIX: Clear inline JS transform so CSS transition takes over cleanly
+                // 2. Clear inline transform for CSS to take over
                 uiWrapper.style.transform = '';
                 
-                // Trigger CSS animation
+                // Trigger CSS animation (Implosion then Explosion)
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
                 });
 
-                // 3. Fade in dashboard exactly as the explosion screen fills
+                // 3. Fade in dashboard. Increased delay to account for longer animation sequence.
+                // (0.9s wait for implosion + ~0.8s into explosion animation)
                 setTimeout(() => {
                     appPanel.classList.add('active');
                     
-                    // 4. DESTROY PROTOCOL: Physically remove the animation from the DOM
+                    // 4. DESTROY PROTOCOL
                     setTimeout(() => { 
                         if(uiWrapper.parentNode) {
                             uiWrapper.parentNode.removeChild(uiWrapper);
                         }
-                    }, 800);
+                    }, 1000);
                     
-                }, 1300); // Synced precisely with the scaling expansion
+                }, 1900); 
+            };
 
-            }, 4500); // 4.5 seconds before transition starts
+            // Wait for Iframe Load, THEN wait 5 seconds
+            let transitionTriggered = false;
+
+            macroIframe.addEventListener('load', () => {
+                if (!transitionTriggered) {
+                    transitionTriggered = true;
+                    // The Macro has loaded. Hold for 5 seconds then execute.
+                    setTimeout(executeTransition, 5000); 
+                }
+            });
+
+            // Fail-safe: Force transition after 15 seconds if iframe hangs
+            setTimeout(() => {
+                if (!transitionTriggered) {
+                    transitionTriggered = true;
+                    executeTransition();
+                }
+            }, 15000);
 
         })();
     </script>
