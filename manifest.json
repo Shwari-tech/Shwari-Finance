@@ -1,20 +1,21 @@
 {
-  "name": "Shwari Finance",
-  "short_name": "Shwari Pay",
-  "start_url": "https://shwari-tech.github.io/Shwari-Finance/",
+  "name": "Shwari Finance Pay App",
+  "short_name": "Shwari",
+  "description": "Core portal for Shwari enterprise management and finance.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#002b13",
-  "theme_color": "#002b13",
+  "background_color": "#ffffff",
+  "theme_color": "#2c7a47",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "images/logo.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/2942/2942263.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "images/logo.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/2942/2942263.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
