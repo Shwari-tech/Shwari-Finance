@@ -1,28 +1,27 @@
-const CACHE_NAME = 'shwari-pay-v1';
+const CACHE_NAME = 'shwari-pay-v2-high-cache';
 
-// Add the URLs of the core files you want to cache for instant offline loading
+// Core files for instant offline shell loading
 const CACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css',
-  'https://cdn-icons-png.flaticon.com/512/1077/1077114.png' // The new Apple Touch Icon
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css'
 ];
 
-// 1. Install Event: Cache the application shell
+// 1. Install Event: Aggressively Cache App Shell
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installed');
+  console.log('[Service Worker] Installed (High Cache Version)');
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker.
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[Service Worker] Caching App Shell');
+        console.log('[Service Worker] Pre-caching Core Assets');
         return cache.addAll(CACHE_ASSETS);
       })
-      .then(() => self.skipWaiting())
   );
 });
 
-// 2. Activate Event: Clean up old caches if the version changes
+// 2. Activate Event: Clean up old low-cache versions
 self.addEventListener('activate', (event) => {
   console.log('[Service Worker] Activated');
   event.waitUntil(
@@ -30,54 +29,51 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('[Service Worker] Clearing Old Cache:', cache);
+            console.log('[Service Worker] Clearing Old Obsolete Cache:', cache);
             return caches.delete(cache);
           }
         })
       );
     })
   );
-  return self.clients.claim();
+  return self.clients.claim(); // Take control of all clients immediately
 });
 
-// 3. Fetch Event: Intercept network requests and serve from cache if offline
+// 3. Fetch Event: Stale-While-Revalidate (High Cache Strategy)
 self.addEventListener('fetch', (event) => {
-  // We only want to handle GET requests
   if (event.request.method !== 'GET') return;
 
   // CRITICAL: Do not attempt to cache the Google Apps Script iframe.
-  // Google's security tokens change constantly. Caching this will break the dashboard.
   if (event.request.url.includes('script.google.com')) {
       return; 
   }
 
+  // Stale-While-Revalidate Strategy for high caching efficiency
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // If the network request is successful, clone the response and update the cache
-        const resClone = response.clone();
+    caches.match(event.request).then((cachedResponse) => {
+      // Initiate the background fetch to update the cache
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // Clone the response before putting it in cache
+        const responseClone = networkResponse.clone();
+        
+        // Asynchronously update the cache
         caches.open(CACHE_NAME).then((cache) => {
-          // Cache our own origin files and our specific external libraries (FontAwesome/Icons)
-          if (event.request.url.startsWith(self.location.origin) || 
-              event.request.url.includes('cdnjs') || 
-              event.request.url.includes('flaticon')) {
-            cache.put(event.request, resClone);
-          }
+          cache.put(event.request, responseClone);
         });
-        return response;
-      })
-      .catch(() => {
-        // If network fails (offline), serve from cache
-        console.log('[Service Worker] Network failed, serving from cache');
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // If the page isn't in the cache, default to the home page shell
-          if (event.request.headers.get('accept').includes('text/html')) {
+
+        return networkResponse;
+      }).catch(() => {
+        // If network fails, just silently fail the background fetch
+        console.log('[Service Worker] Network request failed for', event.request.url);
+      });
+
+      // Return the cached response IMMEDIATELY if we have it, otherwise wait for the network
+      return cachedResponse || fetchPromise;
+    }).catch(() => {
+        // Fallback for HTML pages if completely offline and not in cache
+        if (event.request.headers.get('accept').includes('text/html')) {
             return caches.match('/');
-          }
-        });
-      })
+        }
+    })
   );
 });
