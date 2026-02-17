@@ -278,9 +278,8 @@
             background: #222;
             color: white;
             border: none;
-            padding: 14px 28px;
-            width: fit-content;
-            margin: 0 auto;
+            padding: 18px 0;
+            width: 100%;
             border-radius: 15px;
             font-size: 1.1rem;
             font-weight: 600;
@@ -290,19 +289,11 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
-            animation: pulseInstall 2s infinite cubic-bezier(0.66, 0, 0, 1);
         }
 
         .install-btn:active {
             transform: scale(0.96);
             background: #000;
-            animation: none;
-        }
-        
-        @keyframes pulseInstall {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 34, 34, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(34, 34, 34, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 34, 34, 0); }
         }
     </style>
 </head>
@@ -344,8 +335,9 @@
             <i class="fas fa-mobile-screen-button"></i>
             <h2>Install Shwari Finance App</h2>
             <p>To access your dashboard and secure financial tools, please install this application to your Phone.</p>
-            <button class="install-btn" id="installAction">
-                <i class="fas fa-download"></i> Install Now
+            <!-- MODIFIED: button text changed to "Install" and added breathe animation inline -->
+            <button class="install-btn" id="installAction" style="animation: breathe 2s infinite;">
+                <i class="fas fa-download"></i> Install
             </button>
         </div>
     </div>
