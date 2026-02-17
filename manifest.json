@@ -1,24 +1,24 @@
 {
-  "name": "Shwari Finance Pay App",
-  "short_name": "Shwari",
-  "description": "Core portal for Shwari enterprise management and finance.",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2c7a47",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "name": "Shwari Finance Pay App",
+  "short_name": "Shwari",
+  "description": "Core portal for Shwari enterprise management and finance.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c7a47",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='20' fill='%23333' /%3E%3Cpath d='M20 80 Q50 60 80 80' stroke='%23333' stroke-width='15' fill='none' stroke-linecap='round' /%3E%3Ctext x='50' y='95' font-size='24' font-family='Arial, sans-serif' fill='%232c7a47' text-anchor='middle' font-weight='bold'%3ESHW%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='20' fill='%23333' /%3E%3Cpath d='M20 80 Q50 60 80 80' stroke='%23333' stroke-width='15' fill='none' stroke-linecap='round' /%3E%3Ctext x='50' y='95' font-size='24' font-family='Arial, sans-serif' fill='%232c7a47' text-anchor='middle' font-weight='bold'%3ESHW%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
