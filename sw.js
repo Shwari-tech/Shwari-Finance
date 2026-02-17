@@ -1,12 +1,15 @@
-const CACHE_NAME = 'shwari-pay-v1';
+// Bumped version to v2 to force users' phones to update the service worker
+const CACHE_NAME = 'shwari-pay-v2';
 
-// Add the URLs of the core files you want to cache for instant offline loading
+// Added Google Fonts and the new Manifest Icons to the pre-cache list
 const CACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css',
-  'https://cdn-icons-png.flaticon.com/512/1077/1077114.png' // The new Apple Touch Icon
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
+  'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s' 
 ];
 
 // 1. Install Event: Cache the application shell
@@ -40,44 +43,45 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// 3. Fetch Event: Intercept network requests and serve from cache if offline
+// 3. Fetch Event: Stale-While-Revalidate Strategy
 self.addEventListener('fetch', (event) => {
-  // We only want to handle GET requests
   if (event.request.method !== 'GET') return;
 
-  // CRITICAL: Do not attempt to cache the Google Apps Script iframe.
-  // Google's security tokens change constantly. Caching this will break the dashboard.
-  if (event.request.url.includes('script.google.com')) {
+  // CRITICAL: Bypass cache entirely for Google Apps Script to prevent security token errors
+  if (event.request.url.includes('script.google.com') || event.request.url.includes('googleusercontent.com')) {
       return; 
   }
 
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // If the network request is successful, clone the response and update the cache
-        const resClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          // Cache our own origin files and our specific external libraries (FontAwesome/Icons)
-          if (event.request.url.startsWith(self.location.origin) || 
-              event.request.url.includes('cdnjs') || 
-              event.request.url.includes('flaticon')) {
-            cache.put(event.request, resClone);
-          }
-        });
-        return response;
-      })
-      .catch(() => {
-        // If network fails (offline), serve from cache
-        console.log('[Service Worker] Network failed, serving from cache');
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          // If the page isn't in the cache, default to the home page shell
-          if (event.request.headers.get('accept').includes('text/html')) {
-            return caches.match('/');
-          }
-        });
-      })
+    caches.match(event.request).then((cachedResponse) => {
+      
+      // Background Fetch: Always fetch the latest version from the network in the background
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        
+        // Ensure we only cache valid responses from our allowed domains
+        if (networkResponse && networkResponse.status === 200) {
+            const url = event.request.url;
+            if (url.startsWith(self.location.origin) || 
+                url.includes('cdnjs') || 
+                url.includes('flaticon') ||
+                url.includes('gstatic') ||       // Allows Google Fonts & Icons
+                url.includes('googleapis') ||    // Allows Google Fonts CSS
+                url.includes('dreamstime')) {    // Allows Manifest Screenshots
+              
+              const resClone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, resClone);
+              });
+            }
+        }
+        return networkResponse;
+      }).catch(() => {
+         console.log('[Service Worker] Network failed, relying strictly on cache.');
+      });
+
+      // INSTANT LOAD: If we have it in cache, return it immediately! 
+      // The background fetch will quietly update the cache for the next time they open the app.
+      return cachedResponse || fetchPromise;
+    })
   );
 });
