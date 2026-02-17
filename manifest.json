@@ -2,7 +2,7 @@
   "id": "/shwari-finance-portal",
   "name": "Shwari Mobile",
   "short_name": "Shwari",
-  "description": "Core portal for Shwari enterprise management and finance.",
+  "description": "Property of Shwari Movers And Cleaners Ltd .",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -49,7 +49,7 @@
   ],
   "screenshots": [
     {
-      "src": "https://dplnews.com/wp-content/uploads/2021/01/dplnews_digitalpyme_mc130121.jpg",
+      "src": "https://t3.ftcdn.net/jpg/16/74/41/12/360_F_1674411241_jmkaHFowPCztwydxiGRKRLu9xw1zgQjH.jpg",
       "sizes": "800x600",
       "type": "image/jpeg",
       "form_factor": "wide",
