@@ -278,22 +278,23 @@
             background: #222;
             color: white;
             border: none;
-            padding: 18px 0;
-            width: 100%;
-            border-radius: 15px;
+            padding: 16px 40px;
+            border-radius: 30px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
-            display: flex;
+            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+            display: inline-flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .install-btn:active {
             transform: scale(0.96);
             background: #000;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -333,8 +334,8 @@
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button"></i>
-            <h2>Install Shwari Finance</h2>
-            <p>To access your dashboard and secure financial tools, please install the application to your home screen.</p>
+            <h2>Install Shwari Finance App</h2>
+            <p>To access your dashboard and secure financial tools, please install this application to your Phone.</p>
             <button class="install-btn" id="installAction">
                 <i class="fas fa-download"></i> Install Now
             </button>
