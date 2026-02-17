@@ -2,7 +2,7 @@
   "id": "/shwari-finance-portal",
   "name": "Shwari Mobile",
   "short_name": "Shwari",
-  "description": "Core portal for Shwari Finance Payroll management.",
+  "description": "Digital Payroll management © Shwari Finance Department.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
