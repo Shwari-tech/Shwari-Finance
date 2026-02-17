@@ -2,7 +2,7 @@
   "id": "/shwari-finance-portal",
   "name": "Shwari Mobile",
   "short_name": "Shwari",
-  "description": "Property of Shwari Movers And Cleaners Ltd .",
+  "description": "Core portal for Shwari Finance Payroll management.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -56,7 +56,7 @@
       "label": "Welcome Back Screen"
     },
     {
-      "src": "https://t4.ftcdn.net/jpg/13/92/18/05/360_F_1392180555_0Zm6OaexMWQhsykxOrL8WB1NK662ov04.jpg",
+      "src": "https://static.wixstatic.com/media/5b306e_c0cfb83c2b8c46cd80f060f31ba8ae5b~mv2.webp/v1/fill/w_568,h_568,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/5b306e_c0cfb83c2b8c46cd80f060f31ba8ae5b~mv2.webp",
       "sizes": "600x800",
       "type": "image/jpeg",
       "form_factor": "narrow",
