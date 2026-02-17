@@ -68,18 +68,6 @@
             z-index: 60;
             animation: breathe 4s ease-in-out infinite;
             will-change: transform, box-shadow, border-color, background;
-            cursor: pointer; /* Added cursor pointer for fingerprint prompt */
-        }
-
-        .main-icon::after {
-            content: "TAP TO UNLOCK";
-            position: absolute;
-            bottom: -30px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: #2c7a47;
-            letter-spacing: 1px;
-            white-space: nowrap;
         }
 
         @keyframes breathe {
@@ -199,7 +187,6 @@
         .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
         .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
         .wrapper.pull-active .main-icon i { opacity: 0; transition-delay: 0.85s; }
-        .wrapper.pull-active .main-icon::after { opacity: 0; transition-duration: 0.3s; }
         .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; animation-delay: 0.9s; }
         .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.0s; }
 
@@ -228,38 +215,6 @@
         .app.active { opacity: 1; visibility: visible; }
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        /* =========================================
-           PWA SMART UI COMPONENTS
-           ========================================= */
-        
-        .pwa-install-banner {
-            position: fixed;
-            bottom: -150px;
-            left: 0;
-            width: 100%;
-            background: #ffffff;
-            padding: 24px 20px;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
-            z-index: 4000;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            transition: bottom 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .pwa-install-banner.show { bottom: 0; }
-        .pwa-header { display: flex; align-items: center; gap: 16px; }
-        .pwa-icon { width: 50px; height: 50px; background: #2c7a47; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; }
-        .pwa-text h4 { margin-bottom: 4px; color: #111; font-size: 1.1rem; }
-        .pwa-text p { color: #666; font-size: 0.85rem; line-height: 1.4; }
-        .pwa-actions { display: flex; gap: 12px; }
-        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; }
-        .btn-install { background: #2c7a47; color: white; }
-        .btn-install:active { background: #1f5c34; }
-        .btn-dismiss { background: #f0f0f0; color: #444; }
-        .btn-dismiss:active { background: #e0e0e0; }
-
         @media (max-width: 500px) {
             .main-icon { width: 90px; height: 90px; }
             .main-icon i { font-size: 3rem; }
@@ -279,8 +234,8 @@
         <div class="particle p3"></div>
         <div class="particle p4"></div>
 
-        <div class="main-icon" id="unlock-btn">
-            <i class="fas fa-fingerprint"></i>
+        <div class="main-icon">
+            <i class="fas fa-user"></i>
         </div>
 
         <div class="orbit-inner">
@@ -301,20 +256,6 @@
 
     <div class="app" id="app">
         <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbxVAXYDX0CTwON4TnMVygiLBej0ui__p1MhhfLCht0hnE9068-6Cz_4juma1MMZFN38/exec" title="Shwari Finance Dashboard"></iframe>
-    </div>
-
-    <div class="pwa-install-banner" id="pwa-install-banner">
-        <div class="pwa-header">
-            <div class="pwa-icon"><i class="fas fa-user"></i></div>
-            <div class="pwa-text">
-                <h4>Install Shwari-Pay App</h4>
-                <p>Add to your home screen for offline access, faster loading, and native experience.</p>
-            </div>
-        </div>
-        <div class="pwa-actions">
-            <button class="btn btn-dismiss" id="btn-dismiss">Not Now</button>
-            <button class="btn btn-install" id="btn-install">Install App</button>
-        </div>
     </div>
 
     <script>
@@ -344,8 +285,10 @@
                     timestamp: Date.now()
                 };
                 
+                // Store in LocalStorage
                 localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
 
+                // Store in Cache API
                 if ('caches' in window) {
                     caches.open('shwari-user-cache').then(cache => {
                         cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
@@ -353,6 +296,9 @@
                 }
             };
 
+            /* ========================================================
+               3. SMART AUTOMATION: SESSION DETECT (NO TOAST)
+               ======================================================== */
             const recoverSession = async () => {
                 let session = null;
 
@@ -369,99 +315,21 @@
 
                 if (session && session.name) {
                     cacheUserSession(session.name);
+                    if (!transitionTriggered) {
+                        transitionTriggered = true;
+                        setTimeout(executeTransition, 1500);
+                    }
                 } else {
                     cacheUserSession('Employee');
                 }
             };
 
             /* ========================================================
-               3. FINGERPRINT / BIOMETRIC AUTHENTICATION (WEBAUTHN)
-               ======================================================== */
-            const authenticateUser = async () => {
-                try {
-                    // Triggers the Native Device Fingerprint / FaceID / PIN screen
-                    if (window.PublicKeyCredential) {
-                        const challenge = new Uint8Array(32);
-                        window.crypto.getRandomValues(challenge);
-                        
-                        const publicKey = {
-                            challenge: challenge,
-                            rp: { name: "Shwari Finance Secure" },
-                            user: {
-                                id: new Uint8Array(16),
-                                name: "auth@shwari",
-                                displayName: "Shwari Authorization"
-                            },
-                            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
-                            authenticatorSelection: {
-                                authenticatorAttachment: "platform", // Forces native device biometrics
-                                userVerification: "required"
-                            },
-                            timeout: 60000,
-                            attestation: "none"
-                        };
-                        
-                        await navigator.credentials.create({ publicKey });
-                        return true;
-                    } else {
-                        // Fallback Password if the device has no biometric hardware
-                        const pwd = prompt("Biometrics unavailable. Enter Shwari Access PIN:");
-                        return pwd !== null && pwd.length > 0;
-                    }
-                } catch (err) {
-                    console.error("Authentication failed or cancelled", err);
-                    alert("Access Denied: Fingerprint or Passkey required.");
-                    return false;
-                }
-            };
-
-            /* ========================================================
-               4. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
-               ======================================================== */
-            let deferredPrompt;
-            const installBanner = document.getElementById('pwa-install-banner');
-            const installBtn = document.getElementById('btn-install');
-            const dismissBtn = document.getElementById('btn-dismiss');
-
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault(); 
-                deferredPrompt = e; 
-            });
-
-            const triggerInstallBanner = () => {
-                const lastDismissed = localStorage.getItem('pwa_dismissed');
-                const today = new Date().toDateString();
-                
-                if (lastDismissed !== today && !window.matchMedia('(display-mode: standalone)').matches) {
-                    setTimeout(() => {
-                        installBanner.classList.add('show');
-                    }, 6000);
-                }
-            };
-
-            installBtn.addEventListener('click', async () => {
-                installBanner.classList.remove('show');
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`User ${outcome === 'accepted' ? 'installed' : 'dismissed'} the PWA`);
-                    deferredPrompt = null;
-                } else {
-                    alert("To install: Tap the share button in your browser and select 'Add to Home Screen'.");
-                }
-            });
-
-            dismissBtn.addEventListener('click', () => {
-                installBanner.classList.remove('show');
-                localStorage.setItem('pwa_dismissed', new Date().toDateString());
-            });
-
-            /* ========================================================
-               5. UI ANIMATION CORE (DIGITAL ASSIMILATION)
+               4. UI ANIMATION CORE (DIGITAL ASSIMILATION)
                ======================================================== */
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
-            const unlockBtn = document.getElementById('unlock-btn');
+            const macroIframe = document.getElementById('macro-frame');
 
             let isParallaxActive = true;
             let targetX = 0, targetY = 0, currentX = 0, currentY = 0, animationFrameId;
@@ -507,24 +375,25 @@
 
                 setTimeout(() => {
                     appPanel.classList.add('active');
-                    triggerInstallBanner(); 
                     setTimeout(() => { 
                         if(uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
                     }, 1000);
                 }, 1900); 
             };
 
-            // Triggered solely by user interaction to pass Browser Biometric security requirements
-            unlockBtn.addEventListener('click', async () => {
-                if (transitionTriggered) return;
-                
-                const isAuthenticated = await authenticateUser();
-                
-                if (isAuthenticated) {
+            macroIframe.addEventListener('load', () => {
+                if (!transitionTriggered) {
+                    transitionTriggered = true;
+                    setTimeout(executeTransition, 5000); 
+                }
+            });
+
+            setTimeout(() => {
+                if (!transitionTriggered) {
                     transitionTriggered = true;
                     executeTransition();
                 }
-            });
+            }, 15000);
 
         })();
     </script>
