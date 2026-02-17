@@ -274,28 +274,37 @@
             line-height: 1.5;
         }
 
+        /* --- redesigned install button: small, transparent, with animation --- */
         .install-btn {
             background: transparent;
             color: #222;
-            border: none;
-            padding: 5px 10px;
-            width: fit-content;
-            margin: 0 auto;
-            border-radius: 5px;
-            font-size: 0.8rem;
+            border: 2px solid #222;
+            padding: 8px 22px;          /* smaller size */
+            width: auto;                 /* not full width */
+            margin: 0 auto;              /* centered */
+            border-radius: 40px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            transition: transform 0.2s, background 0.2s, border-color 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .install-btn:hover {
+            background: rgba(34,34,34,0.04);
         }
 
         .install-btn:active {
-            transform: scale(0.96);
-            background: transparent;
+            transform: scale(0.94);
+            background: rgba(34,34,34,0.1);
+            border-color: #000;
         }
+
+        /* keep the inline animation="breathe 2s infinite" on the button */
     </style>
 </head>
 <body>
@@ -336,6 +345,7 @@
             <i class="fas fa-mobile-screen-button"></i>
             <h2>Install Shwari Finance App</h2>
             <p>To access your dashboard and secure financial tools, please install this application to your Phone.</p>
+            <!-- MODIFIED: text shortened to "Install", button made transparent & small with inline animation -->
             <button class="install-btn" id="installAction" style="animation: breathe 2s infinite;">
                 <i class="fas fa-download"></i> Install
             </button>
