@@ -1,28 +1,20 @@
 {
+  "id": "/shwari-finance-portal",
   "name": "Shwari Mobile",
   "short_name": "Shwari",
   "description": "Core portal for Shwari enterprise management and finance.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#2c7a47",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+  "categories": ["finance", "business", "productivity"],
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
-      "sizes": "48x48",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
-      "sizes": "128x128",
+      "sizes": "48x48 96x96 128x128",
       "type": "image/png",
       "purpose": "any"
     },
@@ -39,6 +31,22 @@
       "purpose": "any maskable"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "View Ledger",
+      "short_name": "Ledger",
+      "description": "Quickly check your payment ledger",
+      "url": "/?tab=work",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "HR Dashboard",
+      "short_name": "HR",
+      "description": "View KPI and HR Profile",
+      "url": "/?tab=hr",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96" }]
+    }
+  ],
   "screenshots": [
     {
       "src": "https://thumbs.dreamstime.com/b/welcome-back-white-background-welcoming-to-someone-255206901.jpg",
@@ -46,6 +54,13 @@
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Welcome Back Screen"
+    },
+    {
+      "src": "https://thumbs.dreamstime.com/b/welcome-back-white-background-welcoming-to-someone-255206901.jpg",
+      "sizes": "600x800",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile Dashboard"
     }
   ]
 }
