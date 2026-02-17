@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     <title>Shwari Finance · Digital Assimilation</title>
+    
+    <link rel="manifest" href="manifest.json">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         * {
@@ -75,7 +82,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* ----- SHOCKWAVE RIPPLE ----- */
+        /* ----- SHOCKWAVE & PARTICLES ----- */
         .shockwave {
             position: absolute;
             top: 50%;
@@ -91,7 +98,6 @@
             will-change: transform, opacity, border-width;
         }
 
-        /* ----- FLOATING PARTICLES ----- */
         .particle {
             position: absolute;
             border-radius: 50%;
@@ -125,20 +131,10 @@
             transform-style: preserve-3d;
         }
 
-        .orbit-inner {
-            width: 220px;
-            height: 220px;
-            animation: rotateClockwise 16s linear infinite;
-        }
+        .orbit-inner { width: 220px; height: 220px; animation: rotateClockwise 16s linear infinite; }
+        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotateCounter 22s linear infinite; }
 
-        .orbit-outer {
-            width: 380px;
-            height: 380px;
-            z-index: 30;
-            animation: rotateCounter 22s linear infinite;
-        }
-
-        /* ----- ORBIT ITEMS (BASE STATE) ----- */
+        /* ----- ORBIT ITEMS ----- */
         .orb-fin, .orb-soc {
             position: absolute;
             border-radius: 50%;
@@ -150,22 +146,11 @@
             will-change: transform, top, left, opacity;
         }
 
-        /* Inner Items (Finance) */
         .orb-fin {
-            width: 48px;
-            height: 48px;
-            font-size: 1.3rem;
-            border: 1.5px solid rgba(255,255,255,0.9);
-            z-index: 45;
-            top: var(--y, 50%);
-            left: var(--x, 50%);
-            --s: 1; 
+            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9);
+            z-index: 45; top: var(--y, 50%); left: var(--x, 50%); --s: 1; 
             transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
-            /* Ensure transition properties are set for the pull-in effect */
-            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
-                        left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
-                        transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
-                        background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
+            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
         }
 
         .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
@@ -173,20 +158,10 @@
         .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
         .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
 
-        /* Outer Items (Social) */
         .orb-soc {
-            width: 44px;
-            height: 44px;
-            font-size: 1.3rem;
-            color: #2c3e4e;
-            z-index: 35;
-            top: 50%; left: 50%;
-            margin-top: -22px; margin-left: -22px;
-            --rot: 0deg;
-            --offset: 190px;
-            --s: 1;
+            width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35;
+            top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; --rot: 0deg; --offset: 190px; --s: 1;
             transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0);
-             /* Ensure transition properties are set for the pull-in effect */
             transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s;
         }
         
@@ -205,90 +180,23 @@
         @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* ==========================================================================
-           === DIGITAL ASSIMILATION (IMPLOSION & EXPLOSION) EFFECT ===
-           ========================================================================== */
+        /* ----- DIGITAL ASSIMILATION EFFECT ----- */
+        .wrapper.pull-active { transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0); opacity: 0; transition-duration: 0.4s; }
+        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #ffffff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
+        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
+        .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
+        .wrapper.pull-active .main-icon i { opacity: 0; transition-delay: 0.85s; }
+        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; animation-delay: 0.9s; }
+        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.0s; }
 
-        .wrapper.pull-active {
-            transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0);
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* PHASE 1: The Implosion (Pulling icons to center) */
-
-        /* Pull Particles quickly */
-        .wrapper.pull-active .particle {
-            top: 50% !important; left: 50% !important;
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
-            transition-duration: 0.4s;
-        }
-
-        /* Pull Inner Orbits to center */
-        .wrapper.pull-active .orb-fin {
-            /* Move to center coordiantes */
-            --y: 50% !important; 
-            --x: 50% !important; 
-            /* Scale down slightly on arrival */
-            --s: 0.3 !important;
-            /* Turn white and transparent to blend into core */
-            background: #ffffff !important;
-            border-color: transparent !important;
-            color: transparent !important; /* Hides the icon char */
-            box-shadow: none !important;
-        }
-
-        /* Pull Outer Orbits to center */
-        .wrapper.pull-active .orb-soc {
-            /* Set offset to 0 to pull to center point */
-            --offset: 0px !important; 
-            --s: 0.3 !important;
-            /* Turn white and transparent */
-            background: #ffffff !important;
-            color: transparent !important;
-            box-shadow: none !important;
-        }
-        
-        /* Ensure the font icons inside fade out during the pull */
-        .wrapper.pull-active .orb-fin i, 
-        .wrapper.pull-active .orb-soc i { 
-            opacity: 0; 
-            transition-duration: 0.3s;
-        }
-
-
-        /* PHASE 2: The Central Explosion (Delayed until icons arrive) */
-
-        /* Hide the central icon right before explosion */
-        .wrapper.pull-active .main-icon i {
-            opacity: 0;
-            /* Wait for orbiting icons to arrive (approx 0.8s) before fading center icon */
-            transition-delay: 0.85s;
-        }
-
-        /* Core "Processing" Pulse & Explosion */
-        .wrapper.pull-active .main-icon {
-            animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
-            /* Wait for orbiting icons to arrive completely before exploding */
-            animation-delay: 0.9s; 
-        }
-
-        /* Shockwave Activation */
-        .wrapper.pull-active .shockwave {
-            animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            /* Sync with explosion */
-            animation-delay: 1.0s; 
-        }
-
-        /* FIXED ANIMATION: Drops box shadow before scaling massively */
         @keyframes dataProcess {
             0% { transform: scale(1); border-color: white; }
             35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 
             58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 
-            60% { box-shadow: none; border: none; } /* Drop heavy shadows instantly to unblock GPU */
+            60% { box-shadow: none; border: none; }
             100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } 
         }
-
         @keyframes rippleOut {
             0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; }
             100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; }
@@ -304,20 +212,63 @@
             z-index: 2000;
             transition: opacity 0.6s ease-in; 
         }
+        .app.active { opacity: 1; visibility: visible; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        .app.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
+        /* =========================================
+           PWA SMART UI COMPONENTS
+           ========================================= */
         
-        /* ----- RESPONSIVE ----- */
+        .welcome-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff;
+            color: #222;
+            padding: 14px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .welcome-toast.show { top: 30px; }
+        .welcome-toast i { color: #2c7a47; font-size: 1.2rem; }
+
+        .pwa-install-banner {
+            position: fixed;
+            bottom: -150px;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            padding: 24px 20px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: bottom 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .pwa-install-banner.show { bottom: 0; }
+        .pwa-header { display: flex; align-items: center; gap: 16px; }
+        .pwa-icon { width: 50px; height: 50px; background: #2c7a47; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; }
+        .pwa-text h4 { margin-bottom: 4px; color: #111; font-size: 1.1rem; }
+        .pwa-text p { color: #666; font-size: 0.85rem; line-height: 1.4; }
+        .pwa-actions { display: flex; gap: 12px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; }
+        .btn-install { background: #2c7a47; color: white; }
+        .btn-install:active { background: #1f5c34; }
+        .btn-dismiss { background: #f0f0f0; color: #444; }
+        .btn-dismiss:active { background: #e0e0e0; }
+
         @media (max-width: 500px) {
             .main-icon { width: 90px; height: 90px; }
             .main-icon i { font-size: 3rem; }
@@ -329,6 +280,11 @@
     </style>
 </head>
 <body>
+
+    <div class="welcome-toast" id="welcome-toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="welcome-message">Session Restored</span>
+    </div>
 
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
@@ -361,94 +317,201 @@
         <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbxVAXYDX0CTwON4TnMVygiLBej0ui__p1MhhfLCht0hnE9068-6Cz_4juma1MMZFN38/exec" title="Shwari Finance Dashboard"></iframe>
     </div>
 
+    <div class="pwa-install-banner" id="pwa-install-banner">
+        <div class="pwa-header">
+            <div class="pwa-icon"><i class="fas fa-bolt"></i></div>
+            <div class="pwa-text">
+                <h4>Install Shwari-Pay App</h4>
+                <p>Add to your home screen for offline access, faster loading, and native experience.</p>
+            </div>
+        </div>
+        <div class="pwa-actions">
+            <button class="btn btn-dismiss" id="btn-dismiss">Not Now</button>
+            <button class="btn btn-install" id="btn-install">Install App</button>
+        </div>
+    </div>
+
     <script>
         (function() {
             "use strict";
 
+            /* ========================================================
+               1. EXTERNAL SERVICE WORKER REGISTRATION 
+               ======================================================== */
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
+                        .catch(err => console.error('Service Worker Registration Failed:', err));
+                });
+            }
+
+            /* ========================================================
+               2. ADVANCED CACHE MANAGER 
+               ======================================================== */
+            const USER_DATA_KEY = 'shwari_secure_session';
+
+            const cacheUserSession = (userName) => {
+                const sessionData = {
+                    name: userName,
+                    lastActive: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+                    timestamp: Date.now()
+                };
+                
+                // Store in LocalStorage
+                localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
+
+                // Store in Cache API
+                if ('caches' in window) {
+                    caches.open('shwari-user-cache').then(cache => {
+                        cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
+                    });
+                }
+            };
+
+            /* ========================================================
+               3. SMART AUTOMATION: SESSION DETECT & WELCOME BACK
+               ======================================================== */
+            const showWelcomeMessage = (userName, lastActive) => {
+                const toast = document.getElementById('welcome-toast');
+                document.getElementById('welcome-message').innerHTML = `Welcome back <b>${userName}</b>. Last active: ${lastActive}`;
+                setTimeout(() => toast.classList.add('show'), 800);
+                setTimeout(() => toast.classList.remove('show'), 5800);
+            };
+
+            const recoverSession = async () => {
+                let session = null;
+
+                const localData = localStorage.getItem(USER_DATA_KEY);
+                if (localData) {
+                    session = JSON.parse(localData);
+                } else if ('caches' in window) {
+                    try {
+                        const cache = await caches.open('shwari-user-cache');
+                        const res = await cache.match('/user-session.json');
+                        if (res) session = await res.json();
+                    } catch (e) { console.warn("Deep cache read failed"); }
+                }
+
+                if (session && session.name) {
+                    showWelcomeMessage(session.name, session.lastActive);
+                    cacheUserSession(session.name);
+
+                    if (!transitionTriggered) {
+                        transitionTriggered = true;
+                        setTimeout(executeTransition, 1500); 
+                    }
+                } else {
+                    cacheUserSession('Employee');
+                }
+            };
+
+            /* ========================================================
+               4. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
+               ======================================================== */
+            let deferredPrompt;
+            const installBanner = document.getElementById('pwa-install-banner');
+            const installBtn = document.getElementById('btn-install');
+            const dismissBtn = document.getElementById('btn-dismiss');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault(); 
+                deferredPrompt = e; 
+            });
+
+            const triggerInstallBanner = () => {
+                const lastDismissed = localStorage.getItem('pwa_dismissed');
+                const today = new Date().toDateString();
+                
+                if (lastDismissed !== today && !window.matchMedia('(display-mode: standalone)').matches) {
+                    setTimeout(() => {
+                        installBanner.classList.add('show');
+                    }, 6000);
+                }
+            };
+
+            installBtn.addEventListener('click', async () => {
+                installBanner.classList.remove('show');
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User ${outcome === 'accepted' ? 'installed' : 'dismissed'} the PWA`);
+                    deferredPrompt = null;
+                } else {
+                    alert("To install: Tap the share button in your browser and select 'Add to Home Screen'.");
+                }
+            });
+
+            dismissBtn.addEventListener('click', () => {
+                installBanner.classList.remove('show');
+                localStorage.setItem('pwa_dismissed', new Date().toDateString());
+            });
+
+            /* ========================================================
+               5. UI ANIMATION CORE (DIGITAL ASSIMILATION)
+               ======================================================== */
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
             const macroIframe = document.getElementById('macro-frame');
 
-            // Animation state controllers
             let isParallaxActive = true;
-            let targetX = 0, targetY = 0;
-            let currentX = 0, currentY = 0;
-            let animationFrameId;
+            let targetX = 0, targetY = 0, currentX = 0, currentY = 0, animationFrameId;
+            let transitionTriggered = false;
 
             const handleMove = (e) => {
                 if (!isParallaxActive) return;
                 const x = e.clientX || (e.touches && e.touches[0].clientX);
                 const y = e.clientY || (e.touches && e.touches[0].clientY);
-                
                 targetX = (window.innerWidth / 2 - x) / 30; 
                 targetY = (window.innerHeight / 2 - y) / 30;
             };
 
             const animateParallax = () => {
                 if (!isParallaxActive) return; 
-                
                 currentX += (targetX - currentX) * 0.08;
                 currentY += (targetY - currentY) * 0.08;
-                
                 uiWrapper.style.transform = `scale(1) rotateY(${currentX}deg) rotateX(${currentY}deg) translateZ(0)`;
                 animationFrameId = requestAnimationFrame(animateParallax);
             };
 
-            // Event listeners attached passively for scroll/touch performance
             document.addEventListener('mousemove', handleMove, { passive: true });
             document.addEventListener('touchmove', handleMove, { passive: true });
 
-            // Initial render
             requestAnimationFrame(() => {
                 uiWrapper.classList.add('pop-in');
                 animateParallax(); 
+                recoverSession(); 
             });
 
-            // Master Transition Function
             const executeTransition = () => {
                 if (!isParallaxActive) return;
-
-                // 1. Hard stop parallax
                 isParallaxActive = false;
                 cancelAnimationFrame(animationFrameId);
                 document.removeEventListener('mousemove', handleMove);
                 document.removeEventListener('touchmove', handleMove);
                 
-                // 2. Clear inline transform for CSS to take over
                 uiWrapper.style.transform = '';
                 
-                // Trigger CSS animation (Implosion then Explosion)
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
                 });
 
-                // 3. Fade in dashboard. Increased delay to account for longer animation sequence.
-                // (0.9s wait for implosion + ~0.8s into explosion animation)
                 setTimeout(() => {
                     appPanel.classList.add('active');
-                    
-                    // 4. DESTROY PROTOCOL
+                    triggerInstallBanner(); 
                     setTimeout(() => { 
-                        if(uiWrapper.parentNode) {
-                            uiWrapper.parentNode.removeChild(uiWrapper);
-                        }
+                        if(uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
                     }, 1000);
-                    
                 }, 1900); 
             };
-
-            // Wait for Iframe Load, THEN wait 5 seconds
-            let transitionTriggered = false;
 
             macroIframe.addEventListener('load', () => {
                 if (!transitionTriggered) {
                     transitionTriggered = true;
-                    // The Macro has loaded. Hold for 5 seconds then execute.
                     setTimeout(executeTransition, 5000); 
                 }
             });
 
-            // Fail-safe: Force transition after 15 seconds if iframe hangs
             setTimeout(() => {
                 if (!transitionTriggered) {
                     transitionTriggered = true;
