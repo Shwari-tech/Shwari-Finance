@@ -27,16 +27,25 @@
       "purpose": "any"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1077/1077114.png",
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://thumbs.dreamstime.com/b/welcome-back-white-background-welcoming-to-someone-255206901.jpg",
+      "sizes": "800x600",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Welcome Back Screen"
     }
   ]
 }
