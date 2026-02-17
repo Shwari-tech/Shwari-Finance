@@ -278,22 +278,31 @@
             background: #222;
             color: white;
             border: none;
-            padding: 18px 0;
-            width: 100%;
-            border-radius: 15px;
-            font-size: 1.1rem;
+            padding: 10px 20px; /* Reduced from 14px 28px */
+            width: fit-content;
+            margin: 0 auto;
+            border-radius: 12px; /* Slightly reduced to match the padding */
+            font-size: 0.95rem; /* Reduced font size from 1.1rem */
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, background 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 8px; /* Reduced gap slightly */
+            animation: pulseInstall 2s infinite cubic-bezier(0.66, 0, 0, 1);
         }
 
         .install-btn:active {
             transform: scale(0.96);
             background: #000;
+            animation: none;
+        }
+        
+        @keyframes pulseInstall {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 34, 34, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(34, 34, 34, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 34, 34, 0); }
         }
     </style>
 </head>
@@ -335,9 +344,8 @@
             <i class="fas fa-mobile-screen-button"></i>
             <h2>Install Shwari Finance App</h2>
             <p>To access your dashboard and secure financial tools, please install this application to your Phone.</p>
-            <!-- MODIFIED: button text changed to "Install" and added breathe animation inline -->
-            <button class="install-btn" id="installAction" style="animation: breathe 2s infinite;">
-                <i class="fas fa-download"></i> Press to Install now
+            <button class="install-btn" id="installAction">
+                <i class="fas fa-download"></i> Install Now
             </button>
         </div>
     </div>
