@@ -1,525 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <title>Shwari Finance · Digital Assimilation</title>
-    
-    <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Shwari Finance">
+    <title>Shwari Finance · Digital Assimilation</title>
+    
+    <link rel="manifest" href="manifest.json">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            background: radial-gradient(circle at center, #ffffff 0%, #e2e2e2 100%);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            perspective: 1200px;
-        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: radial-gradient(circle at center, #ffffff 0%, #e2e2e2 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            perspective: 1200px;
+        }
 
-        /* ----- ORBIT WRAPPER ----- */
-        .wrapper {
-            position: relative;
-            width: min(500px, 92vw);
-            height: min(500px, 92vw);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transform: scale(0.8) rotateX(0deg) rotateY(0deg);
-            transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
-        }
+        /* ----- ORBIT WRAPPER ----- */
+        .wrapper {
+            position: relative;
+            width: min(500px, 92vw);
+            height: min(500px, 92vw);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: scale(0.8) rotateX(0deg) rotateY(0deg);
+            transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+        }
 
-        .wrapper.pop-in {
-            opacity: 1;
-            transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0);
-        }
+        .wrapper.pop-in {
+            opacity: 1;
+            transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0);
+        }
 
-        /* ----- MAIN ICON (CORE) ----- */
-        .main-icon {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05);
-            border: 3px solid white;
-            z-index: 60;
-            animation: breathe 4s ease-in-out infinite;
-            will-change: transform, box-shadow, border-color, background;
-        }
+        /* ----- MAIN ICON (CORE) ----- */
+        .main-icon {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05);
+            border: 3px solid white;
+            z-index: 60;
+            animation: breathe 4s ease-in-out infinite;
+            will-change: transform, box-shadow, border-color, background;
+            cursor: pointer; /* Added cursor pointer for fingerprint prompt */
+        }
 
-        @keyframes breathe {
-            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05); }
-            50% { transform: scale(1.04) translateZ(0); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 25px rgba(0, 0, 0, 0.1); }
-        }
+        .main-icon::after {
+            content: "TAP TO UNLOCK";
+            position: absolute;
+            bottom: -30px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #2c7a47;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
 
-        .main-icon i {
-            font-size: 3.8rem;
-            color: #222222; 
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-            transition: opacity 0.3s ease;
-        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05); }
+            50% { transform: scale(1.04) translateZ(0); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 25px rgba(0, 0, 0, 0.1); }
+        }
 
-        /* ----- SHOCKWAVE & PARTICLES ----- */
-        .shockwave {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid #333333;
-            transform: translate(-50%, -50%) scale(0.5);
-            opacity: 0;
-            z-index: 10;
-            pointer-events: none;
-            will-change: transform, opacity, border-width;
-        }
+        .main-icon i {
+            font-size: 3.8rem;
+            color: #222222; 
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+            transition: opacity 0.3s ease;
+        }
 
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0;
-            animation: float 5s infinite ease-in-out;
-            z-index: 20;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, top, left, opacity;
-        }
-        
-        .wrapper.pop-in .particle { opacity: 0.5; }
+        /* ----- SHOCKWAVE & PARTICLES ----- */
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #333333;
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+            will-change: transform, opacity, border-width;
+        }
 
-        .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
-        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #555555; animation-duration: 6s; }
-        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #b78a1a; animation-duration: 5.4s; }
-        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7s; }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: float 5s infinite ease-in-out;
+            z-index: 20;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, top, left, opacity;
+        }
+        
+        .wrapper.pop-in .particle { opacity: 0.5; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
-            50% { transform: translateY(-15px) scale(1.1) translateZ(0); }
-        }
+        .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
+        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #555555; animation-duration: 6s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #b78a1a; animation-duration: 5.4s; }
+        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7s; }
 
-        /* ----- ORBIT RINGS ----- */
-        .orbit-inner, .orbit-outer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 40;
-            transform-style: preserve-3d;
-        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
+            50% { transform: translateY(-15px) scale(1.1) translateZ(0); }
+        }
 
-        .orbit-inner { width: 220px; height: 220px; animation: rotateClockwise 16s linear infinite; }
-        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotateCounter 22s linear infinite; }
+        /* ----- ORBIT RINGS ----- */
+        .orbit-inner, .orbit-outer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 40;
+            transform-style: preserve-3d;
+        }
 
-        /* ----- ORBIT ITEMS ----- */
-        .orb-fin, .orb-soc {
-            position: absolute;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            will-change: transform, top, left, opacity;
-        }
+        .orbit-inner { width: 220px; height: 220px; animation: rotateClockwise 16s linear infinite; }
+        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotateCounter 22s linear infinite; }
 
-        .orb-fin {
-            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9);
-            z-index: 45; top: var(--y, 50%); left: var(--x, 50%); --s: 1; 
-            transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
-            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
-        }
+        /* ----- ORBIT ITEMS ----- */
+        .orb-fin, .orb-soc {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            will-change: transform, top, left, opacity;
+        }
 
-        .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
-        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #444444; background: #f5f5f5; }
-        .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
-        .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
+        .orb-fin {
+            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9);
+            z-index: 45; top: var(--y, 50%); left: var(--x, 50%); --s: 1; 
+            transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
+            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
+        }
 
-        .orb-soc {
-            width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35;
-            top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; --rot: 0deg; --offset: 190px; --s: 1;
-            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0);
-            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s;
-        }
-        
-        .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; }
-        .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; }
-        .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
-        .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
-        .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
+        .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
+        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #444444; background: #f5f5f5; }
+        .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
+        .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
 
-        .orb-fin i, .orb-soc i {
-            animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            transition: opacity 0.3s ease;
-        }
+        .orb-soc {
+            width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35;
+            top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; --rot: 0deg; --offset: 190px; --s: 1;
+            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0);
+            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s;
+        }
+        
+        .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; }
+        .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; }
+        .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
+        .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
+        .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
 
-        @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg) translateZ(0); } }
-        @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
-        @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .orb-fin i, .orb-soc i {
+            animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: opacity 0.3s ease;
+        }
 
-        /* ----- DIGITAL ASSIMILATION EFFECT ----- */
-        .wrapper.pull-active { transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0); opacity: 0; transition-duration: 0.4s; }
-        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #ffffff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
-        .wrapper.pull-active .main-icon i { opacity: 0; transition-delay: 0.85s; }
-        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; animation-delay: 0.9s; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.0s; }
+        @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg) translateZ(0); } }
+        @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
+        @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        @keyframes dataProcess {
-            0% { transform: scale(1); border-color: white; }
-            35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 
-            58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 
-            60% { box-shadow: none; border: none; }
-            100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } 
-        }
-        @keyframes rippleOut {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; }
-            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; }
-        }
+        /* ----- DIGITAL ASSIMILATION EFFECT ----- */
+        .wrapper.pull-active { transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0); opacity: 0; transition-duration: 0.4s; }
+        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #ffffff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
+        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
+        .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
+        .wrapper.pull-active .main-icon i { opacity: 0; transition-delay: 0.85s; }
+        .wrapper.pull-active .main-icon::after { opacity: 0; transition-duration: 0.3s; }
+        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; animation-delay: 0.9s; }
+        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.0s; }
 
-        /* ----- DASHBOARD IFRAME ----- */
-        .app {
-            position: fixed;
-            inset: 0;
-            opacity: 0;
-            visibility: hidden;
-            background: #ffffff;
-            z-index: 2000;
-            transition: opacity 0.6s ease-in; 
-        }
-        .app.active { opacity: 1; visibility: visible; }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        @keyframes dataProcess {
+            0% { transform: scale(1); border-color: white; }
+            35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 
+            58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 
+            60% { box-shadow: none; border: none; }
+            100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } 
+        }
+        @keyframes rippleOut {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; }
+            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; }
+        }
 
-        /* =========================================
-           PWA SMART UI COMPONENTS
-           ========================================= */
-        
-        .welcome-toast {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffffff;
-            color: #222;
-            padding: 14px 24px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .welcome-toast.show { top: 30px; }
-        .welcome-toast i { color: #2c7a47; font-size: 1.2rem; }
+        /* ----- DASHBOARD IFRAME ----- */
+        .app {
+            position: fixed;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            background: #ffffff;
+            z-index: 2000;
+            transition: opacity 0.6s ease-in; 
+        }
+        .app.active { opacity: 1; visibility: visible; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
 
-        .pwa-install-banner {
-            position: fixed;
-            bottom: -150px;
-            left: 0;
-            width: 100%;
-            background: #ffffff;
-            padding: 24px 20px;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
-            z-index: 4000;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            transition: bottom 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .pwa-install-banner.show { bottom: 0; }
-        .pwa-header { display: flex; align-items: center; gap: 16px; }
-        .pwa-icon { width: 50px; height: 50px; background: #2c7a47; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; }
-        .pwa-text h4 { margin-bottom: 4px; color: #111; font-size: 1.1rem; }
-        .pwa-text p { color: #666; font-size: 0.85rem; line-height: 1.4; }
-        .pwa-actions { display: flex; gap: 12px; }
-        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; }
-        .btn-install { background: #2c7a47; color: white; }
-        .btn-install:active { background: #1f5c34; }
-        .btn-dismiss { background: #f0f0f0; color: #444; }
-        .btn-dismiss:active { background: #e0e0e0; }
+        /* =========================================
+           PWA SMART UI COMPONENTS
+           ========================================= */
+        
+        .pwa-install-banner {
+            position: fixed;
+            bottom: -150px;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            padding: 24px 20px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: bottom 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .pwa-install-banner.show { bottom: 0; }
+        .pwa-header { display: flex; align-items: center; gap: 16px; }
+        .pwa-icon { width: 50px; height: 50px; background: #2c7a47; border-radius: 12px; display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; }
+        .pwa-text h4 { margin-bottom: 4px; color: #111; font-size: 1.1rem; }
+        .pwa-text p { color: #666; font-size: 0.85rem; line-height: 1.4; }
+        .pwa-actions { display: flex; gap: 12px; }
+        .btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; }
+        .btn-install { background: #2c7a47; color: white; }
+        .btn-install:active { background: #1f5c34; }
+        .btn-dismiss { background: #f0f0f0; color: #444; }
+        .btn-dismiss:active { background: #e0e0e0; }
 
-        @media (max-width: 500px) {
-            .main-icon { width: 90px; height: 90px; }
-            .main-icon i { font-size: 3rem; }
-            .orbit-inner { width: 190px; height: 190px; }
-            .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; }
-            .orbit-outer { width: 300px; height: 300px; }
-            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
-        }
-    </style>
+        @media (max-width: 500px) {
+            .main-icon { width: 90px; height: 90px; }
+            .main-icon i { font-size: 3rem; }
+            .orbit-inner { width: 190px; height: 190px; }
+            .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; }
+            .orbit-outer { width: 300px; height: 300px; }
+            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="welcome-toast" id="welcome-toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="welcome-message">Session Restored</span>
-    </div>
+    <div class="wrapper" id="ui">
+        <div class="shockwave"></div>
+        <div class="particle p1"></div>
+        <div class="particle p2"></div>
+        <div class="particle p3"></div>
+        <div class="particle p4"></div>
 
-    <div class="wrapper" id="ui">
-        <div class="shockwave"></div>
-        <div class="particle p1"></div>
-        <div class="particle p2"></div>
-        <div class="particle p3"></div>
-        <div class="particle p4"></div>
+        <div class="main-icon" id="unlock-btn">
+            <i class="fas fa-fingerprint"></i>
+        </div>
 
-        <div class="main-icon">
-            <i class="fas fa-user"></i>
-        </div>
+        <div class="orbit-inner">
+            <div class="orb-fin"><i class="fas fa-coins"></i></div>
+            <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="orb-fin"><i class="fas fa-calculator"></i></div>
+            <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
+        </div>
 
-        <div class="orbit-inner">
-            <div class="orb-fin"><i class="fas fa-coins"></i></div>
-            <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
-            <div class="orb-fin"><i class="fas fa-calculator"></i></div>
-            <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
-        </div>
+        <div class="orbit-outer">
+            <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
+            <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
+            <div class="orb-soc"><i class="fab fa-whatsapp"></i></div>
+            <div class="orb-soc"><i class="fab fa-threads"></i></div>
+            <div class="orb-soc"><i class="fab fa-instagram"></i></div>
+        </div>
+    </div>
 
-        <div class="orbit-outer">
-            <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
-            <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
-            <div class="orb-soc"><i class="fab fa-whatsapp"></i></div>
-            <div class="orb-soc"><i class="fab fa-threads"></i></div>
-            <div class="orb-soc"><i class="fab fa-instagram"></i></div>
-        </div>
-    </div>
+    <div class="app" id="app">
+        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbxVAXYDX0CTwON4TnMVygiLBej0ui__p1MhhfLCht0hnE9068-6Cz_4juma1MMZFN38/exec" title="Shwari Finance Dashboard"></iframe>
+    </div>
 
-    <div class="app" id="app">
-        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbxVAXYDX0CTwON4TnMVygiLBej0ui__p1MhhfLCht0hnE9068-6Cz_4juma1MMZFN38/exec" title="Shwari Finance Dashboard"></iframe>
-    </div>
+    <div class="pwa-install-banner" id="pwa-install-banner">
+        <div class="pwa-header">
+            <div class="pwa-icon"><i class="fas fa-user"></i></div>
+            <div class="pwa-text">
+                <h4>Install Shwari-Pay App</h4>
+                <p>Add to your home screen for offline access, faster loading, and native experience.</p>
+            </div>
+        </div>
+        <div class="pwa-actions">
+            <button class="btn btn-dismiss" id="btn-dismiss">Not Now</button>
+            <button class="btn btn-install" id="btn-install">Install App</button>
+        </div>
+    </div>
 
-    <div class="pwa-install-banner" id="pwa-install-banner">
-        <div class="pwa-header">
-            <div class="pwa-icon"><i class="fas fa-user"></i></div>
-            <div class="pwa-text">
-                <h4>Install Shwari-Pay App</h4>
-                <p>Add to your home screen for offline access, faster loading, and native experience.</p>
-            </div>
-        </div>
-        <div class="pwa-actions">
-            <button class="btn btn-dismiss" id="btn-dismiss">Not Now</button>
-            <button class="btn btn-install" id="btn-install">Install App</button>
-        </div>
-    </div>
+    <script>
+        (function() {
+            "use strict";
 
-    <script>
-        (function() {
-            "use strict";
+            /* ========================================================
+               1. EXTERNAL SERVICE WORKER REGISTRATION 
+               ======================================================== */
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
+                        .catch(err => console.error('Service Worker Registration Failed:', err));
+                });
+            }
 
-            /* ========================================================
-               1. EXTERNAL SERVICE WORKER REGISTRATION 
-               ======================================================== */
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('sw.js')
-                        .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
-                        .catch(err => console.error('Service Worker Registration Failed:', err));
-                });
-            }
+            /* ========================================================
+               2. ADVANCED CACHE MANAGER 
+               ======================================================== */
+            const USER_DATA_KEY = 'shwari_secure_session';
 
-            /* ========================================================
-               2. ADVANCED CACHE MANAGER 
-               ======================================================== */
-            const USER_DATA_KEY = 'shwari_secure_session';
+            const cacheUserSession = (userName) => {
+                const sessionData = {
+                    name: userName,
+                    lastActive: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+                    timestamp: Date.now()
+                };
+                
+                localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
 
-            const cacheUserSession = (userName) => {
-                const sessionData = {
-                    name: userName,
-                    lastActive: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
-                    timestamp: Date.now()
-                };
-                
-                // Store in LocalStorage
-                localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
+                if ('caches' in window) {
+                    caches.open('shwari-user-cache').then(cache => {
+                        cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
+                    });
+                }
+            };
 
-                // Store in Cache API
-                if ('caches' in window) {
-                    caches.open('shwari-user-cache').then(cache => {
-                        cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
-                    });
-                }
-            };
+            const recoverSession = async () => {
+                let session = null;
 
-            /* ========================================================
-               3. SMART AUTOMATION: SESSION DETECT & WELCOME BACK
-               ======================================================== */
-            const showWelcomeMessage = (userName, lastActive) => {
-                const toast = document.getElementById('welcome-toast');
-                document.getElementById('welcome-message').innerHTML = `Welcome back <b>${userName}</b>. Last active: ${lastActive}`;
-                setTimeout(() => toast.classList.add('show'), 800);
-                setTimeout(() => toast.classList.remove('show'), 5800);
-            };
+                const localData = localStorage.getItem(USER_DATA_KEY);
+                if (localData) {
+                    session = JSON.parse(localData);
+                } else if ('caches' in window) {
+                    try {
+                        const cache = await caches.open('shwari-user-cache');
+                        const res = await cache.match('/user-session.json');
+                        if (res) session = await res.json();
+                    } catch (e) { console.warn("Deep cache read failed"); }
+                }
 
-            const recoverSession = async () => {
-                let session = null;
+                if (session && session.name) {
+                    cacheUserSession(session.name);
+                } else {
+                    cacheUserSession('Employee');
+                }
+            };
 
-                const localData = localStorage.getItem(USER_DATA_KEY);
-                if (localData) {
-                    session = JSON.parse(localData);
-                } else if ('caches' in window) {
-                    try {
-                        const cache = await caches.open('shwari-user-cache');
-                        const res = await cache.match('/user-session.json');
-                        if (res) session = await res.json();
-                    } catch (e) { console.warn("Deep cache read failed"); }
-                }
+            /* ========================================================
+               3. FINGERPRINT / BIOMETRIC AUTHENTICATION (WEBAUTHN)
+               ======================================================== */
+            const authenticateUser = async () => {
+                try {
+                    // Triggers the Native Device Fingerprint / FaceID / PIN screen
+                    if (window.PublicKeyCredential) {
+                        const challenge = new Uint8Array(32);
+                        window.crypto.getRandomValues(challenge);
+                        
+                        const publicKey = {
+                            challenge: challenge,
+                            rp: { name: "Shwari Finance Secure" },
+                            user: {
+                                id: new Uint8Array(16),
+                                name: "auth@shwari",
+                                displayName: "Shwari Authorization"
+                            },
+                            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                            authenticatorSelection: {
+                                authenticatorAttachment: "platform", // Forces native device biometrics
+                                userVerification: "required"
+                            },
+                            timeout: 60000,
+                            attestation: "none"
+                        };
+                        
+                        await navigator.credentials.create({ publicKey });
+                        return true;
+                    } else {
+                        // Fallback Password if the device has no biometric hardware
+                        const pwd = prompt("Biometrics unavailable. Enter Shwari Access PIN:");
+                        return pwd !== null && pwd.length > 0;
+                    }
+                } catch (err) {
+                    console.error("Authentication failed or cancelled", err);
+                    alert("Access Denied: Fingerprint or Passkey required.");
+                    return false;
+                }
+            };
 
-                if (session && session.name) {
-                    showWelcomeMessage(session.name, session.lastActive);
-                    cacheUserSession(session.name);
+            /* ========================================================
+               4. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
+               ======================================================== */
+            let deferredPrompt;
+            const installBanner = document.getElementById('pwa-install-banner');
+            const installBtn = document.getElementById('btn-install');
+            const dismissBtn = document.getElementById('btn-dismiss');
 
-                    if (!transitionTriggered) {
-                        transitionTriggered = true;
-                        setTimeout(executeTransition, 1500); 
-                    }
-                } else {
-                    cacheUserSession('Employee');
-                }
-            };
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault(); 
+                deferredPrompt = e; 
+            });
 
-            /* ========================================================
-               4. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
-               ======================================================== */
-            let deferredPrompt;
-            const installBanner = document.getElementById('pwa-install-banner');
-            const installBtn = document.getElementById('btn-install');
-            const dismissBtn = document.getElementById('btn-dismiss');
+            const triggerInstallBanner = () => {
+                const lastDismissed = localStorage.getItem('pwa_dismissed');
+                const today = new Date().toDateString();
+                
+                if (lastDismissed !== today && !window.matchMedia('(display-mode: standalone)').matches) {
+                    setTimeout(() => {
+                        installBanner.classList.add('show');
+                    }, 6000);
+                }
+            };
 
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault(); 
-                deferredPrompt = e; 
-            });
+            installBtn.addEventListener('click', async () => {
+                installBanner.classList.remove('show');
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User ${outcome === 'accepted' ? 'installed' : 'dismissed'} the PWA`);
+                    deferredPrompt = null;
+                } else {
+                    alert("To install: Tap the share button in your browser and select 'Add to Home Screen'.");
+                }
+            });
 
-            const triggerInstallBanner = () => {
-                const lastDismissed = localStorage.getItem('pwa_dismissed');
-                const today = new Date().toDateString();
-                
-                if (lastDismissed !== today && !window.matchMedia('(display-mode: standalone)').matches) {
-                    setTimeout(() => {
-                        installBanner.classList.add('show');
-                    }, 6000);
-                }
-            };
+            dismissBtn.addEventListener('click', () => {
+                installBanner.classList.remove('show');
+                localStorage.setItem('pwa_dismissed', new Date().toDateString());
+            });
 
-            installBtn.addEventListener('click', async () => {
-                installBanner.classList.remove('show');
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    console.log(`User ${outcome === 'accepted' ? 'installed' : 'dismissed'} the PWA`);
-                    deferredPrompt = null;
-                } else {
-                    alert("To install: Tap the share button in your browser and select 'Add to Home Screen'.");
-                }
-            });
+            /* ========================================================
+               5. UI ANIMATION CORE (DIGITAL ASSIMILATION)
+               ======================================================== */
+            const uiWrapper = document.getElementById('ui');
+            const appPanel = document.getElementById('app');
+            const unlockBtn = document.getElementById('unlock-btn');
 
-            dismissBtn.addEventListener('click', () => {
-                installBanner.classList.remove('show');
-                localStorage.setItem('pwa_dismissed', new Date().toDateString());
-            });
+            let isParallaxActive = true;
+            let targetX = 0, targetY = 0, currentX = 0, currentY = 0, animationFrameId;
+            let transitionTriggered = false;
 
-            /* ========================================================
-               5. UI ANIMATION CORE (DIGITAL ASSIMILATION)
-               ======================================================== */
-            const uiWrapper = document.getElementById('ui');
-            const appPanel = document.getElementById('app');
-            const macroIframe = document.getElementById('macro-frame');
+            const handleMove = (e) => {
+                if (!isParallaxActive) return;
+                const x = e.clientX || (e.touches && e.touches[0].clientX);
+                const y = e.clientY || (e.touches && e.touches[0].clientY);
+                targetX = (window.innerWidth / 2 - x) / 30; 
+                targetY = (window.innerHeight / 2 - y) / 30;
+            };
 
-            let isParallaxActive = true;
-            let targetX = 0, targetY = 0, currentX = 0, currentY = 0, animationFrameId;
-            let transitionTriggered = false;
+            const animateParallax = () => {
+                if (!isParallaxActive) return; 
+                currentX += (targetX - currentX) * 0.08;
+                currentY += (targetY - currentY) * 0.08;
+                uiWrapper.style.transform = `scale(1) rotateY(${currentX}deg) rotateX(${currentY}deg) translateZ(0)`;
+                animationFrameId = requestAnimationFrame(animateParallax);
+            };
 
-            const handleMove = (e) => {
-                if (!isParallaxActive) return;
-                const x = e.clientX || (e.touches && e.touches[0].clientX);
-                const y = e.clientY || (e.touches && e.touches[0].clientY);
-                targetX = (window.innerWidth / 2 - x) / 30; 
-                targetY = (window.innerHeight / 2 - y) / 30;
-            };
+            document.addEventListener('mousemove', handleMove, { passive: true });
+            document.addEventListener('touchmove', handleMove, { passive: true });
 
-            const animateParallax = () => {
-                if (!isParallaxActive) return; 
-                currentX += (targetX - currentX) * 0.08;
-                currentY += (targetY - currentY) * 0.08;
-                uiWrapper.style.transform = `scale(1) rotateY(${currentX}deg) rotateX(${currentY}deg) translateZ(0)`;
-                animationFrameId = requestAnimationFrame(animateParallax);
-            };
+            requestAnimationFrame(() => {
+                uiWrapper.classList.add('pop-in');
+                animateParallax(); 
+                recoverSession(); 
+            });
 
-            document.addEventListener('mousemove', handleMove, { passive: true });
-            document.addEventListener('touchmove', handleMove, { passive: true });
+            const executeTransition = () => {
+                if (!isParallaxActive) return;
+                isParallaxActive = false;
+                cancelAnimationFrame(animationFrameId);
+                document.removeEventListener('mousemove', handleMove);
+                document.removeEventListener('touchmove', handleMove);
+                
+                uiWrapper.style.transform = '';
+                
+                requestAnimationFrame(() => {
+                    uiWrapper.classList.add('pull-active');
+                });
 
-            requestAnimationFrame(() => {
-                uiWrapper.classList.add('pop-in');
-                animateParallax(); 
-                recoverSession(); 
-            });
+                setTimeout(() => {
+                    appPanel.classList.add('active');
+                    triggerInstallBanner(); 
+                    setTimeout(() => { 
+                        if(uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+                    }, 1000);
+                }, 1900); 
+            };
 
-            const executeTransition = () => {
-                if (!isParallaxActive) return;
-                isParallaxActive = false;
-                cancelAnimationFrame(animationFrameId);
-                document.removeEventListener('mousemove', handleMove);
-                document.removeEventListener('touchmove', handleMove);
-                
-                uiWrapper.style.transform = '';
-                
-                requestAnimationFrame(() => {
-                    uiWrapper.classList.add('pull-active');
-                });
+            // Triggered solely by user interaction to pass Browser Biometric security requirements
+            unlockBtn.addEventListener('click', async () => {
+                if (transitionTriggered) return;
+                
+                const isAuthenticated = await authenticateUser();
+                
+                if (isAuthenticated) {
+                    transitionTriggered = true;
+                    executeTransition();
+                }
+            });
 
-                setTimeout(() => {
-                    appPanel.classList.add('active');
-                    triggerInstallBanner(); 
-                    setTimeout(() => { 
-                        if(uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                    }, 1000);
-                }, 1900); 
-            };
-
-            macroIframe.addEventListener('load', () => {
-                if (!transitionTriggered) {
-                    transitionTriggered = true;
-                    setTimeout(executeTransition, 5000); 
-                }
-            });
-
-            setTimeout(() => {
-                if (!transitionTriggered) {
-                    transitionTriggered = true;
-                    executeTransition();
-                }
-            }, 15000);
-
-        })();
-    </script>
+        })();
+    </script>
 </body>
 </html>
