@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
+    
+    <meta name="theme-color" content="#2c7a47">
     
     <meta name="mobile-web-app-capable" content="yes">
     
@@ -15,7 +16,7 @@
 
     <title>Shwari Pay App</title>
     
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
@@ -386,7 +387,8 @@
                ======================================================== */
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('sw.js')
+                    // Pinned to root path
+                    navigator.serviceWorker.register('/sw.js')
                         .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
                         .catch(err => console.error('Service Worker Registration Failed:', err));
                 });
