@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <title>Shwari Finance · Digital Assimilation</title>
+    <meta name="apple-mobile-web-app-title" content="Shwari Pay">
+    <title>Shwari Pay App</title>
     
     <link rel="manifest" href="manifest.json">
 
@@ -269,6 +269,36 @@
         .btn-dismiss { background: #f0f0f0; color: #444; }
         .btn-dismiss:active { background: #e0e0e0; }
 
+        /* ----- FINGERPRINT UI BUTTON ----- */
+        .bio-btn {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c7a47;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(44, 122, 71, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .bio-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .bio-btn:active { transform: translateX(-50%) scale(0.95); }
+        .bio-btn i { font-size: 1.2rem; }
+
         @media (max-width: 500px) {
             .main-icon { width: 90px; height: 90px; }
             .main-icon i { font-size: 3rem; }
@@ -284,6 +314,10 @@
     <div class="welcome-toast" id="welcome-toast">
         <i class="fas fa-check-circle"></i>
         <span id="welcome-message">Session Restored</span>
+    </div>
+
+    <div class="bio-btn" id="bio-setup-btn">
+        <i class="fas fa-fingerprint"></i> Enable Biometric Lock
     </div>
 
     <div class="wrapper" id="ui">
@@ -321,7 +355,7 @@
         <div class="pwa-header">
             <div class="pwa-icon"><i class="fas fa-user"></i></div>
             <div class="pwa-text">
-                <h4>Install Shwari-Pay App</h4>
+                <h4>Install Shwari Pay</h4>
                 <p>Add to your home screen for offline access, faster loading, and native experience.</p>
             </div>
         </div>
@@ -347,7 +381,67 @@
             }
 
             /* ========================================================
-               2. ADVANCED CACHE MANAGER 
+               2. WEBAUTHN NATIVE INTEGRATION (FINGERPRINT/FACEID)
+               ======================================================== */
+            const BIO_KEY = 'shwari_biometric_id';
+            const bioSetupBtn = document.getElementById('bio-setup-btn');
+            
+            // Helpers to handle binary conversion for WebAuthn API
+            const bufferEncode = (str) => new Uint8Array(str.split('').map(c => c.charCodeAt(0))).buffer;
+            const bufferDecode = (buf) => String.fromCharCode.apply(null, new Uint8Array(buf));
+
+            // Setup Fingerprint (Registration)
+            const registerBiometrics = async () => {
+                if (!window.PublicKeyCredential) return alert("Biometrics not supported on this device/browser.");
+                try {
+                    const options = {
+                        challenge: crypto.getRandomValues(new Uint8Array(32)),
+                        rp: { name: "Shwari Pay" },
+                        user: {
+                            id: crypto.getRandomValues(new Uint8Array(16)),
+                            name: localStorage.getItem('shwari_secure_session') ? JSON.parse(localStorage.getItem('shwari_secure_session')).name : "Employee",
+                            displayName: "Shwari Employee"
+                        },
+                        pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                        timeout: 60000
+                    };
+                    
+                    const credential = await navigator.credentials.create({ publicKey: options });
+                    localStorage.setItem(BIO_KEY, bufferDecode(credential.rawId));
+                    alert("✅ Biometric Lock Enabled. App is now secured.");
+                    bioSetupBtn.classList.remove('visible');
+                } catch (err) {
+                    console.error("Biometric Setup Failed:", err);
+                    alert("Setup cancelled or failed.");
+                }
+            };
+
+            // Verify Fingerprint (Authentication Lock)
+            const verifyBiometrics = async () => {
+                const rawIdStr = localStorage.getItem(BIO_KEY);
+                if (!rawIdStr) return true; // Bypass if they haven't set it up
+                
+                try {
+                    const options = {
+                        challenge: crypto.getRandomValues(new Uint8Array(32)),
+                        allowCredentials: [{ id: bufferEncode(rawIdStr), type: 'public-key' }],
+                        userVerification: "required",
+                        timeout: 60000
+                    };
+                    await navigator.credentials.get({ publicKey: options });
+                    return true; // Success!
+                } catch (err) {
+                    console.error("Auth Failed:", err);
+                    alert("Authentication required to access Shwari Pay.");
+                    return false; // Failed scan
+                }
+            };
+
+            bioSetupBtn.addEventListener('click', registerBiometrics);
+
+            /* ========================================================
+               3. ADVANCED CACHE MANAGER 
                ======================================================== */
             const USER_DATA_KEY = 'shwari_secure_session';
 
@@ -357,11 +451,7 @@
                     lastActive: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
                     timestamp: Date.now()
                 };
-                
-                // Store in LocalStorage
                 localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
-
-                // Store in Cache API
                 if ('caches' in window) {
                     caches.open('shwari-user-cache').then(cache => {
                         cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
@@ -370,7 +460,7 @@
             };
 
             /* ========================================================
-               3. SMART AUTOMATION: SESSION DETECT & WELCOME BACK
+               4. SMART AUTOMATION: SESSION DETECT & WELCOME BACK
                ======================================================== */
             const showWelcomeMessage = (userName, lastActive) => {
                 const toast = document.getElementById('welcome-toast');
@@ -394,6 +484,13 @@
                 }
 
                 if (session && session.name) {
+                    // IF BIOMETRICS ARE ENABLED, FORCE FINGERPRINT BEFORE CONTINUING
+                    const isAuthorized = await verifyBiometrics();
+                    if (!isAuthorized) {
+                        // Keep looping auth if they failed
+                        return setTimeout(recoverSession, 2000); 
+                    }
+
                     showWelcomeMessage(session.name, session.lastActive);
                     cacheUserSession(session.name);
 
@@ -404,10 +501,15 @@
                 } else {
                     cacheUserSession('Employee');
                 }
+
+                // If they logged in but haven't set up fingerprint, show the setup button
+                if (window.PublicKeyCredential && !localStorage.getItem(BIO_KEY)) {
+                    setTimeout(() => bioSetupBtn.classList.add('visible'), 2000);
+                }
             };
 
             /* ========================================================
-               4. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
+               5. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
                ======================================================== */
             let deferredPrompt;
             const installBanner = document.getElementById('pwa-install-banner');
@@ -448,7 +550,7 @@
             });
 
             /* ========================================================
-               5. UI ANIMATION CORE (DIGITAL ASSIMILATION)
+               6. UI ANIMATION CORE (DIGITAL ASSIMILATION)
                ======================================================== */
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
@@ -486,6 +588,7 @@
             const executeTransition = () => {
                 if (!isParallaxActive) return;
                 isParallaxActive = false;
+                bioSetupBtn.classList.remove('visible'); // Hide button if it's there
                 cancelAnimationFrame(animationFrameId);
                 document.removeEventListener('mousemove', handleMove);
                 document.removeEventListener('touchmove', handleMove);
@@ -507,13 +610,16 @@
 
             macroIframe.addEventListener('load', () => {
                 if (!transitionTriggered) {
-                    transitionTriggered = true;
-                    setTimeout(executeTransition, 5000); 
+                    // Only auto-transition if they aren't waiting for a fingerprint scan
+                    if (!localStorage.getItem(BIO_KEY)) {
+                        transitionTriggered = true;
+                        setTimeout(executeTransition, 5000); 
+                    }
                 }
             });
 
             setTimeout(() => {
-                if (!transitionTriggered) {
+                if (!transitionTriggered && !localStorage.getItem(BIO_KEY)) {
                     transitionTriggered = true;
                     executeTransition();
                 }
