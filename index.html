@@ -33,6 +33,67 @@
             perspective: 1200px;
         }
 
+        /* ----- AUTHENTICATION LOCK SCREEN ----- */
+        .auth-screen {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        .auth-icon {
+            font-size: 4rem;
+            color: #2c7a47;
+            margin-bottom: 20px;
+            animation: pulseAuth 2s infinite;
+        }
+
+        @keyframes pulseAuth {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .auth-screen h2 {
+            color: #222;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .auth-screen p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .auth-btn {
+            background: #2c7a47;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(44, 122, 71, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .auth-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2);
+        }
+
         /* ----- ORBIT WRAPPER ----- */
         .wrapper {
             position: relative;
@@ -219,28 +280,6 @@
            PWA SMART UI COMPONENTS
            ========================================= */
         
-        .welcome-toast {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ffffff;
-            color: #222;
-            padding: 14px 24px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .welcome-toast.show { top: 30px; }
-        .welcome-toast i { color: #2c7a47; font-size: 1.2rem; }
-
         .pwa-install-banner {
             position: fixed;
             bottom: -150px;
@@ -281,9 +320,11 @@
 </head>
 <body>
 
-    <div class="welcome-toast" id="welcome-toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="welcome-message">Session Restored</span>
+    <div class="auth-screen" id="auth-screen">
+        <i class="fas fa-fingerprint auth-icon"></i>
+        <h2>Security Check</h2>
+        <p>Please authenticate using your device Fingerprint, Face ID, or PIN to access the Shwari Core System.</p>
+        <button class="auth-btn" id="auth-btn"><i class="fas fa-lock-open"></i> Authenticate to Login</button>
     </div>
 
     <div class="wrapper" id="ui">
@@ -347,7 +388,7 @@
             }
 
             /* ========================================================
-               2. ADVANCED CACHE MANAGER 
+               2. ADVANCED CACHE MANAGER (SILENT)
                ======================================================== */
             const USER_DATA_KEY = 'shwari_secure_session';
 
@@ -358,25 +399,13 @@
                     timestamp: Date.now()
                 };
                 
-                // Store in LocalStorage
                 localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
 
-                // Store in Cache API
                 if ('caches' in window) {
                     caches.open('shwari-user-cache').then(cache => {
                         cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
                     });
                 }
-            };
-
-            /* ========================================================
-               3. SMART AUTOMATION: SESSION DETECT & WELCOME BACK
-               ======================================================== */
-            const showWelcomeMessage = (userName, lastActive) => {
-                const toast = document.getElementById('welcome-toast');
-                document.getElementById('welcome-message').innerHTML = `Welcome back <b>${userName}</b>. Last active: ${lastActive}`;
-                setTimeout(() => toast.classList.add('show'), 800);
-                setTimeout(() => toast.classList.remove('show'), 5800);
             };
 
             const recoverSession = async () => {
@@ -394,7 +423,6 @@
                 }
 
                 if (session && session.name) {
-                    showWelcomeMessage(session.name, session.lastActive);
                     cacheUserSession(session.name);
 
                     if (!transitionTriggered) {
@@ -405,6 +433,70 @@
                     cacheUserSession('Employee');
                 }
             };
+
+            /* ========================================================
+               3. BIOMETRIC / DEVICE PASSCODE AUTHENTICATION (WEBAUTHN)
+               ======================================================== */
+            const authScreen = document.getElementById('auth-screen');
+            const authBtn = document.getElementById('auth-btn');
+
+            async function triggerDeviceAuth() {
+                try {
+                    // Check if WebAuthn is available
+                    if (!window.PublicKeyCredential) {
+                        alert("Biometrics/Device Security not supported on this browser. Proceeding...");
+                        unlockApp();
+                        return;
+                    }
+
+                    // Create a dummy challenge to force OS level security prompt
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
+                    const publicKey = {
+                        challenge: challenge,
+                        rp: { name: "Shwari Finance System" },
+                        user: {
+                            id: new Uint8Array(16),
+                            name: "employee@shwari.local",
+                            displayName: "Authorized Staff"
+                        },
+                        pubKeyCredParams: [{type: "public-key", alg: -7}],
+                        authenticatorSelection: {
+                            authenticatorAttachment: "platform", // Forces built-in device auth (Fingerprint/Face/PIN)
+                            userVerification: "required"
+                        },
+                        timeout: 60000
+                    };
+
+                    // Trigger the device native lock prompt
+                    await navigator.credentials.create({ publicKey });
+                    
+                    // On Promise resolve, user is authenticated
+                    unlockApp();
+
+                } catch (error) {
+                    console.error("Authentication failed:", error);
+                    alert("Authentication cancelled or failed. You must unlock to proceed.");
+                }
+            }
+
+            function unlockApp() {
+                authScreen.style.opacity = '0';
+                setTimeout(() => {
+                    authScreen.style.display = 'none';
+                    authScreen.style.visibility = 'hidden';
+                    
+                    // Initialize the Digital Assimilation Sequence AFTER auth
+                    requestAnimationFrame(() => {
+                        uiWrapper.classList.add('pop-in');
+                        animateParallax(); 
+                        recoverSession(); 
+                    });
+                }, 500);
+            }
+
+            authBtn.addEventListener('click', triggerDeviceAuth);
 
             /* ========================================================
                4. AGGRESSIVE PWA INSTALL POP-OUT LOGIC
@@ -476,12 +568,6 @@
 
             document.addEventListener('mousemove', handleMove, { passive: true });
             document.addEventListener('touchmove', handleMove, { passive: true });
-
-            requestAnimationFrame(() => {
-                uiWrapper.classList.add('pop-in');
-                animateParallax(); 
-                recoverSession(); 
-            });
 
             const executeTransition = () => {
                 if (!isParallaxActive) return;
