@@ -1,12 +1,12 @@
-const CACHE_NAME = 'shwari-core-v4';
+const CACHE_NAME = 'shwari-pay-v1';
 
-// Add the URLs of the files you want to cache for offline access
+// Add the URLs of the core files you want to cache for instant offline loading
 const CACHE_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css',
-  'https://cdn-icons-png.flaticon.com/512/2942/2942263.png'
+  'https://cdn-icons-png.flaticon.com/512/1077/1077114.png' // The new Apple Touch Icon
 ];
 
 // 1. Install Event: Cache the application shell
@@ -45,14 +45,22 @@ self.addEventListener('fetch', (event) => {
   // We only want to handle GET requests
   if (event.request.method !== 'GET') return;
 
+  // CRITICAL: Do not attempt to cache the Google Apps Script iframe.
+  // Google's security tokens change constantly. Caching this will break the dashboard.
+  if (event.request.url.includes('script.google.com')) {
+      return; 
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
         // If the network request is successful, clone the response and update the cache
         const resClone = response.clone();
         caches.open(CACHE_NAME).then((cache) => {
-          // Do not cache external cross-origin requests unless necessary, to save space
-          if (event.request.url.startsWith(self.location.origin)) {
+          // Cache our own origin files and our specific external libraries (FontAwesome/Icons)
+          if (event.request.url.startsWith(self.location.origin) || 
+              event.request.url.includes('cdnjs') || 
+              event.request.url.includes('flaticon')) {
             cache.put(event.request, resClone);
           }
         });
