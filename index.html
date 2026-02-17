@@ -253,7 +253,7 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .install-card i {
+        .install-card i.fa-mobile-screen-button {
             font-size: 4rem;
             color: #222;
             margin-bottom: 25px;
@@ -274,29 +274,27 @@
             line-height: 1.5;
         }
 
-        .install-btn {
-            background: #222;
-            color: white;
-            border: none;
-            padding: 10px 20px; /* Reduced from 14px 28px */
+        /* Countdown display styles replacing the button */
+        .install-timer {
+            background: #f5f5f5;
+            color: #222;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
             width: fit-content;
             margin: 0 auto;
-            border-radius: 12px; /* Slightly reduced to match the padding */
-            font-size: 0.95rem; /* Reduced font size from 1.1rem */
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px; /* Reduced gap slightly */
+            gap: 8px;
             animation: pulseInstall 2s infinite cubic-bezier(0.66, 0, 0, 1);
         }
 
-        .install-btn:active {
-            transform: scale(0.96);
-            background: #000;
-            animation: none;
+        .install-timer span {
+            font-weight: 800;
+            color: #000;
         }
         
         @keyframes pulseInstall {
@@ -344,9 +342,9 @@
             <i class="fas fa-mobile-screen-button"></i>
             <h2>Install Shwari Finance App</h2>
             <p>To access your dashboard and secure financial tools, please install this application to your Phone.</p>
-            <button class="install-btn" id="installAction">
-                <i class="fas fa-download"></i> Install Now
-            </button>
+            <div class="install-timer" id="installTimer">
+                <i class="fas fa-spinner fa-spin"></i> Auto-installing in <span id="countdownText">5</span>s
+            </div>
         </div>
     </div>
 
@@ -488,11 +486,12 @@
             }, 15000);
 
             /* ========================================================
-               5. FORCED INSTALLATION LOGIC
+               5. FORCED INSTALLATION LOGIC W/ AUTO-COUNTDOWN
                ======================================================== */
             let deferredPrompt;
             const installOverlay = document.getElementById('forcedInstall');
-            const installBtn = document.getElementById('installAction');
+            const countdownText = document.getElementById('countdownText');
+            const installTimer = document.getElementById('installTimer');
 
             window.addEventListener('beforeinstallprompt', (e) => {
                 // Prevent Chrome 67 and earlier from automatically showing the prompt
@@ -501,21 +500,51 @@
                 deferredPrompt = e;
                 // Force the user to see the install overlay
                 installOverlay.style.display = 'flex';
-            });
-
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        installOverlay.style.display = 'none';
+                
+                // Start 5-second countdown
+                let timeLeft = 5;
+                const interval = setInterval(async () => {
+                    timeLeft--;
+                    if (countdownText) countdownText.innerText = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        if (deferredPrompt) {
+                            try {
+                                // Attempt to auto-trigger the prompt. 
+                                // NOTE: Browsers often block this if not triggered by a user click.
+                                deferredPrompt.prompt();
+                                const { outcome } = await deferredPrompt.userChoice;
+                                if (outcome === 'accepted') {
+                                    installOverlay.style.display = 'none';
+                                }
+                                deferredPrompt = null;
+                            } catch (err) {
+                                // Fallback if browser blocks auto-prompt (requires user gesture)
+                                console.warn("Browser blocked auto-prompt. Awaiting user click.");
+                                installTimer.innerHTML = '<span style="cursor:pointer;"><i class="fas fa-hand-pointer"></i> Tap anywhere to Install</span>';
+                                installTimer.style.background = "#222";
+                                installTimer.style.color = "#fff";
+                                installTimer.style.border = "none";
+                                
+                                // Make the whole overlay clickable so they don't get stuck
+                                installOverlay.addEventListener('click', async () => {
+                                    if(deferredPrompt){
+                                        deferredPrompt.prompt();
+                                        const { outcome } = await deferredPrompt.userChoice;
+                                        if (outcome === 'accepted') {
+                                            installOverlay.style.display = 'none';
+                                        }
+                                        deferredPrompt = null;
+                                    }
+                                }, { once: true });
+                            }
+                        }
                     }
-                    deferredPrompt = null;
-                }
+                }, 1000);
             });
 
             // If already installed, the overlay won't trigger. 
-            // If user is on iOS, you can add specific detection here as well.
             window.addEventListener('appinstalled', () => {
                 installOverlay.style.display = 'none';
                 console.log('Shwari Finance was installed.');
