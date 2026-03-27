@@ -10,8 +10,8 @@
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
     <style>
         * {
             margin: 0;
@@ -42,7 +42,7 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transform: scale(0.8) rotateX(0deg) rotateY(0deg);
+            transform: scale(0.8);
             transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-style: preserve-3d;
             will-change: transform, opacity;
@@ -50,37 +50,61 @@
 
         .wrapper.pop-in {
             opacity: 1;
-            transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0);
+            transform: scale(1);
         }
 
         /* ----- MAIN ICON (CORE) ----- */
         .main-icon {
             position: relative;
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05);
-            border: 3px solid white;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.10),
+                0 0 0 6px rgba(255,255,255,0.85),
+                0 0 0 9px rgba(0,0,0,0.06);
+            border: 2px solid rgba(255,255,255,0.95);
             z-index: 60;
             animation: breathe 4s ease-in-out infinite;
-            will-change: transform, box-shadow, border-color, background;
+            will-change: transform, box-shadow;
         }
 
         @keyframes breathe {
-            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05); }
-            50% { transform: scale(1.04) translateZ(0); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 25px rgba(0, 0, 0, 0.1); }
+            0%, 100% {
+                transform: scale(1) translateZ(0);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06);
+            }
+            50% {
+                transform: scale(1.04) translateZ(0);
+                box-shadow: 0 26px 50px rgba(0,0,0,0.14), 0 0 0 8px rgba(255,255,255,0.85), 0 0 0 11px rgba(0,0,0,0.06);
+            }
         }
 
-        .main-icon i {
-            font-size: 3.8rem;
-            color: #222222; 
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+        /* ----- MICROSOFT LOGO SVG ----- */
+        .ms-logo {
+            width: 50px;
+            height: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 4px;
             transition: opacity 0.3s ease;
+            filter: drop-shadow(0 3px 8px rgba(0,0,0,0.18));
         }
+
+        .ms-logo span {
+            border-radius: 2px;
+            display: block;
+        }
+
+        .ms-logo .sq1 { background: #F25022; } /* Red   */
+        .ms-logo .sq2 { background: #7FBA00; } /* Green */
+        .ms-logo .sq3 { background: #00A4EF; } /* Blue  */
+        .ms-logo .sq4 { background: #FFB900; } /* Yellow */
 
         /* ----- SHOCKWAVE & PARTICLES ----- */
         .shockwave {
@@ -95,7 +119,7 @@
             opacity: 0;
             z-index: 10;
             pointer-events: none;
-            will-change: transform, opacity, border-width;
+            will-change: transform, opacity;
         }
 
         .particle {
@@ -107,17 +131,17 @@
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform, top, left, opacity;
         }
-        
+
         .wrapper.pop-in .particle { opacity: 0.5; }
 
-        .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
-        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #555555; animation-duration: 6s; }
-        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #b78a1a; animation-duration: 5.4s; }
-        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7s; }
+        .p1 { width: 10px; height: 10px; top: 8%;  left: 15%; background: #2c7a47; animation-duration: 4.2s; }
+        .p2 { width:  6px; height:  6px; top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left:  8%; background: #b78a1a; animation-duration: 5.4s; }
+        .p4 { width:  7px; height:  7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
-            50% { transform: translateY(-15px) scale(1.1) translateZ(0); }
+            0%, 100% { transform: translateY(0)    scale(1.0) translateZ(0); }
+            50%       { transform: translateY(-15px) scale(1.1) translateZ(0); }
         }
 
         /* ----- ORBIT RINGS ----- */
@@ -131,8 +155,15 @@
             transform-style: preserve-3d;
         }
 
-        .orbit-inner { width: 220px; height: 220px; animation: rotateClockwise 16s linear infinite; }
-        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotateCounter 22s linear infinite; }
+        .orbit-inner {
+            width: 220px; height: 220px;
+            animation: rotateClockwise 16s linear infinite;
+        }
+        .orbit-outer {
+            width: 380px; height: 380px;
+            z-index: 30;
+            animation: rotateCounter 22s linear infinite;
+        }
 
         /* ----- ORBIT ITEMS ----- */
         .orb-fin, .orb-soc {
@@ -147,26 +178,44 @@
         }
 
         .orb-fin {
-            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9);
-            z-index: 45; top: var(--y, 50%); left: var(--x, 50%); --s: 1; 
+            width: 48px; height: 48px;
+            font-size: 1.3rem;
+            border: 1.5px solid rgba(255,255,255,0.9);
+            z-index: 45;
+            top:  var(--y, 50%);
+            left: var(--x, 50%);
+            --s: 1;
             transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
-            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
+            transition:
+                top         0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+                left        0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+                transform   0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+                background  0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
         }
 
-        .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
-        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #444444; background: #f5f5f5; }
-        .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
-        .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
+        .orb-fin:nth-child(1) { --y: 0%;   --x: 50%;  color: #b78a1a; background: #fefcf0; }
+        .orb-fin:nth-child(2) { --y: 50%;  --x: 100%; color: #444444; background: #f5f5f5; }
+        .orb-fin:nth-child(3) { --y: 100%; --x: 50%;  color: #4a3b8a; background: #f3f1fd; }
+        .orb-fin:nth-child(4) { --y: 50%;  --x: 0%;   color: #1f6e3f; background: #f1f9ec; }
 
         .orb-soc {
-            width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35;
-            top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; --rot: 0deg; --offset: 190px; --s: 1;
+            width: 44px; height: 44px;
+            font-size: 1.3rem;
+            color: #2c3e4e;
+            z-index: 35;
+            top: 50%; left: 50%;
+            margin-top: -22px; margin-left: -22px;
+            --rot: 0deg;
+            --offset: 190px;
+            --s: 1;
             transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0);
-            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s;
+            transition:
+                transform   0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+                background  0.5s, color 0.5s, box-shadow 0.5s;
         }
-        
-        .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; }
-        .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; }
+
+        .orb-soc:nth-child(1) { --rot: 0deg;   color: #3b5998; }
+        .orb-soc:nth-child(2) { --rot: 72deg;  color: #000000; }
         .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
         .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
         .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
@@ -177,29 +226,64 @@
         }
 
         @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg) translateZ(0); } }
-        @keyframes rotateCounter { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
+        @keyframes rotateCounter   { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
+        /* ----- RING TRACK (decorative dashed circles) ----- */
+        .ring-track {
+            position: absolute;
+            top: 50%; left: 50%;
+            border-radius: 50%;
+            border: 1.5px dashed rgba(0,0,0,0.07);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        .ring-track.inner { width: 220px; height: 220px; }
+        .ring-track.outer { width: 380px; height: 380px; }
+
         /* ----- DIGITAL ASSIMILATION EFFECT ----- */
-        .wrapper.pull-active { transform: scale(1) rotateX(0deg) rotateY(0deg) translateZ(0); transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0); opacity: 0; transition-duration: 0.4s; }
-        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #ffffff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
-        .wrapper.pull-active .main-icon i { opacity: 0; transition-delay: 0.85s; }
-        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards; animation-delay: 0.9s; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 1.0s; }
+        .wrapper.pull-active .particle {
+            top: 50% !important; left: 50% !important;
+            transform: translate(-50%, -50%) scale(0) !important;
+            opacity: 0 !important;
+            transition-duration: 0.4s !important;
+        }
+        .wrapper.pull-active .orb-fin {
+            --y: 50% !important; --x: 50% !important; --s: 0.3 !important;
+            background: #ffffff !important;
+            border-color: transparent !important;
+            color: transparent !important;
+            box-shadow: none !important;
+        }
+        .wrapper.pull-active .orb-soc {
+            --offset: 0px !important; --s: 0.3 !important;
+            background: #ffffff !important;
+            color: transparent !important;
+            box-shadow: none !important;
+        }
+        .wrapper.pull-active .orb-fin i,
+        .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
+
+        .wrapper.pull-active .ms-logo { opacity: 0; transition-delay: 0.85s; }
+
+        .wrapper.pull-active .main-icon {
+            animation: breathe 4s ease-in-out infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards;
+        }
+        .wrapper.pull-active .shockwave {
+            animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards;
+        }
 
         @keyframes dataProcess {
-            0% { transform: scale(1); border-color: white; }
-            35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 
-            58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 
-            60% { box-shadow: none; border: none; }
-            100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } 
+            0%   { transform: scale(1);   border-color: white;       }
+            35%  { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); }
+            58%  { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; }
+            60%  {                        box-shadow: none; border: none; }
+            100% { transform: scale(40);  background: #ffffff; box-shadow: none; border: none; opacity: 1; }
         }
+
         @keyframes rippleOut {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; }
-            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; }
+            0%   { transform: translate(-50%, -50%) scale(1);  opacity: 1; border-width: 15px; border-color: #333; }
+            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px;  border-color: #000; }
         }
 
         /* ----- DASHBOARD IFRAME ----- */
@@ -210,17 +294,20 @@
             visibility: hidden;
             background: #ffffff;
             z-index: 2000;
-            transition: opacity 0.6s ease-in; 
+            transition: opacity 0.6s ease-in;
         }
         .app.active { opacity: 1; visibility: visible; }
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
+        /* ----- RESPONSIVE ----- */
         @media (max-width: 500px) {
-            .main-icon { width: 90px; height: 90px; }
-            .main-icon i { font-size: 3rem; }
+            .main-icon { width: 96px; height: 96px; }
+            .ms-logo   { width: 42px; height: 42px; gap: 3px; }
             .orbit-inner { width: 190px; height: 190px; }
+            .ring-track.inner { width: 190px; height: 190px; }
             .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; }
             .orbit-outer { width: 300px; height: 300px; }
+            .ring-track.outer { width: 300px; height: 300px; }
             .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
         }
 
@@ -250,10 +337,10 @@
 
         @keyframes cardSlideUp {
             from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            to   { transform: translateY(0);    opacity: 1; }
         }
 
-        .install-card i {
+        .install-card > i {
             font-size: 4rem;
             color: #222;
             margin-bottom: 25px;
@@ -297,24 +384,41 @@
         }
 
         @keyframes pulseText {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.6; }
+            0%, 100% { transform: scale(1);    opacity: 1;   }
+            50%       { transform: scale(1.05); opacity: 0.6; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ============================================================
+         SPLASH / ORBIT UI
+    ============================================================ -->
     <div class="wrapper" id="ui">
+
         <div class="shockwave"></div>
+
+        <!-- decorative ring tracks -->
+        <div class="ring-track inner"></div>
+        <div class="ring-track outer"></div>
+
+        <!-- ambient particles -->
         <div class="particle p1"></div>
         <div class="particle p2"></div>
         <div class="particle p3"></div>
         <div class="particle p4"></div>
 
+        <!-- Core: Microsoft logo -->
         <div class="main-icon">
-            <i class="fas fa-user"></i>
+            <div class="ms-logo">
+                <span class="sq1"></span>
+                <span class="sq2"></span>
+                <span class="sq3"></span>
+                <span class="sq4"></span>
+            </div>
         </div>
 
+        <!-- Inner orbit: finance icons -->
         <div class="orbit-inner">
             <div class="orb-fin"><i class="fas fa-coins"></i></div>
             <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
@@ -322,6 +426,7 @@
             <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
         </div>
 
+        <!-- Outer orbit: social icons -->
         <div class="orbit-outer">
             <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
             <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
@@ -331,193 +436,203 @@
         </div>
     </div>
 
+    <!-- ============================================================
+         DASHBOARD FRAME
+    ============================================================ -->
     <div class="app" id="app">
-        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbx2drkBZ8PkZyLOVtPP2ra3Omr28kWAkZs3C1oCpnWBznAsWYm0uJrTwguvsyIWj67S/exec"></iframe>
+        <iframe id="macro-frame"
+            src="https://script.google.com/macros/s/AKfycbx2drkBZ8PkZyLOVtPP2ra3Omr28kWAkZs3C1oCpnWBznAsWYm0uJrTwguvsyIWj67S/exec">
+        </iframe>
     </div>
 
+    <!-- ============================================================
+         INSTALL OVERLAY
+    ============================================================ -->
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button"></i>
-            <h2>Install Shwari Finance App</h2>
-            <p>To access your dashboard and secure financial tools, please install this application to your Phone.</p>
+            <h2>Install Shwari Finance</h2>
+            <p>To access your dashboard and secure financial tools, please install this application to your phone.</p>
             <button class="install-btn" id="installAction" style="animation: breathe 2s infinite;">
-                <i class="fas fa-download"></i> <span style="animation: pulseText 1.5s infinite ease-in-out; display: inline-block;">Install Now</span>
+                <i class="fas fa-download"></i>
+                <span style="animation: pulseText 1.5s infinite ease-in-out; display: inline-block;">Install Now</span>
             </button>
         </div>
     </div>
 
+    <!-- ============================================================
+         SCRIPTS
+    ============================================================ -->
     <script>
-        (function() {
-            "use strict";
+    (function () {
+        "use strict";
 
-            /* ========================================================
-               1. EXTERNAL SERVICE WORKER REGISTRATION 
-               ======================================================== */
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('sw.js')
-                        .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
-                        .catch(err => console.error('Service Worker Registration Failed:', err));
-                });
+        /* ── 1. SERVICE WORKER ── */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(r  => console.log('SW registered:', r.scope))
+                    .catch(e => console.error('SW failed:', e));
+            });
+        }
+
+        /* ── 2. SESSION CACHE ── */
+        const USER_DATA_KEY = 'shwari_secure_session';
+
+        const cacheUserSession = (userName) => {
+            const data = {
+                name: userName,
+                lastActive: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+                timestamp: Date.now()
+            };
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify(data));
+            if ('caches' in window) {
+                caches.open('shwari-user-cache').then(c =>
+                    c.put('/user-session.json', new Response(JSON.stringify(data)))
+                );
+            }
+        };
+
+        /* ── 3. SESSION RECOVERY ── */
+        const recoverSession = async () => {
+            let session = null;
+            const local = localStorage.getItem(USER_DATA_KEY);
+            if (local) {
+                session = JSON.parse(local);
+            } else if ('caches' in window) {
+                try {
+                    const cache = await caches.open('shwari-user-cache');
+                    const res   = await cache.match('/user-session.json');
+                    if (res) session = await res.json();
+                } catch (e) { console.warn('Deep cache read failed'); }
             }
 
-            /* ========================================================
-               2. ADVANCED CACHE MANAGER 
-               ======================================================== */
-            const USER_DATA_KEY = 'shwari_secure_session';
-
-            const cacheUserSession = (userName) => {
-                const sessionData = {
-                    name: userName,
-                    lastActive: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
-                    timestamp: Date.now()
-                };
-                
-                // Store in LocalStorage
-                localStorage.setItem(USER_DATA_KEY, JSON.stringify(sessionData));
-
-                // Store in Cache API
-                if ('caches' in window) {
-                    caches.open('shwari-user-cache').then(cache => {
-                        cache.put('/user-session.json', new Response(JSON.stringify(sessionData)));
-                    });
+            if (session && session.name) {
+                cacheUserSession(session.name);
+                if (!transitionTriggered) {
+                    transitionTriggered = true;
+                    setTimeout(executeTransition, 1500);
                 }
-            };
+            } else {
+                cacheUserSession('Employee');
+            }
+        };
 
-            /* ========================================================
-               3. SMART AUTOMATION: SESSION DETECT (NO TOAST)
-               ======================================================== */
-            const recoverSession = async () => {
-                let session = null;
+        /* ── 4. UI REFS ── */
+        const uiWrapper   = document.getElementById('ui');
+        const appPanel    = document.getElementById('app');
+        const macroIframe = document.getElementById('macro-frame');
 
-                const localData = localStorage.getItem(USER_DATA_KEY);
-                if (localData) {
-                    session = JSON.parse(localData);
-                } else if ('caches' in window) {
-                    try {
-                        const cache = await caches.open('shwari-user-cache');
-                        const res = await cache.match('/user-session.json');
-                        if (res) session = await res.json();
-                    } catch (e) { console.warn("Deep cache read failed"); }
-                }
+        /* ── 5. STABLE PARALLAX ──
+               Uses a single rAF loop with lerp for smooth, jank-free movement.
+               Clamped so the wrapper never tilts more than ±8°.            */
+        let isParallaxActive = true;
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+        let rafId;
+        let transitionTriggered = false;
 
-                if (session && session.name) {
-                    cacheUserSession(session.name);
-                    if (!transitionTriggered) {
-                        transitionTriggered = true;
-                        setTimeout(executeTransition, 1500);
-                    }
-                } else {
-                    cacheUserSession('Employee');
-                }
-            };
+        const MAX_TILT = 8; // degrees
 
-            /* ========================================================
-               4. UI ANIMATION CORE (DIGITAL ASSIMILATION)
-               ======================================================== */
-            const uiWrapper = document.getElementById('ui');
-            const appPanel = document.getElementById('app');
-            const macroIframe = document.getElementById('macro-frame');
+        const onPointerMove = (e) => {
+            if (!isParallaxActive) return;
+            const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
+            const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
+            targetX = Math.max(-MAX_TILT, Math.min(MAX_TILT, (window.innerWidth  / 2 - cx) / 35));
+            targetY = Math.max(-MAX_TILT, Math.min(MAX_TILT, (window.innerHeight / 2 - cy) / 35));
+        };
 
-            let isParallaxActive = true;
-            let targetX = 0, targetY = 0, currentX = 0, currentY = 0, animationFrameId;
-            let transitionTriggered = false;
+        const lerp = (a, b, t) => a + (b - a) * t;
 
-            const handleMove = (e) => {
-                if (!isParallaxActive) return;
-                const x = e.clientX || (e.touches && e.touches[0].clientX);
-                const y = e.clientY || (e.touches && e.touches[0].clientY);
-                targetX = (window.innerWidth / 2 - x) / 30; 
-                targetY = (window.innerHeight / 2 - y) / 30;
-            };
+        const tickParallax = () => {
+            if (!isParallaxActive) return;
+            currentX = lerp(currentX, targetX, 0.07);
+            currentY = lerp(currentY, targetY, 0.07);
+            // Only write to DOM when the change is visible (> 0.005°)
+            if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
+                uiWrapper.style.transform =
+                    `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
+            }
+            rafId = requestAnimationFrame(tickParallax);
+        };
 
-            const animateParallax = () => {
-                if (!isParallaxActive) return; 
-                currentX += (targetX - currentX) * 0.08;
-                currentY += (targetY - currentY) * 0.08;
-                uiWrapper.style.transform = `scale(1) rotateY(${currentX}deg) rotateX(${currentY}deg) translateZ(0)`;
-                animationFrameId = requestAnimationFrame(animateParallax);
-            };
+        document.addEventListener('mousemove', onPointerMove, { passive: true });
+        document.addEventListener('touchmove', onPointerMove, { passive: true });
 
-            document.addEventListener('mousemove', handleMove, { passive: true });
-            document.addEventListener('touchmove', handleMove, { passive: true });
+        /* ── 6. INIT ── */
+        requestAnimationFrame(() => {
+            uiWrapper.classList.add('pop-in');
+            tickParallax();
+            recoverSession();
+        });
 
+        /* ── 7. ASSIMILATION TRANSITION ── */
+        const executeTransition = () => {
+            if (!isParallaxActive) return;
+            isParallaxActive = false;
+            cancelAnimationFrame(rafId);
+            document.removeEventListener('mousemove', onPointerMove);
+            document.removeEventListener('touchmove', onPointerMove);
+
+            // Reset to neutral before playing the pull animation
+            uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
+
+            // Small delay so the neutral reset is painted first
             requestAnimationFrame(() => {
-                uiWrapper.classList.add('pop-in');
-                animateParallax(); 
-                recoverSession(); 
-            });
-
-            const executeTransition = () => {
-                if (!isParallaxActive) return;
-                isParallaxActive = false;
-                cancelAnimationFrame(animationFrameId);
-                document.removeEventListener('mousemove', handleMove);
-                document.removeEventListener('touchmove', handleMove);
-                
-                uiWrapper.style.transform = '';
-                
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
                 });
-
-                setTimeout(() => {
-                    appPanel.classList.add('active');
-                    setTimeout(() => { 
-                        if(uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                    }, 1000);
-                }, 1900); 
-            };
-
-            macroIframe.addEventListener('load', () => {
-                if (!transitionTriggered) {
-                    transitionTriggered = true;
-                    setTimeout(executeTransition, 5000); 
-                }
             });
 
             setTimeout(() => {
-                if (!transitionTriggered) {
-                    transitionTriggered = true;
-                    executeTransition();
-                }
-            }, 15000);
+                appPanel.classList.add('active');
+                setTimeout(() => {
+                    uiWrapper.parentNode?.removeChild(uiWrapper);
+                }, 1000);
+            }, 1900);
+        };
 
-            /* ========================================================
-               5. FORCED INSTALLATION LOGIC
-               ======================================================== */
-            let deferredPrompt;
-            const installOverlay = document.getElementById('forcedInstall');
-            const installBtn = document.getElementById('installAction');
+        /* ── 8. TRIGGER GUARDS ── */
+        macroIframe.addEventListener('load', () => {
+            if (!transitionTriggered) {
+                transitionTriggered = true;
+                setTimeout(executeTransition, 5000);
+            }
+        });
 
-            window.addEventListener('beforeinstallprompt', (e) => {
-                // Prevent Chrome 67 and earlier from automatically showing the prompt
-                e.preventDefault();
-                // Stash the event so it can be triggered later.
-                deferredPrompt = e;
-                // Force the user to see the install overlay
-                installOverlay.style.display = 'flex';
-            });
+        setTimeout(() => {
+            if (!transitionTriggered) {
+                transitionTriggered = true;
+                executeTransition();
+            }
+        }, 15000);
 
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        installOverlay.style.display = 'none';
-                    }
-                    deferredPrompt = null;
-                }
-            });
+        /* ── 9. PWA INSTALL ── */
+        let deferredPrompt;
+        const installOverlay = document.getElementById('forcedInstall');
+        const installBtn     = document.getElementById('installAction');
 
-            // If already installed, the overlay won't trigger. 
-            // If user is on iOS, you can add specific detection here as well.
-            window.addEventListener('appinstalled', () => {
-                installOverlay.style.display = 'none';
-                console.log('Shwari Finance was installed.');
-            });
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installOverlay.style.display = 'flex';
+        });
 
-        })();
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installOverlay.style.display = 'none';
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installOverlay.style.display = 'none';
+            console.log('Shwari Finance installed.');
+        });
+
+    })();
     </script>
 </body>
 </html>
