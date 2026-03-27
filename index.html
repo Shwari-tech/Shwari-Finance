@@ -23,8 +23,7 @@
             height: 100%;
             width: 100%;
             /* Removed 'fixed' to prevent mobile browser zoom/scaling bugs */
-            /* BACKGROUND PUSHED TO THE RIGHT: RIGHT center / cover */
-            background: url('https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg') RIGHT center / cover no-repeat;
+            background: url('https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg') center center / cover no-repeat;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
@@ -119,7 +118,7 @@
         .shwari-footer {
             position: absolute;
             bottom: 30px;
-            RIGHT: 50%;
+            left: 50%;
             transform: translateX(-50%);
             display: flex;
             align-items: center;
@@ -139,7 +138,7 @@
         .shockwave {
             position: absolute;
             top: 50%;
-            RIGHT: 50%;
+            left: 50%;
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -158,15 +157,15 @@
             animation: float 5s infinite ease-in-out;
             z-index: 20;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, top, RIGHT, opacity;
+            will-change: transform, top, left, opacity;
         }
 
         .wrapper.pop-in .particle { opacity: 0.5; }
 
-        .p1 { width: 10px; height: 10px; top: 8%;  RIGHT: 15%; background: #2c7a47; animation-duration: 4.2s; }
-        .p2 { width:  6px; height:  6px; top: 78%; RIGHT: 88%; background: #555555; animation-duration: 6.0s; }
-        .p3 { width: 14px; height: 14px; top: 70%; RIGHT:  8%; background: #b78a1a; animation-duration: 5.4s; }
-        .p4 { width:  7px; height:  7px; top: 18%; RIGHT: 86%; background: #8e8e8e; animation-duration: 7.0s; }
+        .p1 { width: 10px; height: 10px; top: 8%;  left: 15%; background: #2c7a47; animation-duration: 4.2s; }
+        .p2 { width:  6px; height:  6px; top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left:  8%; background: #b78a1a; animation-duration: 5.4s; }
+        .p4 { width:  7px; height:  7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
 
         @keyframes float {
             0%, 100% { transform: translateY(0)    scale(1.0) translateZ(0); }
@@ -177,7 +176,7 @@
         .orbit-inner, .orbit-outer {
             position: absolute;
             top: 50%;
-            RIGHT: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 40;
@@ -203,7 +202,7 @@
             align-items: center;
             background: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            will-change: transform, top, RIGHT, opacity;
+            will-change: transform, top, left, opacity;
         }
 
         .orb-fin {
@@ -212,12 +211,12 @@
             border: 1.5px solid rgba(255,255,255,0.9);
             z-index: 45;
             top:  var(--y, 50%);
-            RIGHT: var(--x, 50%);
+            left: var(--x, 50%);
             --s: 1;
             transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
             transition:
                 top         0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
-                RIGHT        0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
+                left        0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
                 transform   0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045),
                 background  0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s;
         }
@@ -232,8 +231,8 @@
             font-size: 1.3rem;
             color: #2c3e4e;
             z-index: 35;
-            top: 50%; RIGHT: 50%;
-            margin-top: -22px; margin-RIGHT: -22px;
+            top: 50%; left: 50%;
+            margin-top: -22px; margin-left: -22px;
             --rot: 0deg;
             --offset: 190px;
             --s: 1;
@@ -261,7 +260,7 @@
         /* ----- RING TRACK (decorative dashed circles) ----- */
         .ring-track {
             position: absolute;
-            top: 50%; RIGHT: 50%;
+            top: 50%; left: 50%;
             border-radius: 50%;
             border: 1.5px dashed rgba(0,0,0,0.2);
             pointer-events: none;
@@ -272,7 +271,7 @@
 
         /* ----- DIGITAL ASSIMILATION EFFECT ----- */
         .wrapper.pull-active .particle {
-            top: 50% !important; RIGHT: 50% !important;
+            top: 50% !important; left: 50% !important;
             transform: translate(-50%, -50%) scale(0) !important;
             opacity: 0 !important;
             transition-duration: 0.4s !important;
