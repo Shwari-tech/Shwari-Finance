@@ -22,7 +22,8 @@
         html, body {
             height: 100%;
             width: 100%;
-            background: radial-gradient(circle at center, #ffffff 0%, #e2e2e2 100%);
+            /* Removed 'fixed' to prevent mobile browser zoom/scaling bugs */
+            background: url('https://img.freepik.com/free-photo/woman-comparing-products-with-smartphone_482257-92803.jpg?semt=ais_hybrid&w=740&q=80') center center / cover no-repeat;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
@@ -106,6 +107,33 @@
         .ms-logo .sq3 { background: #00A4EF; } /* Blue  */
         .ms-logo .sq4 { background: #FFB900; } /* Yellow */
 
+        /* ----- PERSON ICON ----- */
+        .person-icon {
+            font-size: 3.5rem;
+            color: #333;
+            transition: opacity 0.3s ease;
+        }
+
+        /* ----- FOOTER ----- */
+        .shwari-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #333;
+            z-index: 100;
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 16px;
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
         /* ----- SHOCKWAVE & PARTICLES ----- */
         .shockwave {
             position: absolute;
@@ -141,7 +169,7 @@
 
         @keyframes float {
             0%, 100% { transform: translateY(0)    scale(1.0) translateZ(0); }
-            50%       { transform: translateY(-15px) scale(1.1) translateZ(0); }
+            50%        { transform: translateY(-15px) scale(1.1) translateZ(0); }
         }
 
         /* ----- ORBIT RINGS ----- */
@@ -234,7 +262,7 @@
             position: absolute;
             top: 50%; left: 50%;
             border-radius: 50%;
-            border: 1.5px dashed rgba(0,0,0,0.07);
+            border: 1.5px dashed rgba(0,0,0,0.2);
             pointer-events: none;
             transform: translate(-50%, -50%);
         }
@@ -264,7 +292,8 @@
         .wrapper.pull-active .orb-fin i,
         .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
 
-        .wrapper.pull-active .ms-logo { opacity: 0; transition-delay: 0.85s; }
+        .wrapper.pull-active .ms-logo, 
+        .wrapper.pull-active .person-icon { opacity: 0; transition-delay: 0.85s; }
 
         .wrapper.pull-active .main-icon {
             animation: breathe 4s ease-in-out infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards;
@@ -385,40 +414,28 @@
 
         @keyframes pulseText {
             0%, 100% { transform: scale(1);    opacity: 1;   }
-            50%       { transform: scale(1.05); opacity: 0.6; }
+            50%        { transform: scale(1.05); opacity: 0.6; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-         SPLASH / ORBIT UI
-    ============================================================ -->
     <div class="wrapper" id="ui">
 
         <div class="shockwave"></div>
 
-        <!-- decorative ring tracks -->
         <div class="ring-track inner"></div>
         <div class="ring-track outer"></div>
 
-        <!-- ambient particles -->
         <div class="particle p1"></div>
         <div class="particle p2"></div>
         <div class="particle p3"></div>
         <div class="particle p4"></div>
 
-        <!-- Core: Microsoft logo -->
         <div class="main-icon">
-            <div class="ms-logo">
-                <span class="sq1"></span>
-                <span class="sq2"></span>
-                <span class="sq3"></span>
-                <span class="sq4"></span>
-            </div>
+            <i class="fas fa-user person-icon"></i>
         </div>
 
-        <!-- Inner orbit: finance icons -->
         <div class="orbit-inner">
             <div class="orb-fin"><i class="fas fa-coins"></i></div>
             <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
@@ -426,7 +443,6 @@
             <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
         </div>
 
-        <!-- Outer orbit: social icons -->
         <div class="orbit-outer">
             <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
             <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
@@ -436,18 +452,22 @@
         </div>
     </div>
 
-    <!-- ============================================================
-         DASHBOARD FRAME
-    ============================================================ -->
+    <div class="shwari-footer">
+        <div class="ms-logo" style="width: 24px; height: 24px; gap: 2px;">
+            <span class="sq1"></span>
+            <span class="sq2"></span>
+            <span class="sq3"></span>
+            <span class="sq4"></span>
+        </div>
+        <span>SHWARI QUICK PAY</span>
+    </div>
+
     <div class="app" id="app">
         <iframe id="macro-frame"
             src="https://script.google.com/macros/s/AKfycbx2drkBZ8PkZyLOVtPP2ra3Omr28kWAkZs3C1oCpnWBznAsWYm0uJrTwguvsyIWj67S/exec">
         </iframe>
     </div>
 
-    <!-- ============================================================
-         INSTALL OVERLAY
-    ============================================================ -->
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button"></i>
@@ -460,9 +480,6 @@
         </div>
     </div>
 
-    <!-- ============================================================
-         SCRIPTS
-    ============================================================ -->
     <script>
     (function () {
         "use strict";
