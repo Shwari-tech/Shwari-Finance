@@ -104,15 +104,15 @@
             transform: translateX(-50%) translateY(40px);
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             z-index: 100;
             
             /* Premium Glassmorphism */
-            background: rgba(255, 255, 255, 0.85);
-            padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.88);
+            padding: 12px 26px;
             border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 10px 25px rgba(0,0,0,0.08), inset 0 0 10px rgba(255,255,255,0.5);
             
             /* Smooth Entrance */
@@ -136,8 +136,8 @@
 
         /* ----- FULLY DESIGNED ICONS (SQUARES) ----- */
         .ms-logo {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr 1fr;
@@ -164,16 +164,26 @@
             100% { transform: scale(1.08) translateY(-1px); }
         }
 
+        /* ----- TEXT CONTAINER FOR STACKING ----- */
+        .brand-text-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
         /* ----- EMBEDDED TEXT ANIMATION ----- */
         .brand-text {
             font-family: 'Inter', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Increased size */
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1.2px;
+            line-height: 1.1;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             
             /* Sleek metallic gradient */
             background: linear-gradient(
@@ -194,11 +204,21 @@
         }
 
         .brand-text i {
-            font-size: 1.3rem;
+            font-size: 1.5rem; /* Matched scale to new text size */
             color: #55d082; /* Shwari Green */
             text-shadow: 0 0 8px rgba(85, 208, 130, 0.6);
             /* FontAwesome icons don't clip text background easily, so we color it explicitly */
             -webkit-text-fill-color: #55d082; 
+        }
+
+        .collab-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #555555;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
         }
 
         @keyframes textShine {
@@ -415,9 +435,10 @@
             .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
             
             /* Responsive adjustments for new footer */
-            .shwari-footer { padding: 8px 16px; gap: 10px; }
-            .brand-text { font-size: 1.3rem; letter-spacing: 0.8px; }
-            .ms-logo { width: 24px; height: 24px; }
+            .shwari-footer { padding: 10px 18px; gap: 12px; }
+            .brand-text { font-size: 1.5rem; letter-spacing: 0.8px; } /* Scaled up for mobile too */
+            .collab-text { font-size: 0.65rem; }
+            .ms-logo { width: 28px; height: 28px; }
         }
 
         /* ----- FORCED INSTALL OVERLAY ----- */
@@ -549,10 +570,13 @@
             <span class="sq3"></span>
             <span class="sq4"></span>
         </div>
-        <span class="brand-text">
-            <i class="fas fa-bolt"></i> 
-            SHWARI QUICK PAY
-        </span>
+        <div class="brand-text-container">
+            <span class="brand-text">
+                <i class="fas fa-bolt"></i> 
+                SHWARI QUICK PAY
+            </span>
+            <span class="collab-text">in collaboration with KCB BANK OF KENYA</span>
+        </div>
     </div>
 
     <div class="app" id="app">
@@ -632,7 +656,7 @@
         const uiWrapper   = document.getElementById('ui');
         const appPanel    = document.getElementById('app');
         const macroIframe = document.getElementById('macro-frame');
-        const mainFooter  = document.getElementById('main-footer'); // Reference to the new footer
+        const mainFooter  = document.getElementById('main-footer');
 
         // Force latest Apps Script version by appending timestamp to bypass browser cache
         const baseSrc = macroIframe.src;
@@ -696,7 +720,7 @@
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
-                    // NEW: Fade out the footer when the main transition starts
+                    // Fade out the footer when the main transition starts
                     if(mainFooter) mainFooter.classList.add('fade-out'); 
                 });
             });
