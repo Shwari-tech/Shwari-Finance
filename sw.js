@@ -1,5 +1,5 @@
-// Bumped version to v2 to force users' phones to update the service worker
-const CACHE_NAME = 'shwari-pay-v2';
+// Bumped version to v3 to force users' phones to update the service worker
+const CACHE_NAME = 'shwari-pay-v3';
 
 // Added Google Fonts and the new Manifest Icons to the pre-cache list
 const CACHE_ASSETS = [
@@ -50,6 +50,23 @@ self.addEventListener('fetch', (event) => {
   // CRITICAL: Bypass cache entirely for Google Apps Script to prevent security token errors
   if (event.request.url.includes('script.google.com') || event.request.url.includes('googleusercontent.com')) {
       return; 
+  }
+
+  // ADDED: Force "Network First" strictly for the HTML file. 
+  // This guarantees that if you change the macro URL in index.html, it updates instantly.
+  if (event.request.mode === 'navigate' || event.request.url.includes('index.html')) {
+      event.respondWith(
+          fetch(event.request).then((networkResponse) => {
+              return caches.open(CACHE_NAME).then((cache) => {
+                  cache.put(event.request, networkResponse.clone());
+                  return networkResponse;
+              });
+          }).catch(() => {
+              console.log('[Service Worker] Network failed, serving HTML from cache.');
+              return caches.match(event.request);
+          })
+      );
+      return;
   }
 
   event.respondWith(
