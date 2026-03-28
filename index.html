@@ -474,9 +474,7 @@
     </div>
 
     <div class="app" id="app">
-        <iframe id="macro-frame"
-            src="https://script.google.com/macros/s/AKfycbyHJteGZkegsPPfEQlA0EdQ1ocdsmg7U0sJldQULhtF3QGZw9xTJ-GzfBQPjFFnTT0S/exec">
-        </iframe>
+        <iframe id="macro-frame"></iframe>
     </div>
 
     <div id="forcedInstall">
@@ -539,7 +537,7 @@
                 cacheUserSession(session.name);
                 if (!transitionTriggered) {
                     transitionTriggered = true;
-                    setTimeout(executeTransition, 1500);
+                    setTimeout(executeTransition, 800); // Drastically reduced for immediate load
                 }
             } else {
                 cacheUserSession('Employee');
@@ -551,9 +549,7 @@
         const appPanel    = document.getElementById('app');
         const macroIframe = document.getElementById('macro-frame');
 
-        /* ── 5. STABLE PARALLAX ──
-               Uses a single rAF loop with lerp for smooth, jank-free movement.
-               Clamped so the wrapper never tilts more than ±8°.            */
+        /* ── 5. STABLE PARALLAX ── */
         let isParallaxActive = true;
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
@@ -576,7 +572,6 @@
             if (!isParallaxActive) return;
             currentX = lerp(currentX, targetX, 0.07);
             currentY = lerp(currentY, targetY, 0.07);
-            // Only write to DOM when the change is visible (> 0.005°)
             if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
                 uiWrapper.style.transform =
                     `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
@@ -620,20 +615,25 @@
             }, 1900);
         };
 
-        /* ── 8. TRIGGER GUARDS ── */
+        /* ── 8. IMMEDIATE LOAD & REFRESH ── */
+        const baseUrl = "https://script.google.com/macros/s/AKfycbyHJteGZkegsPPfEQlA0EdQ1ocdsmg7U0sJldQULhtF3QGZw9xTJ-GzfBQPjFFnTT0S/exec";
+        // Appending a timestamp forces the iframe to load a fresh, un-cached version immediately
+        macroIframe.src = baseUrl + "?refresh=" + new Date().getTime();
+
         macroIframe.addEventListener('load', () => {
             if (!transitionTriggered) {
                 transitionTriggered = true;
-                setTimeout(executeTransition, 5000);
+                executeTransition(); // Transition instantly when the frame reports loaded
             }
         });
 
+        // Failsafe auto-trigger if loading takes too long (drastically reduced to 1.5s for speed)
         setTimeout(() => {
             if (!transitionTriggered) {
                 transitionTriggered = true;
                 executeTransition();
             }
-        }, 15000);
+        }, 1500);
 
         /* ── 9. PWA INSTALL ── */
         let deferredPrompt;
