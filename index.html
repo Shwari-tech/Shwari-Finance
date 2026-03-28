@@ -417,7 +417,6 @@
             50%        { transform: scale(1.05); opacity: 0.6; }
         }
     </style>
-    <!-- ADDED: EXTREMELY SMALL GLOBAL FONT SIZE (reduces all text and rem-based elements to be very tiny) -->
     <style>
         /* Reduce all text & rem-based font sizes to extremely small */
         html {
@@ -546,10 +545,14 @@
             }
         };
 
-        /* ── 4. UI REFS ── */
+        /* ── 4. UI REFS & CACHE BUSTING ── */
         const uiWrapper   = document.getElementById('ui');
         const appPanel    = document.getElementById('app');
         const macroIframe = document.getElementById('macro-frame');
+
+        // ADDED: Force latest Apps Script version by appending timestamp to bypass browser cache
+        const baseSrc = macroIframe.src;
+        macroIframe.src = baseSrc + (baseSrc.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
 
         /* ── 5. STABLE PARALLAX ──
                Uses a single rAF loop with lerp for smooth, jank-free movement.
