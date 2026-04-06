@@ -9,6 +9,8 @@
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     <title>Shwari Finance · Digital Assimilation</title>
     
+    <link rel="preload" as="image" href="https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg">
+    
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
@@ -22,7 +24,6 @@
         html, body {
             height: 100%;
             width: 100%;
-            /* Removed 'fixed' to prevent mobile browser zoom/scaling bugs */
             background: url('https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg') calc(50% + 30%) center / cover no-repeat;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
@@ -93,13 +94,12 @@
         }
 
         /* =========================================
-           ----- NEW & UPGRADED FOOTER STYLES ----- 
-           ========================================= */
+            ----- NEW & UPGRADED FOOTER STYLES ----- 
+            ========================================= */
         .shwari-footer {
             position: absolute;
             bottom: 30px;
             left: 50%;
-            /* Start hidden for entrance animation */
             opacity: 0;
             transform: translateX(-50%) translateY(40px);
             display: flex;
@@ -107,7 +107,6 @@
             gap: 16px;
             z-index: 100;
             
-            /* Premium Glassmorphism */
             background: rgba(255, 255, 255, 0.88);
             padding: 12px 26px;
             border-radius: 16px;
@@ -115,7 +114,6 @@
             border: 1px solid rgba(255, 255, 255, 0.7);
             box-shadow: 0 10px 25px rgba(0,0,0,0.08), inset 0 0 10px rgba(255,255,255,0.5);
             
-            /* Smooth Entrance */
             animation: footerSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -127,7 +125,6 @@
             }
         }
 
-        /* Smooth Exit when app opens */
         .shwari-footer.fade-out {
             opacity: 0;
             transform: translateX(-50%) translateY(20px) scale(0.95);
@@ -146,14 +143,13 @@
         }
 
         .ms-logo span {
-            border-radius: 4px; /* Rounded jewel look */
+            border-radius: 4px;
             display: block;
             box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.15);
             animation: iconPulse 2.5s infinite alternate ease-in-out;
             will-change: transform;
         }
 
-        /* Gradients & staggered animation delays for smooth wave effect */
         .ms-logo .sq1 { background: linear-gradient(135deg, #ff6b4a, #d1360c); animation-delay: 0.0s; }
         .ms-logo .sq2 { background: linear-gradient(135deg, #9ae200, #5c8700); animation-delay: 0.2s; }
         .ms-logo .sq3 { background: linear-gradient(135deg, #3bc0ff, #007bb5); animation-delay: 0.4s; }
@@ -176,7 +172,7 @@
         /* ----- EMBEDDED TEXT ANIMATION ----- */
         .brand-text {
             font-family: 'Inter', sans-serif;
-            font-size: 1.8rem; /* Increased size */
+            font-size: 1.8rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1.2px;
@@ -185,7 +181,6 @@
             align-items: center;
             gap: 8px;
             
-            /* Sleek metallic gradient */
             background: linear-gradient(
                 to right, 
                 #111111 20%, 
@@ -199,15 +194,13 @@
             -webkit-background-clip: text;
             background-clip: text;
             
-            /* Continuous Shine & Pulse */
             animation: textShine 3s linear infinite, textFloat 2s ease-in-out infinite alternate;
         }
 
         .brand-text i {
-            font-size: 1.5rem; /* Matched scale to new text size */
-            color: #55d082; /* Shwari Green */
+            font-size: 1.5rem;
+            color: #55d082;
             text-shadow: 0 0 8px rgba(85, 208, 130, 0.6);
-            /* FontAwesome icons don't clip text background easily, so we color it explicitly */
             -webkit-text-fill-color: #55d082; 
         }
 
@@ -282,12 +275,12 @@
 
         .orbit-inner {
             width: 220px; height: 220px;
-            animation: rotateClockwise 16s linear infinite;
+            animation: rotatePulseClockwise 4s linear infinite;
         }
         .orbit-outer {
             width: 380px; height: 380px;
             z-index: 30;
-            animation: rotateCounter 22s linear infinite;
+            animation: rotatePulseCounter 5s linear infinite;
         }
 
         /* ----- ORBIT ITEMS ----- */
@@ -350,8 +343,31 @@
             transition: opacity 0.3s ease;
         }
 
-        @keyframes rotateClockwise { to { transform: translate(-50%, -50%) rotate(360deg) translateZ(0); } }
-        @keyframes rotateCounter   { to { transform: translate(-50%, -50%) rotate(-360deg) translateZ(0); } }
+        /* ----- FAST PULSING ROTATION KEYFRAMES ----- */
+        @keyframes rotatePulseClockwise {
+            0%   { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); }
+            12.5%{ transform: translate(-50%, -50%) rotate(45deg) scale(0.67) translateZ(0); }
+            25%  { transform: translate(-50%, -50%) rotate(90deg) scale(0.35) translateZ(0); }
+            37.5%{ transform: translate(-50%, -50%) rotate(135deg) scale(0.82) translateZ(0); }
+            50%  { transform: translate(-50%, -50%) rotate(180deg) scale(1.25) translateZ(0); }
+            62.5%{ transform: translate(-50%, -50%) rotate(225deg) scale(0.82) translateZ(0); }
+            75%  { transform: translate(-50%, -50%) rotate(270deg) scale(0.35) translateZ(0); }
+            87.5%{ transform: translate(-50%, -50%) rotate(315deg) scale(0.67) translateZ(0); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1) translateZ(0); }
+        }
+        
+        @keyframes rotatePulseCounter {
+            0%   { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); }
+            12.5%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.72) translateZ(0); }
+            25%  { transform: translate(-50%, -50%) rotate(-90deg) scale(0.45) translateZ(0); }
+            37.5%{ transform: translate(-50%, -50%) rotate(-135deg) scale(0.8) translateZ(0); }
+            50%  { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15) translateZ(0); }
+            62.5%{ transform: translate(-50%, -50%) rotate(-225deg) scale(0.8) translateZ(0); }
+            75%  { transform: translate(-50%, -50%) rotate(-270deg) scale(0.45) translateZ(0); }
+            87.5%{ transform: translate(-50%, -50%) rotate(-315deg) scale(0.72) translateZ(0); }
+            100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1) translateZ(0); }
+        }
+
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* ----- RING TRACK (decorative dashed circles) ----- */
@@ -363,8 +379,31 @@
             pointer-events: none;
             transform: translate(-50%, -50%);
         }
-        .ring-track.inner { width: 220px; height: 220px; }
-        .ring-track.outer { width: 380px; height: 380px; }
+        .ring-track.inner { width: 220px; height: 220px; animation: pulseTrackInner 4s linear infinite; }
+        .ring-track.outer { width: 380px; height: 380px; animation: pulseTrackOuter 5s linear infinite; }
+
+        @keyframes pulseTrackInner {
+            0%   { transform: translate(-50%, -50%) scale(1); }
+            12.5%{ transform: translate(-50%, -50%) scale(0.67); }
+            25%  { transform: translate(-50%, -50%) scale(0.35); }
+            37.5%{ transform: translate(-50%, -50%) scale(0.82); }
+            50%  { transform: translate(-50%, -50%) scale(1.25); }
+            62.5%{ transform: translate(-50%, -50%) scale(0.82); }
+            75%  { transform: translate(-50%, -50%) scale(0.35); }
+            87.5%{ transform: translate(-50%, -50%) scale(0.67); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes pulseTrackOuter {
+            0%   { transform: translate(-50%, -50%) scale(1); }
+            12.5%{ transform: translate(-50%, -50%) scale(0.72); }
+            25%  { transform: translate(-50%, -50%) scale(0.45); }
+            37.5%{ transform: translate(-50%, -50%) scale(0.8); }
+            50%  { transform: translate(-50%, -50%) scale(1.15); }
+            62.5%{ transform: translate(-50%, -50%) scale(0.8); }
+            75%  { transform: translate(-50%, -50%) scale(0.45); }
+            87.5%{ transform: translate(-50%, -50%) scale(0.72); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
 
         /* ----- DIGITAL ASSIMILATION EFFECT ----- */
         .wrapper.pull-active .particle {
@@ -436,7 +475,7 @@
             
             /* Responsive adjustments for new footer */
             .shwari-footer { padding: 10px 18px; gap: 12px; }
-            .brand-text { font-size: 1.5rem; letter-spacing: 0.8px; } /* Scaled up for mobile too */
+            .brand-text { font-size: 1.5rem; letter-spacing: 0.8px; } 
             .collab-text { font-size: 0.65rem; }
             .ms-logo { width: 28px; height: 28px; }
         }
@@ -565,7 +604,7 @@
 
     <div class="app" id="app">
         <iframe id="macro-frame"
-            src="https://script.google.com/macros/s/AKfycbyHJteGZkegsPPfEQlA0EdQ1ocdsmg7U0sJldQULhtF3QGZw9xTJ-GzfBQPjFFnTT0S/exec">
+            src="https://script.google.com/macros/s/AKfycbwP_ESKXlDieyXd8JVg7JKC_XL8sBk_UOOv_0vIOy54IEek0vMB1-XJZI0LnMl8D9_C/exec">
         </iframe>
     </div>
 
