@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#001208">
+    <meta name="theme-color" content="#001208" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f0f7f2" media="(prefers-color-scheme: light)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
@@ -304,6 +305,295 @@
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
         .install-btn { background: transparent; color: #55d082; border: 2px solid #55d082; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; font-family: 'Inter', sans-serif; transition: all 0.3s ease;}
         .install-btn:hover { background: #55d082; color: #001208; }
+
+
+        /* =========================================
+           6. LIGHT / DARK THEME ADAPTATION
+           ========================================= */
+
+        /* --- LIGHT THEME OVERRIDES --- */
+        @media (prefers-color-scheme: light) {
+
+            /* Page background: soft fresh light green instead of deep black */
+            html, body {
+                background-color: #e8f5ed;
+            }
+
+            /* Particles adapt to be visible on light bg */
+            .p2 { background: #2c7a47 !important; box-shadow: 0 0 10px #2c7a47 !important; }
+            .p4 { background: #444444 !important; box-shadow: 0 0 10px #444444 !important; }
+
+            /* Continue overlay header text */
+            .dept-title { color: #0a2e16; text-shadow: 0 2px 8px rgba(255,255,255,0.4); }
+            .dept-subtitle { color: #1f6e3f; }
+
+            /* Continue footer gradient — light bottom fade */
+            .continue-footer {
+                background: linear-gradient(
+                    to top,
+                    rgba(220, 245, 230, 0.98) 0%,
+                    rgba(220, 245, 230, 0.85) 40%,
+                    rgba(220, 245, 230, 0) 100%
+                );
+            }
+
+            /* Employee name and email on light bg */
+            .medium-font { color: #0a2e16; }
+            .small-email  { color: #3a5c45; }
+
+            /* Auth portal backdrop */
+            #auth-portal {
+                background: rgba(200, 240, 215, 0.75);
+            }
+
+            /* Device error screen */
+            #device-error {
+                background: rgba(230, 248, 237, 0.98);
+            }
+            .error-card {
+                background: rgba(255, 255, 255, 0.9);
+                border-color: rgba(44, 122, 71, 0.25);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+            }
+            .error-card p { color: #4a6a55; }
+
+            /* Forced install screen */
+            #forcedInstall {
+                background: rgba(225, 245, 232, 0.97);
+            }
+            .install-card {
+                background: rgba(255, 255, 255, 0.95);
+                border-color: rgba(44, 122, 71, 0.2);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+            }
+            .install-card p { color: #4a6a55; }
+
+            /* App iframe background */
+            .app { background: #e8f5ed; }
+            iframe { background: #e8f5ed; }
+
+            /* Shockwave border on light bg */
+            .shockwave { border-color: #2c7a47; }
+
+            /* Core outer ring slightly more visible on light */
+            .core-outer {
+                box-shadow: 0 0 20px rgba(44, 122, 71, 0.5);
+            }
+        }
+
+
+        /* =========================================
+           7. INSTALL PROGRESS / ANIMATION SCREEN
+           ========================================= */
+
+        #install-progress-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 40px 30px;
+            font-family: 'Inter', sans-serif;
+
+            /* Dark default */
+            background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
+                        radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
+                        #001208;
+            transition: opacity 0.8s ease;
+        }
+
+        #install-progress-screen.active { display: flex; }
+        #install-progress-screen.fade-out { opacity: 0; pointer-events: none; }
+
+        /* Light theme override for install screen */
+        @media (prefers-color-scheme: light) {
+            #install-progress-screen {
+                background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
+                            radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.08) 0%, transparent 60%),
+                            #e8f5ed;
+            }
+        }
+
+        /* ---- App Icon ---- */
+        .install-app-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 28px;
+            background: linear-gradient(145deg, #1f6e3f 0%, #55d082 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #ffffff;
+            box-shadow: 0 12px 40px rgba(85, 208, 130, 0.45),
+                        inset 0 1px 0 rgba(255,255,255,0.3);
+            margin-bottom: 32px;
+            animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes iconBounceIn {
+            0%   { opacity: 0; transform: scale(0.4) rotate(-10deg); }
+            60%  { opacity: 1; transform: scale(1.1) rotate(2deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        /* ---- Install title ---- */
+        .install-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.3s forwards;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .install-title { color: #ffffff; }
+        }
+        @media (prefers-color-scheme: light) {
+            .install-title { color: #0a2e16; }
+        }
+
+        .install-subtitle {
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 50px;
+            color: #55d082;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.45s forwards;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- Progress track ---- */
+        .install-track-wrap {
+            width: 100%;
+            max-width: 280px;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.6s forwards;
+        }
+
+        .install-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .install-track { background: rgba(255,255,255,0.1); }
+        }
+        @media (prefers-color-scheme: light) {
+            .install-track { background: rgba(44, 122, 71, 0.15); }
+        }
+
+        .install-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #2c7a47, #55d082, #2c7a47);
+            background-size: 200% 100%;
+            animation: barShimmer 1.8s linear infinite;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes barShimmer {
+            0%   { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
+
+        .install-status-text {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            transition: opacity 0.3s ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .install-status-text { color: rgba(255,255,255,0.5); }
+        }
+        @media (prefers-color-scheme: light) {
+            .install-status-text { color: rgba(10, 46, 22, 0.5); }
+        }
+
+        /* ---- Tick / Done state ---- */
+        .install-tick {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c7a47, #55d082);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #ffffff;
+            margin-top: 30px;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 30px rgba(85, 208, 130, 0.5);
+        }
+
+        .install-tick.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ---- Ripple rings around tick ---- */
+        .tick-ripple {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(85, 208, 130, 0.6);
+            opacity: 0;
+        }
+
+        .tick-ripple.animate {
+            animation: tickRipple 1.4s ease-out forwards;
+        }
+
+        @keyframes tickRipple {
+            0%   { transform: scale(1);   opacity: 0.7; }
+            100% { transform: scale(2.4); opacity: 0;   }
+        }
+
+        .tick-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* ---- Floating install particles ---- */
+        .install-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .ip1 { width: 8px;  height: 8px;  background: #55d082; top: 15%; left: 10%; animation: installFloat 3.5s ease-in-out 0.8s infinite; }
+        .ip2 { width: 5px;  height: 5px;  background: rgba(85,208,130,0.5); top: 70%; right: 12%; animation: installFloat 4.2s ease-in-out 1.2s infinite; }
+        .ip3 { width: 10px; height: 10px; background: rgba(44,122,71,0.7); bottom: 20%; left: 20%; animation: installFloat 5.0s ease-in-out 0.4s infinite; }
+        .ip4 { width: 6px;  height: 6px;  background: #b78a1a; top: 30%; right: 8%; animation: installFloat 3.8s ease-in-out 1.8s infinite; }
+
+        @keyframes installFloat {
+            0%,100% { opacity: 0.5; transform: translateY(0) scale(1);     }
+            50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
+        }
+
     </style>
 </head>
 <body>
@@ -378,6 +668,45 @@
     <div class="app" id="app">
         <iframe id="macro-frame"></iframe>
     </div>
+
+
+    <!-- =====================================================
+         INSTALL PROGRESS SCREEN  (new — does not touch above)
+         ===================================================== -->
+    <div id="install-progress-screen">
+        <!-- floating ambient particles -->
+        <div class="install-particle ip1"></div>
+        <div class="install-particle ip2"></div>
+        <div class="install-particle ip3"></div>
+        <div class="install-particle ip4"></div>
+
+        <!-- App icon -->
+        <div class="install-app-icon">
+            <i class="fas fa-elephant"></i>
+        </div>
+
+        <!-- Titles -->
+        <p class="install-title">Installing Shwari Finance</p>
+        <p class="install-subtitle">Setting up your portal</p>
+
+        <!-- Progress bar -->
+        <div class="install-track-wrap">
+            <div class="install-track">
+                <div class="install-bar" id="install-bar"></div>
+            </div>
+            <p class="install-status-text" id="install-status-text">Preparing files…</p>
+        </div>
+
+        <!-- Success tick (hidden until done) -->
+        <div class="tick-wrap" id="tick-wrap">
+            <div class="tick-ripple" id="tick-ripple-1"></div>
+            <div class="tick-ripple" id="tick-ripple-2" style="animation-delay:0.3s;"></div>
+            <div class="install-tick" id="install-tick">
+                <i class="fas fa-check"></i>
+            </div>
+        </div>
+    </div>
+
 
     <script>
     (function () {
@@ -532,6 +861,72 @@
             }, 300); // Slight overlap ensures no visual stutter
         };
 
+
+        /* =====================================================
+           INSTALL PROGRESS SCREEN — new logic block
+           Runs AFTER install is accepted, before app opens.
+           ===================================================== */
+
+        const installScreen  = document.getElementById('install-progress-screen');
+        const installBar     = document.getElementById('install-bar');
+        const installStatus  = document.getElementById('install-status-text');
+        const installTick    = document.getElementById('install-tick');
+        const tickRipple1    = document.getElementById('tick-ripple-1');
+        const tickRipple2    = document.getElementById('tick-ripple-2');
+
+        const installSteps = [
+            { pct: 12, label: 'Downloading resources…'  },
+            { pct: 28, label: 'Verifying packages…'      },
+            { pct: 45, label: 'Configuring app data…'    },
+            { pct: 62, label: 'Securing your device…'    },
+            { pct: 80, label: 'Optimising performance…'  },
+            { pct: 95, label: 'Almost there…'            },
+            { pct: 100, label: 'Done!'                   },
+        ];
+
+        function runInstallAnimation(onComplete) {
+            installScreen.classList.add('active');
+
+            let step = 0;
+
+            function nextStep() {
+                if (step >= installSteps.length) return;
+                const s = installSteps[step++];
+                installBar.style.width = s.pct + '%';
+                installStatus.style.opacity = '0';
+                setTimeout(() => {
+                    installStatus.textContent = s.label;
+                    installStatus.style.opacity = '1';
+                }, 200);
+
+                if (s.pct < 100) {
+                    const delay = 350 + Math.random() * 300;
+                    setTimeout(nextStep, delay);
+                } else {
+                    // Show tick + ripple
+                    setTimeout(() => {
+                        installTick.classList.add('show');
+                        tickRipple1.classList.add('animate');
+                        setTimeout(() => { tickRipple2.classList.add('animate'); }, 300);
+
+                        // Auto-open after tick is shown
+                        setTimeout(() => {
+                            installScreen.classList.add('fade-out');
+                            setTimeout(() => {
+                                installScreen.style.display = 'none';
+                                if (typeof onComplete === 'function') onComplete();
+                            }, 800);
+                        }, 1800);
+                    }, 400);
+                }
+            }
+
+            // Small delay before starting so screen renders first
+            setTimeout(nextStep, 300);
+        }
+
+
+        /* ---- Patch the install flow ---- */
         let deferredPrompt;
         const installOverlay = document.getElementById('forcedInstall');
         const installBtn     = document.getElementById('installAction');
@@ -546,13 +941,34 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installOverlay.style.display = 'none';
+                if (outcome === 'accepted') {
+                    // Hide the install card and show progress screen
+                    installOverlay.style.opacity = '0';
+                    installOverlay.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        installOverlay.style.display = 'none';
+                        runInstallAnimation(() => {
+                            // Auto-open after install animation completes
+                            window.initAuth();
+                        });
+                    }, 500);
+                }
                 deferredPrompt = null;
             }
         });
 
         window.addEventListener('appinstalled', () => {
-            installOverlay.style.display = 'none';
+            // If appinstalled fires and progress screen isn't already running, run it now
+            if (!installScreen.classList.contains('active')) {
+                if (installOverlay.style.display !== 'none') {
+                    installOverlay.style.opacity = '0';
+                    installOverlay.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        installOverlay.style.display = 'none';
+                        runInstallAnimation(() => { window.initAuth(); });
+                    }, 500);
+                }
+            }
         });
 
         requestAnimationFrame(() => {
