@@ -148,32 +148,129 @@
         .auth-icon i { font-size: 3.5rem; color: #2c7a47; margin-bottom: 20px; background: #eef7f1; padding: 20px; border-radius: 50%; display: inline-block; }
         .auth-card h2 { font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
         
-        /* Redesigned Continue Screen */
-        .auth-avatar {
-            width: 90px; height: 90px; background: linear-gradient(135deg, #eef7f1, #ffffff); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; margin: 0 auto 25px;
-            border: 4px solid #fff; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.15);
+        /* Redesigned Continue Screen (Page 3/4) – Shwari Finance Department */
+        #login-screen {
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 520px;
+            padding: 40px 35px;
         }
-        .auth-avatar i { font-size: 2.5rem; color: #2c7a47; }
-        .welcome-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; color: #1f6e3f; font-weight: 800; margin-bottom: 8px; }
-        .medium-font { font-size: 1.7rem !important; color: #111; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 5px;}
-        .small-email { font-size: 0.95rem; color: #666; margin-bottom: 35px; font-weight: 500; }
 
-        /* Input & Button Styling */
-        .input-group input {
-            width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px;
-            font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none;
+        .department-header {
+            text-align: center;
+            margin-bottom: 15px;
         }
-        .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
+        .department-header h1 {
+            font-size: 2.1rem;
+            font-weight: 900;
+            letter-spacing: -1.2px;
+            background: linear-gradient(90deg, #2c7a47, #1f6e3f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            line-height: 1.1;
+        }
+        .department-header p {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #1f6e3f;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .employee-container {
+            position: relative;
+            width: 118px;
+            height: 118px;
+            margin: 25px auto 20px;
+        }
+
+        .loader-ring {
+            position: absolute;
+            inset: -12px;
+            border: 7px solid #e8f0e8;
+            border-top: 7px solid #2c7a47;
+            border-radius: 50%;
+            animation: loaderSpin 1.4s linear infinite;
+            box-shadow: 0 0 18px rgba(44, 122, 71, 0.3);
+        }
+
+        @keyframes loaderSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #login-screen .auth-avatar {
+            width: 118px !important;
+            height: 118px !important;
+            background: linear-gradient(135deg, #eef7f1, #ffffff);
+            border: 7px solid #fff;
+            box-shadow: 
+                0 0 0 8px rgba(44, 122, 71, 0.15),
+                0 15px 35px rgba(44, 122, 71, 0.25);
+            animation: employeeIconRotate 18s linear infinite, employeePulse 2.8s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        #login-screen .auth-avatar i {
+            font-size: 3.4rem !important;
+            color: #2c7a47;
+        }
+
+        @keyframes employeeIconRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes employeePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .welcome-label { 
+            font-size: 0.95rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: #1f6e3f; 
+            font-weight: 800; 
+            margin-bottom: 6px; 
+            background: #f0f7f2;
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 30px;
+        }
+        .medium-font { font-size: 1.75rem !important; color: #111; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 4px;}
+        .small-email { font-size: 0.98rem; color: #555; margin-bottom: 30px; font-weight: 600; }
+
+        /* Continue button moved to footer with premium design */
+        .continue-footer {
+            margin-top: auto;
+            padding-top: 25px;
+            border-top: 1px solid #f1f5f3;
+            width: 100%;
+        }
 
         .auth-btn {
             width: 100%; padding: 20px; background: linear-gradient(135deg, #2c7a47, #1f6e3f); color: white;
-            border: none; border-radius: 16px; font-size: 1.15rem; font-weight: 700; cursor: pointer; display: flex;
+            border: none; border-radius: 16px; font-size: 1.18rem; font-weight: 700; cursor: pointer; display: flex;
             justify-content: center; align-items: center; gap: 12px; transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 10px 20px rgba(44, 122, 71, 0.25);
+            box-shadow: 0 12px 28px rgba(44, 122, 71, 0.3);
         }
-        .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
-        .auth-btn i { font-size: 1.2rem; }
+        .auth-btn:active { transform: scale(0.96); box-shadow: 0 6px 14px rgba(44, 122, 71, 0.25); }
+        .auth-btn i { font-size: 1.25rem; }
+
+        /* Extra micro-animations for continue page */
+        #login-screen .department-header {
+            animation: titleFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+        #login-screen .employee-container {
+            animation: containerPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes titleFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes containerPop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 
         /* =========================================
            3. RESTRICTION SCREENS & IFRAME
@@ -192,7 +289,17 @@
         .install-card { background: white; width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.15); font-family: 'Inter', sans-serif; }
         .install-btn { background: transparent; color: #222; border: 2px solid #222; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;}
 
-        @media (max-width: 500px) { .main-icon { width: 96px; height: 96px; } .orbit-inner { width: 190px; height: 190px; } .ring-track.inner { width: 190px; height: 190px; } .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; } .orbit-outer { width: 300px; height: 300px; } .ring-track.outer { width: 300px; height: 300px; } .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; } }
+        @media (max-width: 500px) { 
+            .main-icon { width: 96px; height: 96px; } 
+            .orbit-inner { width: 190px; height: 190px; } 
+            .ring-track.inner { width: 190px; height: 190px; } 
+            .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; } 
+            .orbit-outer { width: 300px; height: 300px; } 
+            .ring-track.outer { width: 300px; height: 300px; } 
+            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; } 
+            #login-screen .auth-avatar { width: 102px !important; height: 102px !important; }
+            #login-screen .employee-container { width: 102px; height: 102px; }
+        }
     </style>
 </head>
 <body>
@@ -231,15 +338,28 @@
             <button onclick="handleRegister()" class="auth-btn">Activate Device</button>
         </div>
 
+        <!-- WELL-DESIGNED CONTINUE PAGE (PAGE 3/4) – SHWARI FINANCE DEPARTMENT -->
         <div id="login-screen" class="auth-card hidden">
-            <div class="auth-avatar"><i class="fas fa-user-lock"></i></div>
-            <p class="welcome-label">Welcome to Shwari</p>
+            <div class="department-header">
+                <h1>Shwari Finance</h1>
+                <p>DEPARTMENT</p>
+            </div>
+
+            <div class="employee-container">
+                <div class="loader-ring"></div>
+                <div class="auth-avatar"><i class="fas fa-user-tie"></i></div>
+            </div>
+
+            <p class="welcome-label">Verified Employee Access</p>
             <h2 id="display-name" class="medium-font"></h2>
             <p id="display-email" class="small-email"></p>
             
-            <button onclick="handleContinue()" class="auth-btn">
-                <span>Access Dashboard</span> <i class="fas fa-arrow-right"></i>
-            </button>
+            <div class="continue-footer">
+                <button onclick="handleContinue()" class="auth-btn">
+                    <span>Continue to Dashboard</span> 
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -280,7 +400,6 @@
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
         /* ── 1. BACKGROUND PRELOADER (SUPER FAST LOAD) ── */
-        // This fires immediately, caching the Google Script in the background while the user looks at the Auth screen.
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -332,13 +451,12 @@
         };
 
         const isPWA = () => {
-            return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.navigator.standalone === true || 
+            return window.matchMedia('(display-mode: standalone)').matches ||  
+                   window.navigator.standalone === true ||  
                    document.referrer.includes('android-app://');
         };
 
         window.initAuth = () => {
-            // Block normal browser tabs, enforce App installation
             if (!isPWA()) {
                 document.getElementById('forcedInstall').style.display = 'flex';
                 return; 
@@ -372,13 +490,11 @@
         };
 
         window.handleContinue = () => {
-            // 1. Hide the Auth Portal Smoothly
             const authPortal = document.getElementById('auth-portal');
             authPortal.style.transform = 'scale(1.1)';
             authPortal.style.opacity = '0';
             setTimeout(() => { authPortal.style.display = 'none'; }, 500);
 
-            // 2. Trigger Assimilation Animation
             executeTransition();
         };
 
@@ -398,7 +514,6 @@
                 });
             });
 
-            // After animation, reveal the pre-loaded iframe instantly
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
