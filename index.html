@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <title>Shwari Finance · Secure Portal</title>
+    <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="preload" as="image" href="https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg">
     <link rel="manifest" href="manifest.json">
@@ -15,7 +15,7 @@
     
     <style>
         /* =========================================
-           1. BASE STYLES & BACKGROUND
+           1. BASE STYLES & IMAGE BACKGROUND
            ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -26,192 +26,166 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
+            background-color: #001208;
         }
 
         html { font-size: 5px !important; }
 
         /* =========================================
-           2. PULL IN/OUT ANIMATION WRAPPER
+           2. PARALLAX WRAPPER & ANIMATIONS
            ========================================= */
         .wrapper {
-            position: relative; width: min(500px, 92vw); height: min(500px, 92vw);
+            position: absolute; width: min(500px, 92vw); height: min(500px, 92vw);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; transform: scale(0.8);
             transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform-style: preserve-3d; will-change: transform, opacity; z-index: 10;
+            transform-style: preserve-3d; will-change: transform, opacity;
+            z-index: 10;
         }
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        /* The Core Icon that sucks in and explodes */
+        /* HUGE FINGERPRINT CENTER */
         .main-icon {
-            position: relative; width: 120px; height: 120px; border-radius: 50%;
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            position: relative; width: 140px; height: 140px; border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff, #f0f8f3);
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06);
-            border: 2px solid rgba(255,255,255,0.95); z-index: 60;
-            animation: breathe 4s ease-in-out infinite; will-change: transform, box-shadow;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(255,255,255,0.9);
+            z-index: 60; animation: breathe 4s ease-in-out infinite; will-change: transform, box-shadow;
         }
-
         @keyframes breathe {
-            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0,0,0,0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06); }
-            50% { transform: scale(1.04) translateZ(0); box-shadow: 0 26px 50px rgba(0,0,0,0.14), 0 0 0 8px rgba(255,255,255,0.85), 0 0 0 11px rgba(0,0,0,0.06); }
+            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 0 4px rgba(255,255,255,0.9); }
+            50% { transform: scale(1.05) translateZ(0); box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 6px rgba(255,255,255,0.9); }
         }
 
-        .person-icon { font-size: 3.5rem; color: #2c7a47; transition: opacity 0.3s ease; }
-
-        .shockwave {
-            position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%;
-            border: 2px solid #333333; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none;
+        .huge-fingerprint {
+            font-size: 65px; /* Fixed PX ensures it stays huge regardless of root scale */
+            background: linear-gradient(270deg, #2c7a47, #1f6e3f, #00796b, #004d40); background-size: 400% 400%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: colorShift 5s ease infinite; transition: opacity 0.3s;
         }
 
+        .loader-ring {
+            position: absolute; inset: -8px; border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #55d082; border-bottom-color: #2c7a47; border-radius: 50%;
+            animation: spinLoader 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; transition: opacity 0.3s;
+        }
+        @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* PARTICLES & SHOCKWAVE */
+        .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
         .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
-        .wrapper.pop-in .particle { opacity: 0.5; }
-        .p1 { width: 10px; height: 10px; top: 8%;  left: 15%; background: #2c7a47; animation-duration: 4.2s; }
-        .p2 { width: 6px;  height: 6px;  top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; }
-        .p3 { width: 14px; height: 14px; top: 70%; left: 8%;  background: #b78a1a; animation-duration: 5.4s; }
-        .p4 { width: 7px;  height: 7px;  top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
+        .wrapper.pop-in .particle { opacity: 0.6; }
+        .p1 { width: 12px; height: 12px; top: 10%; left: 20%; background: #55d082; animation-duration: 4.2s; box-shadow: 0 0 10px #55d082;}
+        .p2 { width: 8px;  height: 8px;  top: 80%; left: 80%; background: #ffffff; animation-duration: 6.0s; box-shadow: 0 0 10px #ffffff;}
+        .p3 { width: 16px; height: 16px; top: 75%; left: 15%; background: #b78a1a; animation-duration: 5.4s; box-shadow: 0 0 10px #b78a1a;}
+        .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #dddddd; animation-duration: 7.0s; box-shadow: 0 0 10px #dddddd;}
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.1); } }
 
-        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0) translateZ(0); } 50% { transform: translateY(-15px) scale(1.1) translateZ(0); } }
-
-        .ring-track { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px dashed rgba(0,0,0,0.2); pointer-events: none; transform: translate(-50%, -50%); }
-        .ring-track.inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; }
-        .ring-track.outer { width: 380px; height: 380px; animation: rotatePulseCounter 5s linear infinite; }
-
-        @keyframes rotatePulseClockwise { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); } }
-        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15); } 100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1); } }
-
-        /* ----- DIGITAL ASSIMILATION EFFECT (PULL IN/OUT) ----- */
+        /* INWARD / OUTWARD PULLING ANIMATION (DIGITAL ASSIMILATION) */
         .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; transition-duration: 0.4s !important; }
-        .wrapper.pull-active .person-icon { opacity: 0; transition-delay: 0.85s; }
-        .wrapper.pull-active .main-icon { animation: breathe 4s infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; }
+        .wrapper.pull-active .loader-ring { opacity: 0 !important; }
+        .wrapper.pull-active .huge-fingerprint { opacity: 0 !important; transition-delay: 0.2s; }
+        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.5s forwards; }
+        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; }
 
-        @keyframes dataProcess { 0% { transform: scale(1); border-color: white; } 35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } }
-        @keyframes rippleOut { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; } 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; } }
+        @keyframes dataProcess { 
+            0% { transform: scale(1); border-color: white; } 
+            35% { transform: scale(0.5); box-shadow: 0 0 40px #555; background: #222;} 
+            58% { transform: scale(1.5); box-shadow: 0 0 60px #fff; background: #ffffff; border-color: transparent; } 
+            100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } 
+        }
+        @keyframes rippleOut { 
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #fff; } 
+            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #fff; } 
+        }
 
         /* =========================================
-           3. PREMIUM GLASSMORPHISM AUTH PORTAL 
+           3. AUTO-CONTINUE SCREEN OVERLAY
            ========================================= */
-        
-        @keyframes colorShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        #continue-overlay {
+            position: fixed; inset: 0; z-index: 50; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: opacity 0.5s ease;
         }
+        #continue-overlay.hidden { display: none; opacity: 0; }
 
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
+        .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
+
+        /* SEAMLESS TRANSLUCENT FOOTER */
+        .continue-footer {
+            padding: 80px 20px 40px; text-align: center;
+            background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%);
+        }
+        .welcome-label { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: #55d082; font-weight: 800; margin-bottom: 12px; animation: pulseText 2s infinite; font-family: 'Inter', sans-serif;}
+        .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2; font-family: 'Inter', sans-serif;}
+        .small-email { font-size: 16px; color: #dddddd; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px;}
+
+        @keyframes pulseText { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.02); } }
+
+        /* =========================================
+           4. REGISTRATION PORTAL (First Time Only)
+           ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: opacity 0.6s ease, transform 0.6s ease;
+            background: rgba(0, 20, 10, 0.6); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: opacity 0.5s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
-        /* REGISTRATION CARD */
         .auth-card {
             width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(240,250,245,0.8), rgba(255,245,245,0.8), rgba(245,245,255,0.8));
-            background-size: 400% 400%; box-shadow: 0 30px 60px rgba(0,0,0,0.2), inset 0 0 0 1.5px rgba(255,255,255,0.6); 
-            text-align: center; animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1), colorShift 15s ease infinite; 
-            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
+            animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
         }
-
-        /* FULL SCREEN AUTO-CONTINUE CARD */
-        .full-screen-card {
-            height: 85vh; display: flex; flex-direction: column; justify-content: center;
-            padding: 50px 30px; border-radius: 40px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(235,250,242,0.8), rgba(230,240,250,0.85));
-            background-size: 400% 400%;
-            animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1), colorShift 12s ease infinite;
-        }
-
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
 
-        /* Registration Icon Gradient */
-        .auth-icon i { 
-            font-size: 3.5rem; margin-bottom: 20px; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 50%; display: inline-block;
-            background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
+        .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
+        .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
+        .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
-        /* Header Styling */
-        .dept-header { margin-bottom: 30px; }
-        .dept-title { font-size: 1.6rem; font-weight: 900; color: #1f6e3f; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3;}
-        .dept-subtitle { font-size: 0.95rem; color: #666; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; font-weight: 600;}
-
-        /* ELEGANT HUGE FINGERPRINT & Rotating Loader */
-        .avatar-wrapper {
-            position: relative; width: 160px; height: 160px; margin: 0 auto 30px;
-            display: flex; justify-content: center; align-items: center;
-        }
-        
-        .loader-ring {
-            position: absolute; inset: 0; border: 4px solid rgba(44, 122, 71, 0.1);
-            border-top-color: #2c7a47; border-bottom-color: #00796b; border-radius: 50%;
-            animation: spinLoader 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-        }
-        @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .inner-avatar {
-            width: 130px; height: 130px; background: rgba(255,255,255,0.9); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            border: 4px solid #fff; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.2); z-index: 2;
-        }
-        
-        /* The Huge Shifting Fingerprint */
-        .inner-avatar i { 
-            font-size: 5rem; 
-            background: linear-gradient(270deg, #2c7a47, #1f6e3f, #00796b, #004d40); background-size: 400% 400%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 4s ease infinite;
-        }
-
-        /* Typography */
-        .welcome-label { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1.5px; color: #888; font-weight: 800; margin-bottom: 8px; }
-        .medium-font { font-size: 2.2rem !important; color: #111; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 5px; line-height: 1.2;}
-        .small-email { font-size: 1.1rem; color: #555; margin-bottom: 35px; font-weight: 600; background: rgba(255,255,255,0.7); padding: 8px 20px; border-radius: 20px; display: inline-block; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
-        
-        /* Dynamic Status Text (Replaces Continue Button) */
-        .status-msg { font-size: 1.2rem; font-weight: 800; color: #2c7a47; letter-spacing: 1px; animation: pulseText 1.5s infinite; margin-top: auto;}
-        @keyframes pulseText { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.98); } }
-
-        /* Inputs & Buttons (Registration Only) */
-        .input-group input { width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: rgba(255,255,255,0.9); transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
         .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
-        .auth-btn { width: 100%; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 1.25rem; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite;}
+
+        .auth-btn { width: 100%; pointer-events: auto; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif;}
         .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
 
         /* =========================================
-           4. RESTRICTION SCREENS & IFRAME
+           5. RESTRICTION SCREENS & IFRAME
            ========================================= */
         .app { position: fixed; inset: 0; opacity: 0; visibility: hidden; background: transparent; z-index: 2000; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); transform: scale(1.05); }
         .app.active { opacity: 1; visibility: visible; transform: scale(1); }
         iframe { width: 100%; height: 100%; border: none; background: transparent; }
 
-        #device-error { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
         .error-card { background: white; max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
-        .error-card h2 { font-size: 1.5rem; color: #111; font-weight: 800; margin-bottom: 15px; }
-        .error-card p { font-size: 1rem; color: #666; line-height: 1.6; }
+        .error-card h2 { font-size: 24px; color: #111; font-weight: 800; margin-bottom: 15px; }
+        .error-card p { font-size: 16px; color: #666; line-height: 1.6; }
         @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
-        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: white; width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.15); font-family: 'Inter', sans-serif; }
-        .install-btn { background: transparent; color: #222; border: 2px solid #222; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;}
+        .install-btn { background: transparent; color: #222; border: 2px solid #222; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; font-family: 'Inter', sans-serif;}
     </style>
 </head>
 <body>
 
     <div id="device-error">
         <div class="error-card">
-            <i class="fas fa-mobile-screen" style="font-size:3.5rem; color:#2c7a47; margin-bottom:20px;"></i>
+            <i class="fas fa-mobile-screen" style="font-size:60px; color:#2c7a47; margin-bottom:20px;"></i>
             <h2>Mobile Portrait Only</h2>
-            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device to access your dashboard.</p>
+            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone to access your dashboard.</p>
         </div>
     </div>
 
     <div id="forcedInstall">
         <div class="install-card">
-            <i class="fas fa-mobile-screen-button" style="font-size:4rem; color:#222; margin-bottom:20px;"></i>
-            <h2 style="font-size: 1.6rem; font-weight: 800; color: #111; margin-bottom: 12px;">Install App to Continue</h2>
-            <p style="font-size: 1rem; color: #666; margin-bottom: 30px;">For your security, Shwari Finance must be installed to your phone to access the dashboard.</p>
+            <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#222; margin-bottom:20px;"></i>
+            <h2 style="font-size: 24px; font-weight: 800; color: #111; margin-bottom: 12px;">Install App to Continue</h2>
+            <p style="font-size: 15px; color: #666; margin-bottom: 30px;">For your security, Shwari Finance must be installed to your phone to access the dashboard.</p>
             <button class="install-btn" id="installAction">
                 <i class="fas fa-download"></i> <span>Install Now</span>
             </button>
@@ -219,52 +193,43 @@
     </div>
 
     <div id="auth-portal" class="hidden">
-        
         <div id="reg-screen" class="auth-card hidden">
-            <div class="auth-icon"><i class="fas fa-shield-alt"></i></div>
-            <h2 style="font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 5px;">Device Activation</h2>
-            <p style="font-size: 1rem; color: #666; margin-bottom:25px;">Register this device once to secure access.</p>
+            <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
+            <h2>Device Activation</h2>
+            <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
-                <input type="text" id="reg-name" placeholder="Full Name (e.g. Emilio Thuku)" autocomplete="off">
+                <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname)" autocomplete="off">
             </div>
             <div class="input-group">
-                <input type="email" id="reg-email" placeholder="Work Email" autocomplete="off">
+                <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="off">
             </div>
             <button onclick="handleRegister()" class="auth-btn">Activate Device</button>
         </div>
+    </div>
 
-        <div id="login-screen" class="auth-card full-screen-card hidden">
-            
-            <div class="dept-header">
-                <h3 class="dept-title">Shwari Finance<br>Department</h3>
-                <p class="dept-subtitle">Secure Portal</p>
-            </div>
+    <div id="continue-overlay" class="hidden">
+        <div class="continue-header">
+            <h3 class="dept-title">Shwari Finance<br>Department</h3>
+            <p class="dept-subtitle">Secure Portal</p>
+        </div>
 
-            <div class="card-body">
-                <div class="avatar-wrapper">
-                    <div class="loader-ring"></div>
-                    <div class="inner-avatar"><i class="fas fa-fingerprint"></i></div>
-                </div>
-                
-                <p class="welcome-label">Employee Recognized</p>
-                <h2 id="display-name" class="medium-font"></h2>
-                <p id="display-email" class="small-email"></p>
-            </div>
-            
-            <div id="status-msg" class="status-msg">Authenticating...</div>
+        <div class="continue-footer">
+            <p class="welcome-label">Authenticating Employee...</p>
+            <h2 id="display-name" class="medium-font"></h2>
+            <p id="display-email" class="small-email"></p>
         </div>
     </div>
 
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
-        <div class="ring-track inner"></div>
-        <div class="ring-track outer"></div>
         <div class="particle p1"></div>
         <div class="particle p2"></div>
         <div class="particle p3"></div>
         <div class="particle p4"></div>
+        
         <div class="main-icon">
-            <i class="fas fa-fingerprint person-icon"></i>
+            <div class="loader-ring"></div>
+            <i class="fas fa-fingerprint huge-fingerprint"></i>
         </div>
     </div>
 
@@ -279,6 +244,7 @@
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
         /* ── 1. BACKGROUND PRELOADER (ZERO WHITE DELAY) ── */
+        // We inject the link IMMEDIATELY to preload in the hidden iframe.
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -286,6 +252,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
+                    .then(r  => console.log('SW registered:', r.scope))
                     .catch(e => console.error('SW failed:', e));
             });
         }
@@ -295,8 +262,7 @@
         const appPanel  = document.getElementById('app');
         
         let isParallaxActive = true;
-        let targetX = 0, targetY = 0;
-        let currentX = 0, currentY = 0;
+        let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
         let rafId;
 
         const onPointerMove = (e) => {
@@ -322,7 +288,7 @@
         document.addEventListener('mousemove', onPointerMove, { passive: true });
         document.addEventListener('touchmove', onPointerMove, { passive: true });
 
-        /* ── 4. SECURITY & AUTO-AUTH LOGIC ── */
+        /* ── 4. SECURITY, FORMATTING & AUTO-LOGIN LOGIC ── */
         const formatName = (str) => {
             if (!str) return "";
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -341,34 +307,24 @@
             }
 
             const isRegistered = localStorage.getItem('shwari_registered');
-            const authPortal = document.getElementById('auth-portal');
-            authPortal.classList.remove('hidden');
 
             if (isRegistered === 'true') {
-                // Populate Identity
+                // Populate Overlay Text
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
                 document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
-                document.getElementById('login-screen').classList.remove('hidden');
+                
+                // Show Header & Footer seamlessly over the image
+                document.getElementById('continue-overlay').classList.remove('hidden');
 
-                // AUTOMATIC LOGIN SEQUENCE (No Button Required)
+                // AUTO-TRIGGER ANIMATION AFTER 3.5 SECONDS (No Click Required)
                 setTimeout(() => {
-                    const statusEl = document.getElementById('status-msg');
-                    statusEl.innerText = "Securing Connection...";
-                    
-                    setTimeout(() => {
-                        // Dissolve the glass portal
-                        authPortal.style.transform = 'scale(1.1)';
-                        authPortal.style.opacity = '0';
-                        
-                        setTimeout(() => { 
-                            authPortal.style.display = 'none'; 
-                            executeTransition(); // Trigger the massive suck-in/explode
-                        }, 600);
-                    }, 1500); // Time showing "Securing Connection..."
-
-                }, 1500); // Time showing "Authenticating..."
+                    handleContinue();
+                }, 3500);
 
             } else {
+                // First Time: Show Registration Portal
+                const authPortal = document.getElementById('auth-portal');
+                authPortal.classList.remove('hidden');
                 document.getElementById('reg-screen').classList.remove('hidden');
             }
         };
@@ -387,7 +343,19 @@
             }
         };
 
-        /* ── 5. ASSIMILATION TRANSITION (PULL & EXPLODE) ── */
+        window.handleContinue = () => {
+            // Fade out the Header & Footer text smoothly
+            const continueOverlay = document.getElementById('continue-overlay');
+            continueOverlay.style.opacity = '0';
+            
+            setTimeout(() => { 
+                continueOverlay.style.display = 'none'; 
+                // Trigger Background Assimilation Animation
+                executeTransition();
+            }, 500);
+        };
+
+        /* ── 5. ASSIMILATION TRANSITION (WIPE & REVEAL) ── */
         const executeTransition = () => {
             if (!isParallaxActive) return;
             isParallaxActive = false;
@@ -395,6 +363,7 @@
             document.removeEventListener('mousemove', onPointerMove);
             document.removeEventListener('touchmove', onPointerMove);
 
+            // Snap parallax to center for wipe
             uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
 
             requestAnimationFrame(() => {
@@ -403,7 +372,7 @@
                 });
             });
 
-            // Smooth scale-in reveal of the preloaded app (Zero white flash)
+            // Smooth scale-in reveal of the preloaded app iframe
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
