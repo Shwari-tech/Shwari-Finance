@@ -47,12 +47,11 @@
         /* HUGE FINGERPRINT CENTER (Transparent, Breathing, Glowing) */
         .main-icon {
             position: relative; width: 150px; height: 150px; border-radius: 50%;
-            background: transparent; /* Removed white background */
+            background: transparent;
             display: flex; justify-content: center; align-items: center;
             z-index: 60; animation: breathe 3s ease-in-out infinite; will-change: transform;
         }
         
-        /* Breathing Animation */
         @keyframes breathe {
             0%, 100% { transform: scale(1) translateZ(0); }
             50% { transform: scale(1.1) translateZ(0); }
@@ -64,7 +63,7 @@
             background-size: 400% 400%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: colorShift 4s ease infinite; transition: opacity 0.3s;
-            filter: drop-shadow(0 0 18px rgba(85, 208, 130, 0.8)); /* Radiant Glow */
+            filter: drop-shadow(0 0 18px rgba(85, 208, 130, 0.8)); 
         }
 
         .loader-ring {
@@ -93,7 +92,6 @@
         .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.5s forwards; }
         .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; }
 
-        /* Updated to transition into the white flash from a transparent state */
         @keyframes dataProcess { 
             0% { transform: scale(1); background: transparent; } 
             35% { transform: scale(0.5); filter: drop-shadow(0 0 40px #55d082); background: transparent;} 
@@ -123,7 +121,36 @@
         .continue-footer {
             padding: 80px 20px 40px; text-align: center;
             background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%);
+            min-height: 250px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
         }
+        
+        /* 🐘 LIVE ELEPHANT ANIMATION */
+        .elephant-wrapper {
+            position: relative; display: inline-flex; justify-content: center; align-items: center;
+            width: 80px; height: 80px; margin-bottom: 20px;
+            animation: floatElephant 3s ease-in-out infinite; transition: opacity 0.4s ease;
+        }
+        .live-elephant {
+            font-size: 55px; 
+            filter: drop-shadow(0 0 15px rgba(85, 208, 130, 0.9)) contrast(1.2);
+        }
+        .scan-line {
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: #55d082; box-shadow: 0 0 10px #55d082, 0 0 20px #55d082;
+            animation: scan 1.5s linear infinite; border-radius: 5px;
+        }
+        
+        @keyframes scan { 0% { top: -10%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
+        @keyframes floatElephant { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        /* USER UNLOCK DETAILS */
+        #user-details {
+            opacity: 0; display: none; transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .unlock-icon { font-size: 26px; color: #55d082; margin-bottom: 12px; animation: unlockPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes unlockPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
         .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2; font-family: 'Inter', sans-serif;}
         .small-email { font-size: 16px; color: #dddddd; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px;}
 
@@ -141,12 +168,13 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
-            transition: transform 0.5s ease, opacity 0.5s ease;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
         }
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
 
-        .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
+        /* Replaced Fingerprint with Shield */
+        .auth-icon i { font-size: 45px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
         .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
         .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
@@ -197,7 +225,7 @@
 
     <div id="auth-portal" class="hidden">
         <div id="reg-screen" class="auth-card hidden">
-            <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
+            <div class="auth-icon"><i class="fas fa-shield-halved"></i></div>
             <h2>Device Activation</h2>
             <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
@@ -217,8 +245,18 @@
         </div>
 
         <div class="continue-footer">
-            <h2 id="display-name" class="medium-font"></h2>
-            <p id="display-email" class="small-email"></p>
+            
+            <div id="elephant-loader" class="elephant-wrapper">
+                <span class="live-elephant">🐘</span>
+                <div class="scan-line"></div>
+            </div>
+
+            <div id="user-details">
+                <div class="unlock-icon"><i class="fas fa-lock-open"></i></div>
+                <h2 id="display-name" class="medium-font"></h2>
+                <p id="display-email" class="small-email"></p>
+            </div>
+
         </div>
     </div>
 
@@ -246,7 +284,6 @@
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
         /* ── 1. BACKGROUND PRELOADER (ZERO WHITE DELAY) ── */
-        // We inject the link IMMEDIATELY to preload in the hidden iframe.
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -302,6 +339,48 @@
                    document.referrer.includes('android-app://');
         };
 
+        // Master function to trigger the sequence (Elephant -> Unlock -> Transition)
+        const runAuthSequence = (name, email) => {
+            const continueOverlay = document.getElementById('continue-overlay');
+            const elephantLoader = document.getElementById('elephant-loader');
+            const userDetails = document.getElementById('user-details');
+            
+            // Set text values
+            document.getElementById('display-name').innerText = formatName(name);
+            document.getElementById('display-email').innerText = email;
+            
+            // Show Overlay & Elephant
+            elephantLoader.style.display = 'inline-flex';
+            elephantLoader.style.opacity = '1';
+            userDetails.style.display = 'none';
+            userDetails.style.opacity = '0';
+            userDetails.style.transform = 'translateY(20px)';
+            
+            continueOverlay.classList.remove('hidden');
+            void continueOverlay.offsetWidth; // Force Reflow
+            continueOverlay.style.opacity = '1';
+
+            // Phase 1: Elephant Animates for 3 Seconds
+            setTimeout(() => {
+                elephantLoader.style.opacity = '0';
+                
+                // Phase 2: Fade Out Elephant, Fade In Name & Email
+                setTimeout(() => {
+                    elephantLoader.style.display = 'none';
+                    userDetails.style.display = 'block';
+                    void userDetails.offsetWidth; // Force Reflow
+                    userDetails.style.opacity = '1';
+                    userDetails.style.transform = 'translateY(0)';
+                    
+                    // Phase 3: Wait 3 seconds, then Assimilate into Macro
+                    setTimeout(() => {
+                        handleContinue();
+                    }, 3000);
+                    
+                }, 400); // 400ms fade out duration
+            }, 3000); // 3 seconds elephant duration
+        };
+
         window.initAuth = () => {
             if (!isPWA()) {
                 document.getElementById('forcedInstall').style.display = 'flex';
@@ -311,18 +390,8 @@
             const isRegistered = localStorage.getItem('shwari_registered');
 
             if (isRegistered === 'true') {
-                // Populate Overlay Text
-                document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
-                document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
-                
-                // Show Header & Footer seamlessly over the image
-                document.getElementById('continue-overlay').classList.remove('hidden');
-
-                // AUTO-TRIGGER ANIMATION AFTER 3.5 SECONDS
-                setTimeout(() => {
-                    handleContinue();
-                }, 3500);
-
+                // Auto-trigger sequence for returning user
+                runAuthSequence(localStorage.getItem('emp_name'), localStorage.getItem('emp_email'));
             } else {
                 // First Time: Show Registration Portal
                 const authPortal = document.getElementById('auth-portal');
@@ -341,13 +410,8 @@
                 localStorage.setItem('emp_email', email);
                 localStorage.setItem('shwari_registered', 'true');
                 
-                // POPULATE & TRIGGER SEAMLESS TRANSITION
                 const authPortal = document.getElementById('auth-portal');
                 const regScreen = document.getElementById('reg-screen');
-                const continueOverlay = document.getElementById('continue-overlay');
-                
-                document.getElementById('display-name').innerText = formatName(name);
-                document.getElementById('display-email').innerText = email;
                 
                 // 1. Shrink and fade the registration card
                 regScreen.style.transform = 'scale(0.9)';
@@ -361,21 +425,11 @@
                         authPortal.classList.add('hidden');
                         regScreen.classList.add('hidden');
                         
-                        // 3. Fade in the transparent Continue Overlay
-                        continueOverlay.classList.remove('hidden');
-                        continueOverlay.style.opacity = '0';
+                        // 3. Trigger the exact same Elephant Sequence seamlessly!
+                        runAuthSequence(name, email);
                         
-                        // Force reflow to ensure transition works
-                        void continueOverlay.offsetWidth;
-                        continueOverlay.style.opacity = '1';
-                        
-                        // 4. Auto-trigger the macro reveal after 3.5s
-                        setTimeout(() => {
-                            handleContinue();
-                        }, 3500);
-                        
-                    }, 500); // Wait for glass blur to fade
-                }, 400); // Wait for card to shrink
+                    }, 600); // Wait for glass blur to fade
+                }, 500); // Wait for card to shrink
 
             } else {
                 alert("Please enter both Name and Work Email.");
@@ -391,7 +445,7 @@
                 continueOverlay.style.display = 'none'; 
                 // Trigger Background Assimilation Animation
                 executeTransition();
-            }, 600);
+            }, 800);
         };
 
         /* ── 5. ASSIMILATION TRANSITION (WIPE & REVEAL) ── */
