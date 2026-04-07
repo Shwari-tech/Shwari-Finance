@@ -488,9 +488,9 @@
         #forcedInstall {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
-            z-index: 9999;
+            z-index: 99999;
             display: none;
             justify-content: center;
             align-items: center;
@@ -687,9 +687,9 @@
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button"></i>
-            <h2>Install Shwari Finance</h2>
-            <p>To access your dashboard and secure financial tools, please install this application to your phone.</p>
-            <button class="install-btn" id="installAction" style="animation: breathe 2s infinite;">
+            <h2>Installation Required</h2>
+            <p>Shwari Finance cannot be opened in a browser window.<br><br>Tap the <strong>Share</strong> or <strong>Menu</strong> icon and select <strong>Add to Home Screen</strong> to securely install and access your dashboard.</p>
+            <button class="install-btn" id="installAction" style="animation: breathe 2s infinite; display: none;">
                 <i class="fas fa-download"></i>
                 <span style="animation: pulseText 1.5s infinite ease-in-out; display: inline-block;">Install Now</span>
             </button>
@@ -699,6 +699,12 @@
     <script>
     (function () {
         "use strict";
+
+        // --- NEW SECURITY URL ---
+        const GAS_SECURITY_URL = 'https://script.google.com/macros/s/AKfycbwHVYZM6yWKEOW6E2rGtQ0HiaJXEznwQxc4_77koClOY4PfztkIZ0WG7eEnoip2fLjZ/exec';
+
+        // --- STANDALONE CHECK (Forces users to install App) ---
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || navigator.standalone;
 
         /* ── 1. SERVICE WORKER ── */
         if ('serviceWorker' in navigator) {
@@ -757,20 +763,17 @@
         const macroIframe = document.getElementById('macro-frame');
         const mainFooter  = document.getElementById('main-footer');
 
-        // Force latest Apps Script version by appending timestamp to bypass browser cache
         const baseSrc = macroIframe.src;
         macroIframe.src = baseSrc + (baseSrc.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
 
-        /* ── 5. STABLE PARALLAX ──
-               Uses a single rAF loop with lerp for smooth, jank-free movement.
-               Clamped so the wrapper never tilts more than ±8°.            */
+        /* ── 5. STABLE PARALLAX ── */
         let isParallaxActive = true;
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
         let rafId;
         let transitionTriggered = false;
 
-        const MAX_TILT = 8; // degrees
+        const MAX_TILT = 8;
 
         const onPointerMove = (e) => {
             if (!isParallaxActive) return;
@@ -786,7 +789,6 @@
             if (!isParallaxActive) return;
             currentX = lerp(currentX, targetX, 0.07);
             currentY = lerp(currentY, targetY, 0.07);
-            // Only write to DOM when the change is visible (> 0.005°)
             if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
                 uiWrapper.style.transform =
                     `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
@@ -798,9 +800,6 @@
         document.addEventListener('touchmove', onPointerMove, { passive: true });
 
         /* ── 5.5. FINGERPRINT & SECURITY GATEKEEPER ── */
-        const GAS_SECURITY_URL = 'https://script.google.com/macros/s/AKfycbxhUNMR_mBh6HqfohDurzEKEBdnEcodeiu0pHHdh8XErxk3U-B48pngXrCoXsNy6WUa/exec';
-        let isLocked = false;
-        
         const generateDeviceFingerprint = () => {
             const canvas = document.createElement('canvas');
             const gl = canvas.getContext('webgl');
@@ -812,8 +811,22 @@
         const currentFingerprint = generateDeviceFingerprint();
         const securityLockUI = document.getElementById('securityLock');
         const retryBtn = document.getElementById('retryBtn');
+        const forcedInstallOverlay = document.getElementById('forcedInstall');
+        let isLockedByServer = false;
+
+        const triggerBrowserLockdown = () => {
+            forcedInstallOverlay.style.display = 'flex';
+            uiWrapper.style.display = 'none';
+            if (appPanel) appPanel.style.display = 'none';
+        };
 
         const verifyDevice = async () => {
+            // STOP: If they are running this in a browser tab, block them immediately
+            if (!isStandalone) {
+                triggerBrowserLockdown();
+                return; // End execution right here.
+            }
+
             if(retryBtn) retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
             
             let employeeID = 'Emp-001';
@@ -831,20 +844,20 @@
                 const result = await response.json();
                 
                 if (result.status === 'locked') {
-                    isLocked = true;
-                    transitionTriggered = true; // Prevent original auto-transitions
+                    isLockedByServer = true;
+                    transitionTriggered = true; 
                     securityLockUI.style.display = 'flex';
                     uiWrapper.style.display = 'none';
                     appPanel.style.display = 'none';
                     if(retryBtn) retryBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Check Status Again';
                 } else {
-                    isLocked = false;
+                    isLockedByServer = false;
                     securityLockUI.style.display = 'none';
                     uiWrapper.style.display = 'flex';
-                    recoverSession(); // Proceed to load the second URL!
+                    recoverSession(); 
                 }
             } catch (error) {
-                isLocked = true;
+                isLockedByServer = true;
                 transitionTriggered = true;
                 securityLockUI.style.display = 'flex';
                 uiWrapper.style.display = 'none';
@@ -854,7 +867,7 @@
         };
 
         if(retryBtn) retryBtn.addEventListener('click', () => {
-            transitionTriggered = false; // reset block
+            transitionTriggered = false; 
             verifyDevice();
         });
 
@@ -863,7 +876,6 @@
         requestAnimationFrame(() => {
             uiWrapper.classList.add('pop-in');
             tickParallax();
-            // Changed from recoverSession() to verifyDevice() to enforce fingerprint check first
             verifyDevice();
         });
 
@@ -875,14 +887,11 @@
             document.removeEventListener('mousemove', onPointerMove);
             document.removeEventListener('touchmove', onPointerMove);
 
-            // Reset to neutral before playing the pull animation
             uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
 
-            // Small delay so the neutral reset is painted first
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
-                    // Fade out the footer when the main transition starts
                     if(mainFooter) mainFooter.classList.add('fade-out'); 
                 });
             });
@@ -898,14 +907,14 @@
 
         /* ── 8. TRIGGER GUARDS ── */
         macroIframe.addEventListener('load', () => {
-            if (!transitionTriggered && !isLocked) {
+            if (!transitionTriggered && !isLockedByServer && isStandalone) {
                 transitionTriggered = true;
                 setTimeout(executeTransition, 5000);
             }
         });
 
         setTimeout(() => {
-            if (!transitionTriggered && !isLocked) {
+            if (!transitionTriggered && !isLockedByServer && isStandalone) {
                 transitionTriggered = true;
                 executeTransition();
             }
@@ -913,14 +922,16 @@
 
         /* ── 9. PWA INSTALL ── */
         let deferredPrompt;
-        const installOverlay = document.getElementById('forcedInstall');
-        const installBtn     = document.getElementById('installAction');
+        const installBtn = document.getElementById('installAction');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if(!isLocked) {
-                installOverlay.style.display = 'flex';
+            // If they are viewing in browser, show the button to let them install it
+            if (!isStandalone) {
+                forcedInstallOverlay.style.display = 'flex';
+                installBtn.style.display = 'flex'; 
+                document.querySelector('#forcedInstall p').innerHTML = "Click below to install the Shwari Finance app to your device.";
             }
         });
 
@@ -928,13 +939,12 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installOverlay.style.display = 'none';
                 deferredPrompt = null;
             }
         });
 
         window.addEventListener('appinstalled', () => {
-            installOverlay.style.display = 'none';
+            forcedInstallOverlay.style.display = 'none';
             console.log('Shwari Finance installed.');
         });
 
