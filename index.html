@@ -45,7 +45,7 @@
         .orb-fin i, .orb-soc i { animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; transition: opacity 0.3s ease; }
 
         @keyframes rotatePulseClockwise { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 12.5%{ transform: translate(-50%, -50%) rotate(45deg) scale(0.67) translateZ(0); } 25% { transform: translate(-50%, -50%) rotate(90deg) scale(0.35) translateZ(0); } 37.5%{ transform: translate(-50%, -50%) rotate(135deg) scale(0.82) translateZ(0); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25) translateZ(0); } 62.5%{ transform: translate(-50%, -50%) rotate(225deg) scale(0.82) translateZ(0); } 75% { transform: translate(-50%, -50%) rotate(270deg) scale(0.35) translateZ(0); } 87.5%{ transform: translate(-50%, -50%) rotate(315deg) scale(0.67) translateZ(0); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1) translateZ(0); } }
-        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 12.5%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.72) translateZ(0); } 25% { transform: translate(-50%, -50%) rotate(-90deg) scale(0.45) translateZ(0); } 37.5%{ transform: translate(-50%, -50%) rotate(-135deg) scale(0.8) translateZ(0); } 50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15) translateZ(0); } 62.5%{ transform: translate(-50%, -50%) rotate(-225deg) scale(0.8) translateZ(0); } 75% { transform: translate(-50%, -50%) rotate(-270deg) scale(0.45) translateZ(0); } 87.5%{ transform: translate(-50%, -50%) rotate(-315deg) scale(0.72) translateZ(0); } 100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1) translateZ(0); } }
+        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 12.5%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.72) translateZ(0); } 25% { transform: translate(-50%, -50%) rotate(-90deg) scale(0.45) translateZ(0); } 37.5%{ transform: translate(-50%, -50%) rotate(135deg) scale(0.8) translateZ(0); } 50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15) translateZ(0); } 62.5%{ transform: translate(-50%, -50%) rotate(-225deg) scale(0.8) translateZ(0); } 75% { transform: translate(-50%, -50%) rotate(-270deg) scale(0.45) translateZ(0); } 87.5%{ transform: translate(-50%, -50%) rotate(-315deg) scale(0.72) translateZ(0); } 100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1) translateZ(0); } }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         .ring-track { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px dashed rgba(0,0,0,0.2); pointer-events: none; transform: translate(-50%, -50%); }
@@ -144,7 +144,7 @@
         <div class="error-card">
             <i class="fas fa-download main-icon-err" style="color: #111;"></i>
             <h2>Installation Required</h2>
-            <p>Shwari Finance cannot be opened in a browser tab. To access your secure dashboard, tap the <strong>Share</strong> or <strong>Menu</strong> icon and select <strong>Add to Home Screen</strong>.</p>
+            <p>Shwari Finance cannot be opened in a browser tab. To access your secure dashboard, tap the <strong>Share</strong> icon and select <strong>Add to Home Screen</strong>.</p>
             <button class="action-btn" id="installAction" style="display: none; background: #2c7a47;">
                 <i class="fas fa-arrow-down"></i> Install App Now
             </button>
@@ -178,7 +178,7 @@
     </div>
 
     <div class="app" id="app">
-        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec"></iframe>
+        <iframe id="macro-frame" src="about:blank"></iframe>
     </div>
 
     <script>
@@ -188,13 +188,13 @@
         // ==========================================
         // 1. URLs AND CONFIGURATION
         // ==========================================
-        // UPDATED SECURITY URL
+        // SECURITY GATEKEEPER (FIRST URL)
         const GAS_SECURITY_URL = 'https://script.google.com/macros/s/AKfycbwP3oH8QJYwDo769joqzvNTvwbHlrCT_Nc2g_cHTI4DKdKqXRPUPheuktYy4y5jOnr-/exec';
+        // PORTAL DASHBOARD (SECOND URL)
+        const PORTAL_URL = 'https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec';
+        
         const USER_DATA_KEY = 'shwari_secure_session';
-
-        // Add Cache buster to Iframe
         const macroIframe = document.getElementById('macro-frame');
-        macroIframe.src = macroIframe.src + (macroIframe.src.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
 
         // ==========================================
         // 2. STANDALONE & PWA LOGIC
@@ -220,10 +220,6 @@
             }
         });
 
-        window.addEventListener('appinstalled', () => {
-            console.log('Shwari Finance installed.');
-        });
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(e => console.error('SW failed:', e));
@@ -231,7 +227,7 @@
         }
 
         // ==========================================
-        // 3. FINGERPRINT & STATE VARIABLES
+        // 3. FINGERPRINT & STATE
         // ==========================================
         const generateDeviceFingerprint = () => {
             const canvas = document.createElement('canvas');
@@ -259,17 +255,16 @@
         let isLockedByServer = false;
         let transitionTriggered = false;
 
-        // Hide app completely while verifying or locked
         const lockdownApp = () => {
             uiWrapper.style.display = 'none';
             appPanel.style.display = 'none';
         };
 
         // ==========================================
-        // 4. MAIN VERIFICATION LOGIC (GATEKEEPER)
+        // 4. VERIFICATION FLOW (Gatekeeper First)
         // ==========================================
         const verifyDevice = async () => {
-            // STEP 1: If NOT installed as an app, block access immediately
+            // Force Standalone check
             if (!isStandalone) {
                 lockdownApp();
                 forcedInstallOverlay.style.display = 'flex';
@@ -277,16 +272,15 @@
             }
 
             lockdownApp();
-            retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
             
-            // STEP 2: If NO local email exists, prompt registration
+            // Handle new user registration
             if (!sessionEmail) {
                 registrationUI.style.display = 'flex';
                 return;
             }
 
-            // STEP 3: Ping the Google Server
             try {
+                // Ping the Security Gatekeeper Link First
                 const response = await fetch(GAS_SECURITY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -295,65 +289,56 @@
                 const result = await response.json();
                 
                 if (result.status === 'unregistered') {
-                    // Deleted from server? Force re-register
                     registrationUI.style.display = 'flex';
                 } 
                 else if (result.status === 'locked') {
-                    // Fingerprint mismatch or Admin Inactivated
                     isLockedByServer = true;
                     securityLockUI.style.display = 'flex';
-                    lockReason.innerHTML = result.msg + "<br><br><strong>Please contact the Administrator to request a device reset.</strong>";
-                    retryBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Check Status Again';
+                    lockReason.innerHTML = result.msg + "<br><br><strong>Please contact the Administrator.</strong>";
                 } 
                 else if (result.status === 'ok') {
-                    // SUCCESS! PROCEED SMOOTHLY AND FAST
+                    // AUTHORIZED: PROCEED FAST AND SMOOTH
                     isLockedByServer = false;
                     securityLockUI.style.display = 'none';
                     registrationUI.style.display = 'none';
                     uiWrapper.style.display = 'flex';
                     
-                    // Trigger the visual entry
+                    // 1. Play "Pop-In" Animation
                     requestAnimationFrame(() => {
                         uiWrapper.classList.add('pop-in');
                         tickParallax();
                     });
                     
-                    // Wait a moment for animation, then jump to the actual app
+                    // 2. Load the Portal Dashboard Link (The Second Link)
+                    macroIframe.src = PORTAL_URL + '?cb=' + new Date().getTime();
+                    
+                    // 3. Trigger Assimilation Animation
                     setTimeout(executeTransition, 1500); 
                 }
             } catch (error) {
-                // Network failure
-                isLockedByServer = true;
                 securityLockUI.style.display = 'flex';
-                lockReason.innerHTML = "Cannot reach Shwari Security Servers. Check your internet connection.";
+                lockReason.innerHTML = "Security Server Connection Failed.";
                 retryBtn.innerHTML = '<i class="fas fa-wifi"></i> Retry Connection';
             }
         };
 
         // ==========================================
-        // 5. EVENT LISTENERS
+        // 5. BUTTON EVENTS
         // ==========================================
-        
-        // Re-check Status
-        retryBtn.addEventListener('click', () => {
-            retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reloading...';
-            window.location.reload(true); 
-        });
+        retryBtn.addEventListener('click', () => window.location.reload(true));
 
-        // Submit Registration
         submitRegBtn.addEventListener('click', async () => {
             const nameInput = document.getElementById('regName').value.trim();
             const emailInput = document.getElementById('regEmail').value.trim();
 
             if (!nameInput || !emailInput) {
                 regError.style.display = 'block';
-                regError.innerText = "Please fill in all fields.";
+                regError.innerText = "All fields required.";
                 return;
             }
 
-            submitRegBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            regError.style.display = 'none';
-
+            submitRegBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+            
             try {
                 const response = await fetch(GAS_SECURITY_URL, {
                     method: 'POST',
@@ -364,22 +349,21 @@
 
                 if (result.status === 'restricted') {
                     regError.style.display = 'block';
-                    regError.innerText = result.msg; 
+                    regError.innerText = result.msg;
                     submitRegBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Device';
                 } else if (result.status === 'ok') {
-                    // Registration accepted. Save locally and reload to trigger the fast entry
                     localStorage.setItem(USER_DATA_KEY, JSON.stringify({ name: nameInput, email: emailInput.toLowerCase() }));
                     window.location.reload(true);
                 }
             } catch(e) {
                 regError.style.display = 'block';
-                regError.innerText = "Network Error. Please try again.";
+                regError.innerText = "Network Error.";
                 submitRegBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Device';
             }
         });
 
         // ==========================================
-        // 6. ANIMATION & PARALLAX LOGIC
+        // 6. ANIMATIONS & PARALLAX
         // ==========================================
         let rafId;
         let targetX = 0, targetY = 0;
@@ -388,9 +372,9 @@
 
         const onPointerMove = (e) => {
             if (!isParallaxActive) return;
-            const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
+            const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth / 2;
             const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
-            targetX = Math.max(-8, Math.min(8, (window.innerWidth  / 2 - cx) / 35));
+            targetX = Math.max(-8, Math.min(8, (window.innerWidth / 2 - cx) / 35));
             targetY = Math.max(-8, Math.min(8, (window.innerHeight / 2 - cy) / 35));
         };
 
@@ -415,7 +399,6 @@
             cancelAnimationFrame(rafId);
             document.removeEventListener('mousemove', onPointerMove);
             document.removeEventListener('touchmove', onPointerMove);
-            
             uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
 
             requestAnimationFrame(() => {
@@ -429,15 +412,15 @@
             }, 1900);
         };
 
-        // If the iframe loads super fast, we trigger the transition securely
+        // Fallback: If dashboard link is ready, transition automatically
         macroIframe.addEventListener('load', () => {
-            if (!transitionTriggered && !isLockedByServer && isStandalone && sessionEmail) {
+            if (!transitionTriggered && isStandalone && sessionEmail && !isLockedByServer) {
                 transitionTriggered = true;
                 setTimeout(executeTransition, 4000);
             }
         });
 
-        // Initialize App flow on Load
+        // INITIATE SECURITY FLOW IMMEDIATELY
         verifyDevice();
 
     })();
