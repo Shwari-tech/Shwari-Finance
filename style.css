@@ -1,17 +1,17 @@
-/* Shwari Finance - Auth UI Styles */
+/* Shwari Finance - Auth UI Styles (Optimized for Mobile PWA) */
 
 #auth-portal {
     position: fixed;
     inset: 0;
-    z-index: 1000; /* Sits above the background, below the Forced Install screen */
+    z-index: 1000; 
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px); /* For iPhone */
-    transition: opacity 0.5s ease;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* Crucial for smooth iPhone glass effect */
+    transition: opacity 0.4s ease;
 }
 
 #auth-portal.hidden {
@@ -28,8 +28,9 @@
     border-radius: 24px;
     box-shadow: 0 25px 50px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.5);
     text-align: center;
-    animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: cardFloatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    will-change: transform, opacity; /* Hardware acceleration for smooth entry */
 }
 
 @keyframes cardFloatUp {
@@ -63,11 +64,13 @@
     color: #111;
     font-weight: 800;
     margin-bottom: 5px;
+    letter-spacing: -0.5px;
 }
 
 .medium-font {
-    font-size: 1.6rem !important; /* Medium font for name */
+    font-size: 1.6rem !important; 
     letter-spacing: -0.5px;
+    color: #111;
 }
 
 .welcome-label {
@@ -75,7 +78,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     color: #888;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 5px;
 }
 
@@ -83,11 +86,12 @@
     font-size: 0.85rem;
     color: #666;
     margin-bottom: 30px;
+    font-weight: 500;
 }
 
 .input-group input {
     width: 100%;
-    padding: 16px;
+    padding: 18px 16px; /* Slightly larger touch area */
     margin-bottom: 15px;
     border: 2px solid #eee;
     border-radius: 14px;
@@ -95,14 +99,15 @@
     font-family: 'Inter', sans-serif;
     color: #333;
     background: #fafafa;
-    transition: border 0.3s;
-    -webkit-appearance: none; /* iPhone styling fix */
+    transition: all 0.3s ease;
+    -webkit-appearance: none; 
 }
 
 .input-group input:focus {
     border-color: #2c7a47;
     outline: none;
     background: #fff;
+    box-shadow: 0 0 0 4px rgba(44, 122, 71, 0.1);
 }
 
 .auth-btn {
@@ -113,17 +118,19 @@
     border: none;
     border-radius: 14px;
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.1s, background 0.2s; /* Faster response time */
+    -webkit-tap-highlight-color: transparent; /* Removes blue tap flash on Android */
 }
 
 .auth-btn:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
+    background: #1f6e3f;
 }
 
 .reset-link {
@@ -133,4 +140,6 @@
     text-decoration: underline;
     cursor: pointer;
     font-weight: 600;
+    display: inline-block;
+    padding: 10px; /* Better touch target for reset link */
 }
