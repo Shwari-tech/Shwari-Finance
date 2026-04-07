@@ -268,35 +268,11 @@
         .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
         .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
         .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
-        .input-group input.error { border-color: #e74c3c; background: #fff5f5; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1); }
-        .input-group input.success { border-color: #55d082; background: #f0fff5; }
-        
-        .error-message {
-            display: none;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: #e74c3c;
-            margin-top: 6px;
-            margin-left: 4px;
-            text-align: left;
-            animation: shakeError 0.4s ease;
-        }
-        .error-message.show { display: flex; }
-        .error-message i { font-size: 11px; }
-        
-        @keyframes shakeError {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-4px); }
-            40%, 80% { transform: translateX(4px); }
-        }
 
         .auth-btn { width: 100%; pointer-events: auto; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif;}
         .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
-        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* =========================================
            5. APP IFRAME - SMOOTH CROSSFADE REVEAL
@@ -618,427 +594,9 @@
             50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
         }
 
-        /* =========================================
-           8. NETWORK ERROR SCREEN (CARTOON STYLE)
-           ========================================= */
-        #network-error-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-                        radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
-                        #001208;
-            transition: opacity 0.5s ease;
-        }
-
-        #network-error-screen.active { display: flex; }
-        #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
-
-        @media (prefers-color-scheme: light) {
-            #network-error-screen {
-                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.1) 0%, transparent 60%),
-                            radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
-                            #e8f5ed;
-            }
-        }
-
-        /* Cartoon-style error illustration */
-        .error-illustration {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            margin-bottom: 30px;
-        }
-
-        /* Cartoon character - sad elephant */
-        .cartoon-elephant {
-            position: absolute;
-            width: 120px;
-            height: 100px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50% 50% 45% 45%;
-            top: 40px;
-            left: 30px;
-            animation: elephantSad 2s ease-in-out infinite;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .cartoon-elephant::before {
-            content: '';
-            position: absolute;
-            width: 35px;
-            height: 50px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50%;
-            top: -20px;
-            left: 15px;
-            transform: rotate(-20deg);
-        }
-
-        .cartoon-elephant::after {
-            content: '';
-            position: absolute;
-            width: 35px;
-            height: 50px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50%;
-            top: -20px;
-            right: 15px;
-            transform: rotate(20deg);
-        }
-
-        /* Elephant trunk */
-        .elephant-trunk {
-            position: absolute;
-            width: 25px;
-            height: 50px;
-            background: linear-gradient(180deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 0 0 50% 50%;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: trunkWiggle 1.5s ease-in-out infinite;
-        }
-
-        /* Sad eyes */
-        .elephant-eye {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #1a1a1a;
-            border-radius: 50%;
-            top: 35px;
-        }
-
-        .elephant-eye.left { left: 30px; }
-        .elephant-eye.right { right: 30px; }
-
-        .elephant-eye::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffffff;
-            border-radius: 50%;
-            top: 2px;
-            right: 2px;
-        }
-
-        /* Sad eyebrows */
-        .eyebrow {
-            position: absolute;
-            width: 18px;
-            height: 3px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            top: 25px;
-        }
-
-        .eyebrow.left { left: 27px; transform: rotate(20deg); }
-        .eyebrow.right { right: 27px; transform: rotate(-20deg); }
-
-        /* Broken cable illustration */
-        .broken-cable {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 60px;
-        }
-
-        .cable-left, .cable-right {
-            position: absolute;
-            width: 40px;
-            height: 4px;
-            background: linear-gradient(90deg, #e74c3c, #c0392b);
-            border-radius: 2px;
-            top: 30px;
-        }
-
-        .cable-left { left: 0; transform: rotate(-15deg); animation: cableSpark 0.5s ease-in-out infinite alternate; }
-        .cable-right { right: 0; transform: rotate(15deg); animation: cableSpark 0.5s ease-in-out infinite alternate 0.25s; }
-
-        /* Spark effects */
-        .spark {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ffc107;
-            border-radius: 50%;
-            top: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: sparkFlash 0.3s ease-in-out infinite;
-            box-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;
-        }
-
-        @keyframes elephantSad {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(5px); }
-        }
-
-        @keyframes trunkWiggle {
-            0%, 100% { transform: translateX(-50%) rotate(0deg); }
-            25% { transform: translateX(-50%) rotate(-5deg); }
-            75% { transform: translateX(-50%) rotate(5deg); }
-        }
-
-        @keyframes cableSpark {
-            from { box-shadow: 0 0 5px #e74c3c; }
-            to { box-shadow: 0 0 15px #e74c3c, 0 0 25px #ffc107; }
-        }
-
-        @keyframes sparkFlash {
-            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
-            50% { opacity: 0.5; transform: translateX(-50%) scale(0.8); }
-        }
-
-        /* Error content styling */
-        .network-error-card {
-            background: rgba(0, 30, 15, 0.95);
-            max-width: 380px;
-            padding: 40px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
-                        0 0 0 1px rgba(231, 76, 60, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes errorCardSlideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-error-card {
-                background: rgba(255, 255, 255, 0.98);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
-                            0 0 0 1px rgba(231, 76, 60, 0.2),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            }
-        }
-
-        .network-error-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .network-error-message {
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 25px;
-            color: #aaaaaa;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-error-message { color: #5a6a60; }
-        }
-
-        .network-status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px 20px;
-            background: rgba(231, 76, 60, 0.1);
-            border-radius: 16px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-status-indicator {
-                background: rgba(231, 76, 60, 0.08);
-                border-color: rgba(231, 76, 60, 0.15);
-            }
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background: #e74c3c;
-            border-radius: 50%;
-            animation: statusPulse 1.5s ease-in-out infinite;
-            box-shadow: 0 0 10px #e74c3c;
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.85); }
-        }
-
-        .status-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e74c3c;
-        }
-
-        .retry-btn {
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
-        }
-
-        .retry-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
-        }
-
-        .retry-btn:active {
-            transform: translateY(0);
-        }
-
-        .retry-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .retry-btn i {
-            animation: none;
-        }
-
-        .retry-btn.loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Floating error particles */
-        .error-particle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .ep1 { width: 6px; height: 6px; background: #e74c3c; top: 10%; left: 15%; animation: errorFloat 4s ease-in-out infinite; }
-        .ep2 { width: 4px; height: 4px; background: #ffc107; top: 80%; right: 10%; animation: errorFloat 5s ease-in-out infinite 0.5s; }
-        .ep3 { width: 8px; height: 8px; background: rgba(231, 76, 60, 0.5); bottom: 15%; left: 20%; animation: errorFloat 3.5s ease-in-out infinite 1s; }
-        .ep4 { width: 5px; height: 5px; background: #ff9800; top: 30%; right: 15%; animation: errorFloat 4.5s ease-in-out infinite 1.5s; }
-
-        @keyframes errorFloat {
-            0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
-            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
-        }
-
-        /* Network toast notification */
-        #network-toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            z-index: 100001;
-            padding: 14px 24px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        #network-toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        #network-toast.offline {
-            background: rgba(231, 76, 60, 0.95);
-            color: white;
-        }
-
-        #network-toast.online {
-            background: rgba(85, 208, 130, 0.95);
-            color: #001208;
-        }
-
-        #network-toast i {
-            font-size: 16px;
-        }
-
     </style>
-<base target="_blank">
 </head>
 <body>
-
-    <!-- Network Toast Notification -->
-    <div id="network-toast">
-        <i class="fas fa-wifi"></i>
-        <span id="toast-message">Checking connection...</span>
-    </div>
-
-    <!-- Network Error Screen (Cartoon Style) -->
-    <div id="network-error-screen">
-        <div class="error-particle ep1"></div>
-        <div class="error-particle ep2"></div>
-        <div class="error-particle ep3"></div>
-        <div class="error-particle ep4"></div>
-        
-        <div class="error-illustration">
-            <div class="broken-cable">
-                <div class="cable-left"></div>
-                <div class="cable-right"></div>
-                <div class="spark"></div>
-            </div>
-            <div class="cartoon-elephant">
-                <div class="eyebrow left"></div>
-                <div class="eyebrow right"></div>
-                <div class="elephant-eye left"></div>
-                <div class="elephant-eye right"></div>
-                <div class="elephant-trunk"></div>
-            </div>
-        </div>
-        
-        <div class="network-error-card">
-            <h2 class="network-error-title">Connection Lost</h2>
-            <p class="network-error-message">
-                Oops! Looks like the cable got unplugged.<br>
-                Please check your internet connection and try again.
-            </p>
-            <div class="network-status-indicator">
-                <div class="status-dot"></div>
-                <span class="status-text">You're offline</span>
-            </div>
-            <button class="retry-btn" id="retry-connection-btn" onclick="checkAndRetryConnection()">
-                <i class="fas fa-rotate-right"></i>
-                <span>Try Again</span>
-            </button>
-        </div>
-    </div>
 
     <div id="device-error">
         <div class="error-card">
@@ -1065,20 +623,12 @@
             <h2>Device Activation</h2>
             <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
-                <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other)" autocomplete="off">
-                <div class="error-message" id="name-error">
-                    <i class="fas fa-circle-exclamation"></i>
-                    <span>Please enter your full name</span>
-                </div>
+                <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other Name)" autocomplete="off">
             </div>
             <div class="input-group">
                 <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="off">
-                <div class="error-message" id="email-error">
-                    <i class="fas fa-circle-exclamation"></i>
-                    <span>Please enter a valid email address</span>
-                </div>
             </div>
-            <button onclick="handleRegister()" class="auth-btn" id="activate-btn">Activate Device</button>
+            <button onclick="handleRegister()" class="auth-btn">Activate Device</button>
         </div>
     </div>
 
@@ -1112,12 +662,7 @@
         <div class="particle p4"></div>
         
         <div class="main-icon">
-            <div class="core-animation">
-                <div class="core-outer"></div>
-                <div class="core-inner"></div>
-                <div class="loader-ring"></div>
             </div>
-        </div>
     </div>
 
     <div class="app" id="app">
@@ -1245,127 +790,41 @@
             }
         };
 
-        // Form Validation Functions
-        const validateEmail = (email) => {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        };
-
-        const validateName = (name) => {
-            return name.trim().length >= 2;
-        };
-
-        const showFieldError = (fieldId, errorId, show) => {
-            const field = document.getElementById(fieldId);
-            const error = document.getElementById(errorId);
-            if (show) {
-                field.classList.add('error');
-                field.classList.remove('success');
-                error.classList.add('show');
-            } else {
-                field.classList.remove('error');
-                field.classList.add('success');
-                error.classList.remove('show');
-            }
-        };
-
-        const clearFieldErrors = () => {
-            document.getElementById('reg-name').classList.remove('error', 'success');
-            document.getElementById('reg-email').classList.remove('error', 'success');
-            document.getElementById('name-error').classList.remove('show');
-            document.getElementById('email-error').classList.remove('show');
-        };
-
-        // Real-time validation listeners
-        document.getElementById('reg-name').addEventListener('blur', function() {
-            const name = this.value.trim();
-            if (name.length > 0) {
-                showFieldError('reg-name', 'name-error', !validateName(name));
-            }
-        });
-
-        document.getElementById('reg-name').addEventListener('input', function() {
-            if (this.classList.contains('error')) {
-                showFieldError('reg-name', 'name-error', !validateName(this.value.trim()));
-            }
-        });
-
-        document.getElementById('reg-email').addEventListener('blur', function() {
-            const email = this.value.trim();
-            if (email.length > 0) {
-                showFieldError('reg-email', 'email-error', !validateEmail(email));
-            }
-        });
-
-        document.getElementById('reg-email').addEventListener('input', function() {
-            if (this.classList.contains('error')) {
-                showFieldError('reg-email', 'email-error', !validateEmail(this.value.trim()));
-            }
-        });
-
         window.handleRegister = () => {
-            const nameInput = document.getElementById('reg-name');
-            const emailInput = document.getElementById('reg-email');
-            const name = nameInput.value.trim();
-            const email = emailInput.value.trim().toLowerCase();
-            
-            let isValid = true;
-            
-            // Validate name
-            if (!validateName(name)) {
-                showFieldError('reg-name', 'name-error', true);
-                isValid = false;
-            } else {
-                showFieldError('reg-name', 'name-error', false);
-            }
-            
-            // Validate email
-            if (!validateEmail(email)) {
-                showFieldError('reg-email', 'email-error', true);
-                isValid = false;
-            } else {
-                showFieldError('reg-email', 'email-error', false);
-            }
-            
-            if (!isValid) {
-                // Shake the button to indicate error
-                const btn = document.getElementById('activate-btn');
-                btn.style.animation = 'shakeError 0.4s ease';
-                setTimeout(() => { btn.style.animation = ''; }, 400);
-                return;
-            }
-            
-            // Clear errors and proceed
-            clearFieldErrors();
-            
-            localStorage.setItem('emp_name', name);
-            localStorage.setItem('emp_email', email);
-            localStorage.setItem('shwari_registered', 'true');
-            const authPortal = document.getElementById('auth-portal');
-            const regScreen = document.getElementById('reg-screen');
-            const continueOverlay = document.getElementById('continue-overlay');
-            document.getElementById('display-name').innerText = formatName(name);
-            document.getElementById('display-email').innerText = email;
-            regScreen.style.transform = 'scale(0.9)';
-            regScreen.style.opacity = '0';
-            setTimeout(() => {
-                authPortal.style.opacity = '0';
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            if (name && email) {
+                localStorage.setItem('emp_name', name);
+                localStorage.setItem('emp_email', email);
+                localStorage.setItem('shwari_registered', 'true');
+                const authPortal = document.getElementById('auth-portal');
+                const regScreen = document.getElementById('reg-screen');
+                const continueOverlay = document.getElementById('continue-overlay');
+                document.getElementById('display-name').innerText = formatName(name);
+                document.getElementById('display-email').innerText = email;
+                regScreen.style.transform = 'scale(0.9)';
+                regScreen.style.opacity = '0';
                 setTimeout(() => {
-                    authPortal.classList.add('hidden');
-                    regScreen.classList.add('hidden');
-                    continueOverlay.classList.remove('hidden');
-                    continueOverlay.style.opacity = '0';
-                    void continueOverlay.offsetWidth;
-                    continueOverlay.style.opacity = '1';
+                    authPortal.style.opacity = '0';
                     setTimeout(() => {
-                        document.getElementById('elephant-gate').classList.add('unlocked');
-                        document.getElementById('employee-info').classList.add('unlocked');
-                    }, 3000);
-                    setTimeout(() => {
-                        handleContinue();
-                    }, 6500);
-                }, 500);
-            }, 400);
+                        authPortal.classList.add('hidden');
+                        regScreen.classList.add('hidden');
+                        continueOverlay.classList.remove('hidden');
+                        continueOverlay.style.opacity = '0';
+                        void continueOverlay.offsetWidth;
+                        continueOverlay.style.opacity = '1';
+                        setTimeout(() => {
+                            document.getElementById('elephant-gate').classList.add('unlocked');
+                            document.getElementById('employee-info').classList.add('unlocked');
+                        }, 3000);
+                        setTimeout(() => {
+                            handleContinue();
+                        }, 6500);
+                    }, 500);
+                }, 400);
+            } else {
+                alert("Please enter both Name and Work Email.");
+            }
         };
 
         window.handleContinue = () => {
@@ -1404,158 +863,9 @@
 
 
         /* =====================================================
-           NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
-           ===================================================== */
-        
-        const networkErrorScreen = document.getElementById('network-error-screen');
-        const networkToast = document.getElementById('network-toast');
-        const toastMessage = document.getElementById('toast-message');
-        let wasOffline = false;
-        let isCheckingConnection = false;
-
-        // Show toast notification
-        const showToast = (message, isOnline) => {
-            toastMessage.textContent = message;
-            networkToast.className = isOnline ? 'online' : 'offline';
-            networkToast.classList.add('show');
-            
-            setTimeout(() => {
-                networkToast.classList.remove('show');
-            }, 3000);
-        };
-
-        // Check actual network connectivity
-        const checkConnectivity = async () => {
-            if (isCheckingConnection) return navigator.onLine;
-            isCheckingConnection = true;
-            
-            try {
-                // Try to fetch a small resource to verify actual connectivity
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                
-                const response = await fetch('https://www.google.com/favicon.ico', {
-                    method: 'HEAD',
-                    mode: 'no-cors',
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                isCheckingConnection = false;
-                return true;
-            } catch (error) {
-                isCheckingConnection = false;
-                return false;
-            }
-        };
-
-        // Show network error screen
-        const showNetworkError = () => {
-            networkErrorScreen.classList.add('active');
-            networkErrorScreen.classList.remove('fade-out');
-        };
-
-        // Hide network error screen
-        const hideNetworkError = () => {
-            networkErrorScreen.classList.add('fade-out');
-            setTimeout(() => {
-                networkErrorScreen.classList.remove('active');
-            }, 500);
-        };
-
-        // Handle online event
-        const handleOnline = async () => {
-            const isConnected = await checkConnectivity();
-            if (isConnected) {
-                if (wasOffline) {
-                    showToast('Back online!', true);
-                    hideNetworkError();
-                    wasOffline = false;
-                }
-            }
-        };
-
-        // Handle offline event
-        const handleOffline = () => {
-            wasOffline = true;
-            showToast('Connection lost', false);
-            showNetworkError();
-        };
-
-        // Retry connection handler
-        window.checkAndRetryConnection = async () => {
-            const retryBtn = document.getElementById('retry-connection-btn');
-            const btnText = retryBtn.querySelector('span');
-            const btnIcon = retryBtn.querySelector('i');
-            
-            retryBtn.disabled = true;
-            retryBtn.classList.add('loading');
-            btnText.textContent = 'Checking...';
-            
-            const isConnected = await checkConnectivity();
-            
-            retryBtn.disabled = false;
-            retryBtn.classList.remove('loading');
-            btnText.textContent = 'Try Again';
-            
-            if (isConnected) {
-                showToast('Connection restored!', true);
-                hideNetworkError();
-                wasOffline = false;
-            } else {
-                // Shake button to indicate still offline
-                retryBtn.style.animation = 'shakeError 0.4s ease';
-                setTimeout(() => { retryBtn.style.animation = ''; }, 400);
-            }
-        };
-
-        // Listen for network status changes
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
-
-        // Periodic connectivity check when offline
-        setInterval(async () => {
-            if (wasOffline || !navigator.onLine) {
-                const isConnected = await checkConnectivity();
-                if (isConnected && wasOffline) {
-                    handleOnline();
-                } else if (!isConnected && !wasOffline && !navigator.onLine) {
-                    handleOffline();
-                }
-            }
-        }, 5000);
-
-        // Initial connectivity check
-        window.addEventListener('load', async () => {
-            if (!navigator.onLine) {
-                handleOffline();
-            } else {
-                const isConnected = await checkConnectivity();
-                if (!isConnected) {
-                    handleOffline();
-                }
-            }
-        });
-
-        // Handle page visibility change - recheck when user returns
-        document.addEventListener('visibilitychange', async () => {
-            if (document.visibilityState === 'visible') {
-                if (!navigator.onLine) {
-                    handleOffline();
-                } else {
-                    const isConnected = await checkConnectivity();
-                    if (isConnected && wasOffline) {
-                        handleOnline();
-                    }
-                }
-            }
-        });
-
-
-        /* =====================================================
            INSTALL PROGRESS SCREEN — new logic block
            Runs AFTER install is accepted, before app opens.
-           ====================================================== */
+           ===================================================== */
 
         const installScreen  = document.getElementById('install-progress-screen');
         const installBar     = document.getElementById('install-bar');
