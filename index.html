@@ -37,47 +37,150 @@
         .wrapper {
             position: absolute; width: min(500px, 92vw); height: min(500px, 92vw);
             display: flex; justify-content: center; align-items: center;
-            opacity: 0; transform: scale(0.8) translateZ(0);
+            opacity: 0; transform: scale(0.8);
             transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-style: preserve-3d; will-change: transform, opacity;
             z-index: 10;
         }
-        .wrapper.pop-in { opacity: 1; transform: scale(1) translateZ(0); }
+        .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        /* MAIN CENTER WRAPPER (Empty but holds blast animation) */
+        /* ANIMATED CORE CENTER */
         .main-icon {
-            position: relative; width: 120px; height: 120px; border-radius: 50%;
+            position: relative; width: 150px; height: 150px; border-radius: 50%;
             background: transparent;
             display: flex; justify-content: center; align-items: center;
-            z-index: 60; will-change: transform, opacity;
+            z-index: 60; animation: breathe 3s ease-in-out infinite; will-change: transform;
+        }
+        
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateZ(0); }
+            50% { transform: scale(1.1) translateZ(0); }
         }
 
+        /* CORE ANIMATION */
+        .core-animation {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .core-outer {
+            position: absolute;
+            inset: 0;
+            border: 3px solid transparent;
+            border-top-color: #55d082;
+            border-right-color: #2c7a47;
+            border-bottom-color: #55d082;
+            border-left-color: #2c7a47;
+            border-radius: 50%;
+            animation: coreSpin 3s linear infinite;
+            box-shadow: 0 0 20px rgba(85, 208, 130, 0.4);
+        }
+
+        .core-inner {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #55d082 0%, #2c7a47 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(85, 208, 130, 0.9), inset 0 0 10px rgba(255,255,255,0.3);
+            animation: corePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes coreSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes corePulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 50px rgba(85, 208, 130, 1); }
+        }
+
+        /* HIDDEN LOADER RING */
+        .loader-ring {
+            position: absolute; inset: -8px; border: 4px solid rgba(255, 255, 255, 0.15);
+            border-top-color: #55d082; border-bottom-color: #2c7a47; border-radius: 50%;
+            animation: spinLoader 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; 
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* PARTICLES & SHOCKWAVE */
-        .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
+        .shockwave { 
+            position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; 
+            border-radius: 50%; border: 2px solid #55d082; 
+            transform: translate(-50%, -50%) scale(0.5); opacity: 0; 
+            z-index: 10; pointer-events: none; 
+        }
         .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
         .wrapper.pop-in .particle { opacity: 0.6; }
         .p1 { width: 12px; height: 12px; top: 10%; left: 20%; background: #55d082; animation-duration: 4.2s; box-shadow: 0 0 10px #55d082;}
         .p2 { width: 8px;  height: 8px;  top: 80%; left: 80%; background: #ffffff; animation-duration: 6.0s; box-shadow: 0 0 10px #ffffff;}
         .p3 { width: 16px; height: 16px; top: 75%; left: 15%; background: #b78a1a; animation-duration: 5.4s; box-shadow: 0 0 10px #b78a1a;}
         .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #dddddd; animation-duration: 7.0s; box-shadow: 0 0 10px #dddddd;}
-        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0) translateZ(0); } 50% { transform: translateY(-15px) scale(1.1) translateZ(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.1); } }
 
-        /* INWARD / OUTWARD PULLING ANIMATION (DIGITAL ASSIMILATION) */
-        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; transition-duration: 0.4s !important; }
-        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.2s forwards; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
+        /* =========================================
+           SMOOTH DIGITAL ASSIMILATION (INWARD PULL & OUTWARD BURST)
+           ========================================= */
+        
+        /* 1. Inward Pull (Sucks the screen to the center) */
+        .wrapper.pull-active {
+            transform: scale(0.01) rotate(-25deg) !important;
+            opacity: 0 !important;
+            transition: transform 0.6s cubic-bezier(0.7, 0, 0.3, 1), opacity 0.5s ease-in 0.1s !important;
+        }
 
-        /* Transition into DARK stealth mode blast */
-        @keyframes dataProcess { 
-            0% { transform: scale(1); background: transparent; } 
-            35% { transform: scale(0.2); filter: drop-shadow(0 0 40px #55d082); background: transparent;} 
-            58% { transform: scale(2); background: #001208; box-shadow: 0 0 80px #55d082; border-radius: 50%; } 
-            100% { transform: scale(50); background: #001208; box-shadow: 0 0 150px #55d082; border-radius: 50%; opacity: 1; } 
+        .wrapper.pull-active .particle { 
+            top: 50% !important; left: 50% !important; 
+            transform: translate(-50%, -50%) scale(0) !important; 
+            opacity: 0 !important; transition-duration: 0.4s !important; 
         }
-        @keyframes rippleOut { 
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #55d082; } 
-            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #1f6e3f; } 
+        
+        .wrapper.pull-active .core-animation, 
+        .wrapper.pull-active .loader-ring { 
+            opacity: 0 !important; transform: scale(0) !important; transition: all 0.3s ease !important; 
         }
+        
+        /* Imploding shockwave */
+        .wrapper.pull-active .shockwave { animation: suckInRing 0.5s cubic-bezier(0.5, 0, 0.2, 1) forwards; }
+        
+        @keyframes suckInRing {
+            0% { transform: translate(-50%, -50%) scale(5); opacity: 0; border-width: 2px; border-color: #55d082; }
+            50% { opacity: 1; border-width: 15px; }
+            100% { transform: translate(-50%, -50%) scale(0.01); opacity: 0; border-width: 30px; border-color: #2c7a47; }
+        }
+
+        /* 2. Outward Burst (Pushes the App out from the center) */
+        .app { 
+            position: fixed; inset: 0; opacity: 0; visibility: hidden; 
+            background: #001208; z-index: 2000; 
+            transform: scale(0.001); /* Start infinitely small */
+            border-radius: 50vw; /* Keep it round like a portal initially */
+            transition: opacity 0.5s ease-in, 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-radius 0.8s ease-out; 
+            will-change: transform, opacity, border-radius;
+        }
+        
+        .app.active { 
+            opacity: 1; 
+            visibility: visible; 
+            transform: scale(1); /* Explode to full screen */
+            border-radius: 0; 
+        }
+        
+        iframe { 
+            width: 100%; height: 100%; border: none; 
+            background: #001208; opacity: 0;
+            transition: opacity 0.6s ease 0.3s; /* Fade in content slightly after burst */
+        }
+        .app.active iframe { opacity: 1; }
 
         /* =========================================
            3. AUTO-CONTINUE SCREEN OVERLAY
@@ -85,7 +188,7 @@
         #continue-overlay {
             position: fixed; inset: 0; z-index: 50; pointer-events: none;
             display: flex; flex-direction: column; justify-content: space-between;
-            transition: opacity 0.8s ease; will-change: opacity;
+            transition: opacity 0.8s ease;
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
@@ -93,31 +196,49 @@
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
-        /* SEAMLESS TRANSLUCENT FOOTER WITH ELEPHANT */
         .continue-footer {
             padding: 80px 20px 40px; text-align: center;
             background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%);
             position: relative;
             min-height: 200px;
-            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
         }
 
-        /* ELEPHANT GATE ANIMATION */
+        /* ELEPHANT GATE */
         .elephant-gate {
-            position: absolute; bottom: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 1; transform: scale(1);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 10; will-change: transform, opacity;
+            position: absolute;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
         }
 
-        .elephant-gate.unlocked { opacity: 0; transform: scale(1.8) translateY(-30px); pointer-events: none; }
+        .elephant-gate.unlocked {
+            opacity: 0;
+            transform: scale(1.8) translateY(-30px);
+            pointer-events: none;
+        }
 
         .elephant-icon {
             font-size: 90px;
-            background: linear-gradient(135deg, #C9A961 0%, #F4E5C2 30%, #D4AF37 60%, #8B7355 100%); background-size: 200% 200%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 30px rgba(201, 169, 97, 0.5));
-            animation: elephantLive 3s ease-in-out infinite, elephantShimmer 4s ease-in-out infinite; transform-origin: center bottom;
+            background: linear-gradient(135deg, #C9A961 0%, #F4E5C2 30%, #D4AF37 60%, #8B7355 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) 
+                    drop-shadow(0 0 30px rgba(201, 169, 97, 0.5));
+            animation: elephantLive 3s ease-in-out infinite, 
+                       elephantShimmer 4s ease-in-out infinite;
+            transform-origin: center bottom;
         }
 
         @keyframes elephantLive {
@@ -135,26 +256,39 @@
             50% { background-position: 100% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 40px rgba(201, 169, 97, 0.8)); }
         }
 
-        .unlock-ring { position: absolute; width: 120px; height: 120px; border: 2px solid rgba(201, 169, 97, 0.6); border-radius: 50%; opacity: 0; animation: unlockPulse 3s ease-out infinite; }
-        @keyframes unlockPulse { 0% { transform: scale(0.8); opacity: 0.6; border-width: 3px; } 100% { transform: scale(1.5); opacity: 0; border-width: 0px; } }
-
-        .employee-info {
-            opacity: 0; transform: translateY(30px) scale(0.9);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
-            z-index: 5; display: flex; align-items: center; justify-content: center; gap: 15px; will-change: transform, opacity;
+        .unlock-ring {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(201, 169, 97, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            animation: unlockPulse 3s ease-out infinite;
         }
 
-        .employee-info.unlocked { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes unlockPulse {
+            0% { transform: scale(0.8); opacity: 0.6; border-width: 3px; }
+            100% { transform: scale(1.5); opacity: 0; border-width: 0px; }
+        }
 
-        .elephant-icon-small { font-size: 38px; color: #55d082; filter: drop-shadow(0 0 10px rgba(85, 208, 130, 0.5)); animation: elephantWalk 3s ease-in-out infinite; }
-        @keyframes elephantWalk { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-3px) rotate(-3deg); } 75% { transform: translateY(-3px) rotate(3deg); } }
+        .employee-info {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+            z-index: 5;
+        }
 
-        .text-group { text-align: left; }
-        .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
-        .small-email { font-size: 16px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
+        .employee-info.unlocked {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2; font-family: 'Inter', sans-serif;}
+        .small-email { font-size: 16px; color: #dddddd; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px;}
 
         /* =========================================
-           4. REGISTRATION PORTAL (First Time Only)
+           4. REGISTRATION PORTAL
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
@@ -173,7 +307,6 @@
         .auth-card.hidden { display: none; }
 
         .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
-        @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
         .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
@@ -184,20 +317,8 @@
         .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
 
         /* =========================================
-           5. APP IFRAME - SMOOTH REVEAL
+           RESTRICTION SCREENS
            ========================================= */
-        .app { 
-            position: fixed; inset: 0; opacity: 0; visibility: hidden; 
-            background: #001208; z-index: 2000; 
-            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1); 
-            transform: scale(1.02); will-change: transform, opacity;
-        }
-        .app.active { opacity: 1; visibility: visible; transform: scale(1); }
-        
-        iframe { width: 100%; height: 100%; border: none; background: #001208; opacity: 0; transition: opacity 0.8s ease 0.4s; }
-        .app.active iframe { opacity: 1; }
-
-        /* RESTRICTIONS & INSTALL OVERLAYS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.98); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
         .error-card { background: rgba(0, 30, 15, 0.9); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
         .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
@@ -225,8 +346,8 @@
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
-            <h2>Install App to Continue</h2>
-            <p>For your security, Shwari Finance must be installed to your phone to access the dashboard.</p>
+            <h2 style="font-size: 24px; font-weight: 800; color: #55d082; margin-bottom: 12px;">Install App to Continue</h2>
+            <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">For your security, Shwari Finance must be installed to your phone to access the dashboard.</p>
             <button class="install-btn" id="installAction">
                 <i class="fas fa-download"></i> <span>Install Now</span>
             </button>
@@ -276,7 +397,9 @@
         <div class="particle p2"></div>
         <div class="particle p3"></div>
         <div class="particle p4"></div>
-        <div class="main-icon"></div>
+        
+        <div class="main-icon">
+            </div>
     </div>
 
     <div class="app" id="app">
@@ -288,12 +411,9 @@
         "use strict";
 
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
-
-        /* ── 1. BACKGROUND PRELOADER ── */
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
-        /* ── 2. SERVICE WORKER REGISTRATION ── */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -302,7 +422,6 @@
             });
         }
 
-        /* ── 3. PARALLAX LOGIC ── */
         const uiWrapper = document.getElementById('ui');
         const appPanel  = document.getElementById('app');
         
@@ -333,7 +452,6 @@
         document.addEventListener('mousemove', onPointerMove, { passive: true });
         document.addEventListener('touchmove', onPointerMove, { passive: true });
 
-        /* ── 4. DATA SAVING & AUTHENTICATION FLOW ── */
         const formatName = (str) => {
             if (!str) return "";
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -358,13 +476,11 @@
                 document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
                 document.getElementById('continue-overlay').classList.remove('hidden');
 
-                // Elephant gate unlocks after 3s
                 setTimeout(() => {
                     document.getElementById('elephant-gate').classList.add('unlocked');
                     document.getElementById('employee-info').classList.add('unlocked');
                 }, 3000);
 
-                // Auto-assimilation triggers after 6.5s total
                 setTimeout(() => {
                     handleContinue();
                 }, 6500);
@@ -381,7 +497,6 @@
             const email = document.getElementById('reg-email').value.trim().toLowerCase();
 
             if (name && email) {
-                // Highly Cache: Save data directly to local storage device
                 localStorage.setItem('emp_name', name);
                 localStorage.setItem('emp_email', email);
                 localStorage.setItem('shwari_registered', 'true');
@@ -436,7 +551,6 @@
             }, 600);
         };
 
-        /* ── 5. ASSIMILATION BLAST EXECUTION ── */
         const executeTransition = () => {
             if (!isParallaxActive) return;
             isParallaxActive = false;
@@ -452,15 +566,15 @@
                 });
             });
 
+            // Burst outward sequence
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
                     if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                }, 1200);
-            }, 1400);
+                }, 1000);
+            }, 400);
         };
 
-        /* ── 6. PWA INSTALL DEFERRAL ── */
         let deferredPrompt;
         const installOverlay = document.getElementById('forcedInstall');
         const installBtn     = document.getElementById('installAction');
