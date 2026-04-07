@@ -28,9 +28,6 @@
             overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
             background-color: #001208;
-            /* Prevent pull-to-refresh and overscroll on mobile */
-            overscroll-behavior: none;
-            touch-action: none;
         }
 
         html { font-size: 5px !important; }
@@ -271,11 +268,35 @@
         .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
         .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
-        .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
         .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
+        .input-group input.error { border-color: #e74c3c; background: #fff5f5; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1); }
+        .input-group input.success { border-color: #55d082; background: #f0fff5; }
+        
+        .error-message {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 6px;
+            margin-left: 4px;
+            text-align: left;
+            animation: shakeError 0.4s ease;
+        }
+        .error-message.show { display: flex; }
+        .error-message i { font-size: 11px; }
+        
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
+        }
 
         .auth-btn { width: 100%; pointer-events: auto; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif;}
         .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
+        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* =========================================
            5. APP IFRAME - SMOOTH CROSSFADE REVEAL
@@ -598,240 +619,313 @@
         }
 
         /* =========================================
-           8. NETWORK ERROR / CUT CABLE SCREEN
+           8. NETWORK ERROR SCREEN (CARTOON STYLE)
            ========================================= */
         #network-error-screen {
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 999999;
+            z-index: 100000;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-            background: #0d1117;
-            overflow: hidden;
-        }
-
-        @media (prefers-color-scheme: light) {
-            #network-error-screen {
-                background: #f0f7f4;
-            }
+            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+                        #001208;
+            transition: opacity 0.5s ease;
         }
 
         #network-error-screen.active { display: flex; }
-
-        /* Animated Background Grid */
-        .net-bg-grid {
-            position: absolute;
-            inset: -50%;
-            width: 200%;
-            height: 200%;
-            background-image: 
-                linear-gradient(rgba(85, 208, 130, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(85, 208, 130, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridDrift 20s linear infinite;
-            pointer-events: none;
-        }
+        #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
 
         @media (prefers-color-scheme: light) {
-            .net-bg-grid {
-                background-image: 
-                    linear-gradient(rgba(44, 122, 71, 0.08) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(44, 122, 71, 0.08) 1px, transparent 1px);
+            #network-error-screen {
+                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.1) 0%, transparent 60%),
+                            radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
+                            #e8f5ed;
             }
         }
 
-        @keyframes gridDrift {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        /* Floating Dust Particles */
-        .net-dust {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(85, 208, 130, 0.4);
-            border-radius: 50%;
-            animation: dustFloat 6s ease-in-out infinite;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .net-dust { background: rgba(44, 122, 71, 0.3); }
-        }
-
-        .net-dust:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-        .net-dust:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; }
-        .net-dust:nth-child(3) { top: 80%; left: 30%; animation-delay: 4s; }
-
-        @keyframes dustFloat {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-            50% { transform: translateY(-30px) translateX(10px); opacity: 0.8; }
-        }
-
-        /* Cut Cable Illustration Container */
-        .cable-scene {
+        /* Cartoon-style error illustration */
+        .error-illustration {
             position: relative;
-            width: 280px;
-            height: 200px;
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* The Cable SVG Styling */
-        .cable-svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        .cable-line {
-            fill: none;
-            stroke: #55d082;
-            stroke-width: 8;
-            stroke-linecap: round;
-            filter: drop-shadow(0 0 10px rgba(85, 208, 130, 0.5));
-        }
-
-        @media (prefers-color-scheme: light) {
-            .cable-line {
-                stroke: #2c7a47;
-                filter: drop-shadow(0 0 10px rgba(44, 122, 71, 0.3));
-            }
-        }
-
-        .cable-broken {
-            stroke-dasharray: 20 10;
-            animation: cableSpark 0.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes cableSpark {
-            0% { stroke-opacity: 1; }
-            100% { stroke-opacity: 0.6; }
-        }
-
-        /* Spark effects at cable ends */
-        .cable-spark {
-            fill: #ffd700;
-            animation: sparkFlash 0.3s ease-in-out infinite;
-        }
-
-        @keyframes sparkFlash {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        /* Error Content Card */
-        .net-error-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(85, 208, 130, 0.2);
-            border-radius: 32px;
-            padding: 40px 35px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            backdrop-filter: blur(20px);
-            position: relative;
-            z-index: 10;
-            box-shadow: 
-                0 20px 60px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.05);
-        }
-
-        @media (prefers-color-scheme: light) {
-            .net-error-card {
-                background: rgba(255, 255, 255, 0.8);
-                border-color: rgba(44, 122, 71, 0.15);
-                box-shadow: 
-                    0 20px 60px rgba(0,0,0,0.1),
-                    inset 0 1px 0 rgba(255,255,255,0.8);
-            }
-        }
-
-        .net-icon-wrap {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 25px;
-            background: linear-gradient(135deg, rgba(85,208,130,0.2), rgba(44,122,71,0.1));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            color: #55d082;
-            border: 2px solid rgba(85,208,130,0.3);
-            animation: iconPulse 2s ease-in-out infinite;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .net-icon-wrap {
-                background: linear-gradient(135deg, rgba(44,122,71,0.1), rgba(85,208,130,0.05));
-                color: #2c7a47;
-                border-color: rgba(44,122,71,0.2);
-            }
-        }
-
-        @keyframes iconPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(85,208,130,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 30px 10px rgba(85,208,130,0); }
-        }
-
-        .net-title {
-            font-size: 26px;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .net-title { color: #0a2e16; }
-        }
-
-        .net-message {
-            font-size: 15px;
-            line-height: 1.6;
-            color: rgba(255,255,255,0.6);
+            width: 180px;
+            height: 180px;
             margin-bottom: 30px;
         }
 
-        @media (prefers-color-scheme: light) {
-            .net-message { color: rgba(10, 46, 22, 0.7); }
+        /* Cartoon character - sad elephant */
+        .cartoon-elephant {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 50% 50% 45% 45%;
+            top: 40px;
+            left: 30px;
+            animation: elephantSad 2s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* Retry Button */
-        .net-retry-btn {
-            background: linear-gradient(135deg, #55d082, #2c7a47);
-            color: #001208;
-            border: none;
-            padding: 18px 36px;
+        .cartoon-elephant::before {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 50px;
+            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 50%;
+            top: -20px;
+            left: 15px;
+            transform: rotate(-20deg);
+        }
+
+        .cartoon-elephant::after {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 50px;
+            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 50%;
+            top: -20px;
+            right: 15px;
+            transform: rotate(20deg);
+        }
+
+        /* Elephant trunk */
+        .elephant-trunk {
+            position: absolute;
+            width: 25px;
+            height: 50px;
+            background: linear-gradient(180deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 0 0 50% 50%;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: trunkWiggle 1.5s ease-in-out infinite;
+        }
+
+        /* Sad eyes */
+        .elephant-eye {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            top: 35px;
+        }
+
+        .elephant-eye.left { left: 30px; }
+        .elephant-eye.right { right: 30px; }
+
+        .elephant-eye::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 2px;
+            right: 2px;
+        }
+
+        /* Sad eyebrows */
+        .eyebrow {
+            position: absolute;
+            width: 18px;
+            height: 3px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            top: 25px;
+        }
+
+        .eyebrow.left { left: 27px; transform: rotate(20deg); }
+        .eyebrow.right { right: 27px; transform: rotate(-20deg); }
+
+        /* Broken cable illustration */
+        .broken-cable {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 60px;
+        }
+
+        .cable-left, .cable-right {
+            position: absolute;
+            width: 40px;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            border-radius: 2px;
+            top: 30px;
+        }
+
+        .cable-left { left: 0; transform: rotate(-15deg); animation: cableSpark 0.5s ease-in-out infinite alternate; }
+        .cable-right { right: 0; transform: rotate(15deg); animation: cableSpark 0.5s ease-in-out infinite alternate 0.25s; }
+
+        /* Spark effects */
+        .spark {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffc107;
+            border-radius: 50%;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: sparkFlash 0.3s ease-in-out infinite;
+            box-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;
+        }
+
+        @keyframes elephantSad {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        @keyframes trunkWiggle {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(-5deg); }
+            75% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        @keyframes cableSpark {
+            from { box-shadow: 0 0 5px #e74c3c; }
+            to { box-shadow: 0 0 15px #e74c3c, 0 0 25px #ffc107; }
+        }
+
+        @keyframes sparkFlash {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateX(-50%) scale(0.8); }
+        }
+
+        /* Error content styling */
+        .network-error-card {
+            background: rgba(0, 30, 15, 0.95);
+            max-width: 380px;
+            padding: 40px 35px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(231, 76, 60, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes errorCardSlideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .network-error-card {
+                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
+                            0 0 0 1px rgba(231, 76, 60, 0.2),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .network-error-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .network-error-message {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #aaaaaa;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .network-error-message { color: #5a6a60; }
+        }
+
+        .network-status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(231, 76, 60, 0.1);
             border-radius: 16px;
-            font-size: 16px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        @media (prefers-color-scheme: light) {
+            .network-status-indicator {
+                background: rgba(231, 76, 60, 0.08);
+                border-color: rgba(231, 76, 60, 0.15);
+            }
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #e74c3c;
+            border-radius: 50%;
+            animation: statusPulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px #e74c3c;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .status-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .retry-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
-            display: inline-flex;
+            display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
-            box-shadow: 0 10px 30px rgba(85,208,130,0.3);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
         }
 
-        .net-retry-btn:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(85,208,130,0.4);
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
         }
 
-        .net-retry-btn:active {
-            transform: translateY(0) scale(0.98);
+        .retry-btn:active {
+            transform: translateY(0);
         }
 
-        .net-retry-btn.spinning i {
+        .retry-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .retry-btn i {
+            animation: none;
+        }
+
+        .retry-btn.loading i {
             animation: spin 1s linear infinite;
         }
 
@@ -840,76 +934,111 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Connection Status Indicator */
-        .net-status-bar {
+        /* Floating error particles */
+        .error-particle {
             position: absolute;
-            top: max(20px, env(safe-area-inset-top));
+            border-radius: 50%;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .ep1 { width: 6px; height: 6px; background: #e74c3c; top: 10%; left: 15%; animation: errorFloat 4s ease-in-out infinite; }
+        .ep2 { width: 4px; height: 4px; background: #ffc107; top: 80%; right: 10%; animation: errorFloat 5s ease-in-out infinite 0.5s; }
+        .ep3 { width: 8px; height: 8px; background: rgba(231, 76, 60, 0.5); bottom: 15%; left: 20%; animation: errorFloat 3.5s ease-in-out infinite 1s; }
+        .ep4 { width: 5px; height: 5px; background: #ff9800; top: 30%; right: 15%; animation: errorFloat 4.5s ease-in-out infinite 1.5s; }
+
+        @keyframes errorFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
+        }
+
+        /* Network toast notification */
+        #network-toast {
+            position: fixed;
+            top: 20px;
             left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 59, 48, 0.9);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
+            transform: translateX(-50%) translateY(-100px);
+            z-index: 100001;
+            padding: 14px 24px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
             opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-            z-index: 100;
-            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        .net-status-bar.show {
-            opacity: 1;
+        #network-toast.show {
             transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
 
-        .net-status-bar.online {
-            background: rgba(52, 199, 89, 0.9);
-        }
-
-        /* Typing/Keyboard Stability Helpers */
-        .keyboard-open .wrapper,
-        .keyboard-open #continue-overlay,
-        .keyboard-open #auth-portal {
-            transform: scale(0.85) translateY(-10%);
-            transition: transform 0.3s ease;
-        }
-
-        /* Gesture Hint Overlay */
-        .gesture-hint {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
+        #network-toast.offline {
+            background: rgba(231, 76, 60, 0.95);
             color: white;
-            padding: 12px 24px;
-            border-radius: 24px;
-            font-size: 13px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 5000;
-            backdrop-filter: blur(10px);
         }
 
-        .gesture-hint.show { opacity: 1; }
+        #network-toast.online {
+            background: rgba(85, 208, 130, 0.95);
+            color: #001208;
+        }
 
-        @media (prefers-color-scheme: light) {
-            .gesture-hint {
-                background: rgba(255,255,255,0.9);
-                color: #0a2e16;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            }
+        #network-toast i {
+            font-size: 16px;
         }
 
     </style>
+<base target="_blank">
 </head>
 <body>
+
+    <!-- Network Toast Notification -->
+    <div id="network-toast">
+        <i class="fas fa-wifi"></i>
+        <span id="toast-message">Checking connection...</span>
+    </div>
+
+    <!-- Network Error Screen (Cartoon Style) -->
+    <div id="network-error-screen">
+        <div class="error-particle ep1"></div>
+        <div class="error-particle ep2"></div>
+        <div class="error-particle ep3"></div>
+        <div class="error-particle ep4"></div>
+        
+        <div class="error-illustration">
+            <div class="broken-cable">
+                <div class="cable-left"></div>
+                <div class="cable-right"></div>
+                <div class="spark"></div>
+            </div>
+            <div class="cartoon-elephant">
+                <div class="eyebrow left"></div>
+                <div class="eyebrow right"></div>
+                <div class="elephant-eye left"></div>
+                <div class="elephant-eye right"></div>
+                <div class="elephant-trunk"></div>
+            </div>
+        </div>
+        
+        <div class="network-error-card">
+            <h2 class="network-error-title">Connection Lost</h2>
+            <p class="network-error-message">
+                Oops! Looks like the cable got unplugged.<br>
+                Please check your internet connection and try again.
+            </p>
+            <div class="network-status-indicator">
+                <div class="status-dot"></div>
+                <span class="status-text">You're offline</span>
+            </div>
+            <button class="retry-btn" id="retry-connection-btn" onclick="checkAndRetryConnection()">
+                <i class="fas fa-rotate-right"></i>
+                <span>Try Again</span>
+            </button>
+        </div>
+    </div>
 
     <div id="device-error">
         <div class="error-card">
@@ -937,11 +1066,19 @@
             <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
                 <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other)" autocomplete="off">
+                <div class="error-message" id="name-error">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>Please enter your full name</span>
+                </div>
             </div>
             <div class="input-group">
                 <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="off">
+                <div class="error-message" id="email-error">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>Please enter a valid email address</span>
+                </div>
             </div>
-            <button onclick="handleRegister()" class="auth-btn">Activate Device</button>
+            <button onclick="handleRegister()" class="auth-btn" id="activate-btn">Activate Device</button>
         </div>
     </div>
 
@@ -975,7 +1112,12 @@
         <div class="particle p4"></div>
         
         <div class="main-icon">
+            <div class="core-animation">
+                <div class="core-outer"></div>
+                <div class="core-inner"></div>
+                <div class="loader-ring"></div>
             </div>
+        </div>
     </div>
 
     <div class="app" id="app">
@@ -1019,63 +1161,6 @@
             </div>
         </div>
     </div>
-
-    <!-- =====================================================
-         NETWORK ERROR / CUT CABLE SCREEN
-         ===================================================== -->
-    <div id="network-error-screen">
-        <div class="net-bg-grid"></div>
-        
-        <!-- Floating dust particles -->
-        <div class="net-dust"></div>
-        <div class="net-dust"></div>
-        <div class="net-dust"></div>
-
-        <!-- Cable Illustration -->
-        <div class="cable-scene">
-            <svg class="cable-svg" viewBox="0 0 280 200">
-                <!-- Left side of cut cable -->
-                <path class="cable-line cable-broken" d="M 20 100 Q 80 100 100 80" />
-                <path class="cable-line" d="M 20 100 Q 80 100 100 80" stroke-opacity="0.3" stroke-dasharray="5 5"/>
-                
-                <!-- Right side of cut cable -->
-                <path class="cable-line cable-broken" d="M 180 120 Q 200 100 260 100" />
-                <path class="cable-line" d="M 180 120 Q 200 100 260 100" stroke-opacity="0.3" stroke-dasharray="5 5"/>
-                
-                <!-- Spark effects -->
-                <circle class="cable-spark" cx="140" cy="100" r="4" />
-                <circle class="cable-spark" cx="130" cy="90" r="2" style="animation-delay:0.1s" />
-                <circle class="cable-spark" cx="150" cy="110" r="3" style="animation-delay:0.2s" />
-                
-                <!-- Wire internals visible at cut -->
-                <line x1="100" y1="75" x2="100" y2="85" stroke="#ffd700" stroke-width="2" />
-                <line x1="180" y1="115" x2="180" y2="125" stroke="#ffd700" stroke-width="2" />
-            </svg>
-        </div>
-
-        <div class="net-error-card">
-            <div class="net-icon-wrap">
-                <i class="fas fa-wifi-slash"></i>
-            </div>
-            <h2 class="net-title">Connection Lost</h2>
-            <p class="net-message">
-                Looks like the cable got cut! Please check your internet connection and try again.
-            </p>
-            <button class="net-retry-btn" id="net-retry-btn" onclick="checkNetworkAndRetry()">
-                <i class="fas fa-rotate-right"></i>
-                <span>Try Again</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Network Status Toast -->
-    <div class="net-status-bar" id="net-status-bar">
-        <i class="fas fa-circle" style="font-size:8px;"></i>
-        <span id="net-status-text">No Connection</span>
-    </div>
-
-    <!-- Gesture Hint -->
-    <div class="gesture-hint" id="gesture-hint">Swipe left to go back</div>
 
 
     <script>
@@ -1160,41 +1245,127 @@
             }
         };
 
-        window.handleRegister = () => {
-            const name = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
-            if (name && email) {
-                localStorage.setItem('emp_name', name);
-                localStorage.setItem('emp_email', email);
-                localStorage.setItem('shwari_registered', 'true');
-                const authPortal = document.getElementById('auth-portal');
-                const regScreen = document.getElementById('reg-screen');
-                const continueOverlay = document.getElementById('continue-overlay');
-                document.getElementById('display-name').innerText = formatName(name);
-                document.getElementById('display-email').innerText = email;
-                regScreen.style.transform = 'scale(0.9)';
-                regScreen.style.opacity = '0';
-                setTimeout(() => {
-                    authPortal.style.opacity = '0';
-                    setTimeout(() => {
-                        authPortal.classList.add('hidden');
-                        regScreen.classList.add('hidden');
-                        continueOverlay.classList.remove('hidden');
-                        continueOverlay.style.opacity = '0';
-                        void continueOverlay.offsetWidth;
-                        continueOverlay.style.opacity = '1';
-                        setTimeout(() => {
-                            document.getElementById('elephant-gate').classList.add('unlocked');
-                            document.getElementById('employee-info').classList.add('unlocked');
-                        }, 3000);
-                        setTimeout(() => {
-                            handleContinue();
-                        }, 6500);
-                    }, 500);
-                }, 400);
+        // Form Validation Functions
+        const validateEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        };
+
+        const validateName = (name) => {
+            return name.trim().length >= 2;
+        };
+
+        const showFieldError = (fieldId, errorId, show) => {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            if (show) {
+                field.classList.add('error');
+                field.classList.remove('success');
+                error.classList.add('show');
             } else {
-                alert("Please enter both Name and Work Email.");
+                field.classList.remove('error');
+                field.classList.add('success');
+                error.classList.remove('show');
             }
+        };
+
+        const clearFieldErrors = () => {
+            document.getElementById('reg-name').classList.remove('error', 'success');
+            document.getElementById('reg-email').classList.remove('error', 'success');
+            document.getElementById('name-error').classList.remove('show');
+            document.getElementById('email-error').classList.remove('show');
+        };
+
+        // Real-time validation listeners
+        document.getElementById('reg-name').addEventListener('blur', function() {
+            const name = this.value.trim();
+            if (name.length > 0) {
+                showFieldError('reg-name', 'name-error', !validateName(name));
+            }
+        });
+
+        document.getElementById('reg-name').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                showFieldError('reg-name', 'name-error', !validateName(this.value.trim()));
+            }
+        });
+
+        document.getElementById('reg-email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email.length > 0) {
+                showFieldError('reg-email', 'email-error', !validateEmail(email));
+            }
+        });
+
+        document.getElementById('reg-email').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                showFieldError('reg-email', 'email-error', !validateEmail(this.value.trim()));
+            }
+        });
+
+        window.handleRegister = () => {
+            const nameInput = document.getElementById('reg-name');
+            const emailInput = document.getElementById('reg-email');
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim().toLowerCase();
+            
+            let isValid = true;
+            
+            // Validate name
+            if (!validateName(name)) {
+                showFieldError('reg-name', 'name-error', true);
+                isValid = false;
+            } else {
+                showFieldError('reg-name', 'name-error', false);
+            }
+            
+            // Validate email
+            if (!validateEmail(email)) {
+                showFieldError('reg-email', 'email-error', true);
+                isValid = false;
+            } else {
+                showFieldError('reg-email', 'email-error', false);
+            }
+            
+            if (!isValid) {
+                // Shake the button to indicate error
+                const btn = document.getElementById('activate-btn');
+                btn.style.animation = 'shakeError 0.4s ease';
+                setTimeout(() => { btn.style.animation = ''; }, 400);
+                return;
+            }
+            
+            // Clear errors and proceed
+            clearFieldErrors();
+            
+            localStorage.setItem('emp_name', name);
+            localStorage.setItem('emp_email', email);
+            localStorage.setItem('shwari_registered', 'true');
+            const authPortal = document.getElementById('auth-portal');
+            const regScreen = document.getElementById('reg-screen');
+            const continueOverlay = document.getElementById('continue-overlay');
+            document.getElementById('display-name').innerText = formatName(name);
+            document.getElementById('display-email').innerText = email;
+            regScreen.style.transform = 'scale(0.9)';
+            regScreen.style.opacity = '0';
+            setTimeout(() => {
+                authPortal.style.opacity = '0';
+                setTimeout(() => {
+                    authPortal.classList.add('hidden');
+                    regScreen.classList.add('hidden');
+                    continueOverlay.classList.remove('hidden');
+                    continueOverlay.style.opacity = '0';
+                    void continueOverlay.offsetWidth;
+                    continueOverlay.style.opacity = '1';
+                    setTimeout(() => {
+                        document.getElementById('elephant-gate').classList.add('unlocked');
+                        document.getElementById('employee-info').classList.add('unlocked');
+                    }, 3000);
+                    setTimeout(() => {
+                        handleContinue();
+                    }, 6500);
+                }, 500);
+            }, 400);
         };
 
         window.handleContinue = () => {
@@ -1233,9 +1404,158 @@
 
 
         /* =====================================================
+           NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
+           ===================================================== */
+        
+        const networkErrorScreen = document.getElementById('network-error-screen');
+        const networkToast = document.getElementById('network-toast');
+        const toastMessage = document.getElementById('toast-message');
+        let wasOffline = false;
+        let isCheckingConnection = false;
+
+        // Show toast notification
+        const showToast = (message, isOnline) => {
+            toastMessage.textContent = message;
+            networkToast.className = isOnline ? 'online' : 'offline';
+            networkToast.classList.add('show');
+            
+            setTimeout(() => {
+                networkToast.classList.remove('show');
+            }, 3000);
+        };
+
+        // Check actual network connectivity
+        const checkConnectivity = async () => {
+            if (isCheckingConnection) return navigator.onLine;
+            isCheckingConnection = true;
+            
+            try {
+                // Try to fetch a small resource to verify actual connectivity
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch('https://www.google.com/favicon.ico', {
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                isCheckingConnection = false;
+                return true;
+            } catch (error) {
+                isCheckingConnection = false;
+                return false;
+            }
+        };
+
+        // Show network error screen
+        const showNetworkError = () => {
+            networkErrorScreen.classList.add('active');
+            networkErrorScreen.classList.remove('fade-out');
+        };
+
+        // Hide network error screen
+        const hideNetworkError = () => {
+            networkErrorScreen.classList.add('fade-out');
+            setTimeout(() => {
+                networkErrorScreen.classList.remove('active');
+            }, 500);
+        };
+
+        // Handle online event
+        const handleOnline = async () => {
+            const isConnected = await checkConnectivity();
+            if (isConnected) {
+                if (wasOffline) {
+                    showToast('Back online!', true);
+                    hideNetworkError();
+                    wasOffline = false;
+                }
+            }
+        };
+
+        // Handle offline event
+        const handleOffline = () => {
+            wasOffline = true;
+            showToast('Connection lost', false);
+            showNetworkError();
+        };
+
+        // Retry connection handler
+        window.checkAndRetryConnection = async () => {
+            const retryBtn = document.getElementById('retry-connection-btn');
+            const btnText = retryBtn.querySelector('span');
+            const btnIcon = retryBtn.querySelector('i');
+            
+            retryBtn.disabled = true;
+            retryBtn.classList.add('loading');
+            btnText.textContent = 'Checking...';
+            
+            const isConnected = await checkConnectivity();
+            
+            retryBtn.disabled = false;
+            retryBtn.classList.remove('loading');
+            btnText.textContent = 'Try Again';
+            
+            if (isConnected) {
+                showToast('Connection restored!', true);
+                hideNetworkError();
+                wasOffline = false;
+            } else {
+                // Shake button to indicate still offline
+                retryBtn.style.animation = 'shakeError 0.4s ease';
+                setTimeout(() => { retryBtn.style.animation = ''; }, 400);
+            }
+        };
+
+        // Listen for network status changes
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        // Periodic connectivity check when offline
+        setInterval(async () => {
+            if (wasOffline || !navigator.onLine) {
+                const isConnected = await checkConnectivity();
+                if (isConnected && wasOffline) {
+                    handleOnline();
+                } else if (!isConnected && !wasOffline && !navigator.onLine) {
+                    handleOffline();
+                }
+            }
+        }, 5000);
+
+        // Initial connectivity check
+        window.addEventListener('load', async () => {
+            if (!navigator.onLine) {
+                handleOffline();
+            } else {
+                const isConnected = await checkConnectivity();
+                if (!isConnected) {
+                    handleOffline();
+                }
+            }
+        });
+
+        // Handle page visibility change - recheck when user returns
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible') {
+                if (!navigator.onLine) {
+                    handleOffline();
+                } else {
+                    const isConnected = await checkConnectivity();
+                    if (isConnected && wasOffline) {
+                        handleOnline();
+                    }
+                }
+            }
+        });
+
+
+        /* =====================================================
            INSTALL PROGRESS SCREEN — new logic block
            Runs AFTER install is accepted, before app opens.
-           ===================================================== */
+           ====================================================== */
 
         const installScreen  = document.getElementById('install-progress-screen');
         const installBar     = document.getElementById('install-bar');
@@ -1341,242 +1661,11 @@
             }
         });
 
-
-        /* =====================================================
-           NETWORK CONNECTIVITY MANAGER & ERROR SCREEN
-           ===================================================== */
-        
-        const networkErrorScreen = document.getElementById('network-error-screen');
-        const netStatusBar = document.getElementById('net-status-bar');
-        const netStatusText = document.getElementById('net-status-text');
-        const netRetryBtn = document.getElementById('net-retry-btn');
-
-        function updateNetworkStatus() {
-            const isOnline = navigator.onLine;
-            
-            if (isOnline) {
-                // Hide error screen if visible
-                if (networkErrorScreen.classList.contains('active')) {
-                    networkErrorScreen.classList.remove('active');
-                    // Show online toast
-                    netStatusBar.classList.add('online');
-                    netStatusText.textContent = 'Back Online';
-                    netStatusBar.classList.add('show');
-                    setTimeout(() => {
-                        netStatusBar.classList.remove('show');
-                        setTimeout(() => netStatusBar.classList.remove('online'), 300);
-                    }, 2000);
-                }
-            } else {
-                // Show error screen
-                networkErrorScreen.classList.add('active');
-            }
-        }
-
-        window.checkNetworkAndRetry = function() {
-            netRetryBtn.classList.add('spinning');
-            
-            // Simulate check delay for UX
-            setTimeout(() => {
-                netRetryBtn.classList.remove('spinning');
-                if (navigator.onLine) {
-                    networkErrorScreen.classList.remove('active');
-                    netStatusBar.classList.add('online');
-                    netStatusText.textContent = 'Connected';
-                    netStatusBar.classList.add('show');
-                    setTimeout(() => netStatusBar.classList.remove('show'), 2000);
-                } else {
-                    // Shake animation on button
-                    netRetryBtn.style.animation = 'shake 0.5s ease';
-                    setTimeout(() => {
-                        netRetryBtn.style.animation = '';
-                    }, 500);
-                }
-            }, 1500);
-        };
-
-        // Network event listeners
-        window.addEventListener('online', updateNetworkStatus);
-        window.addEventListener('offline', updateNetworkStatus);
-        
-        // Initial check
-        if (!navigator.onLine) {
-            networkErrorScreen.classList.add('active');
-        }
-
-
-        /* =====================================================
-           KEYBOARD STABILITY MANAGER (Mobile Typing Guard)
-           ===================================================== */
-        
-        let initialViewportHeight = window.innerHeight;
-        
-        function handleVisualViewport() {
-            if (window.visualViewport) {
-                const vv = window.visualViewport;
-                const heightDiff = initialViewportHeight - vv.height;
-                
-                if (heightDiff > 150) {
-                    // Keyboard likely open
-                    document.body.classList.add('keyboard-open');
-                    
-                    // Adjust active elements to stay visible
-                    const activeEl = document.activeElement;
-                    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
-                        setTimeout(() => {
-                            activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 100);
-                    }
-                } else {
-                    document.body.classList.remove('keyboard-open');
-                }
-            }
-        }
-
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', handleVisualViewport);
-            window.visualViewport.addEventListener('scroll', handleVisualViewport);
-        }
-
-        // Fallback for older browsers
-        window.addEventListener('resize', () => {
-            if (!window.visualViewport) {
-                const heightDiff = initialViewportHeight - window.innerHeight;
-                if (heightDiff > 150) {
-                    document.body.classList.add('keyboard-open');
-                } else {
-                    document.body.classList.remove('keyboard-open');
-                }
-            }
-        });
-
-        // Prevent zoom on input focus for iOS
-        document.addEventListener('gesturestart', (e) => e.preventDefault());
-        document.addEventListener('gesturechange', (e) => e.preventDefault());
-        document.addEventListener('gestureend', (e) => e.preventDefault());
-
-
-        /* =====================================================
-           GESTURE CONTROLLER (Touch Navigation)
-           ===================================================== */
-        
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchStartTime = 0;
-        const gestureHint = document.getElementById('gesture-hint');
-
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-            touchStartTime = new Date().getTime();
-        }, { passive: true });
-
-        document.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            const touchEndY = e.changedTouches[0].screenY;
-            const touchDuration = new Date().getTime() - touchStartTime;
-            
-            handleSwipe(touchStartX, touchEndX, touchStartY, touchEndY, touchDuration);
-        }, { passive: true });
-
-        function handleSwipe(startX, endX, startY, endY, duration) {
-            const threshold = 100; // min distance
-            const restraint = 100; // max vertical deviation
-            const allowedTime = 1000; // max time for swipe
-            
-            const distX = endX - startX;
-            const distY = endY - startY;
-            
-            if (duration <= allowedTime && Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) {
-                if (distX > 0) {
-                    // Swipe Right - Go Back in iframe history if possible
-                    showGestureHint('Going back...');
-                    try {
-                        if (macroIframe.contentWindow && macroIframe.contentWindow.history.length > 1) {
-                            macroIframe.contentWindow.history.back();
-                        }
-                    } catch (e) {
-                        console.log('Cannot access iframe history');
-                    }
-                } else {
-                    // Swipe Left - Forward
-                    showGestureHint('Going forward...');
-                    try {
-                        if (macroIframe.contentWindow) {
-                            macroIframe.contentWindow.history.forward();
-                        }
-                    } catch (e) {
-                        console.log('Cannot access iframe history');
-                    }
-                }
-            }
-        }
-
-        function showGestureHint(text) {
-            gestureHint.textContent = text;
-            gestureHint.classList.add('show');
-            setTimeout(() => {
-                gestureHint.classList.remove('show');
-            }, 1500);
-        }
-
-        // Double tap protection (prevent zoom)
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-
-        /* =====================================================
-           ERROR BOUNDARY & GLOBAL HANDLERS
-           ===================================================== */
-        
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.message);
-            // Prevent crash loops
-            e.preventDefault();
-        });
-
-        window.addEventListener('unhandledrejection', (e) => {
-            console.error('Unhandled promise:', e.reason);
-            e.preventDefault();
-        });
-
-        // Prevent context menu on long press (native app feel)
-        window.oncontextmenu = (e) => {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                return false;
-            }
-        };
-
-        // Visibility API - Pause/resume logic
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                // Page hidden - save state if needed
-                console.log('App backgrounded');
-            } else {
-                // Page visible - check network
-                updateNetworkStatus();
-            }
-        });
-
-
-        /* =====================================================
-           INITIALIZATION SEQUENCE
-           ===================================================== */
-        
         requestAnimationFrame(() => {
             uiWrapper.classList.add('pop-in');
             tickParallax();
             window.initAuth();
         });
-
     })();
     </script>
 </body>
