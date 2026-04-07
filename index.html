@@ -78,7 +78,7 @@
             50% { transform: translateY(-15px) scale(1.1) translateZ(0); }
         }
 
-        .orbit-inner, .orbit-outer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 40; transform-style: preserve-3d; }
+        .orbit-inner, .orbit-outer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 40; transform-style: preserve-3d; pointer-events: none; }
         .orbit-inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; }
         .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotatePulseCounter 5s linear infinite; }
 
@@ -128,156 +128,96 @@
         @keyframes rippleOut { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; } 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; } }
 
         /* =========================================
-           2. PREMIUM AUTH PORTAL STYLES
+           2. PREMIUM FULL-SCREEN AUTH PORTAL
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: opacity 0.5s ease, transform 0.5s ease;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: opacity 0.6s ease, transform 0.6s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
+        /* REGISTRATION CARD (Standard) */
         .auth-card {
             background: rgba(255, 255, 255, 0.98); width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.12), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
-            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
+            animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
         }
-        @keyframes cardFloatUp { from { transform: translateY(50px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+        /* NEW FULL SCREEN "PAGE 3/4" CONTINUE CARD */
+        .full-screen-card {
+            height: 85vh; /* Takes up vast majority of screen */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes button to footer */
+            padding: 50px 30px;
+            border-radius: 40px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(245,250,247,0.95) 100%);
+        }
+
+        @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
 
-        /* Refined Registration Styling */
-        .auth-icon i { font-size: 3.5rem; color: #2c7a47; margin-bottom: 20px; background: #eef7f1; padding: 20px; border-radius: 50%; display: inline-block; }
-        .auth-card h2 { font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
+        /* Header Styling */
+        .dept-header { margin-bottom: auto; }
+        .dept-title { font-size: 1.5rem; font-weight: 900; color: #1f6e3f; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3;}
+        .dept-subtitle { font-size: 0.9rem; color: #666; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; font-weight: 600;}
+
+        /* Rotating Loader Avatar */
+        .avatar-wrapper {
+            position: relative;
+            width: 140px; height: 140px;
+            margin: 40px auto 20px;
+            display: flex; justify-content: center; align-items: center;
+        }
         
-        /* Redesigned Continue Screen (Page 3/4) – Shwari Finance Department */
-        #login-screen {
-            display: flex !important;
-            flex-direction: column !important;
-            min-height: 520px;
-            padding: 40px 35px;
-        }
-
-        .department-header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .department-header h1 {
-            font-size: 2.1rem;
-            font-weight: 900;
-            letter-spacing: -1.2px;
-            background: linear-gradient(90deg, #2c7a47, #1f6e3f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-            line-height: 1.1;
-        }
-        .department-header p {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #1f6e3f;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 4px;
-            opacity: 0.9;
-        }
-
-        .employee-container {
-            position: relative;
-            width: 118px;
-            height: 118px;
-            margin: 25px auto 20px;
-        }
-
         .loader-ring {
-            position: absolute;
-            inset: -12px;
-            border: 7px solid #e8f0e8;
-            border-top: 7px solid #2c7a47;
+            position: absolute; inset: 0;
+            border: 4px solid rgba(44, 122, 71, 0.1);
+            border-top-color: #2c7a47; border-bottom-color: #2c7a47;
             border-radius: 50%;
-            animation: loaderSpin 1.4s linear infinite;
-            box-shadow: 0 0 18px rgba(44, 122, 71, 0.3);
+            animation: spinLoader 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
         }
+        @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes loaderSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .inner-avatar {
+            width: 100px; height: 100px; background: linear-gradient(135deg, #eef7f1, #ffffff); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            border: 4px solid #fff; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.2); z-index: 2;
         }
+        .inner-avatar i { font-size: 3rem; color: #2c7a47; }
 
-        #login-screen .auth-avatar {
-            width: 118px !important;
-            height: 118px !important;
-            background: linear-gradient(135deg, #eef7f1, #ffffff);
-            border: 7px solid #fff;
-            box-shadow: 
-                0 0 0 8px rgba(44, 122, 71, 0.15),
-                0 15px 35px rgba(44, 122, 71, 0.25);
-            animation: employeeIconRotate 18s linear infinite, employeePulse 2.8s ease-in-out infinite;
-            position: relative;
-            z-index: 2;
-        }
+        /* Typography */
+        .welcome-label { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; color: #888; font-weight: 800; margin-bottom: 8px; }
+        .medium-font { font-size: 2rem !important; color: #111; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 5px;}
+        .small-email { font-size: 1rem; color: #555; margin-bottom: 35px; font-weight: 500; background: #eef7f1; padding: 6px 15px; border-radius: 20px; display: inline-block;}
 
-        #login-screen .auth-avatar i {
-            font-size: 3.4rem !important;
-            color: #2c7a47;
-        }
+        /* Inputs */
+        .input-group input { width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
 
-        @keyframes employeeIconRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes employeePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
-
-        .welcome-label { 
-            font-size: 0.95rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            color: #1f6e3f; 
-            font-weight: 800; 
-            margin-bottom: 6px; 
-            background: #f0f7f2;
-            display: inline-block;
-            padding: 4px 18px;
-            border-radius: 30px;
-        }
-        .medium-font { font-size: 1.75rem !important; color: #111; font-weight: 800; letter-spacing: -0.6px; margin-bottom: 4px;}
-        .small-email { font-size: 0.98rem; color: #555; margin-bottom: 30px; font-weight: 600; }
-
-        /* Continue button moved to footer with premium design */
-        .continue-footer {
-            margin-top: auto;
-            padding-top: 25px;
-            border-top: 1px solid #f1f5f3;
-            width: 100%;
-        }
-
+        /* Footer Button */
+        .card-footer { margin-top: auto; width: 100%; }
         .auth-btn {
-            width: 100%; padding: 20px; background: linear-gradient(135deg, #2c7a47, #1f6e3f); color: white;
-            border: none; border-radius: 16px; font-size: 1.18rem; font-weight: 700; cursor: pointer; display: flex;
-            justify-content: center; align-items: center; gap: 12px; transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 12px 28px rgba(44, 122, 71, 0.3);
+            width: 100%; padding: 22px; background: linear-gradient(135deg, #2c7a47, #1f6e3f); color: white;
+            border: none; border-radius: 20px; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex;
+            justify-content: center; align-items: center; gap: 12px; transition: transform 0.2s;
+            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3);
         }
-        .auth-btn:active { transform: scale(0.96); box-shadow: 0 6px 14px rgba(44, 122, 71, 0.25); }
-        .auth-btn i { font-size: 1.25rem; }
-
-        /* Extra micro-animations for continue page */
-        #login-screen .department-header {
-            animation: titleFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
+        
+        .pulse-btn { animation: btnPulse 2s infinite; }
+        @keyframes btnPulse {
+            0% { box-shadow: 0 0 0 0 rgba(44, 122, 71, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(44, 122, 71, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(44, 122, 71, 0); }
         }
-        #login-screen .employee-container {
-            animation: containerPop 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        @keyframes titleFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes containerPop { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
 
         /* =========================================
            3. RESTRICTION SCREENS & IFRAME
            ========================================= */
-        .app { position: fixed; inset: 0; opacity: 0; visibility: hidden; background: #ffffff; z-index: 2000; transition: opacity 0.6s ease-in; }
-        .app.active { opacity: 1; visibility: visible; }
-        iframe { width: 100%; height: 100%; border: none; background: white; }
+        .app { position: fixed; inset: 0; opacity: 0; visibility: hidden; background: transparent; z-index: 2000; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); transform: scale(1.05); }
+        .app.active { opacity: 1; visibility: visible; transform: scale(1); }
+        iframe { width: 100%; height: 100%; border: none; background: transparent; }
 
         #device-error { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
         .error-card { background: white; max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
@@ -288,18 +228,6 @@
         #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: white; width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.15); font-family: 'Inter', sans-serif; }
         .install-btn { background: transparent; color: #222; border: 2px solid #222; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;}
-
-        @media (max-width: 500px) { 
-            .main-icon { width: 96px; height: 96px; } 
-            .orbit-inner { width: 190px; height: 190px; } 
-            .ring-track.inner { width: 190px; height: 190px; } 
-            .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; } 
-            .orbit-outer { width: 300px; height: 300px; } 
-            .ring-track.outer { width: 300px; height: 300px; } 
-            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; } 
-            #login-screen .auth-avatar { width: 102px !important; height: 102px !important; }
-            #login-screen .employee-container { width: 102px; height: 102px; }
-        }
     </style>
 </head>
 <body>
@@ -326,8 +254,8 @@
     <div id="auth-portal" class="hidden">
         
         <div id="reg-screen" class="auth-card hidden">
-            <div class="auth-icon"><i class="fas fa-shield-alt"></i></div>
-            <h2>Device Activation</h2>
+            <i class="fas fa-shield-alt" style="font-size: 3rem; color: #2c7a47; margin-bottom: 15px; background: #eef7f1; padding: 20px; border-radius: 50%;"></i>
+            <h2 style="font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 5px;">Device Activation</h2>
             <p style="font-size: 1rem; color: #666; margin-bottom:25px;">Register this device once to secure access.</p>
             <div class="input-group">
                 <input type="text" id="reg-name" placeholder="Full Name (e.g. Emilio Thuku)" autocomplete="off">
@@ -335,29 +263,30 @@
             <div class="input-group">
                 <input type="email" id="reg-email" placeholder="Work Email" autocomplete="off">
             </div>
-            <button onclick="handleRegister()" class="auth-btn">Activate Device</button>
+            <button onclick="handleRegister()" class="auth-btn pulse-btn">Activate Device</button>
         </div>
 
-        <!-- WELL-DESIGNED CONTINUE PAGE (PAGE 3/4) – SHWARI FINANCE DEPARTMENT -->
-        <div id="login-screen" class="auth-card hidden">
-            <div class="department-header">
-                <h1>Shwari Finance</h1>
-                <p>DEPARTMENT</p>
-            </div>
-
-            <div class="employee-container">
-                <div class="loader-ring"></div>
-                <div class="auth-avatar"><i class="fas fa-user-tie"></i></div>
-            </div>
-
-            <p class="welcome-label">Verified Employee Access</p>
-            <h2 id="display-name" class="medium-font"></h2>
-            <p id="display-email" class="small-email"></p>
+        <div id="login-screen" class="auth-card full-screen-card hidden">
             
-            <div class="continue-footer">
-                <button onclick="handleContinue()" class="auth-btn">
-                    <span>Continue to Dashboard</span> 
-                    <i class="fas fa-arrow-right"></i>
+            <div class="dept-header">
+                <h3 class="dept-title">Shwari Finance<br>Department</h3>
+                <p class="dept-subtitle">Secure Portal</p>
+            </div>
+
+            <div class="card-body">
+                <div class="avatar-wrapper">
+                    <div class="loader-ring"></div>
+                    <div class="inner-avatar"><i class="fas fa-user-tie"></i></div>
+                </div>
+                
+                <p class="welcome-label">Employee Recognized</p>
+                <h2 id="display-name" class="medium-font"></h2>
+                <p id="display-email" class="small-email"></p>
+            </div>
+            
+            <div class="card-footer">
+                <button onclick="handleContinue()" class="auth-btn pulse-btn">
+                    <span>Continue</span> <i class="fas fa-fingerprint"></i>
                 </button>
             </div>
         </div>
@@ -399,7 +328,8 @@
 
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
-        /* ── 1. BACKGROUND PRELOADER (SUPER FAST LOAD) ── */
+        /* ── 1. BACKGROUND PRELOADER (ZERO WHITE DELAY) ── */
+        // We inject the link IMMEDIATELY. By the time the user clicks continue, it is 100% loaded.
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -451,8 +381,8 @@
         };
 
         const isPWA = () => {
-            return window.matchMedia('(display-mode: standalone)').matches ||  
-                   window.navigator.standalone === true ||  
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true || 
                    document.referrer.includes('android-app://');
         };
 
@@ -490,15 +420,20 @@
         };
 
         window.handleContinue = () => {
+            // Smoothly dismiss the beautiful card
             const authPortal = document.getElementById('auth-portal');
-            authPortal.style.transform = 'scale(1.1)';
+            authPortal.style.transform = 'scale(1.05)';
             authPortal.style.opacity = '0';
-            setTimeout(() => { authPortal.style.display = 'none'; }, 500);
+            setTimeout(() => { authPortal.style.display = 'none'; }, 600);
 
+            // DO NOT RE-INJECT IFRAME SRC HERE. That causes the white delay.
+            // It is already loaded from step 1!
+
+            // Trigger Animation
             executeTransition();
         };
 
-        /* ── 5. ASSIMILATION TRANSITION ── */
+        /* ── 5. ASSIMILATION TRANSITION (MORE ANIMATION) ── */
         const executeTransition = () => {
             if (!isParallaxActive) return;
             isParallaxActive = false;
@@ -514,6 +449,7 @@
                 });
             });
 
+            // Smooth scale-in reveal of the preloaded app
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
