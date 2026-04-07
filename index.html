@@ -634,6 +634,18 @@
         </div>
     </div>
 
+    <div id="securityLock" style="display: none; position: fixed; inset: 0; background: #ffffff; z-index: 100000; flex-direction: column; align-items: center; justify-content: center; font-family: 'Inter', sans-serif;">
+        <i class="fas fa-shield-lock" style="font-size: 4.5rem; color: #d1360c; margin-bottom: 25px;"></i>
+        <h2 style="color: #111; margin-bottom: 10px; font-weight: 800;">Account Inactivated</h2>
+        <p style="color: #666; margin-bottom: 30px; text-align: center; max-width: 320px; line-height: 1.5;">
+            For your security, Shwari Finance has inactivated this session. Access is restricted to your authorized device.<br><br>
+            <strong>Please contact the Administrator to request a device reset.</strong>
+        </p>
+        <button id="retryBtn" style="background: #111; color: white; border: none; padding: 16px 40px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-sync-alt"></i> Check Status
+        </button>
+    </div>
+
     <div class="wrapper" id="ui">
 
         <div class="shockwave"></div>
@@ -785,11 +797,74 @@
         document.addEventListener('mousemove', onPointerMove, { passive: true });
         document.addEventListener('touchmove', onPointerMove, { passive: true });
 
+        /* ── 5.5. FINGERPRINT & SECURITY GATEKEEPER ── */
+        const GAS_SECURITY_URL = 'https://script.google.com/macros/s/AKfycbxhUNMR_mBh6HqfohDurzEKEBdnEcodeiu0pHHdh8XErxk3U-B48pngXrCoXsNy6WUa/exec';
+        let isLocked = false;
+        
+        const generateDeviceFingerprint = () => {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl');
+            const renderer = gl ? gl.getParameter(gl.RENDERER) : 'unknown';
+            const rawData = navigator.userAgent + screen.width + screen.height + navigator.language + renderer;
+            return btoa(rawData).substring(0, 32); 
+        };
+
+        const currentFingerprint = generateDeviceFingerprint();
+        const securityLockUI = document.getElementById('securityLock');
+        const retryBtn = document.getElementById('retryBtn');
+
+        const verifyDevice = async () => {
+            if(retryBtn) retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            
+            let employeeID = 'Emp-001';
+            try {
+                const saved = localStorage.getItem(USER_DATA_KEY);
+                if(saved) employeeID = JSON.parse(saved).name || 'Emp-001';
+            } catch(e) {}
+
+            try {
+                const response = await fetch(GAS_SECURITY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'verify', employee: employeeID, fingerprint: currentFingerprint })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'locked') {
+                    isLocked = true;
+                    transitionTriggered = true; // Prevent original auto-transitions
+                    securityLockUI.style.display = 'flex';
+                    uiWrapper.style.display = 'none';
+                    appPanel.style.display = 'none';
+                    if(retryBtn) retryBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Check Status Again';
+                } else {
+                    isLocked = false;
+                    securityLockUI.style.display = 'none';
+                    uiWrapper.style.display = 'flex';
+                    recoverSession(); // Proceed to load the second URL!
+                }
+            } catch (error) {
+                isLocked = true;
+                transitionTriggered = true;
+                securityLockUI.style.display = 'flex';
+                uiWrapper.style.display = 'none';
+                appPanel.style.display = 'none';
+                if(retryBtn) retryBtn.innerHTML = '<i class="fas fa-wifi"></i> Connection Error. Retry?';
+            }
+        };
+
+        if(retryBtn) retryBtn.addEventListener('click', () => {
+            transitionTriggered = false; // reset block
+            verifyDevice();
+        });
+
+
         /* ── 6. INIT ── */
         requestAnimationFrame(() => {
             uiWrapper.classList.add('pop-in');
             tickParallax();
-            recoverSession();
+            // Changed from recoverSession() to verifyDevice() to enforce fingerprint check first
+            verifyDevice();
         });
 
         /* ── 7. ASSIMILATION TRANSITION ── */
@@ -823,14 +898,14 @@
 
         /* ── 8. TRIGGER GUARDS ── */
         macroIframe.addEventListener('load', () => {
-            if (!transitionTriggered) {
+            if (!transitionTriggered && !isLocked) {
                 transitionTriggered = true;
                 setTimeout(executeTransition, 5000);
             }
         });
 
         setTimeout(() => {
-            if (!transitionTriggered) {
+            if (!transitionTriggered && !isLocked) {
                 transitionTriggered = true;
                 executeTransition();
             }
@@ -844,7 +919,9 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installOverlay.style.display = 'flex';
+            if(!isLocked) {
+                installOverlay.style.display = 'flex';
+            }
         });
 
         installBtn.addEventListener('click', async () => {
