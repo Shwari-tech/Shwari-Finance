@@ -44,29 +44,73 @@
         }
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        /* MAIN CENTER WRAPPER (Empty but holds animations) */
+        /* ANIMATED CORE CENTER (3-Second Cycle) */
         .main-icon {
-            position: relative; width: 120px; height: 120px; border-radius: 50%;
+            position: relative; width: 150px; height: 150px; border-radius: 50%;
             background: transparent;
             display: flex; justify-content: center; align-items: center;
-            z-index: 60; will-change: transform, opacity;
+            z-index: 60; animation: breathe 3s ease-in-out infinite; will-change: transform;
+        }
+        
+        /* Breathing Animation */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateZ(0); }
+            50% { transform: scale(1.1) translateZ(0); }
+        }
+
+        /* REPLACEMENT ANIMATION - Digital Core (3 Second Cycle) */
+        .core-animation {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .core-outer {
+            position: absolute;
+            inset: 0;
+            border: 3px solid transparent;
+            border-top-color: #55d082;
+            border-right-color: #2c7a47;
+            border-bottom-color: #55d082;
+            border-left-color: #2c7a47;
+            border-radius: 50%;
+            animation: coreSpin 3s linear infinite;
+            box-shadow: 0 0 20px rgba(85, 208, 130, 0.4);
+        }
+
+        .core-inner {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #55d082 0%, #2c7a47 70%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(85, 208, 130, 0.9), inset 0 0 10px rgba(255,255,255,0.3);
+            animation: corePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes coreSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes corePulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 50px rgba(85, 208, 130, 1); }
         }
 
         .loader-ring {
-            position: absolute; inset: -15px; border: 2px dashed rgba(255, 255, 255, 0.4);
-            border-radius: 50%; animation: spinLoader 8s linear infinite; transition: opacity 0.3s;
-        }
-        .loader-ring-inner {
-            position: absolute; inset: -5px; border: 3px solid transparent;
+            position: absolute; inset: -8px; border: 4px solid rgba(255, 255, 255, 0.15);
             border-top-color: #55d082; border-bottom-color: #2c7a47; border-radius: 50%;
-            animation: spinLoader 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse; transition: opacity 0.3s;
+            animation: spinLoader 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; transition: opacity 0.3s;
         }
         
         @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         /* PARTICLES & SHOCKWAVE */
-        .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
+        .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #55d082; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
         .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
         .wrapper.pop-in .particle { opacity: 0.6; }
         .p1 { width: 12px; height: 12px; top: 10%; left: 20%; background: #55d082; animation-duration: 4.2s; box-shadow: 0 0 10px #55d082;}
@@ -77,20 +121,21 @@
 
         /* INWARD / OUTWARD PULLING ANIMATION (DIGITAL ASSIMILATION) */
         .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; transition-duration: 0.4s !important; }
-        .wrapper.pull-active .loader-ring, .wrapper.pull-active .loader-ring-inner { opacity: 0 !important; }
-        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.2s forwards; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
+        .wrapper.pull-active .loader-ring { opacity: 0 !important; }
+        .wrapper.pull-active .core-animation { opacity: 0 !important; transition-delay: 0.2s; }
+        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.5s forwards; }
+        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; }
 
-        /* Transition into white flash */
+        /* Transition into DARK stealth mode instead of white flash */
         @keyframes dataProcess { 
             0% { transform: scale(1); background: transparent; } 
-            35% { transform: scale(0.2); filter: drop-shadow(0 0 40px #55d082); background: #ffffff; border-radius: 50%;} 
-            58% { transform: scale(2); background: #ffffff; border-radius: 50%; } 
-            100% { transform: scale(50); background: #ffffff; border-radius: 50%; opacity: 1; } 
+            35% { transform: scale(0.2); filter: drop-shadow(0 0 40px #55d082); background: transparent;} 
+            58% { transform: scale(2); background: #001208; box-shadow: 0 0 80px #55d082; border-radius: 50%; } 
+            100% { transform: scale(50); background: #001208; box-shadow: 0 0 150px #55d082; border-radius: 50%; opacity: 1; } 
         }
         @keyframes rippleOut { 
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #fff; } 
-            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #fff; } 
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #55d082; } 
+            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #1f6e3f; } 
         }
 
         /* =========================================
@@ -107,7 +152,7 @@
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
-        /* SEAMLESS TRANSLUCENT FOOTER WITH ELEPHANT */
+        /* SEAMLESS TRANSLUCENT FOOTER */
         .continue-footer {
             padding: 80px 20px 40px; text-align: center;
             background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%);
@@ -189,6 +234,7 @@
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, 
                         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
             z-index: 5;
+            display: flex; align-items: center; justify-content: center; gap: 15px;
         }
 
         .employee-info.unlocked {
@@ -196,8 +242,21 @@
             transform: translateY(0) scale(1);
         }
 
-        .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2; font-family: 'Inter', sans-serif;}
-        .small-email { font-size: 16px; color: #dddddd; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px;}
+        /* Smaller live elephant icon next to name */
+        .elephant-icon-small {
+            font-size: 38px; color: #55d082;
+            filter: drop-shadow(0 0 10px rgba(85, 208, 130, 0.5));
+            animation: elephantWalk 3s ease-in-out infinite;
+        }
+        @keyframes elephantWalk {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-3px) rotate(-3deg); }
+            75% { transform: translateY(-3px) rotate(3deg); }
+        }
+
+        .text-group { text-align: left; }
+        .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
+        .small-email { font-size: 16px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
 
         /* =========================================
            4. REGISTRATION PORTAL (First Time Only)
@@ -295,8 +354,11 @@
             </div>
             
             <div id="employee-info" class="employee-info">
-                <h2 id="display-name" class="medium-font"></h2>
-                <p id="display-email" class="small-email"></p>
+                <i class="fa-solid fa-elephant elephant-icon-small"></i>
+                <div class="text-group">
+                    <h2 id="display-name" class="medium-font"></h2>
+                    <p id="display-email" class="small-email"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -310,7 +372,10 @@
         
         <div class="main-icon">
             <div class="loader-ring"></div>
-            <div class="loader-ring-inner"></div>
+            <div class="core-animation">
+                <div class="core-outer"></div>
+                <div class="core-inner"></div>
+            </div>
         </div>
     </div>
 
@@ -325,6 +390,7 @@
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
         /* ── 1. BACKGROUND PRELOADER (ZERO WHITE DELAY) ── */
+        // We inject the link IMMEDIATELY to preload in the hidden iframe.
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -389,9 +455,11 @@
             const isRegistered = localStorage.getItem('shwari_registered');
 
             if (isRegistered === 'true') {
+                // Populate Overlay Text
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
                 document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
                 
+                // Show Header & Footer seamlessly over the image
                 document.getElementById('continue-overlay').classList.remove('hidden');
 
                 // ELEPHANT ANIMATION
@@ -406,6 +474,7 @@
                 }, 6500); 
 
             } else {
+                // First Time: Show Registration Portal
                 const authPortal = document.getElementById('auth-portal');
                 authPortal.classList.remove('hidden');
                 document.getElementById('reg-screen').classList.remove('hidden');
@@ -417,10 +486,12 @@
             const email = document.getElementById('reg-email').value.trim().toLowerCase();
 
             if (name && email) {
+                // Save Data locally
                 localStorage.setItem('emp_name', name);
                 localStorage.setItem('emp_email', email);
                 localStorage.setItem('shwari_registered', 'true');
                 
+                // POPULATE & TRIGGER SEAMLESS TRANSITION
                 const authPortal = document.getElementById('auth-portal');
                 const regScreen = document.getElementById('reg-screen');
                 const continueOverlay = document.getElementById('continue-overlay');
@@ -428,22 +499,27 @@
                 document.getElementById('display-name').innerText = formatName(name);
                 document.getElementById('display-email').innerText = email;
                 
+                // 1. Shrink and fade the registration card
                 regScreen.style.transform = 'scale(0.9)';
                 regScreen.style.opacity = '0';
                 
                 setTimeout(() => {
+                    // 2. Fade out the dark glass blur
                     authPortal.style.opacity = '0';
                     
                     setTimeout(() => {
                         authPortal.classList.add('hidden');
                         regScreen.classList.add('hidden');
                         
+                        // 3. Fade in the transparent Continue Overlay
                         continueOverlay.classList.remove('hidden');
                         continueOverlay.style.opacity = '0';
                         
+                        // Force reflow to ensure transition works
                         void continueOverlay.offsetWidth;
                         continueOverlay.style.opacity = '1';
                         
+                        // 4. ELEPHANT SEQUENCE: Show elephant for 3s, unlock, then 3.5s to macro
                         setTimeout(() => {
                             document.getElementById('elephant-gate').classList.add('unlocked');
                             document.getElementById('employee-info').classList.add('unlocked');
@@ -453,8 +529,8 @@
                             handleContinue();
                         }, 6500); 
                         
-                    }, 500); 
-                }, 400); 
+                    }, 500); // Wait for glass blur to fade
+                }, 400); // Wait for card to shrink
 
             } else {
                 alert("Please enter both Name and Work Email.");
@@ -462,11 +538,13 @@
         };
 
         window.handleContinue = () => {
+            // Fade out the Header & Footer text smoothly
             const continueOverlay = document.getElementById('continue-overlay');
             continueOverlay.style.opacity = '0';
             
             setTimeout(() => { 
                 continueOverlay.style.display = 'none'; 
+                // Trigger Background Assimilation Animation
                 executeTransition();
             }, 600);
         };
@@ -479,6 +557,7 @@
             document.removeEventListener('mousemove', onPointerMove);
             document.removeEventListener('touchmove', onPointerMove);
 
+            // Snap parallax to center for wipe
             uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
 
             requestAnimationFrame(() => {
@@ -487,6 +566,7 @@
                 });
             });
 
+            // Smooth scale-in reveal of the preloaded app iframe
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
