@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -33,6 +33,10 @@
             overflow: hidden;
             position: relative;
             perspective: 1200px;
+            /* Prevent browser font inflation */
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         /* ----- ORBIT WRAPPER ----- */
@@ -556,19 +560,79 @@
             0%, 100% { transform: scale(1);    opacity: 1;   }
             50%        { transform: scale(1.05); opacity: 0.6; }
         }
+
+        /* ----- DEVICE LOCK & ERROR SCREEN ----- */
+        #device-error {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 30px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .error-card {
+            background: white;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .error-card i {
+            font-size: 3.5rem;
+            color: #2c7a47;
+            margin-bottom: 20px;
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        .error-card h2 {
+            font-size: 1.5rem;
+            color: #111;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .error-card p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* TRIGGER THE ERROR FOR LANDSCAPE OR DEVICES WIDER THAN 599PX */
+        @media screen and (orientation: landscape), screen and (min-width: 600px) {
+            body > *:not(#device-error) {
+                display: none !important;
+            }
+            #device-error {
+                display: flex !important;
+            }
+        }
     </style>
     <style>
         /* Reduce all text & rem-based font sizes to extremely small */
         html {
             font-size: 5px !important;
         }
-        /* Optional: ensure any absolute font-sizes remain scaled down but keep consistency */
-        body, .wrapper, .shwari-footer, .install-card, .orb-fin, .orb-soc, .install-btn, .main-icon .person-icon {
-            /* inherits from root */
-        }
     </style>
 </head>
 <body>
+
+    <div id="device-error">
+        <div class="error-card">
+            <i class="fas fa-mobile-screen"></i>
+            <h2>Mobile Portrait Only</h2>
+            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone to access your dashboard.</p>
+        </div>
+    </div>
 
     <div class="wrapper" id="ui">
 
