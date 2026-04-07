@@ -8,82 +8,232 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     <title>Shwari Finance · Digital Assimilation</title>
-    
+   
     <link rel="preload" as="image" href="https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
             height: 100%; width: 100%;
             background: url('https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg') calc(50% + 30%) center / cover no-repeat;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; perspective: 1200px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
         }
-
-        .wrapper { position: relative; width: min(500px, 92vw); height: min(500px, 92vw); display: flex; justify-content: center; align-items: center; opacity: 0; transform: scale(0.8); transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); transform-style: preserve-3d; will-change: transform, opacity; }
+        .wrapper { 
+            position: relative; width: min(500px, 92vw); height: min(500px, 92vw); 
+            display: flex; justify-content: center; align-items: center; 
+            opacity: 0; transform: scale(0.8); 
+            transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            transform-style: preserve-3d; will-change: transform, opacity; 
+        }
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        .main-icon { position: relative; width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(145deg, #ffffff, #f0f0f0); display: flex; justify-content: center; align-items: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06); border: 2px solid rgba(255,255,255,0.95); z-index: 60; animation: breathe 4s ease-in-out infinite; will-change: transform, box-shadow; }
-        @keyframes breathe { 0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0,0,0,0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06); } 50% { transform: scale(1.04) translateZ(0); box-shadow: 0 26px 50px rgba(0,0,0,0.14), 0 0 0 8px rgba(255,255,255,0.85), 0 0 0 11px rgba(0,0,0,0.06); } }
-
+        .main-icon { 
+            position: relative; width: 120px; height: 120px; border-radius: 50%; 
+            background: linear-gradient(145deg, #ffffff, #f0f0f0); 
+            display: flex; justify-content: center; align-items: center; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06); 
+            border: 2px solid rgba(255,255,255,0.95); z-index: 60; 
+            animation: breathe 4s ease-in-out infinite; will-change: transform, box-shadow; 
+        }
+        @keyframes breathe { 
+            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0,0,0,0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06); } 
+            50% { transform: scale(1.04) translateZ(0); box-shadow: 0 26px 50px rgba(0,0,0,0.14), 0 0 0 8px rgba(255,255,255,0.85), 0 0 0 11px rgba(0,0,0,0.06); } 
+        }
         .person-icon { font-size: 3.5rem; color: #333; transition: opacity 0.3s ease; }
-        .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #333333; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; will-change: transform, opacity; }
-        .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
+
+        /* SHOCKWAVE & PARTICLES */
+        .shockwave { 
+            position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; 
+            border-radius: 50%; border: 2px solid #333333; 
+            transform: translate(-50%, -50%) scale(0.5); opacity: 0; 
+            z-index: 10; pointer-events: none; will-change: transform, opacity; 
+        }
+        .particle { 
+            position: absolute; border-radius: 50%; opacity: 0; 
+            animation: float 5s infinite ease-in-out; z-index: 20; 
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            will-change: transform, top, left, opacity; 
+        }
         .wrapper.pop-in .particle { opacity: 0.5; }
-        .p1 { width: 10px; height: 10px; top: 8%;  left: 15%; background: #2c7a47; animation-duration: 4.2s; } .p2 { width:  6px; height:  6px; top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; } .p3 { width: 14px; height: 14px; top: 70%; left:  8%; background: #b78a1a; animation-duration: 5.4s; } .p4 { width:  7px; height:  7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
-        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0) translateZ(0); } 50% { transform: translateY(-15px) scale(1.1) translateZ(0); } }
+        .p1 { width: 10px; height: 10px; top: 8%; left: 15%; background: #2c7a47; animation-duration: 4.2s; }
+        .p2 { width: 6px; height: 6px; top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left: 8%; background: #b78a1a; animation-duration: 5.4s; }
+        .p4 { width: 7px; height: 7px; top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
+        @keyframes float { 
+            0%, 100% { transform: translateY(0) scale(1.0) translateZ(0); } 
+            50% { transform: translateY(-15px) scale(1.1) translateZ(0); } 
+        }
 
-        .orbit-inner, .orbit-outer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 40; transform-style: preserve-3d; }
-        .orbit-inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; } .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotatePulseCounter 5s linear infinite; }
-        .orb-fin, .orb-soc { position: absolute; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.08); will-change: transform, top, left, opacity; }
-        .orb-fin { width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9); z-index: 45; top:  var(--y, 50%); left: var(--x, 50%); --s: 1; transform: translate(-50%, -50%) scale(var(--s)) translateZ(0); transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s; }
-        .orb-fin:nth-child(1) { --y: 0%;   --x: 50%;  color: #b78a1a; background: #fefcf0; } .orb-fin:nth-child(2) { --y: 50%;  --x: 100%; color: #444444; background: #f5f5f5; } .orb-fin:nth-child(3) { --y: 100%; --x: 50%;  color: #4a3b8a; background: #f3f1fd; } .orb-fin:nth-child(4) { --y: 50%;  --x: 0%;   color: #1f6e3f; background: #f1f9ec; }
-        .orb-soc { width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35; top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; --rot: 0deg; --offset: 190px; --s: 1; transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0); transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s; }
-        .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; } .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; } .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; } .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; } .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
-        .orb-fin i, .orb-soc i { animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; transition: opacity 0.3s ease; }
+        /* ORBIT RINGS & ITEMS */
+        .orbit-inner, .orbit-outer { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            border-radius: 50%; z-index: 40; transform-style: preserve-3d; 
+        }
+        .orbit-inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; }
+        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotatePulseCounter 5s linear infinite; }
 
-        @keyframes rotatePulseClockwise { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 12.5%{ transform: translate(-50%, -50%) rotate(45deg) scale(0.67) translateZ(0); } 25% { transform: translate(-50%, -50%) rotate(90deg) scale(0.35) translateZ(0); } 37.5%{ transform: translate(-50%, -50%) rotate(135deg) scale(0.82) translateZ(0); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25) translateZ(0); } 62.5%{ transform: translate(-50%, -50%) rotate(225deg) scale(0.82) translateZ(0); } 75% { transform: translate(-50%, -50%) rotate(270deg) scale(0.35) translateZ(0); } 87.5%{ transform: translate(-50%, -50%) rotate(315deg) scale(0.67) translateZ(0); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1) translateZ(0); } }
-        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 12.5%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.72) translateZ(0); } 25% { transform: translate(-50%, -50%) rotate(-90deg) scale(0.45) translateZ(0); } 37.5%{ transform: translate(-50%, -50%) rotate(135deg) scale(0.8) translateZ(0); } 50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15) translateZ(0); } 62.5%{ transform: translate(-50%, -50%) rotate(-225deg) scale(0.8) translateZ(0); } 75% { transform: translate(-50%, -50%) rotate(-270deg) scale(0.45) translateZ(0); } 87.5%{ transform: translate(-50%, -50%) rotate(-315deg) scale(0.72) translateZ(0); } 100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1) translateZ(0); } }
+        .orb-fin, .orb-soc { 
+            position: absolute; border-radius: 50%; display: flex; justify-content: center; align-items: center; 
+            background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.08); 
+            will-change: transform, top, left, opacity; 
+        }
+        .orb-fin { 
+            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9); z-index: 45; 
+            top: var(--y, 50%); left: var(--x, 50%); --s: 1; 
+            transform: translate(-50%, -50%) scale(var(--s)) translateZ(0); 
+            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), 
+                        transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, border-color 0.5s, box-shadow 0.5s; 
+        }
+        .orb-fin:nth-child(1) { --y: 0%; --x: 50%; color: #b78a1a; background: #fefcf0; }
+        .orb-fin:nth-child(2) { --y: 50%; --x: 100%; color: #444444; background: #f5f5f5; }
+        .orb-fin:nth-child(3) { --y: 100%; --x: 50%; color: #4a3b8a; background: #f3f1fd; }
+        .orb-fin:nth-child(4) { --y: 50%; --x: 0%; color: #1f6e3f; background: #f1f9ec; }
+
+        .orb-soc { 
+            width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35; 
+            top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; 
+            --rot: 0deg; --offset: 190px; --s: 1; 
+            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0); 
+            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), background 0.5s, color 0.5s, box-shadow 0.5s; 
+        }
+        .orb-soc:nth-child(1) { --rot: 0deg; color: #3b5998; }
+        .orb-soc:nth-child(2) { --rot: 72deg; color: #000000; }
+        .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
+        .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
+        .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
+
+        .orb-fin i, .orb-soc i { 
+            animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
+            transition: opacity 0.3s ease; 
+        }
+
+        @keyframes rotatePulseClockwise { 
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 
+            12.5%{ transform: translate(-50%, -50%) rotate(45deg) scale(0.67) translateZ(0); } 
+            25% { transform: translate(-50%, -50%) rotate(90deg) scale(0.35) translateZ(0); } 
+            37.5%{ transform: translate(-50%, -50%) rotate(135deg) scale(0.82) translateZ(0); } 
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25) translateZ(0); } 
+            62.5%{ transform: translate(-50%, -50%) rotate(225deg) scale(0.82) translateZ(0); } 
+            75% { transform: translate(-50%, -50%) rotate(270deg) scale(0.35) translateZ(0); } 
+            87.5%{ transform: translate(-50%, -50%) rotate(315deg) scale(0.67) translateZ(0); } 
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1) translateZ(0); } 
+        }
+        @keyframes rotatePulseCounter { 
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1) translateZ(0); } 
+            12.5%{ transform: translate(-50%, -50%) rotate(-45deg) scale(0.72) translateZ(0); } 
+            25% { transform: translate(-50%, -50%) rotate(-90deg) scale(0.45) translateZ(0); } 
+            37.5%{ transform: translate(-50%, -50%) rotate(-135deg) scale(0.8) translateZ(0); } 
+            50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15) translateZ(0); } 
+            62.5%{ transform: translate(-50%, -50%) rotate(-225deg) scale(0.8) translateZ(0); } 
+            75% { transform: translate(-50%, -50%) rotate(-270deg) scale(0.45) translateZ(0); } 
+            87.5%{ transform: translate(-50%, -50%) rotate(-315deg) scale(0.72) translateZ(0); } 
+            100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1) translateZ(0); } 
+        }
         @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .ring-track { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px dashed rgba(0,0,0,0.2); pointer-events: none; transform: translate(-50%, -50%); }
-        .ring-track.inner { width: 220px; height: 220px; animation: pulseTrackInner 4s linear infinite; } .ring-track.outer { width: 380px; height: 380px; animation: pulseTrackOuter 5s linear infinite; }
+        /* RING TRACKS */
+        .ring-track { 
+            position: absolute; top: 50%; left: 50%; border-radius: 50%; 
+            border: 1.5px dashed rgba(0,0,0,0.2); pointer-events: none; transform: translate(-50%, -50%); 
+        }
+        .ring-track.inner { width: 220px; height: 220px; animation: pulseTrackInner 4s linear infinite; }
+        .ring-track.outer { width: 380px; height: 380px; animation: pulseTrackOuter 5s linear infinite; }
+        @keyframes pulseTrackInner { 
+            0% { transform: translate(-50%, -50%) scale(1); } 12.5%{ transform: translate(-50%, -50%) scale(0.67); } 
+            25% { transform: translate(-50%, -50%) scale(0.35); } 37.5%{ transform: translate(-50%, -50%) scale(0.82); } 
+            50% { transform: translate(-50%, -50%) scale(1.25); } 62.5%{ transform: translate(-50%, -50%) scale(0.82); } 
+            75% { transform: translate(-50%, -50%) scale(0.35); } 87.5%{ transform: translate(-50%, -50%) scale(0.67); } 
+            100% { transform: translate(-50%, -50%) scale(1); } 
+        }
+        @keyframes pulseTrackOuter { 
+            0% { transform: translate(-50%, -50%) scale(1); } 12.5%{ transform: translate(-50%, -50%) scale(0.72); } 
+            25% { transform: translate(-50%, -50%) scale(0.45); } 37.5%{ transform: translate(-50%, -50%) scale(0.8); } 
+            50% { transform: translate(-50%, -50%) scale(1.15); } 62.5%{ transform: translate(-50%, -50%) scale(0.8); } 
+            75% { transform: translate(-50%, -50%) scale(0.45); } 87.5%{ transform: translate(-50%, -50%) scale(0.72); } 
+            100% { transform: translate(-50%, -50%) scale(1); } 
+        }
 
-        @keyframes pulseTrackInner { 0% { transform: translate(-50%, -50%) scale(1); } 12.5%{ transform: translate(-50%, -50%) scale(0.67); } 25% { transform: translate(-50%, -50%) scale(0.35); } 37.5%{ transform: translate(-50%, -50%) scale(0.82); } 50% { transform: translate(-50%, -50%) scale(1.25); } 62.5%{ transform: translate(-50%, -50%) scale(0.82); } 75% { transform: translate(-50%, -50%) scale(0.35); } 87.5%{ transform: translate(-50%, -50%) scale(0.67); } 100% { transform: translate(-50%, -50%) scale(1); } }
-        @keyframes pulseTrackOuter { 0% { transform: translate(-50%, -50%) scale(1); } 12.5%{ transform: translate(-50%, -50%) scale(0.72); } 25% { transform: translate(-50%, -50%) scale(0.45); } 37.5%{ transform: translate(-50%, -50%) scale(0.8); } 50% { transform: translate(-50%, -50%) scale(1.15); } 62.5%{ transform: translate(-50%, -50%) scale(0.8); } 75% { transform: translate(-50%, -50%) scale(0.45); } 87.5%{ transform: translate(-50%, -50%) scale(0.72); } 100% { transform: translate(-50%, -50%) scale(1); } }
-
-        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; transition-duration: 0.4s !important; }
-        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #ffffff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
+        /* DIGITAL ASSIMILATION TRANSITION (EXACTLY FROM ORIGINAL) */
+        .wrapper.pull-active .particle { 
+            top: 50% !important; left: 50% !important; 
+            transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; 
+            transition-duration: 0.4s !important; 
+        }
+        .wrapper.pull-active .orb-fin { 
+            --y: 50% !important; --x: 50% !important; --s: 0.3 !important; 
+            background: #ffffff !important; border-color: transparent !important; 
+            color: transparent !important; box-shadow: none !important; 
+        }
+        .wrapper.pull-active .orb-soc { 
+            --offset: 0px !important; --s: 0.3 !important; 
+            background: #ffffff !important; color: transparent !important; box-shadow: none !important; 
+        }
         .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
         .wrapper.pull-active .person-icon { opacity: 0; transition-delay: 0.85s; }
-        .wrapper.pull-active .main-icon { animation: breathe 4s ease-in-out infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; }
+        .wrapper.pull-active .main-icon { 
+            animation: breathe 4s ease-in-out infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards; 
+        }
+        .wrapper.pull-active .shockwave { 
+            animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; 
+        }
+        @keyframes dataProcess { 
+            0% { transform: scale(1); border-color: white; } 
+            35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 
+            58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 
+            60% { box-shadow: none; border: none; } 
+            100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } 
+        }
+        @keyframes rippleOut { 
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; } 
+            100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; } 
+        }
 
-        @keyframes dataProcess { 0% { transform: scale(1); border-color: white; } 35% { transform: scale(0.6); box-shadow: 0 0 30px #555; border-color: #333; filter: brightness(0.9); } 58% { transform: scale(1.4); box-shadow: 0 0 50px #222; background: #ffffff; border-color: transparent; } 60% { box-shadow: none; border: none; } 100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } }
-        @keyframes rippleOut { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; } 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; } }
-
-        .app { position: fixed; inset: 0; opacity: 0; visibility: hidden; background: #ffffff; z-index: 2000; transition: opacity 0.6s ease-in; }
+        /* DASHBOARD */
+        .app { 
+            position: fixed; inset: 0; opacity: 0; visibility: hidden; 
+            background: #ffffff; z-index: 2000; transition: opacity 0.6s ease-in; 
+        }
         .app.active { opacity: 1; visibility: visible; }
         iframe { width: 100%; height: 100%; border: none; background: white; }
 
+        /* RESPONSIVE */
         @media (max-width: 500px) {
-            .main-icon { width: 96px; height: 96px; } .orbit-inner { width: 190px; height: 190px; } .ring-track.inner { width: 190px; height: 190px; } .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; } .orbit-outer { width: 300px; height: 300px; } .ring-track.outer { width: 300px; height: 300px; } .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
+            .main-icon { width: 96px; height: 96px; }
+            .orbit-inner { width: 190px; height: 190px; } .ring-track.inner { width: 190px; height: 190px; }
+            .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; }
+            .orbit-outer { width: 300px; height: 300px; } .ring-track.outer { width: 300px; height: 300px; }
+            .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; }
         }
 
-        /* ----- DEVICE LOCK & ERROR SCREENS ----- */
-        .overlay-screen { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
-        .error-card { background: white; max-width: 400px; width: 100%; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
-        .error-card i.main-icon-err { font-size: 3.5rem; color: #2c7a47; margin-bottom: 20px; animation: breathe 3s ease-in-out infinite; }
+        /* OVERLAY SCREENS */
+        .overlay-screen { 
+            display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; 
+            align-items: center; justify-content: center; text-align: center; 
+            padding: 40px 30px; font-family: 'Inter', sans-serif; 
+        }
+        .error-card { 
+            background: white; max-width: 400px; width: 100%; padding: 40px 30px; 
+            border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
+            border: 1px solid rgba(0,0,0,0.05); 
+        }
+        .error-card i.main-icon-err { font-size: 3.5rem; margin-bottom: 20px; animation: breathe 3s ease-in-out infinite; }
         .error-card h2 { font-size: 1.5rem; color: #111; font-weight: 800; margin-bottom: 15px; letter-spacing: -0.5px; }
         .error-card p { font-size: 1rem; color: #666; line-height: 1.6; margin-bottom: 25px; }
-        
-        .action-btn { background: #111; color: white; border: none; padding: 16px 0; width: 100%; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s; }
+       
+        .action-btn { 
+            background: #111; color: white; border: none; padding: 16px 0; width: 100%; 
+            border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
+            transition: transform 0.2s; 
+        }
         .action-btn:active { transform: scale(0.96); }
 
-        /* ----- REGISTRATION FORM STYLES ----- */
+        /* REGISTRATION FORM */
         .input-group { text-align: left; margin-bottom: 20px; }
         .input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #555; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .input-group input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-size: 1rem; font-family: 'Inter', sans-serif; transition: border-color 0.3s; }
@@ -98,15 +248,16 @@
     </style>
 </head>
 <body>
-
+    <!-- DEVICE ERROR (PORTRAIT ONLY) -->
     <div id="device-error" class="overlay-screen">
         <div class="error-card">
-            <i class="fas fa-mobile-screen main-icon-err"></i>
+            <i class="fas fa-mobile-screen main-icon-err" style="color: #2c7a47;"></i>
             <h2>Mobile Portrait Only</h2>
             <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone.</p>
         </div>
     </div>
 
+    <!-- SECURITY LOCK -->
     <div id="securityLock" class="overlay-screen">
         <div class="error-card" style="border: 2px solid rgba(209, 54, 12, 0.2);">
             <i class="fas fa-shield-lock main-icon-err" style="color: #d1360c;"></i>
@@ -118,12 +269,13 @@
         </div>
     </div>
 
+    <!-- REGISTRATION FORM -->
     <div id="registrationForm" class="overlay-screen">
         <div class="error-card">
             <i class="fas fa-fingerprint main-icon-err" style="color: #2c7a47;"></i>
             <h2>Register Device</h2>
             <p>Welcome to Shwari Finance. Please register this device to your employee profile.</p>
-            
+           
             <div class="input-group">
                 <label>Full Name</label>
                 <input type="text" id="regName" placeholder="e.g., Emilio Thuku" required>
@@ -132,7 +284,7 @@
                 <label>Official Email</label>
                 <input type="email" id="regEmail" placeholder="employee@shwari.co.ke" required>
             </div>
-            
+           
             <button id="submitRegBtn" class="action-btn" style="background: #2c7a47;">
                 <i class="fas fa-check-circle"></i> Save Device
             </button>
@@ -140,17 +292,19 @@
         </div>
     </div>
 
+    <!-- FORCED INSTALL -->
     <div id="forcedInstall" class="overlay-screen">
         <div class="error-card">
             <i class="fas fa-download main-icon-err" style="color: #111;"></i>
             <h2>Installation Required</h2>
-            <p>Shwari Finance cannot be opened in a browser tab. To access your secure dashboard, tap the <strong>Share</strong> icon and select <strong>Add to Home Screen</strong>.</p>
+            <p>Shwari Finance cannot be opened in a browser tab. To access your secure dashboard, tap the <strong>Share</strong> or <strong>Menu</strong> icon and select <strong>Add to Home Screen</strong>.</p>
             <button class="action-btn" id="installAction" style="display: none; background: #2c7a47;">
                 <i class="fas fa-arrow-down"></i> Install App Now
             </button>
         </div>
     </div>
 
+    <!-- MAIN ANIMATION UI -->
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
         <div class="ring-track inner"></div>
@@ -160,14 +314,12 @@
         <div class="particle p3"></div>
         <div class="particle p4"></div>
         <div class="main-icon"><i class="fas fa-user person-icon"></i></div>
-
         <div class="orbit-inner">
             <div class="orb-fin"><i class="fas fa-coins"></i></div>
             <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
             <div class="orb-fin"><i class="fas fa-calculator"></i></div>
             <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
         </div>
-
         <div class="orbit-outer">
             <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
             <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
@@ -177,8 +329,11 @@
         </div>
     </div>
 
+    <!-- DASHBOARD (ALWAYS OPENS AFTER VERIFICATION) -->
     <div class="app" id="app">
-        <iframe id="macro-frame" src="about:blank"></iframe>
+        <iframe id="macro-frame" 
+                src="https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec">
+        </iframe>
     </div>
 
     <script>
@@ -186,20 +341,23 @@
         "use strict";
 
         // ==========================================
-        // 1. URLs AND CONFIGURATION
+        // CONFIGURATION
         // ==========================================
-        // SECURITY GATEKEEPER (FIRST URL)
         const GAS_SECURITY_URL = 'https://script.google.com/macros/s/AKfycbwP3oH8QJYwDo769joqzvNTvwbHlrCT_Nc2g_cHTI4DKdKqXRPUPheuktYy4y5jOnr-/exec';
-        // PORTAL DASHBOARD (SECOND URL)
-        const PORTAL_URL = 'https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec';
-        
         const USER_DATA_KEY = 'shwari_secure_session';
+        const DASHBOARD_URL = 'https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec'; // ← ALWAYS OPEN THIS AFTER VERIFICATION
+
+        // Cache buster on iframe
         const macroIframe = document.getElementById('macro-frame');
+        macroIframe.src = DASHBOARD_URL + (DASHBOARD_URL.includes('?') ? '&' : '?') + 'cb=' + new Date().getTime();
 
         // ==========================================
-        // 2. STANDALONE & PWA LOGIC
+        // PWA / STANDALONE CHECK
         // ==========================================
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches || navigator.standalone;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                             window.matchMedia('(display-mode: fullscreen)').matches || 
+                             navigator.standalone;
+
         let deferredPrompt;
         const installBtn = document.getElementById('installAction');
         const forcedInstallOverlay = document.getElementById('forcedInstall');
@@ -207,9 +365,7 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (!isStandalone) {
-                installBtn.style.display = 'flex'; 
-            }
+            if (!isStandalone) installBtn.style.display = 'flex';
         });
 
         installBtn.addEventListener('click', async () => {
@@ -227,30 +383,30 @@
         }
 
         // ==========================================
-        // 3. FINGERPRINT & STATE
+        // DEVICE FINGERPRINT + SESSION
         // ==========================================
         const generateDeviceFingerprint = () => {
             const canvas = document.createElement('canvas');
             const gl = canvas.getContext('webgl');
             const renderer = gl ? gl.getParameter(gl.RENDERER) : 'unknown';
-            return btoa(navigator.userAgent + screen.width + screen.height + navigator.language + renderer).substring(0, 32); 
+            return btoa(navigator.userAgent + screen.width + screen.height + navigator.language + renderer).substring(0, 32);
         };
 
         const currentFingerprint = generateDeviceFingerprint();
         let sessionEmail = "";
         try {
             const saved = localStorage.getItem(USER_DATA_KEY);
-            if(saved) sessionEmail = JSON.parse(saved).email || "";
+            if (saved) sessionEmail = JSON.parse(saved).email || "";
         } catch(e) {}
 
+        const uiWrapper = document.getElementById('ui');
+        const appPanel = document.getElementById('app');
         const securityLockUI = document.getElementById('securityLock');
         const registrationUI = document.getElementById('registrationForm');
         const retryBtn = document.getElementById('retryBtn');
         const submitRegBtn = document.getElementById('submitRegBtn');
         const regError = document.getElementById('regError');
         const lockReason = document.getElementById('lockReason');
-        const uiWrapper = document.getElementById('ui');
-        const appPanel = document.getElementById('app');
 
         let isLockedByServer = false;
         let transitionTriggered = false;
@@ -261,109 +417,7 @@
         };
 
         // ==========================================
-        // 4. VERIFICATION FLOW (Gatekeeper First)
-        // ==========================================
-        const verifyDevice = async () => {
-            // Force Standalone check
-            if (!isStandalone) {
-                lockdownApp();
-                forcedInstallOverlay.style.display = 'flex';
-                return;
-            }
-
-            lockdownApp();
-            
-            // Handle new user registration
-            if (!sessionEmail) {
-                registrationUI.style.display = 'flex';
-                return;
-            }
-
-            try {
-                // Ping the Security Gatekeeper Link First
-                const response = await fetch(GAS_SECURITY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'verify', email: sessionEmail, fingerprint: currentFingerprint })
-                });
-                const result = await response.json();
-                
-                if (result.status === 'unregistered') {
-                    registrationUI.style.display = 'flex';
-                } 
-                else if (result.status === 'locked') {
-                    isLockedByServer = true;
-                    securityLockUI.style.display = 'flex';
-                    lockReason.innerHTML = result.msg + "<br><br><strong>Please contact the Administrator.</strong>";
-                } 
-                else if (result.status === 'ok') {
-                    // AUTHORIZED: PROCEED FAST AND SMOOTH
-                    isLockedByServer = false;
-                    securityLockUI.style.display = 'none';
-                    registrationUI.style.display = 'none';
-                    uiWrapper.style.display = 'flex';
-                    
-                    // 1. Play "Pop-In" Animation
-                    requestAnimationFrame(() => {
-                        uiWrapper.classList.add('pop-in');
-                        tickParallax();
-                    });
-                    
-                    // 2. Load the Portal Dashboard Link (The Second Link)
-                    macroIframe.src = PORTAL_URL + '?cb=' + new Date().getTime();
-                    
-                    // 3. Trigger Assimilation Animation
-                    setTimeout(executeTransition, 1500); 
-                }
-            } catch (error) {
-                securityLockUI.style.display = 'flex';
-                lockReason.innerHTML = "Security Server Connection Failed.";
-                retryBtn.innerHTML = '<i class="fas fa-wifi"></i> Retry Connection';
-            }
-        };
-
-        // ==========================================
-        // 5. BUTTON EVENTS
-        // ==========================================
-        retryBtn.addEventListener('click', () => window.location.reload(true));
-
-        submitRegBtn.addEventListener('click', async () => {
-            const nameInput = document.getElementById('regName').value.trim();
-            const emailInput = document.getElementById('regEmail').value.trim();
-
-            if (!nameInput || !emailInput) {
-                regError.style.display = 'block';
-                regError.innerText = "All fields required.";
-                return;
-            }
-
-            submitRegBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
-            
-            try {
-                const response = await fetch(GAS_SECURITY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'register', name: nameInput, email: emailInput, fingerprint: currentFingerprint })
-                });
-                const result = await response.json();
-
-                if (result.status === 'restricted') {
-                    regError.style.display = 'block';
-                    regError.innerText = result.msg;
-                    submitRegBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Device';
-                } else if (result.status === 'ok') {
-                    localStorage.setItem(USER_DATA_KEY, JSON.stringify({ name: nameInput, email: emailInput.toLowerCase() }));
-                    window.location.reload(true);
-                }
-            } catch(e) {
-                regError.style.display = 'block';
-                regError.innerText = "Network Error.";
-                submitRegBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Device';
-            }
-        });
-
-        // ==========================================
-        // 6. ANIMATIONS & PARALLAX
+        // PARALLAX + ASSIMILATION ANIMATION (FULL ORIGINAL STYLE)
         // ==========================================
         let rafId;
         let targetX = 0, targetY = 0;
@@ -399,30 +453,138 @@
             cancelAnimationFrame(rafId);
             document.removeEventListener('mousemove', onPointerMove);
             document.removeEventListener('touchmove', onPointerMove);
+
             uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    uiWrapper.classList.add('pull-active');
+                    uiWrapper.classList.add('pull-active');   // ← FULL DIGITAL ASSIMILATION
                 });
             });
+
             setTimeout(() => {
                 appPanel.classList.add('active');
-                setTimeout(() => { uiWrapper.style.display = 'none'; }, 1000);
+                setTimeout(() => { 
+                    uiWrapper.style.display = 'none'; 
+                }, 1000);
             }, 1900);
         };
 
-        // Fallback: If dashboard link is ready, transition automatically
+        // ==========================================
+        // VERIFY DEVICE → ALWAYS OPEN DASHBOARD AFTER SUCCESS
+        // ==========================================
+        const verifyDevice = async () => {
+            if (!isStandalone) {
+                lockdownApp();
+                forcedInstallOverlay.style.display = 'flex';
+                return;
+            }
+
+            lockdownApp();
+            retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+            if (!sessionEmail) {
+                registrationUI.style.display = 'flex';
+                return;
+            }
+
+            try {
+                const response = await fetch(GAS_SECURITY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'verify', email: sessionEmail, fingerprint: currentFingerprint })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'unregistered') {
+                    registrationUI.style.display = 'flex';
+                } 
+                else if (result.status === 'locked') {
+                    isLockedByServer = true;
+                    securityLockUI.style.display = 'flex';
+                    lockReason.innerHTML = (result.msg || "Access restricted") + "<br><br><strong>Please contact the Administrator to request a device reset.</strong>";
+                    retryBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Check Status Again';
+                } 
+                else if (result.status === 'ok') {
+                    // SUCCESS → ALWAYS SHOW FULL ANIMATION THEN OPEN DASHBOARD
+                    isLockedByServer = false;
+                    securityLockUI.style.display = 'none';
+                    registrationUI.style.display = 'none';
+                    uiWrapper.style.display = 'flex';
+
+                    requestAnimationFrame(() => {
+                        uiWrapper.classList.add('pop-in');
+                        tickParallax();
+                    });
+
+                    // Force transition after animation (guaranteed)
+                    transitionTriggered = true;
+                    setTimeout(executeTransition, 1500);
+                }
+            } catch (error) {
+                isLockedByServer = true;
+                securityLockUI.style.display = 'flex';
+                lockReason.innerHTML = "Cannot reach Shwari Security Servers. Check your internet connection.";
+                retryBtn.innerHTML = '<i class="fas fa-wifi"></i> Retry Connection';
+            }
+        };
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+        retryBtn.addEventListener('click', () => {
+            retryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reloading...';
+            window.location.reload(true);
+        });
+
+        submitRegBtn.addEventListener('click', async () => {
+            const nameInput = document.getElementById('regName').value.trim();
+            const emailInput = document.getElementById('regEmail').value.trim();
+
+            if (!nameInput || !emailInput) {
+                regError.style.display = 'block';
+                regError.innerText = "Please fill in all fields.";
+                return;
+            }
+
+            submitRegBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            regError.style.display = 'none';
+
+            try {
+                const response = await fetch(GAS_SECURITY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'register', name: nameInput, email: emailInput, fingerprint: currentFingerprint })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'restricted') {
+                    regError.style.display = 'block';
+                    regError.innerText = result.msg;
+                    submitRegBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Device';
+                } else if (result.status === 'ok') {
+                    localStorage.setItem(USER_DATA_KEY, JSON.stringify({ name: nameInput, email: emailInput.toLowerCase() }));
+                    window.location.reload(true);
+                }
+            } catch(e) {
+                regError.style.display = 'block';
+                regError.innerText = "Network Error. Please try again.";
+                submitRegBtn.innerHTML = '<i class="fas fa-check-circle"></i> Save Device';
+            }
+        });
+
+        // Fallback: if iframe loads very fast, still trigger animation
         macroIframe.addEventListener('load', () => {
-            if (!transitionTriggered && isStandalone && sessionEmail && !isLockedByServer) {
+            if (!transitionTriggered && !isLockedByServer && isStandalone && sessionEmail) {
                 transitionTriggered = true;
                 setTimeout(executeTransition, 4000);
             }
         });
 
-        // INITIATE SECURITY FLOW IMMEDIATELY
+        // START THE APP
         verifyDevice();
-
     })();
     </script>
 </body>
