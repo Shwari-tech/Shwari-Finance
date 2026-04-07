@@ -32,7 +32,7 @@
         html { font-size: 5px !important; }
 
         /* =========================================
-           2. PARALLAX WRAPPER & ANIMATIONS (No Fingerprint)
+           2. PARALLAX WRAPPER & ANIMATIONS
            ========================================= */
         .wrapper {
             position: absolute; width: min(500px, 92vw); height: min(500px, 92vw);
@@ -44,85 +44,49 @@
         }
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        /* Main icon container - now without fingerprint, only loader ring */
+        /* MAIN CENTER WRAPPER (Empty but holds animations) */
         .main-icon {
-            position: relative; width: 150px; height: 150px; border-radius: 50%;
+            position: relative; width: 120px; height: 120px; border-radius: 50%;
             background: transparent;
             display: flex; justify-content: center; align-items: center;
-            z-index: 60;
-            /* No fingerprint content */
+            z-index: 60; will-change: transform, opacity;
         }
 
-        /* Enhanced loader ring with multicolor segments (now the focal point) */
         .loader-ring {
-            position: absolute; inset: -8px; border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top-color: #55d082;
-            border-right-color: #ffd966;
-            border-bottom-color: #ff6b6b;
-            border-left-color: #4a90e2;
-            animation: spinLoader 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite, ringColorFlow 3s linear infinite;
-            transition: opacity 0.3s;
-            box-shadow: 0 0 12px rgba(85,208,130,0.5);
+            position: absolute; inset: -15px; border: 2px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 50%; animation: spinLoader 8s linear infinite; transition: opacity 0.3s;
+        }
+        .loader-ring-inner {
+            position: absolute; inset: -5px; border: 3px solid transparent;
+            border-top-color: #55d082; border-bottom-color: #2c7a47; border-radius: 50%;
+            animation: spinLoader 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse; transition: opacity 0.3s;
         }
         
         @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        @keyframes ringColorFlow {
-            0% { border-top-color: #55d082; border-right-color: #ffd966; border-bottom-color: #ff6b6b; border-left-color: #4a90e2; }
-            25% { border-top-color: #ffd966; border-right-color: #ff6b6b; border-bottom-color: #4a90e2; border-left-color: #b347b3; }
-            50% { border-top-color: #ff6b6b; border-right-color: #4a90e2; border-bottom-color: #b347b3; border-left-color: #55d082; }
-            75% { border-top-color: #4a90e2; border-right-color: #b347b3; border-bottom-color: #55d082; border-left-color: #ffd966; }
-            100% { border-top-color: #55d082; border-right-color: #ffd966; border-bottom-color: #ff6b6b; border-left-color: #4a90e2; }
-        }
-        
-        /* Glowing ring pulse effect (outer) */
-        .main-icon::after {
-            content: "";
-            position: absolute;
-            inset: -18px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            background: linear-gradient(145deg, #55d082, #ff6b6b, #4a90e2) border-box;
-            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            animation: ringPulseScale 2s infinite alternate;
-            opacity: 0.7;
-            pointer-events: none;
-        }
-        
-        @keyframes ringPulseScale {
-            0% { transform: scale(0.92); opacity: 0.3; border-width: 1px; }
-            100% { transform: scale(1.08); opacity: 0.9; border-width: 3px; background: linear-gradient(145deg, #ffd966, #b347b3, #55d082) border-box; }
-        }
+        @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* PARTICLES & SHOCKWAVE - enhanced vibrancy */
+        /* PARTICLES & SHOCKWAVE */
         .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
         .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
-        .wrapper.pop-in .particle { opacity: 0.7; }
+        .wrapper.pop-in .particle { opacity: 0.6; }
         .p1 { width: 12px; height: 12px; top: 10%; left: 20%; background: #55d082; animation-duration: 4.2s; box-shadow: 0 0 10px #55d082;}
-        .p2 { width: 8px;  height: 8px;  top: 80%; left: 80%; background: #ffd966; animation-duration: 6.0s; box-shadow: 0 0 10px #ffd966;}
-        .p3 { width: 16px; height: 16px; top: 75%; left: 15%; background: #ff6b6b; animation-duration: 5.4s; box-shadow: 0 0 10px #ff6b6b;}
-        .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #4a90e2; animation-duration: 7.0s; box-shadow: 0 0 10px #4a90e2;}
-        .p5 { width: 14px; height: 14px; top: 45%; left: 88%; background: #b347b3; animation-duration: 5.2s; box-shadow: 0 0 12px #b347b3; }
-        .p6 { width: 7px; height: 7px; top: 60%; left: 12%; background: #ffffff; animation-duration: 3.8s; box-shadow: 0 0 8px #ffffff;}
-        
-        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.15); } }
+        .p2 { width: 8px;  height: 8px;  top: 80%; left: 80%; background: #ffffff; animation-duration: 6.0s; box-shadow: 0 0 10px #ffffff;}
+        .p3 { width: 16px; height: 16px; top: 75%; left: 15%; background: #b78a1a; animation-duration: 5.4s; box-shadow: 0 0 10px #b78a1a;}
+        .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #dddddd; animation-duration: 7.0s; box-shadow: 0 0 10px #dddddd;}
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.1); } }
 
         /* INWARD / OUTWARD PULLING ANIMATION (DIGITAL ASSIMILATION) */
         .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; transition-duration: 0.4s !important; }
-        .wrapper.pull-active .loader-ring { opacity: 0 !important; animation: none; }
-        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.5s forwards; }
-        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; }
-        .wrapper.pull-active .main-icon::after { opacity: 0; transition: 0.2s; }
+        .wrapper.pull-active .loader-ring, .wrapper.pull-active .loader-ring-inner { opacity: 0 !important; }
+        .wrapper.pull-active .main-icon { animation: dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.2s forwards; }
+        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
 
+        /* Transition into white flash */
         @keyframes dataProcess { 
             0% { transform: scale(1); background: transparent; } 
-            35% { transform: scale(0.5); filter: drop-shadow(0 0 40px #55d082); background: transparent;} 
-            58% { transform: scale(1.5); background: #ffffff; border-radius: 50%; } 
-            100% { transform: scale(40); background: #ffffff; border-radius: 50%; opacity: 1; } 
+            35% { transform: scale(0.2); filter: drop-shadow(0 0 40px #55d082); background: #ffffff; border-radius: 50%;} 
+            58% { transform: scale(2); background: #ffffff; border-radius: 50%; } 
+            100% { transform: scale(50); background: #ffffff; border-radius: 50%; opacity: 1; } 
         }
         @keyframes rippleOut { 
             0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #fff; } 
@@ -139,19 +103,104 @@
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
-        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); backdrop-filter: blur(2px);}
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
+        /* SEAMLESS TRANSLUCENT FOOTER WITH ELEPHANT */
         .continue-footer {
             padding: 80px 20px 40px; text-align: center;
             background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%);
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
         }
+
+        /* ELEPHANT GATE ANIMATION (3 Seconds then Unlock) */
+        .elephant-gate {
+            position: absolute;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 10;
+        }
+
+        .elephant-gate.unlocked {
+            opacity: 0;
+            transform: scale(1.8) translateY(-30px);
+            pointer-events: none;
+        }
+
+        .elephant-icon {
+            font-size: 90px;
+            background: linear-gradient(135deg, #C9A961 0%, #F4E5C2 30%, #D4AF37 60%, #8B7355 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) 
+                    drop-shadow(0 0 30px rgba(201, 169, 97, 0.5));
+            animation: elephantLive 3s ease-in-out infinite, 
+                       elephantShimmer 4s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+
+        @keyframes elephantLive {
+            0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); }
+            15% { transform: translateY(-8px) rotate(2deg) scale(1.05); }
+            30% { transform: translateY(0) rotate(-2deg) scale(1); }
+            45% { transform: translateY(-5px) rotate(1deg) scale(1.02); }
+            60% { transform: translateY(0) rotate(-1deg) scale(1); }
+            75% { transform: translateY(-3px) rotate(0.5deg) scale(1.01); }
+            90% { transform: translateY(0) rotate(-0.5deg) scale(1); }
+        }
+
+        @keyframes elephantShimmer {
+            0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 20px rgba(201, 169, 97, 0.4)); }
+            50% { background-position: 100% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 40px rgba(201, 169, 97, 0.8)); }
+        }
+
+        .unlock-ring {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(201, 169, 97, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            animation: unlockPulse 3s ease-out infinite;
+        }
+
+        @keyframes unlockPulse {
+            0% { transform: scale(0.8); opacity: 0.6; border-width: 3px; }
+            100% { transform: scale(1.5); opacity: 0; border-width: 0px; }
+        }
+
+        .employee-info {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+            z-index: 5;
+        }
+
+        .employee-info.unlocked {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
         .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2; font-family: 'Inter', sans-serif;}
         .small-email { font-size: 16px; color: #dddddd; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px;}
 
         /* =========================================
-           4. REGISTRATION PORTAL (No fingerprint icon)
+           4. REGISTRATION PORTAL (First Time Only)
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
@@ -169,33 +218,15 @@
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
 
-        /* Simple lock icon instead of fingerprint */
-        .auth-icon {
-            margin-bottom: 20px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #eef7f1, #d0f0e0);
-            border-radius: 50%;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-        .auth-icon::after {
-            content: "🔐";
-            font-size: 40px;
-            opacity: 0.8;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
+        .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
         .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
         .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
         .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
         .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
 
-        .auth-btn { width: 100%; pointer-events: auto; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: gradientShift 6s ease infinite; font-family: 'Inter', sans-serif;}
+        .auth-btn { width: 100%; pointer-events: auto; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif;}
         .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
-        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         /* =========================================
            5. RESTRICTION SCREENS & IFRAME
@@ -238,7 +269,7 @@
 
     <div id="auth-portal" class="hidden">
         <div id="reg-screen" class="auth-card hidden">
-            <div class="auth-icon"></div>
+            <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
             <h2>Device Activation</h2>
             <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
@@ -256,9 +287,17 @@
             <h3 class="dept-title">Shwari Finance<br>Department</h3>
             <p class="dept-subtitle">Secure Portal</p>
         </div>
+
         <div class="continue-footer">
-            <h2 id="display-name" class="medium-font"></h2>
-            <p id="display-email" class="small-email"></p>
+            <div id="elephant-gate" class="elephant-gate">
+                <div class="unlock-ring"></div>
+                <i class="fas fa-elephant elephant-icon"></i>
+            </div>
+            
+            <div id="employee-info" class="employee-info">
+                <h2 id="display-name" class="medium-font"></h2>
+                <p id="display-email" class="small-email"></p>
+            </div>
         </div>
     </div>
 
@@ -268,12 +307,10 @@
         <div class="particle p2"></div>
         <div class="particle p3"></div>
         <div class="particle p4"></div>
-        <div class="particle p5"></div>
-        <div class="particle p6"></div>
         
-        <div class="main-icon" id="mainIcon">
+        <div class="main-icon">
             <div class="loader-ring"></div>
-            <!-- Fingerprint icon removed entirely -->
+            <div class="loader-ring-inner"></div>
         </div>
     </div>
 
@@ -287,7 +324,7 @@
 
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
-        /* ── 1. BACKGROUND PRELOADER ── */
+        /* ── 1. BACKGROUND PRELOADER (ZERO WHITE DELAY) ── */
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -354,12 +391,20 @@
             if (isRegistered === 'true') {
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
                 document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
-                document.getElementById('continue-overlay').classList.remove('hidden');
                 
-                // Auto-trigger after 3.5 seconds (no fingerprint animation)
+                document.getElementById('continue-overlay').classList.remove('hidden');
+
+                // ELEPHANT ANIMATION
+                setTimeout(() => {
+                    document.getElementById('elephant-gate').classList.add('unlocked');
+                    document.getElementById('employee-info').classList.add('unlocked');
+                }, 3000);
+
+                // AUTO-TRIGGER ANIMATION 
                 setTimeout(() => {
                     handleContinue();
-                }, 3500);
+                }, 6500); 
+
             } else {
                 const authPortal = document.getElementById('auth-portal');
                 authPortal.classList.remove('hidden');
@@ -388,19 +433,29 @@
                 
                 setTimeout(() => {
                     authPortal.style.opacity = '0';
+                    
                     setTimeout(() => {
                         authPortal.classList.add('hidden');
                         regScreen.classList.add('hidden');
+                        
                         continueOverlay.classList.remove('hidden');
                         continueOverlay.style.opacity = '0';
+                        
                         void continueOverlay.offsetWidth;
                         continueOverlay.style.opacity = '1';
                         
                         setTimeout(() => {
+                            document.getElementById('elephant-gate').classList.add('unlocked');
+                            document.getElementById('employee-info').classList.add('unlocked');
+                        }, 3000);
+                        
+                        setTimeout(() => {
                             handleContinue();
-                        }, 3500);
-                    }, 500);
-                }, 400);
+                        }, 6500); 
+                        
+                    }, 500); 
+                }, 400); 
+
             } else {
                 alert("Please enter both Name and Work Email.");
             }
@@ -409,6 +464,7 @@
         window.handleContinue = () => {
             const continueOverlay = document.getElementById('continue-overlay');
             continueOverlay.style.opacity = '0';
+            
             setTimeout(() => { 
                 continueOverlay.style.display = 'none'; 
                 executeTransition();
@@ -422,12 +478,15 @@
             cancelAnimationFrame(rafId);
             document.removeEventListener('mousemove', onPointerMove);
             document.removeEventListener('touchmove', onPointerMove);
+
             uiWrapper.style.transform = 'scale(1) rotateY(0deg) rotateX(0deg) translateZ(0)';
+
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
                 });
             });
+
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
