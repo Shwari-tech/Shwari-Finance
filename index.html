@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <title>Shwari Finance · Digital Assimilation</title>
+    <title>Shwari Finance · Secure Portal</title>
     
     <link rel="preload" as="image" href="https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg">
     <link rel="manifest" href="manifest.json">
@@ -15,7 +15,7 @@
     
     <style>
         /* =========================================
-           1. BASE STYLES & ORBIT BACKGROUND
+           1. BASE STYLES & BACKGROUND
            ========================================= */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -30,17 +30,19 @@
 
         html { font-size: 5px !important; }
 
+        /* =========================================
+           2. PULL IN/OUT ANIMATION WRAPPER
+           ========================================= */
         .wrapper {
             position: relative; width: min(500px, 92vw); height: min(500px, 92vw);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; transform: scale(0.8);
             transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform-style: preserve-3d; will-change: transform, opacity;
-            z-index: 10;
+            transform-style: preserve-3d; will-change: transform, opacity; z-index: 10;
         }
-
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
+        /* The Core Icon that sucks in and explodes */
         .main-icon {
             position: relative; width: 120px; height: 120px; border-radius: 50%;
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -55,71 +57,31 @@
             50% { transform: scale(1.04) translateZ(0); box-shadow: 0 26px 50px rgba(0,0,0,0.14), 0 0 0 8px rgba(255,255,255,0.85), 0 0 0 11px rgba(0,0,0,0.06); }
         }
 
-        .person-icon { font-size: 3.5rem; color: #333; transition: opacity 0.3s ease; }
+        .person-icon { font-size: 3.5rem; color: #2c7a47; transition: opacity 0.3s ease; }
 
         .shockwave {
             position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%;
             border: 2px solid #333333; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none;
         }
 
-        .particle {
-            position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out;
-            z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity;
-        }
+        .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
         .wrapper.pop-in .particle { opacity: 0.5; }
-
         .p1 { width: 10px; height: 10px; top: 8%;  left: 15%; background: #2c7a47; animation-duration: 4.2s; }
         .p2 { width: 6px;  height: 6px;  top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; }
         .p3 { width: 14px; height: 14px; top: 70%; left: 8%;  background: #b78a1a; animation-duration: 5.4s; }
         .p4 { width: 7px;  height: 7px;  top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1.0) translateZ(0); }
-            50% { transform: translateY(-15px) scale(1.1) translateZ(0); }
-        }
-
-        .orbit-inner, .orbit-outer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 40; transform-style: preserve-3d; pointer-events: none; }
-        .orbit-inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; }
-        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotatePulseCounter 5s linear infinite; }
-
-        .orb-fin, .orb-soc {
-            position: absolute; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.08); will-change: transform, top, left, opacity;
-        }
-
-        .orb-fin {
-            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9); z-index: 45; top: var(--y, 50%); left: var(--x, 50%); --s: 1; transform: translate(-50%, -50%) scale(var(--s)) translateZ(0);
-            transition: top 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), left 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045);
-        }
-        .orb-fin:nth-child(1) { --y: 0%;   --x: 50%;  color: #b78a1a; background: #fefcf0; }
-        .orb-fin:nth-child(2) { --y: 50%;  --x: 100%; color: #444444; background: #f5f5f5; }
-        .orb-fin:nth-child(3) { --y: 100%; --x: 50%;  color: #4a3b8a; background: #f3f1fd; }
-        .orb-fin:nth-child(4) { --y: 50%;  --x: 0%;   color: #1f6e3f; background: #f1f9ec; }
-
-        .orb-soc {
-            width: 44px; height: 44px; font-size: 1.3rem; color: #2c3e4e; z-index: 35; top: 50%; left: 50%; margin-top: -22px; margin-left: -22px; --rot: 0deg; --offset: 190px; --s: 1;
-            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s)) translateZ(0); transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045);
-        }
-        .orb-soc:nth-child(1) { --rot: 0deg;   color: #3b5998; }
-        .orb-soc:nth-child(2) { --rot: 72deg;  color: #000000; }
-        .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
-        .orb-soc:nth-child(4) { --rot: 216deg; color: #000000; }
-        .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
-
-        .orb-fin i, .orb-soc i { animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; transition: opacity 0.3s ease; }
-
-        @keyframes rotatePulseClockwise { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); } }
-        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15); } 100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1); } }
-        @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0) translateZ(0); } 50% { transform: translateY(-15px) scale(1.1) translateZ(0); } }
 
         .ring-track { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px dashed rgba(0,0,0,0.2); pointer-events: none; transform: translate(-50%, -50%); }
         .ring-track.inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; }
         .ring-track.outer { width: 380px; height: 380px; animation: rotatePulseCounter 5s linear infinite; }
 
-        /* ----- DIGITAL ASSIMILATION EFFECT ----- */
+        @keyframes rotatePulseClockwise { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.25); } 100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); } }
+        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); } 50% { transform: translate(-50%, -50%) rotate(-180deg) scale(1.15); } 100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1); } }
+
+        /* ----- DIGITAL ASSIMILATION EFFECT (PULL IN/OUT) ----- */
         .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; transition-duration: 0.4s !important; }
-        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #ffffff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #ffffff !important; color: transparent !important; box-shadow: none !important; }
-        .wrapper.pull-active .orb-fin i, .wrapper.pull-active .orb-soc i { opacity: 0; transition-duration: 0.3s; }
         .wrapper.pull-active .person-icon { opacity: 0; transition-delay: 0.85s; }
         .wrapper.pull-active .main-icon { animation: breathe 4s infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards; }
         .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; }
@@ -128,10 +90,9 @@
         @keyframes rippleOut { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; } 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; border-color: #000; } }
 
         /* =========================================
-           2. PREMIUM FULL-SCREEN AUTH PORTAL (COLOR SHIFTING)
+           3. PREMIUM GLASSMORPHISM AUTH PORTAL 
            ========================================= */
         
-        /* Master Gradient Animation */
         @keyframes colorShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -140,26 +101,24 @@
 
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: opacity 0.6s ease, transform 0.6s ease;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: opacity 0.6s ease, transform 0.6s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
-        /* REGISTRATION CARD (Animated Background) */
+        /* REGISTRATION CARD */
         .auth-card {
             width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95), rgba(255,245,245,0.95), rgba(245,245,255,0.95));
-            background-size: 400% 400%;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.12), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
-            animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1), colorShift 15s ease infinite; 
+            background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(240,250,245,0.8), rgba(255,245,245,0.8), rgba(245,245,255,0.8));
+            background-size: 400% 400%; box-shadow: 0 30px 60px rgba(0,0,0,0.2), inset 0 0 0 1.5px rgba(255,255,255,0.6); 
+            text-align: center; animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1), colorShift 15s ease infinite; 
             font-family: 'Inter', sans-serif;
         }
 
-        /* NEW FULL SCREEN "PAGE 3/4" CONTINUE CARD */
+        /* FULL SCREEN AUTO-CONTINUE CARD */
         .full-screen-card {
-            height: 85vh; /* Takes up vast majority of screen */
-            display: flex; flex-direction: column; justify-content: space-between;
+            height: 85vh; display: flex; flex-direction: column; justify-content: center;
             padding: 50px 30px; border-radius: 40px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(235,250,242,0.95), rgba(230,240,250,0.95));
+            background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(235,250,242,0.8), rgba(230,240,250,0.85));
             background-size: 400% 400%;
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1), colorShift 12s ease infinite;
         }
@@ -169,79 +128,59 @@
 
         /* Registration Icon Gradient */
         .auth-icon i { 
-            font-size: 3.5rem; margin-bottom: 20px; background: #eef7f1; padding: 20px; border-radius: 50%; display: inline-block;
+            font-size: 3.5rem; margin-bottom: 20px; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 50%; display: inline-block;
             background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
-        .auth-card h2 { font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
 
         /* Header Styling */
-        .dept-header { margin-bottom: auto; }
+        .dept-header { margin-bottom: 30px; }
         .dept-title { font-size: 1.6rem; font-weight: 900; color: #1f6e3f; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3;}
         .dept-subtitle { font-size: 0.95rem; color: #666; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; font-weight: 600;}
 
         /* ELEGANT HUGE FINGERPRINT & Rotating Loader */
         .avatar-wrapper {
-            position: relative;
-            width: 150px; height: 150px;
-            margin: 40px auto 20px;
+            position: relative; width: 160px; height: 160px; margin: 0 auto 30px;
             display: flex; justify-content: center; align-items: center;
         }
         
         .loader-ring {
-            position: absolute; inset: 0;
-            border: 4px solid rgba(44, 122, 71, 0.1);
-            border-top-color: #2c7a47; border-bottom-color: #00796b;
-            border-radius: 50%;
-            animation: spinLoader 1.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            position: absolute; inset: 0; border: 4px solid rgba(44, 122, 71, 0.1);
+            border-top-color: #2c7a47; border-bottom-color: #00796b; border-radius: 50%;
+            animation: spinLoader 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
         }
         @keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .inner-avatar {
-            width: 120px; height: 120px; background: linear-gradient(135deg, #ffffff, #f0f8f3); border-radius: 50%;
+            width: 130px; height: 130px; background: rgba(255,255,255,0.9); border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
             border: 4px solid #fff; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.2); z-index: 2;
         }
         
         /* The Huge Shifting Fingerprint */
         .inner-avatar i { 
-            font-size: 4.5rem; 
-            background: linear-gradient(270deg, #2c7a47, #1f6e3f, #00796b, #004d40);
-            background-size: 400% 400%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: colorShift 5s ease infinite;
+            font-size: 5rem; 
+            background: linear-gradient(270deg, #2c7a47, #1f6e3f, #00796b, #004d40); background-size: 400% 400%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 4s ease infinite;
         }
 
         /* Typography */
         .welcome-label { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1.5px; color: #888; font-weight: 800; margin-bottom: 8px; }
         .medium-font { font-size: 2.2rem !important; color: #111; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 5px; line-height: 1.2;}
-        .small-email { font-size: 1.1rem; color: #555; margin-bottom: 35px; font-weight: 600; background: rgba(255,255,255,0.6); padding: 8px 20px; border-radius: 20px; display: inline-block; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
-
-        /* Inputs */
-        .input-group input { width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
-        .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
-
-        /* Footer Button with Gradient */
-        .card-footer { margin-top: auto; width: 100%; }
-        .auth-btn {
-            width: 100%; padding: 22px; 
-            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f, #004d40); background-size: 400% 400%;
-            color: white; border: none; border-radius: 20px; font-size: 1.25rem; font-weight: 800; cursor: pointer; display: flex;
-            justify-content: center; align-items: center; gap: 12px; transition: transform 0.2s;
-            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3);
-            animation: colorShift 6s ease infinite, btnPulse 2s infinite;
-        }
-        .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
-        .auth-btn i { font-size: 1.3rem; }
+        .small-email { font-size: 1.1rem; color: #555; margin-bottom: 35px; font-weight: 600; background: rgba(255,255,255,0.7); padding: 8px 20px; border-radius: 20px; display: inline-block; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
         
-        @keyframes btnPulse {
-            0% { box-shadow: 0 0 0 0 rgba(44, 122, 71, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(44, 122, 71, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(44, 122, 71, 0); }
-        }
+        /* Dynamic Status Text (Replaces Continue Button) */
+        .status-msg { font-size: 1.2rem; font-weight: 800; color: #2c7a47; letter-spacing: 1px; animation: pulseText 1.5s infinite; margin-top: auto;}
+        @keyframes pulseText { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.98); } }
+
+        /* Inputs & Buttons (Registration Only) */
+        .input-group input { width: 100%; padding: 18px 20px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: rgba(255,255,255,0.9); transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
+        .auth-btn { width: 100%; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 1.25rem; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite;}
+        .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
 
         /* =========================================
-           3. RESTRICTION SCREENS & IFRAME
+           4. RESTRICTION SCREENS & IFRAME
            ========================================= */
         .app { position: fixed; inset: 0; opacity: 0; visibility: hidden; background: transparent; z-index: 2000; transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); transform: scale(1.05); }
         .app.active { opacity: 1; visibility: visible; transform: scale(1); }
@@ -264,7 +203,7 @@
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:3.5rem; color:#2c7a47; margin-bottom:20px;"></i>
             <h2>Mobile Portrait Only</h2>
-            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone to access your dashboard.</p>
+            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device to access your dashboard.</p>
         </div>
     </div>
 
@@ -283,7 +222,7 @@
         
         <div id="reg-screen" class="auth-card hidden">
             <div class="auth-icon"><i class="fas fa-shield-alt"></i></div>
-            <h2>Device Activation</h2>
+            <h2 style="font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 5px;">Device Activation</h2>
             <p style="font-size: 1rem; color: #666; margin-bottom:25px;">Register this device once to secure access.</p>
             <div class="input-group">
                 <input type="text" id="reg-name" placeholder="Full Name (e.g. Emilio Thuku)" autocomplete="off">
@@ -312,11 +251,7 @@
                 <p id="display-email" class="small-email"></p>
             </div>
             
-            <div class="card-footer">
-                <button onclick="handleContinue()" class="auth-btn">
-                    <span>Continue</span> <i class="fas fa-fingerprint"></i>
-                </button>
-            </div>
+            <div id="status-msg" class="status-msg">Authenticating...</div>
         </div>
     </div>
 
@@ -329,20 +264,7 @@
         <div class="particle p3"></div>
         <div class="particle p4"></div>
         <div class="main-icon">
-            <i class="fas fa-user person-icon"></i>
-        </div>
-        <div class="orbit-inner">
-            <div class="orb-fin"><i class="fas fa-coins"></i></div>
-            <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
-            <div class="orb-fin"><i class="fas fa-calculator"></i></div>
-            <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
-        </div>
-        <div class="orbit-outer">
-            <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
-            <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
-            <div class="orb-soc"><i class="fab fa-whatsapp"></i></div>
-            <div class="orb-soc"><i class="fab fa-threads"></i></div>
-            <div class="orb-soc"><i class="fab fa-instagram"></i></div>
+            <i class="fas fa-fingerprint person-icon"></i>
         </div>
     </div>
 
@@ -357,7 +279,6 @@
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
 
         /* ── 1. BACKGROUND PRELOADER (ZERO WHITE DELAY) ── */
-        // We inject the link IMMEDIATELY. By the time the user clicks continue, it is 100% loaded.
         const macroIframe = document.getElementById('macro-frame');
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
@@ -365,7 +286,6 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(r  => console.log('SW registered:', r.scope))
                     .catch(e => console.error('SW failed:', e));
             });
         }
@@ -402,7 +322,7 @@
         document.addEventListener('mousemove', onPointerMove, { passive: true });
         document.addEventListener('touchmove', onPointerMove, { passive: true });
 
-        /* ── 4. SECURITY & AUTH LOGIC ── */
+        /* ── 4. SECURITY & AUTO-AUTH LOGIC ── */
         const formatName = (str) => {
             if (!str) return "";
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -425,9 +345,29 @@
             authPortal.classList.remove('hidden');
 
             if (isRegistered === 'true') {
+                // Populate Identity
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
                 document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
                 document.getElementById('login-screen').classList.remove('hidden');
+
+                // AUTOMATIC LOGIN SEQUENCE (No Button Required)
+                setTimeout(() => {
+                    const statusEl = document.getElementById('status-msg');
+                    statusEl.innerText = "Securing Connection...";
+                    
+                    setTimeout(() => {
+                        // Dissolve the glass portal
+                        authPortal.style.transform = 'scale(1.1)';
+                        authPortal.style.opacity = '0';
+                        
+                        setTimeout(() => { 
+                            authPortal.style.display = 'none'; 
+                            executeTransition(); // Trigger the massive suck-in/explode
+                        }, 600);
+                    }, 1500); // Time showing "Securing Connection..."
+
+                }, 1500); // Time showing "Authenticating..."
+
             } else {
                 document.getElementById('reg-screen').classList.remove('hidden');
             }
@@ -447,21 +387,7 @@
             }
         };
 
-        window.handleContinue = () => {
-            // Smoothly dismiss the beautiful card
-            const authPortal = document.getElementById('auth-portal');
-            authPortal.style.transform = 'scale(1.05)';
-            authPortal.style.opacity = '0';
-            setTimeout(() => { authPortal.style.display = 'none'; }, 600);
-
-            // DO NOT RE-INJECT IFRAME SRC HERE. That causes the white delay.
-            // It is already loaded from step 1!
-
-            // Trigger Animation
-            executeTransition();
-        };
-
-        /* ── 5. ASSIMILATION TRANSITION (MORE ANIMATION) ── */
+        /* ── 5. ASSIMILATION TRANSITION (PULL & EXPLODE) ── */
         const executeTransition = () => {
             if (!isParallaxActive) return;
             isParallaxActive = false;
@@ -477,7 +403,7 @@
                 });
             });
 
-            // Smooth scale-in reveal of the preloaded app
+            // Smooth scale-in reveal of the preloaded app (Zero white flash)
             setTimeout(() => {
                 appPanel.classList.add('active');
                 setTimeout(() => {
