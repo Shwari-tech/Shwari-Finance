@@ -14,24 +14,200 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
     <style>
-        /* [PASTE ALL YOUR EXISTING CSS FROM <style> TO </style> HERE] */
-        /* I omitted it here to save space, but keep your original CSS untouched */
-        html { font-size: 5px !important; }
-    </style>
+        /* =========================================
+           1. BASE STYLES & ORBIT BACKGROUND
+           ========================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <link rel="stylesheet" href="style.css">
+        html, body {
+            height: 100%; width: 100%;
+            background: url('https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg') calc(50% + 30%) center / cover no-repeat;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; position: relative; perspective: 1200px;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        html { font-size: 5px !important; }
+
+        .wrapper {
+            position: relative; width: min(500px, 92vw); height: min(500px, 92vw);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; transform: scale(0.8);
+            transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-style: preserve-3d; will-change: transform, opacity;
+            z-index: 10;
+        }
+        .wrapper.pop-in { opacity: 1; transform: scale(1); }
+
+        .main-icon {
+            position: relative; width: 120px; height: 120px; border-radius: 50%;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06);
+            border: 2px solid rgba(255,255,255,0.95);
+            z-index: 60; animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateZ(0); box-shadow: 0 20px 40px rgba(0,0,0,0.10), 0 0 0 6px rgba(255,255,255,0.85), 0 0 0 9px rgba(0,0,0,0.06); }
+            50% { transform: scale(1.04) translateZ(0); box-shadow: 0 26px 50px rgba(0,0,0,0.14), 0 0 0 8px rgba(255,255,255,0.85), 0 0 0 11px rgba(0,0,0,0.06); }
+        }
+
+        .person-icon { font-size: 3.5rem; color: #333; transition: opacity 0.3s ease; }
+
+        .shockwave {
+            position: absolute; top: 50%; left: 50%; width: 100px; height: 100px;
+            border-radius: 50%; border: 2px solid #333333;
+            transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none;
+        }
+
+        .particle {
+            position: absolute; border-radius: 50%; opacity: 0;
+            animation: float 5s infinite ease-in-out; z-index: 20;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .wrapper.pop-in .particle { opacity: 0.5; }
+        .p1 { width: 10px; height: 10px; top: 8%;  left: 15%; background: #2c7a47; animation-duration: 4.2s; }
+        .p2 { width: 6px;  height: 6px;  top: 78%; left: 88%; background: #555555; animation-duration: 6.0s; }
+        .p3 { width: 14px; height: 14px; top: 70%; left: 8%;  background: #b78a1a; animation-duration: 5.4s; }
+        .p4 { width: 7px;  height: 7px;  top: 18%; left: 86%; background: #8e8e8e; animation-duration: 7.0s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1.0); }
+            50% { transform: translateY(-15px) scale(1.1); }
+        }
+
+        .orbit-inner, .orbit-outer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 40; transform-style: preserve-3d; }
+        .orbit-inner { width: 220px; height: 220px; animation: rotatePulseClockwise 4s linear infinite; }
+        .orbit-outer { width: 380px; height: 380px; z-index: 30; animation: rotatePulseCounter 5s linear infinite; }
+
+        .orb-fin, .orb-soc {
+            position: absolute; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+        .orb-fin {
+            width: 48px; height: 48px; font-size: 1.3rem; border: 1.5px solid rgba(255,255,255,0.9); z-index: 45;
+            top: var(--y, 50%); left: var(--x, 50%); --s: 1;
+            transform: translate(-50%, -50%) scale(var(--s)); transition: 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        }
+        .orb-fin:nth-child(1) { --y: 0%;   --x: 50%;  color: #b78a1a; background: #fefcf0; }
+        .orb-fin:nth-child(2) { --y: 50%;  --x: 100%; color: #444444; background: #f5f5f5; }
+        .orb-fin:nth-child(3) { --y: 100%; --x: 50%;  color: #4a3b8a; background: #f3f1fd; }
+        .orb-fin:nth-child(4) { --y: 50%;  --x: 0%;   color: #1f6e3f; background: #f1f9ec; }
+
+        .orb-soc {
+            width: 44px; height: 44px; font-size: 1.3rem; z-index: 35; top: 50%; left: 50%; margin-top: -22px; margin-left: -22px;
+            --rot: 0deg; --offset: 190px; --s: 1;
+            transform: rotate(var(--rot)) translate(var(--offset)) rotate(calc(var(--rot) * -1)) scale(var(--s));
+            transition: transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        }
+        .orb-soc:nth-child(1) { --rot: 0deg;   color: #3b5998; }
+        .orb-soc:nth-child(2) { --rot: 72deg;  color: #000; }
+        .orb-soc:nth-child(3) { --rot: 144deg; color: #25D366; }
+        .orb-soc:nth-child(4) { --rot: 216deg; color: #000; }
+        .orb-soc:nth-child(5) { --rot: 288deg; color: #c13584; }
+
+        .orb-fin i, .orb-soc i { animation: iconPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes iconPop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        @keyframes rotatePulseClockwise { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes rotatePulseCounter { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(-360deg); } }
+
+        .ring-track { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px dashed rgba(0,0,0,0.2); transform: translate(-50%, -50%); pointer-events: none; }
+        .ring-track.inner { width: 220px; height: 220px; }
+        .ring-track.outer { width: 380px; height: 380px; }
+
+        /* ----- ASSIMILATION EFFECT ----- */
+        .wrapper.pull-active .particle { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0) !important; opacity: 0 !important; }
+        .wrapper.pull-active .orb-fin { --y: 50% !important; --x: 50% !important; --s: 0.3 !important; background: #fff !important; border-color: transparent !important; color: transparent !important; box-shadow: none !important; }
+        .wrapper.pull-active .orb-soc { --offset: 0px !important; --s: 0.3 !important; background: #fff !important; color: transparent !important; box-shadow: none !important; }
+        .wrapper.pull-active .person-icon { opacity: 0; transition-delay: 0.85s; }
+        .wrapper.pull-active .main-icon { animation: breathe 4s infinite, dataProcess 1.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.9s forwards; }
+        .wrapper.pull-active .shockwave { animation: rippleOut 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.0s forwards; }
+
+        @keyframes dataProcess { 0% { transform: scale(1); border-color: white; } 35% { transform: scale(0.6); box-shadow: 0 0 30px #555; } 58% { transform: scale(1.4); background: #ffffff; border-color: transparent; } 100% { transform: scale(40); background: #ffffff; box-shadow: none; border: none; opacity: 1; } }
+        @keyframes rippleOut { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; border-width: 15px; border-color: #333; } 100% { transform: translate(-50%, -50%) scale(30); opacity: 0; border-width: 0px; } }
+
+        /* =========================================
+           2. AUTH PORTAL (PLAY STORE STYLE UI)
+           ========================================= */
+        #auth-portal {
+            position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: opacity 0.5s ease;
+        }
+        #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.5); text-align: center;
+            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
+        }
+        @keyframes cardFloatUp { from { transform: translateY(40px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        .auth-card.hidden { display: none; }
+
+        .auth-icon i, .auth-avatar i { font-size: 3rem; color: #2c7a47; margin-bottom: 15px; }
+        .auth-avatar { width: 80px; height: 80px; background: #f1f9ec; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 3px solid #fff; box-shadow: 0 8px 16px rgba(44, 122, 71, 0.15); }
+        .auth-card h2 { font-size: 1.8rem; color: #111; font-weight: 800; margin-bottom: 5px; }
+        .medium-font { font-size: 1.6rem !important; letter-spacing: -0.5px; }
+        .welcome-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #888; font-weight: 700; margin-bottom: 5px; }
+        .small-email { font-size: 0.85rem; color: #666; margin-bottom: 30px; }
+
+        .input-group input { width: 100%; padding: 16px; margin-bottom: 15px; border: 2px solid #eee; border-radius: 14px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #fafafa; transition: border 0.3s; -webkit-appearance: none; }
+        .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; }
+
+        .auth-btn { width: 100%; padding: 18px; background: #2c7a47; color: white; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: transform 0.2s; }
+        .auth-btn:active { transform: scale(0.97); }
+        .reset-link { margin-top: 25px; font-size: 0.85rem; color: #c0392b; text-decoration: underline; cursor: pointer; font-weight: 600; }
+
+        /* =========================================
+           3. APP IFRAME & ERROR/INSTALL SCREENS
+           ========================================= */
+        .app { position: fixed; inset: 0; opacity: 0; visibility: hidden; background: #ffffff; z-index: 2000; transition: opacity 0.6s ease-in; }
+        .app.active { opacity: 1; visibility: visible; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
+
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+        .error-card { background: white; max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .error-card h2 { font-size: 1.5rem; color: #111; margin-bottom: 15px; }
+        .error-card p { font-size: 1rem; color: #666; }
+        @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
+
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .install-card { background: white; width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.15); animation: cardSlideUp 0.6s; font-family: 'Inter', sans-serif; }
+        @keyframes cardSlideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .install-btn { background: transparent; color: #222; border: 2px solid #222; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 1.1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px;}
+
+        @media (max-width: 500px) { .main-icon { width: 96px; height: 96px; } .orbit-inner { width: 190px; height: 190px; } .ring-track.inner { width: 190px; height: 190px; } .orb-fin { width: 42px; height: 42px; font-size: 1.2rem; } .orbit-outer { width: 300px; height: 300px; } .ring-track.outer { width: 300px; height: 300px; } .orb-soc { width: 38px; height: 38px; font-size: 1.1rem; --offset: 150px; } }
+    </style>
 </head>
 <body>
 
     <div id="device-error">
+        <div class="error-card">
+            <i class="fas fa-mobile-screen" style="font-size:3.5rem; color:#2c7a47; margin-bottom:20px;"></i>
+            <h2>Mobile Portrait Only</h2>
+            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode.</p>
         </div>
+    </div>
+
+    <div id="forcedInstall">
+        <div class="install-card">
+            <i class="fas fa-mobile-screen-button" style="font-size:4rem; color:#222; margin-bottom:20px;"></i>
+            <h2>Install Shwari Finance</h2>
+            <p>To access your secure financial tools, please install this application to your phone.</p>
+            <button class="install-btn" id="installAction">
+                <i class="fas fa-download"></i> <span>Install Now</span>
+            </button>
+        </div>
+    </div>
 
     <div id="auth-portal" class="hidden">
         
         <div id="reg-screen" class="auth-card hidden">
             <div class="auth-icon"><i class="fas fa-shield-alt"></i></div>
             <h2>Device Activation</h2>
-            <p>Register once to secure this device.</p>
+            <p style="font-size: 1rem; color: #666; margin-bottom:20px;">Register once to secure this device.</p>
             <div class="input-group">
                 <input type="text" id="reg-name" placeholder="Full Name (e.g. Emilio Thuku)" autocomplete="off">
             </div>
@@ -50,19 +226,39 @@
             <button onclick="handleContinue()" class="auth-btn">
                 <span>Continue</span> <i class="fas fa-arrow-right"></i>
             </button>
-            
             <p class="reset-link" onclick="resetDevice()">Not you? Reset Device</p>
         </div>
     </div>
+
     <div class="wrapper" id="ui">
+        <div class="shockwave"></div>
+        <div class="ring-track inner"></div>
+        <div class="ring-track outer"></div>
+        <div class="particle p1"></div>
+        <div class="particle p2"></div>
+        <div class="particle p3"></div>
+        <div class="particle p4"></div>
+        <div class="main-icon">
+            <i class="fas fa-user person-icon"></i>
         </div>
+        <div class="orbit-inner">
+            <div class="orb-fin"><i class="fas fa-coins"></i></div>
+            <div class="orb-fin"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="orb-fin"><i class="fas fa-calculator"></i></div>
+            <div class="orb-fin"><i class="fas fa-money-bill-wave"></i></div>
+        </div>
+        <div class="orbit-outer">
+            <div class="orb-soc"><i class="fab fa-facebook-f"></i></div>
+            <div class="orb-soc"><i class="fab fa-x-twitter"></i></div>
+            <div class="orb-soc"><i class="fab fa-whatsapp"></i></div>
+            <div class="orb-soc"><i class="fab fa-threads"></i></div>
+            <div class="orb-soc"><i class="fab fa-instagram"></i></div>
+        </div>
+    </div>
 
     <div class="app" id="app">
         <iframe id="macro-frame"></iframe>
     </div>
-
-    <div id="forcedInstall">
-        </div>
 
     <script src="app.js"></script>
 
@@ -79,21 +275,51 @@
             });
         }
 
-        /* ── 5. STABLE PARALLAX (Unchanged) ── */
-        // [PASTE YOUR EXISTING PARALLAX TICK CODE HERE]
-        
-        /* ── 6. INIT (Modified to hook into App.js) ── */
+        /* ── 2. DOM ELEMENTS ── */
+        const uiWrapper = document.getElementById('ui');
+        const appPanel = document.getElementById('app');
+
+        /* ── 3. STABLE PARALLAX ── */
+        let isParallaxActive = true;
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+        let rafId;
+
+        const onPointerMove = (e) => {
+            if (!isParallaxActive) return;
+            const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
+            const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
+            targetX = Math.max(-8, Math.min(8, (window.innerWidth  / 2 - cx) / 35));
+            targetY = Math.max(-8, Math.min(8, (window.innerHeight / 2 - cy) / 35));
+        };
+
+        const lerp = (a, b, t) => a + (b - a) * t;
+
+        const tickParallax = () => {
+            if (!isParallaxActive) return;
+            currentX = lerp(currentX, targetX, 0.07);
+            currentY = lerp(currentY, targetY, 0.07);
+            if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
+                uiWrapper.style.transform = `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
+            }
+            rafId = requestAnimationFrame(tickParallax);
+        };
+
+        document.addEventListener('mousemove', onPointerMove, { passive: true });
+        document.addEventListener('touchmove', onPointerMove, { passive: true });
+
+        /* ── 4. INITIALIZATION HOOK ── */
         requestAnimationFrame(() => {
             uiWrapper.classList.add('pop-in');
             tickParallax();
             
-            // NEW: Instead of auto-recovering, we call the auth logic in app.js
-            if(typeof initAuth === 'function') {
-                initAuth();
+            // Trigger app.js auth logic instead of auto-loading
+            if(typeof window.initAuth === 'function') {
+                window.initAuth();
             }
         });
 
-        /* ── 7. ASSIMILATION TRANSITION (Exposed globally so app.js can call it) ── */
+        /* ── 5. ASSIMILATION TRANSITION (Exposed to app.js) ── */
         window.executeAssimilation = () => {
             if (!isParallaxActive) return;
             isParallaxActive = false;
@@ -106,7 +332,6 @@
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     uiWrapper.classList.add('pull-active');
-                    if(mainFooter) mainFooter.classList.add('fade-out'); 
                 });
             });
 
@@ -114,13 +339,36 @@
                 appPanel.classList.add('active');
                 setTimeout(() => {
                     uiWrapper.parentNode?.removeChild(uiWrapper);
-                    if(mainFooter && mainFooter.parentNode) mainFooter.parentNode.removeChild(mainFooter);
                 }, 1000);
             }, 1900);
         };
 
-        /* ── PWA INSTALL (Unchanged) ── */
-        // [PASTE YOUR EXISTING DEFERRED PROMPT CODE HERE]
+        /* ── 6. PWA INSTALL LOGIC ── */
+        let deferredPrompt;
+        const installOverlay = document.getElementById('forcedInstall');
+        const installBtn = document.getElementById('installAction');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Only show install overlay if they aren't using the app in standalone mode
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                installOverlay.style.display = 'flex';
+            }
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installOverlay.style.display = 'none';
+                deferredPrompt = null;
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installOverlay.style.display = 'none';
+        });
 
     })();
     </script>
