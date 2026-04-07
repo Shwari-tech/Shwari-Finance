@@ -28,6 +28,9 @@
             overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
             background-color: #001208;
+            /* Prevent pull-to-refresh and overscroll on mobile */
+            overscroll-behavior: none;
+            touch-action: none;
         }
 
         html { font-size: 5px !important; }
@@ -594,6 +597,316 @@
             50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
         }
 
+        /* =========================================
+           8. NETWORK ERROR / CUT CABLE SCREEN
+           ========================================= */
+        #network-error-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            font-family: 'Inter', sans-serif;
+            background: #0d1117;
+            overflow: hidden;
+        }
+
+        @media (prefers-color-scheme: light) {
+            #network-error-screen {
+                background: #f0f7f4;
+            }
+        }
+
+        #network-error-screen.active { display: flex; }
+
+        /* Animated Background Grid */
+        .net-bg-grid {
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                linear-gradient(rgba(85, 208, 130, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(85, 208, 130, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridDrift 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .net-bg-grid {
+                background-image: 
+                    linear-gradient(rgba(44, 122, 71, 0.08) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(44, 122, 71, 0.08) 1px, transparent 1px);
+            }
+        }
+
+        @keyframes gridDrift {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Dust Particles */
+        .net-dust {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(85, 208, 130, 0.4);
+            border-radius: 50%;
+            animation: dustFloat 6s ease-in-out infinite;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .net-dust { background: rgba(44, 122, 71, 0.3); }
+        }
+
+        .net-dust:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .net-dust:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; }
+        .net-dust:nth-child(3) { top: 80%; left: 30%; animation-delay: 4s; }
+
+        @keyframes dustFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            50% { transform: translateY(-30px) translateX(10px); opacity: 0.8; }
+        }
+
+        /* Cut Cable Illustration Container */
+        .cable-scene {
+            position: relative;
+            width: 280px;
+            height: 200px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* The Cable SVG Styling */
+        .cable-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .cable-line {
+            fill: none;
+            stroke: #55d082;
+            stroke-width: 8;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px rgba(85, 208, 130, 0.5));
+        }
+
+        @media (prefers-color-scheme: light) {
+            .cable-line {
+                stroke: #2c7a47;
+                filter: drop-shadow(0 0 10px rgba(44, 122, 71, 0.3));
+            }
+        }
+
+        .cable-broken {
+            stroke-dasharray: 20 10;
+            animation: cableSpark 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes cableSpark {
+            0% { stroke-opacity: 1; }
+            100% { stroke-opacity: 0.6; }
+        }
+
+        /* Spark effects at cable ends */
+        .cable-spark {
+            fill: #ffd700;
+            animation: sparkFlash 0.3s ease-in-out infinite;
+        }
+
+        @keyframes sparkFlash {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Error Content Card */
+        .net-error-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(85, 208, 130, 0.2);
+            border-radius: 32px;
+            padding: 40px 35px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 10;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        @media (prefers-color-scheme: light) {
+            .net-error-card {
+                background: rgba(255, 255, 255, 0.8);
+                border-color: rgba(44, 122, 71, 0.15);
+                box-shadow: 
+                    0 20px 60px rgba(0,0,0,0.1),
+                    inset 0 1px 0 rgba(255,255,255,0.8);
+            }
+        }
+
+        .net-icon-wrap {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, rgba(85,208,130,0.2), rgba(44,122,71,0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #55d082;
+            border: 2px solid rgba(85,208,130,0.3);
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .net-icon-wrap {
+                background: linear-gradient(135deg, rgba(44,122,71,0.1), rgba(85,208,130,0.05));
+                color: #2c7a47;
+                border-color: rgba(44,122,71,0.2);
+            }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(85,208,130,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px 10px rgba(85,208,130,0); }
+        }
+
+        .net-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .net-title { color: #0a2e16; }
+        }
+
+        .net-message {
+            font-size: 15px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 30px;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .net-message { color: rgba(10, 46, 22, 0.7); }
+        }
+
+        /* Retry Button */
+        .net-retry-btn {
+            background: linear-gradient(135deg, #55d082, #2c7a47);
+            color: #001208;
+            border: none;
+            padding: 18px 36px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 30px rgba(85,208,130,0.3);
+        }
+
+        .net-retry-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(85,208,130,0.4);
+        }
+
+        .net-retry-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .net-retry-btn.spinning i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Connection Status Indicator */
+        .net-status-bar {
+            position: absolute;
+            top: max(20px, env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 59, 48, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .net-status-bar.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .net-status-bar.online {
+            background: rgba(52, 199, 89, 0.9);
+        }
+
+        /* Typing/Keyboard Stability Helpers */
+        .keyboard-open .wrapper,
+        .keyboard-open #continue-overlay,
+        .keyboard-open #auth-portal {
+            transform: scale(0.85) translateY(-10%);
+            transition: transform 0.3s ease;
+        }
+
+        /* Gesture Hint Overlay */
+        .gesture-hint {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 13px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 5000;
+            backdrop-filter: blur(10px);
+        }
+
+        .gesture-hint.show { opacity: 1; }
+
+        @media (prefers-color-scheme: light) {
+            .gesture-hint {
+                background: rgba(255,255,255,0.9);
+                color: #0a2e16;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -706,6 +1019,63 @@
             </div>
         </div>
     </div>
+
+    <!-- =====================================================
+         NETWORK ERROR / CUT CABLE SCREEN
+         ===================================================== -->
+    <div id="network-error-screen">
+        <div class="net-bg-grid"></div>
+        
+        <!-- Floating dust particles -->
+        <div class="net-dust"></div>
+        <div class="net-dust"></div>
+        <div class="net-dust"></div>
+
+        <!-- Cable Illustration -->
+        <div class="cable-scene">
+            <svg class="cable-svg" viewBox="0 0 280 200">
+                <!-- Left side of cut cable -->
+                <path class="cable-line cable-broken" d="M 20 100 Q 80 100 100 80" />
+                <path class="cable-line" d="M 20 100 Q 80 100 100 80" stroke-opacity="0.3" stroke-dasharray="5 5"/>
+                
+                <!-- Right side of cut cable -->
+                <path class="cable-line cable-broken" d="M 180 120 Q 200 100 260 100" />
+                <path class="cable-line" d="M 180 120 Q 200 100 260 100" stroke-opacity="0.3" stroke-dasharray="5 5"/>
+                
+                <!-- Spark effects -->
+                <circle class="cable-spark" cx="140" cy="100" r="4" />
+                <circle class="cable-spark" cx="130" cy="90" r="2" style="animation-delay:0.1s" />
+                <circle class="cable-spark" cx="150" cy="110" r="3" style="animation-delay:0.2s" />
+                
+                <!-- Wire internals visible at cut -->
+                <line x1="100" y1="75" x2="100" y2="85" stroke="#ffd700" stroke-width="2" />
+                <line x1="180" y1="115" x2="180" y2="125" stroke="#ffd700" stroke-width="2" />
+            </svg>
+        </div>
+
+        <div class="net-error-card">
+            <div class="net-icon-wrap">
+                <i class="fas fa-wifi-slash"></i>
+            </div>
+            <h2 class="net-title">Connection Lost</h2>
+            <p class="net-message">
+                Looks like the cable got cut! Please check your internet connection and try again.
+            </p>
+            <button class="net-retry-btn" id="net-retry-btn" onclick="checkNetworkAndRetry()">
+                <i class="fas fa-rotate-right"></i>
+                <span>Try Again</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Network Status Toast -->
+    <div class="net-status-bar" id="net-status-bar">
+        <i class="fas fa-circle" style="font-size:8px;"></i>
+        <span id="net-status-text">No Connection</span>
+    </div>
+
+    <!-- Gesture Hint -->
+    <div class="gesture-hint" id="gesture-hint">Swipe left to go back</div>
 
 
     <script>
@@ -971,11 +1341,242 @@
             }
         });
 
+
+        /* =====================================================
+           NETWORK CONNECTIVITY MANAGER & ERROR SCREEN
+           ===================================================== */
+        
+        const networkErrorScreen = document.getElementById('network-error-screen');
+        const netStatusBar = document.getElementById('net-status-bar');
+        const netStatusText = document.getElementById('net-status-text');
+        const netRetryBtn = document.getElementById('net-retry-btn');
+
+        function updateNetworkStatus() {
+            const isOnline = navigator.onLine;
+            
+            if (isOnline) {
+                // Hide error screen if visible
+                if (networkErrorScreen.classList.contains('active')) {
+                    networkErrorScreen.classList.remove('active');
+                    // Show online toast
+                    netStatusBar.classList.add('online');
+                    netStatusText.textContent = 'Back Online';
+                    netStatusBar.classList.add('show');
+                    setTimeout(() => {
+                        netStatusBar.classList.remove('show');
+                        setTimeout(() => netStatusBar.classList.remove('online'), 300);
+                    }, 2000);
+                }
+            } else {
+                // Show error screen
+                networkErrorScreen.classList.add('active');
+            }
+        }
+
+        window.checkNetworkAndRetry = function() {
+            netRetryBtn.classList.add('spinning');
+            
+            // Simulate check delay for UX
+            setTimeout(() => {
+                netRetryBtn.classList.remove('spinning');
+                if (navigator.onLine) {
+                    networkErrorScreen.classList.remove('active');
+                    netStatusBar.classList.add('online');
+                    netStatusText.textContent = 'Connected';
+                    netStatusBar.classList.add('show');
+                    setTimeout(() => netStatusBar.classList.remove('show'), 2000);
+                } else {
+                    // Shake animation on button
+                    netRetryBtn.style.animation = 'shake 0.5s ease';
+                    setTimeout(() => {
+                        netRetryBtn.style.animation = '';
+                    }, 500);
+                }
+            }, 1500);
+        };
+
+        // Network event listeners
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        
+        // Initial check
+        if (!navigator.onLine) {
+            networkErrorScreen.classList.add('active');
+        }
+
+
+        /* =====================================================
+           KEYBOARD STABILITY MANAGER (Mobile Typing Guard)
+           ===================================================== */
+        
+        let initialViewportHeight = window.innerHeight;
+        
+        function handleVisualViewport() {
+            if (window.visualViewport) {
+                const vv = window.visualViewport;
+                const heightDiff = initialViewportHeight - vv.height;
+                
+                if (heightDiff > 150) {
+                    // Keyboard likely open
+                    document.body.classList.add('keyboard-open');
+                    
+                    // Adjust active elements to stay visible
+                    const activeEl = document.activeElement;
+                    if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+                        setTimeout(() => {
+                            activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                    }
+                } else {
+                    document.body.classList.remove('keyboard-open');
+                }
+            }
+        }
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', handleVisualViewport);
+            window.visualViewport.addEventListener('scroll', handleVisualViewport);
+        }
+
+        // Fallback for older browsers
+        window.addEventListener('resize', () => {
+            if (!window.visualViewport) {
+                const heightDiff = initialViewportHeight - window.innerHeight;
+                if (heightDiff > 150) {
+                    document.body.classList.add('keyboard-open');
+                } else {
+                    document.body.classList.remove('keyboard-open');
+                }
+            }
+        });
+
+        // Prevent zoom on input focus for iOS
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('gesturechange', (e) => e.preventDefault());
+        document.addEventListener('gestureend', (e) => e.preventDefault());
+
+
+        /* =====================================================
+           GESTURE CONTROLLER (Touch Navigation)
+           ===================================================== */
+        
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchStartTime = 0;
+        const gestureHint = document.getElementById('gesture-hint');
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            touchStartTime = new Date().getTime();
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const touchDuration = new Date().getTime() - touchStartTime;
+            
+            handleSwipe(touchStartX, touchEndX, touchStartY, touchEndY, touchDuration);
+        }, { passive: true });
+
+        function handleSwipe(startX, endX, startY, endY, duration) {
+            const threshold = 100; // min distance
+            const restraint = 100; // max vertical deviation
+            const allowedTime = 1000; // max time for swipe
+            
+            const distX = endX - startX;
+            const distY = endY - startY;
+            
+            if (duration <= allowedTime && Math.abs(distX) >= threshold && Math.abs(distY) <= restraint) {
+                if (distX > 0) {
+                    // Swipe Right - Go Back in iframe history if possible
+                    showGestureHint('Going back...');
+                    try {
+                        if (macroIframe.contentWindow && macroIframe.contentWindow.history.length > 1) {
+                            macroIframe.contentWindow.history.back();
+                        }
+                    } catch (e) {
+                        console.log('Cannot access iframe history');
+                    }
+                } else {
+                    // Swipe Left - Forward
+                    showGestureHint('Going forward...');
+                    try {
+                        if (macroIframe.contentWindow) {
+                            macroIframe.contentWindow.history.forward();
+                        }
+                    } catch (e) {
+                        console.log('Cannot access iframe history');
+                    }
+                }
+            }
+        }
+
+        function showGestureHint(text) {
+            gestureHint.textContent = text;
+            gestureHint.classList.add('show');
+            setTimeout(() => {
+                gestureHint.classList.remove('show');
+            }, 1500);
+        }
+
+        // Double tap protection (prevent zoom)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+
+        /* =====================================================
+           ERROR BOUNDARY & GLOBAL HANDLERS
+           ===================================================== */
+        
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.message);
+            // Prevent crash loops
+            e.preventDefault();
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled promise:', e.reason);
+            e.preventDefault();
+        });
+
+        // Prevent context menu on long press (native app feel)
+        window.oncontextmenu = (e) => {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                return false;
+            }
+        };
+
+        // Visibility API - Pause/resume logic
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Page hidden - save state if needed
+                console.log('App backgrounded');
+            } else {
+                // Page visible - check network
+                updateNetworkStatus();
+            }
+        });
+
+
+        /* =====================================================
+           INITIALIZATION SEQUENCE
+           ===================================================== */
+        
         requestAnimationFrame(() => {
             uiWrapper.classList.add('pop-in');
             tickParallax();
             window.initAuth();
         });
+
     })();
     </script>
 </body>
