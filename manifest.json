@@ -64,8 +64,14 @@
       "label": "Mobile Dashboard"
     }
   ],
-  "related_applications": [],
-  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "/manifest.json",
+      "id": "/shwari-finance-portal-v5"
+    }
+  ],
+  "prefer_related_applications": true,
   "edge_side_panel": {
     "preferred_width": 400
   },
