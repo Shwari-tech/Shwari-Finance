@@ -26,7 +26,7 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden; position: relative; perspective: 1200px;
-            -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
+            -webkit-text-size-adjust: 70%; -moz-text-size-adjust: 70%; text-size-adjust: 70%;
             background-color: #001208;
         }
 
@@ -921,18 +921,51 @@
             font-size: 16px;
         }
 
+        /* =========================================
+           9. LOCAL STORAGE CONSENT & BUTTON FX
+           ========================================= */
+        #storage-consent {
+            display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.95);
+            backdrop-filter: blur(15px); z-index: 1000000; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px; font-family: 'Inter', sans-serif;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #storage-consent.active { display: flex; opacity: 1; }
+        .consent-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
+            width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #storage-consent.active .consent-card { transform: translateY(0); }
+        
+        @media (prefers-color-scheme: dark) {
+            .consent-card { background: rgba(0, 30, 15, 0.95); border: 1px solid rgba(85, 208, 130, 0.2); }
+            .consent-card h2 { color: #55d082; }
+            .consent-card p { color: #aaaaaa; }
+        }
+        
+        .consent-card i { font-size: 50px; color: #55d082; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(85, 208, 130, 0.3)); }
+        .consent-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 15px; }
+        .consent-card p { font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
+        .consent-buttons { display: flex; gap: 12px; }
+        .consent-btn {
+            flex: 1; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 16px; border: none; cursor: pointer;
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .consent-btn.accept { background: #55d082; color: #001208; box-shadow: 0 8px 20px rgba(85, 208, 130, 0.3); }
+        .consent-btn.decline { background: transparent; border: 2px solid #e74c3c; color: #e74c3c; }
+
     </style>
 <base target="_blank">
 </head>
 <body>
 
-    <!-- Network Toast Notification -->
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
         <span id="toast-message">Checking connection...</span>
     </div>
 
-    <!-- Network Error Screen (Cartoon Style) -->
     <div id="network-error-screen">
         <div class="error-particle ep1"></div>
         <div class="error-particle ep2"></div>
@@ -1048,26 +1081,19 @@
     </div>
 
 
-    <!-- =====================================================
-         INSTALL PROGRESS SCREEN
-         ===================================================== -->
     <div id="install-progress-screen">
-        <!-- floating ambient particles -->
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
         <div class="install-particle ip3"></div>
         <div class="install-particle ip4"></div>
 
-        <!-- App icon -->
         <div class="install-app-icon">
             <i class="fas fa-elephant"></i>
         </div>
 
-        <!-- Titles -->
         <p class="install-title">Installing Shwari Finance</p>
         <p class="install-subtitle">Setting up your portal</p>
 
-        <!-- Progress bar -->
         <div class="install-track-wrap">
             <div class="install-track">
                 <div class="install-bar" id="install-bar"></div>
@@ -1075,7 +1101,6 @@
             <p class="install-status-text" id="install-status-text">Preparing files…</p>
         </div>
 
-        <!-- Success tick (hidden until done) -->
         <div class="tick-wrap" id="tick-wrap">
             <div class="tick-ripple" id="tick-ripple-1"></div>
             <div class="tick-ripple" id="tick-ripple-2" style="animation-delay:0.3s;"></div>
@@ -1085,6 +1110,17 @@
         </div>
     </div>
 
+    <div id="storage-consent">
+        <div class="consent-card">
+            <i class="fas fa-database"></i>
+            <h2>Local Storage Required</h2>
+            <p>We need your permission to store authentication tokens and app data securely on your device for lightning-fast offline access.</p>
+            <div class="consent-buttons">
+                <button class="consent-btn decline" onclick="window.handleConsent(false)">Decline</button>
+                <button class="consent-btn accept" onclick="window.handleConsent(true)">Allow Storage</button>
+            </div>
+        </div>
+    </div>
 
     <script>
     (function () {
@@ -1584,11 +1620,93 @@
             }
         });
 
+
+        /* =====================================================
+           NEW: MASSIVE OFFLINE CACHING & SUPER ATTENTIVE UI
+           ===================================================== */
+           
+        // Force massive background caching natively
+        const buildHugeCache = async () => {
+            if ('caches' in window) {
+                try {
+                    const cache = await caches.open('shwari-huge-cache-v1');
+                    const assets = [
+                        location.href,
+                        'https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg',
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css',
+                        MACRO_URL
+                    ];
+                    // Using no-cors prevents opaque errors from blocking cache storage
+                    await cache.addAll(assets.map(url => new Request(url, { mode: 'no-cors' })));
+                    console.log('Massive offline cache successfully locked.');
+                } catch (e) {
+                    console.error('Huge cache generation encountered a snag:', e);
+                }
+            }
+        };
+
+        // Attach super responsive listeners to all buttons for instant haptic and visual feedback
+        const attachSuperAttentiveListeners = () => {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                // Ensure CSS transitions do not fight our instant JS transforms
+                btn.style.transition = 'transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s ease';
+                
+                const pressDown = (e) => {
+                    if (btn.disabled) return;
+                    if (navigator.vibrate) navigator.vibrate(40); // Haptic feedback
+                    btn.style.transform = 'scale(0.92)';
+                    btn.style.filter = 'brightness(0.9)';
+                };
+                
+                const releaseUp = (e) => {
+                    if (btn.disabled) return;
+                    btn.style.transform = 'scale(1)';
+                    btn.style.filter = 'brightness(1)';
+                };
+
+                btn.addEventListener('touchstart', pressDown, { passive: true });
+                btn.addEventListener('touchend', releaseUp);
+                btn.addEventListener('mousedown', pressDown);
+                btn.addEventListener('mouseup', releaseUp);
+                btn.addEventListener('mouseleave', releaseUp);
+            });
+        };
+
+        // Storage Consent Logic
+        window.handleConsent = (accepted) => {
+            const consentOverlay = document.getElementById('storage-consent');
+            consentOverlay.style.opacity = '0';
+            setTimeout(() => {
+                consentOverlay.style.display = 'none';
+                if (accepted) {
+                    localStorage.setItem('shwari_storage_consent', 'granted');
+                    buildHugeCache(); // Build huge cache upon permission
+                    window.initAuth(); // Continue app boot
+                } else {
+                    alert("Storage is necessary to use Shwari Finance. Please reload and accept to continue.");
+                }
+            }, 400);
+        };
+
+        const checkStorageConsent = () => {
+            if (localStorage.getItem('shwari_storage_consent') === 'granted') {
+                buildHugeCache();
+                window.initAuth();
+            } else {
+                document.getElementById('storage-consent').classList.add('active');
+            }
+        };
+
+        // App Boot sequence execution
         requestAnimationFrame(() => {
             uiWrapper.classList.add('pop-in');
             tickParallax();
-            window.initAuth();
+            attachSuperAttentiveListeners();
+            // Engage consent check instead of immediate boot
+            checkStorageConsent();
         });
+        
     })();
     </script>
 </body>
