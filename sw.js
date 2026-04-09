@@ -1,4 +1,4 @@
-]/**
+/**
  * Shwari Finance Service Worker v5.0.0
  * Features: Offline caching, duplicate instance prevention, auto-update
  */
