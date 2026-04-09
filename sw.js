@@ -99,6 +99,10 @@ self.addEventListener('activate', (event) => {
     })
     .then(() => {
       console.log(`[Service Worker v${APP_VERSION}] Activation complete`);
+      // Force all clients to verify their version and state immediately upon activation
+      self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clients => {
+          clients.forEach(client => client.postMessage({ type: 'FORCE_DUPLICATE_VERIFICATION', version: APP_VERSION }));
+      });
       return self.clients.claim();
     })
   );
@@ -276,7 +280,7 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 // =========================================
-// MESSAGE HANDLING - Communication with main thread
+// MESSAGE HANDLING - Communication with main thread & Anti-Duplicate Security
 // =========================================
 self.addEventListener('message', (event) => {
   if (event.data === 'skipWaiting') {
@@ -295,6 +299,19 @@ self.addEventListener('message', (event) => {
         );
       })
     );
+  }
+
+  // --- NEW: ANTI-DUPLICATE SYSTEM INTERFACE ---
+  if (event.data && event.data.type === 'CHECK_DUPLICATE_INSTALL') {
+      self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
+          // Reports back to the requesting tab how many instances are actively attached to this worker
+          if (event.ports && event.ports[0]) {
+              event.ports[0].postMessage({
+                  clientCount: windowClients.length,
+                  activeVersion: APP_VERSION
+              });
+          }
+      });
   }
 });
 
