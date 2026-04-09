@@ -1,5 +1,5 @@
 {
-  "id": "/shwari-finance-portal",
+  "id": "/shwari-finance-portal-v5",
   "name": "Shwari Mobile",
   "short_name": "Shwari",
   "description": "Digital Payroll Certified by Shwari Finance Department",
@@ -11,6 +11,7 @@
   "theme_color": "#2c7a47",
   "orientation": "portrait-primary",
   "categories": ["finance", "business", "productivity"],
+  "version": "5.0.0",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
@@ -62,5 +63,17 @@
       "form_factor": "narrow",
       "label": "Mobile Dashboard"
     }
-  ]
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "dir": "ltr",
+  "lang": "en",
+  "iarc_rating_id": ""
 }
