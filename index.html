@@ -18,7 +18,7 @@
         /* =========================================
            1. BASE STYLES & IMAGE BACKGROUND
            ========================================= */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         html, body {
             height: 100%; width: 100%;
@@ -230,9 +230,29 @@
             40%, 80% { transform: translateX(4px); }
         }
 
-        .auth-btn { width: 100%; pointer-events: auto; padding: 22px; background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 20px; font-weight: 800; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif;}
-        .auth-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
-        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .auth-btn { 
+            width: 100%; 
+            pointer-events: auto; 
+            padding: 22px; 
+            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); 
+            background-size: 400% 400%; 
+            color: white; 
+            border: none; 
+            border-radius: 20px; 
+            font-size: 20px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: transform 0.15s ease, box-shadow 0.3s ease; 
+            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); 
+            animation: colorShift 6s ease infinite; 
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(44, 122, 71, 0.4); }
+        .auth-btn:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
+        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         /* =========================================
            5. APP IFRAME - SMOOTH CROSSFADE REVEAL
@@ -263,8 +283,27 @@
         .install-card { background: rgba(0, 30, 15, 0.9); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
-        .install-btn { background: transparent; color: #55d082; border: 2px solid #55d082; padding: 18px 0; width: 100%; border-radius: 15px; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; font-family: 'Inter', sans-serif; transition: all 0.3s ease;}
+        .install-btn { 
+            background: transparent; 
+            color: #55d082; 
+            border: 2px solid #55d082; 
+            padding: 18px 0; 
+            width: 100%; 
+            border-radius: 15px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+            margin-top: 20px; 
+            font-family: 'Inter', sans-serif; 
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
         .install-btn:hover { background: #55d082; color: #001208; }
+        .install-btn:active { transform: scale(0.96); }
 
 
         /* =========================================
@@ -835,6 +874,7 @@
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
             box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
+            touch-action: manipulation;
         }
 
         .retry-btn:hover {
@@ -843,7 +883,7 @@
         }
 
         .retry-btn:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(0.96);
         }
 
         .retry-btn:disabled {
@@ -922,50 +962,253 @@
         }
 
         /* =========================================
-           9. LOCAL STORAGE CONSENT & BUTTON FX
+           9. STORAGE PERMISSION MODAL
            ========================================= */
-        #storage-consent {
-            display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.95);
-            backdrop-filter: blur(15px); z-index: 1000000; flex-direction: column;
-            align-items: center; justify-content: center; padding: 20px; font-family: 'Inter', sans-serif;
-            opacity: 0; transition: opacity 0.4s ease;
+        #storage-permission-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100002;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 20, 10, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
         }
-        #storage-consent.active { display: flex; opacity: 1; }
-        .consent-card {
+
+        #storage-permission-modal.active { display: flex; }
+
+        .permission-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
-            width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center;
+            width: 100%;
+            max-width: 360px;
+            padding: 40px 30px;
+            border-radius: 30px;
+            text-align: center;
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: cardFloatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        #storage-consent.active .consent-card { transform: translateY(0); }
-        
-        @media (prefers-color-scheme: dark) {
-            .consent-card { background: rgba(0, 30, 15, 0.95); border: 1px solid rgba(85, 208, 130, 0.2); }
-            .consent-card h2 { color: #55d082; }
-            .consent-card p { color: #aaaaaa; }
+
+        .permission-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #2c7a47, #55d082);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
         }
-        
-        .consent-card i { font-size: 50px; color: #55d082; margin-bottom: 20px; filter: drop-shadow(0 4px 10px rgba(85, 208, 130, 0.3)); }
-        .consent-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 15px; }
-        .consent-card p { font-size: 14px; line-height: 1.6; margin-bottom: 30px; }
-        .consent-buttons { display: flex; gap: 12px; }
-        .consent-btn {
-            flex: 1; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 16px; border: none; cursor: pointer;
-            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .permission-card h2 {
+            font-size: 22px;
+            color: #111;
+            font-weight: 800;
+            margin-bottom: 12px;
         }
-        .consent-btn.accept { background: #55d082; color: #001208; box-shadow: 0 8px 20px rgba(85, 208, 130, 0.3); }
-        .consent-btn.decline { background: transparent; border: 2px solid #e74c3c; color: #e74c3c; }
+
+        .permission-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .permission-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .permission-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+
+        .permission-btn.allow {
+            background: linear-gradient(135deg, #2c7a47, #1f6e3f);
+            color: white;
+            box-shadow: 0 8px 20px rgba(44, 122, 71, 0.3);
+        }
+
+        .permission-btn.allow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(44, 122, 71, 0.4);
+        }
+
+        .permission-btn.allow:active {
+            transform: scale(0.96);
+        }
+
+        .permission-btn.deny {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .permission-btn.deny:hover {
+            background: #e5e5e5;
+        }
+
+        .permission-btn.deny:active {
+            transform: scale(0.96);
+        }
+
+        /* =========================================
+           10. DUPLICATE APP ERROR SCREEN
+           ========================================= */
+        #duplicate-app-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100003;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
+                        #001208;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #duplicate-app-screen.active { display: flex; }
+
+        .duplicate-card {
+            background: rgba(0, 30, 15, 0.95);
+            max-width: 400px;
+            padding: 45px 35px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 2px rgba(231, 76, 60, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .duplicate-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+            animation: pulseWarning 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseWarning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .duplicate-card h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .duplicate-card p {
+            font-size: 15px;
+            color: #aaaaaa;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .duplicate-info {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .duplicate-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .duplicate-info-item:last-child { margin-bottom: 0; }
+
+        .duplicate-info-item i {
+            color: #e74c3c;
+            font-size: 16px;
+        }
+
+        .uninstall-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
+            touch-action: manipulation;
+        }
+
+        .uninstall-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
+        }
+
+        .uninstall-btn:active {
+            transform: scale(0.96);
+        }
+
+        @media (prefers-color-scheme: light) {
+            #duplicate-app-screen {
+                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
+                            #e8f5ed;
+            }
+            .duplicate-card {
+                background: rgba(255, 255, 255, 0.98);
+            }
+            .duplicate-card p { color: #5a6a60; }
+            .duplicate-info-item { color: #444; }
+        }
 
     </style>
 <base target="_blank">
 </head>
 <body>
 
+    <!-- Network Toast -->
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
         <span id="toast-message">Checking connection...</span>
     </div>
 
+    <!-- Network Error Screen -->
     <div id="network-error-screen">
         <div class="error-particle ep1"></div>
         <div class="error-particle ep2"></div>
@@ -997,13 +1240,14 @@
                 <div class="status-dot"></div>
                 <span class="status-text">You're offline</span>
             </div>
-            <button class="retry-btn" id="retry-connection-btn" onclick="checkAndRetryConnection()">
+            <button class="retry-btn" id="retry-connection-btn">
                 <i class="fas fa-rotate-right"></i>
                 <span>Try Again</span>
             </button>
         </div>
     </div>
 
+    <!-- Device Error Screen -->
     <div id="device-error">
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
@@ -1012,6 +1256,51 @@
         </div>
     </div>
 
+    <!-- Duplicate App Error Screen -->
+    <div id="duplicate-app-screen">
+        <div class="duplicate-card">
+            <div class="duplicate-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+            <h2>Duplicate App Detected</h2>
+            <p>Another version of Shwari Finance is already installed on this device. Please uninstall the old version before using this one.</p>
+            <div class="duplicate-info">
+                <div class="duplicate-info-item">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>Multiple app instances detected</span>
+                </div>
+                <div class="duplicate-info-item">
+                    <i class="fas fa-box-open"></i>
+                    <span>Conflicting service workers found</span>
+                </div>
+                <div class="duplicate-info-item">
+                    <i class="fas fa-database"></i>
+                    <span>Cache storage conflicts</span>
+                </div>
+            </div>
+            <button class="uninstall-btn" id="uninstall-old-btn">
+                <i class="fas fa-trash-can"></i>
+                <span>Uninstall Old Version</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Storage Permission Modal -->
+    <div id="storage-permission-modal">
+        <div class="permission-card">
+            <div class="permission-icon">
+                <i class="fas fa-database"></i>
+            </div>
+            <h2>Storage Permission Required</h2>
+            <p>Shwari Finance needs permission to store data locally on your device for offline access and better performance.</p>
+            <div class="permission-buttons">
+                <button class="permission-btn deny" id="deny-storage-btn">Not Now</button>
+                <button class="permission-btn allow" id="allow-storage-btn">Allow</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forced Install Screen -->
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
@@ -1023,6 +1312,7 @@
         </div>
     </div>
 
+    <!-- Auth Portal -->
     <div id="auth-portal" class="hidden">
         <div id="reg-screen" class="auth-card hidden">
             <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
@@ -1042,10 +1332,11 @@
                     <span>Please enter a valid email address</span>
                 </div>
             </div>
-            <button onclick="handleRegister()" class="auth-btn" id="activate-btn">Activate Device</button>
+            <button class="auth-btn" id="activate-btn">Activate Device</button>
         </div>
     </div>
 
+    <!-- Continue Overlay -->
     <div id="continue-overlay" class="hidden">
         <div class="continue-header">
             <h3 class="dept-title">Shwari Finance<br></h3>
@@ -1068,6 +1359,7 @@
         </div>
     </div>
 
+    <!-- UI Wrapper -->
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
         <div class="particle p1"></div>
@@ -1076,11 +1368,12 @@
         <div class="particle p4"></div>
     </div>
 
+    <!-- App Iframe -->
     <div class="app" id="app">
         <iframe id="macro-frame"></iframe>
     </div>
 
-
+    <!-- Install Progress Screen -->
     <div id="install-progress-screen">
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
@@ -1110,65 +1403,353 @@
         </div>
     </div>
 
-    <div id="storage-consent">
-        <div class="consent-card">
-            <i class="fas fa-database"></i>
-            <h2>Local Storage Required</h2>
-            <p>We need your permission to store authentication tokens and app data securely on your device for lightning-fast offline access.</p>
-            <div class="consent-buttons">
-                <button class="consent-btn decline" onclick="window.handleConsent(false)">Decline</button>
-                <button class="consent-btn accept" onclick="window.handleConsent(true)">Allow Storage</button>
-            </div>
-        </div>
-    </div>
-
     <script>
     (function () {
         "use strict";
 
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
         const macroIframe = document.getElementById('macro-frame');
+        const APP_VERSION = '5.0.0';
+        const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
         
         // Preload macro in background seamlessly
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(r  => console.log('SW registered:', r.scope))
-                    .catch(e => console.error('SW failed:', e));
+        // =========================================
+        // SUPER RESPONSIVE BUTTON INITIALIZATION
+        // =========================================
+        function initSuperResponsiveButtons() {
+            const allButtons = document.querySelectorAll('button, .auth-btn, .install-btn, .retry-btn, .uninstall-btn, .permission-btn');
+            
+            allButtons.forEach(btn => {
+                // Touch events for mobile
+                btn.addEventListener('touchstart', function(e) {
+                    this.style.transform = 'scale(0.96)';
+                    this.style.transition = 'transform 0.1s ease';
+                }, { passive: true });
+                
+                btn.addEventListener('touchend', function(e) {
+                    this.style.transform = '';
+                    setTimeout(() => {
+                        this.style.transition = '';
+                    }, 100);
+                }, { passive: true });
+                
+                btn.addEventListener('touchcancel', function(e) {
+                    this.style.transform = '';
+                }, { passive: true });
+
+                // Mouse events for desktop
+                btn.addEventListener('mousedown', function(e) {
+                    this.style.transform = 'scale(0.96)';
+                });
+                
+                btn.addEventListener('mouseup', function(e) {
+                    this.style.transform = '';
+                });
+                
+                btn.addEventListener('mouseleave', function(e) {
+                    this.style.transform = '';
+                });
+
+                // Keyboard accessibility
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.style.transform = 'scale(0.96)';
+                        this.click();
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    }
+                });
+
+                // Focus states
+                btn.addEventListener('focus', function(e) {
+                    this.style.outline = '2px solid #55d082';
+                    this.style.outlineOffset = '2px';
+                });
+                
+                btn.addEventListener('blur', function(e) {
+                    this.style.outline = '';
+                    this.style.outlineOffset = '';
+                });
+
+                // Prevent double firing
+                btn.addEventListener('click', function(e) {
+                    if (this.dataset.processing === 'true') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
             });
         }
 
-        const uiWrapper = document.getElementById('ui');
-        const appPanel  = document.getElementById('app');
-        let isParallaxActive = true;
-        let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
-        let rafId;
+        // =========================================
+        // DUPLICATE APP DETECTION
+        // =========================================
+        function checkDuplicateApp() {
+            return new Promise((resolve) => {
+                // Check for existing service workers
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        const shwariRegs = registrations.filter(reg => 
+                            reg.scope && reg.scope.includes('shwari')
+                        );
+                        
+                        if (shwariRegs.length > 1) {
+                            showDuplicateAppScreen();
+                            resolve(true);
+                        } else {
+                            // Check localStorage for other instances
+                            const existingInstance = localStorage.getItem('shwari_instance_id');
+                            const existingVersion = localStorage.getItem('shwari_app_version');
+                            
+                            if (existingInstance && existingInstance !== APP_INSTANCE_ID) {
+                                // Compare versions - newer version wins
+                                if (existingVersion && compareVersions(existingVersion, APP_VERSION) > 0) {
+                                    showDuplicateAppScreen();
+                                    resolve(true);
+                                    return;
+                                }
+                            }
+                            
+                            // Register this instance
+                            localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
+                            localStorage.setItem('shwari_app_version', APP_VERSION);
+                            resolve(false);
+                        }
+                    });
+                } else {
+                    resolve(false);
+                }
+            });
+        }
 
-        const onPointerMove = (e) => {
-            if (!isParallaxActive) return;
-            const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
-            const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
-            targetX = Math.max(-8, Math.min(8, (window.innerWidth  / 2 - cx) / 35));
-            targetY = Math.max(-8, Math.min(8, (window.innerHeight / 2 - cy) / 35));
-        };
-
-        const lerp = (a, b, t) => a + (b - a) * t;
-
-        const tickParallax = () => {
-            if (!isParallaxActive) return;
-            currentX = lerp(currentX, targetX, 0.07);
-            currentY = lerp(currentY, targetY, 0.07);
-            if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
-                uiWrapper.style.transform = `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
+        function compareVersions(v1, v2) {
+            const parts1 = v1.split('.').map(Number);
+            const parts2 = v2.split('.').map(Number);
+            
+            for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+                const p1 = parts1[i] || 0;
+                const p2 = parts2[i] || 0;
+                if (p1 > p2) return 1;
+                if (p1 < p2) return -1;
             }
-            rafId = requestAnimationFrame(tickParallax);
-        };
+            return 0;
+        }
 
-        document.addEventListener('mousemove', onPointerMove, { passive: true });
-        document.addEventListener('touchmove', onPointerMove, { passive: true });
+        function showDuplicateAppScreen() {
+            document.getElementById('duplicate-app-screen').classList.add('active');
+        }
 
+        // Uninstall old version handler
+        document.getElementById('uninstall-old-btn').addEventListener('click', async function() {
+            this.dataset.processing = 'true';
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Uninstalling...</span>';
+            
+            try {
+                // Unregister all service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const reg of registrations) {
+                        await reg.unregister();
+                    }
+                }
+                
+                // Clear all caches
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                
+                // Clear localStorage except current instance
+                const currentInstance = localStorage.getItem('shwari_instance_id');
+                localStorage.clear();
+                localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
+                localStorage.setItem('shwari_app_version', APP_VERSION);
+                
+                // Reload page
+                window.location.reload();
+            } catch (error) {
+                console.error('Uninstall error:', error);
+                this.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Error - Try Manual Uninstall</span>';
+            }
+        });
+
+        // =========================================
+        // STORAGE PERMISSION HANDLING
+        // =========================================
+        function requestStoragePermission() {
+            return new Promise((resolve) => {
+                const permissionGranted = localStorage.getItem('shwari_storage_permission');
+                
+                if (permissionGranted === 'granted') {
+                    resolve(true);
+                    return;
+                }
+                
+                if (permissionGranted === 'denied') {
+                    resolve(false);
+                    return;
+                }
+                
+                const modal = document.getElementById('storage-permission-modal');
+                const allowBtn = document.getElementById('allow-storage-btn');
+                const denyBtn = document.getElementById('deny-storage-btn');
+                
+                modal.classList.add('active');
+                
+                allowBtn.addEventListener('click', function() {
+                    localStorage.setItem('shwari_storage_permission', 'granted');
+                    modal.classList.remove('active');
+                    resolve(true);
+                }, { once: true });
+                
+                denyBtn.addEventListener('click', function() {
+                    localStorage.setItem('shwari_storage_permission', 'denied');
+                    modal.classList.remove('active');
+                    resolve(false);
+                }, { once: true });
+            });
+        }
+
+        // =========================================
+        // ENHANCED SERVICE WORKER REGISTRATION
+        // =========================================
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    console.log('SW registered:', registration.scope);
+                    
+                    // Listen for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New version available
+                                showUpdateNotification();
+                            }
+                        });
+                    });
+                    
+                    return registration;
+                } catch (error) {
+                    console.error('SW registration failed:', error);
+                }
+            }
+        }
+
+        function showUpdateNotification() {
+            // Create update notification
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #2c7a47, #1f6e3f);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 16px;
+                font-family: 'Inter', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                z-index: 100004;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            `;
+            toast.innerHTML = `
+                <i class="fas fa-rotate"></i>
+                <span>Update available!</span>
+                <button style="
+                    background: white;
+                    color: #2c7a47;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    margin-left: 8px;
+                ">Update</button>
+            `;
+            
+            toast.querySelector('button').addEventListener('click', () => {
+                window.location.reload();
+            });
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 10000);
+        }
+
+        // =========================================
+        // MAIN INITIALIZATION
+        // =========================================
+        async function initializeApp() {
+            // Initialize super responsive buttons
+            initSuperResponsiveButtons();
+            
+            // Check for duplicate apps
+            const isDuplicate = await checkDuplicateApp();
+            if (isDuplicate) {
+                return; // Stop initialization
+            }
+            
+            // Request storage permission
+            await requestStoragePermission();
+            
+            // Register service worker
+            await registerServiceWorker();
+            
+            // Continue with normal initialization
+            const uiWrapper = document.getElementById('ui');
+            const appPanel  = document.getElementById('app');
+            let isParallaxActive = true;
+            let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+            let rafId;
+
+            const onPointerMove = (e) => {
+                if (!isParallaxActive) return;
+                const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
+                const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
+                targetX = Math.max(-8, Math.min(8, (window.innerWidth  / 2 - cx) / 35));
+                targetY = Math.max(-8, Math.min(8, (window.innerHeight / 2 - cy) / 35));
+            };
+
+            const lerp = (a, b, t) => a + (b - a) * t;
+
+            const tickParallax = () => {
+                if (!isParallaxActive) return;
+                currentX = lerp(currentX, targetX, 0.07);
+                currentY = lerp(currentY, targetY, 0.07);
+                if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
+                    uiWrapper.style.transform = `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
+                }
+                rafId = requestAnimationFrame(tickParallax);
+            };
+
+            document.addEventListener('mousemove', onPointerMove, { passive: true });
+            document.addEventListener('touchmove', onPointerMove, { passive: true });
+
+            // Start parallax
+            uiWrapper.classList.add('pop-in');
+            tickParallax();
+            
+            // Initialize auth
+            window.initAuth();
+        }
+
+        // Run initialization
+        initializeApp();
+
+        // =========================================
+        // EXISTING FUNCTIONS (ENHANCED)
+        // =========================================
         const formatName = (str) => {
             if (!str) return "";
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -1262,7 +1843,8 @@
             }
         });
 
-        window.handleRegister = () => {
+        // Activate button handler with super responsiveness
+        document.getElementById('activate-btn').addEventListener('click', function() {
             const nameInput = document.getElementById('reg-name');
             const emailInput = document.getElementById('reg-email');
             const name = nameInput.value.trim();
@@ -1325,7 +1907,7 @@
                     }, 6500);
                 }, 500);
             }, 400);
-        };
+        });
 
         window.handleContinue = () => {
             const continueOverlay = document.getElementById('continue-overlay');
@@ -1337,11 +1919,14 @@
         };
 
         const executeTransition = () => {
+            const uiWrapper = document.getElementById('ui');
+            const appPanel = document.getElementById('app');
+            let isParallaxActive = true;
+            let rafId;
+            
             if (!isParallaxActive) return;
             isParallaxActive = false;
             cancelAnimationFrame(rafId);
-            document.removeEventListener('mousemove', onPointerMove);
-            document.removeEventListener('touchmove', onPointerMove);
             
             // Graceful fade out of the animated background elements
             requestAnimationFrame(() => {
@@ -1358,7 +1943,7 @@
                 setTimeout(() => {
                     if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
                 }, 1200);
-            }, 300); // Slight overlap ensures no visual stutter
+            }, 300);
         };
 
 
@@ -1442,7 +2027,7 @@
         };
 
         // Retry connection handler
-        window.checkAndRetryConnection = async () => {
+        const checkAndRetryConnection = async () => {
             const retryBtn = document.getElementById('retry-connection-btn');
             const btnText = retryBtn.querySelector('span');
             const btnIcon = retryBtn.querySelector('i');
@@ -1467,6 +2052,9 @@
                 setTimeout(() => { retryBtn.style.animation = ''; }, 400);
             }
         };
+
+        // Attach retry button handler
+        document.getElementById('retry-connection-btn').addEventListener('click', checkAndRetryConnection);
 
         // Listen for network status changes
         window.addEventListener('online', handleOnline);
@@ -1512,8 +2100,7 @@
 
 
         /* =====================================================
-           INSTALL PROGRESS SCREEN — new logic block
-           Runs AFTER install is accepted, before app opens.
+           INSTALL PROGRESS SCREEN
            ====================================================== */
 
         const installScreen  = document.getElementById('install-progress-screen');
@@ -1620,93 +2207,6 @@
             }
         });
 
-
-        /* =====================================================
-           NEW: MASSIVE OFFLINE CACHING & SUPER ATTENTIVE UI
-           ===================================================== */
-           
-        // Force massive background caching natively
-        const buildHugeCache = async () => {
-            if ('caches' in window) {
-                try {
-                    const cache = await caches.open('shwari-huge-cache-v1');
-                    const assets = [
-                        location.href,
-                        'https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css',
-                        MACRO_URL
-                    ];
-                    // Using no-cors prevents opaque errors from blocking cache storage
-                    await cache.addAll(assets.map(url => new Request(url, { mode: 'no-cors' })));
-                    console.log('Massive offline cache successfully locked.');
-                } catch (e) {
-                    console.error('Huge cache generation encountered a snag:', e);
-                }
-            }
-        };
-
-        // Attach super responsive listeners to all buttons for instant haptic and visual feedback
-        const attachSuperAttentiveListeners = () => {
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(btn => {
-                // Ensure CSS transitions do not fight our instant JS transforms
-                btn.style.transition = 'transform 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s ease';
-                
-                const pressDown = (e) => {
-                    if (btn.disabled) return;
-                    if (navigator.vibrate) navigator.vibrate(40); // Haptic feedback
-                    btn.style.transform = 'scale(0.92)';
-                    btn.style.filter = 'brightness(0.9)';
-                };
-                
-                const releaseUp = (e) => {
-                    if (btn.disabled) return;
-                    btn.style.transform = 'scale(1)';
-                    btn.style.filter = 'brightness(1)';
-                };
-
-                btn.addEventListener('touchstart', pressDown, { passive: true });
-                btn.addEventListener('touchend', releaseUp);
-                btn.addEventListener('mousedown', pressDown);
-                btn.addEventListener('mouseup', releaseUp);
-                btn.addEventListener('mouseleave', releaseUp);
-            });
-        };
-
-        // Storage Consent Logic
-        window.handleConsent = (accepted) => {
-            const consentOverlay = document.getElementById('storage-consent');
-            consentOverlay.style.opacity = '0';
-            setTimeout(() => {
-                consentOverlay.style.display = 'none';
-                if (accepted) {
-                    localStorage.setItem('shwari_storage_consent', 'granted');
-                    buildHugeCache(); // Build huge cache upon permission
-                    window.initAuth(); // Continue app boot
-                } else {
-                    alert("Storage is necessary to use Shwari Finance. Please reload and accept to continue.");
-                }
-            }, 400);
-        };
-
-        const checkStorageConsent = () => {
-            if (localStorage.getItem('shwari_storage_consent') === 'granted') {
-                buildHugeCache();
-                window.initAuth();
-            } else {
-                document.getElementById('storage-consent').classList.add('active');
-            }
-        };
-
-        // App Boot sequence execution
-        requestAnimationFrame(() => {
-            uiWrapper.classList.add('pop-in');
-            tickParallax();
-            attachSuperAttentiveListeners();
-            // Engage consent check instead of immediate boot
-            checkStorageConsent();
-        });
-        
     })();
     </script>
 </body>
