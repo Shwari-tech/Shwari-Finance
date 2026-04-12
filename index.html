@@ -10,9 +10,16 @@
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     <title>Shwari Finance · Digital Assimilation</title>
     
-    <link rel="preload" as="image" href="https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg">
+    <link rel="preload" as="image" href="https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg" fetchpriority="high">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            const forceBgPreload = new Image();
+            forceBgPreload.src = 'https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg';
+        })();
+    </script>
     
     <style>
         /* =========================================
