@@ -283,6 +283,13 @@
         .install-card { background: rgba(0, 30, 15, 0.9); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
+        
+        @keyframes installPulse {
+            0% { box-shadow: 0 0 0 0 rgba(85, 208, 130, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(85, 208, 130, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(85, 208, 130, 0); }
+        }
+        
         .install-btn { 
             background: transparent; 
             color: #55d082; 
@@ -301,13 +308,11 @@
             font-family: 'Inter', sans-serif; 
             transition: all 0.3s ease;
             touch-action: manipulation;
-            position: relative;
-            overflow: hidden;
+            animation: installPulse 2s infinite;
         }
         .install-btn:hover { background: #55d082; color: #001208; }
         .install-btn:active { transform: scale(0.96); }
-        .install-btn.installing { background: #55d082; color: #001208; pointer-events: none; }
-        .install-btn.pressed { transform: scale(0.92); opacity: 0.8; }
+
 
         /* =========================================
            6. LIGHT / DARK THEME ADAPTATION
@@ -1211,7 +1216,7 @@
             align-items: center;
             justify-content: center;
             padding: 40px 30px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(201, 169, 97, 0.2) 0%, transparent 60%),
+            background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.2) 0%, transparent 60%),
                         #001208;
             font-family: 'Inter', sans-serif;
         }
@@ -1225,7 +1230,7 @@
             border-radius: 30px;
             text-align: center;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
-                        0 0 0 2px rgba(201, 169, 97, 0.4),
+                        0 0 0 2px rgba(44, 122, 71, 0.4),
                         inset 0 1px 0 rgba(255, 255, 255, 0.05);
             animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -1233,7 +1238,7 @@
         .blocker-icon {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, #C9A961, #F4E5C2, #D4AF37);
+            background: linear-gradient(135deg, #55d082, #2c7a47);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1241,20 +1246,20 @@
             margin: 0 auto 25px;
             font-size: 48px;
             color: #001208;
-            box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4);
-            animation: pulseGold 2s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
+            animation: pulseGreen 2s ease-in-out infinite;
         }
 
-        @keyframes pulseGold {
-            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(201, 169, 97, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(201, 169, 97, 0.6); }
+        @keyframes pulseGreen {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(85, 208, 130, 0.6); }
         }
 
         .blocker-card h2 {
             font-size: 24px;
             font-weight: 800;
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #C9A961 0%, #F4E5C2 100%);
+            background: linear-gradient(135deg, #55d082 0%, #2c7a47 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -1267,8 +1272,8 @@
         }
 
         .blocker-info {
-            background: rgba(201, 169, 97, 0.1);
-            border: 1px solid rgba(201, 169, 97, 0.2);
+            background: rgba(85, 208, 130, 0.1);
+            border: 1px solid rgba(85, 208, 130, 0.2);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 25px;
@@ -1287,15 +1292,15 @@
         .blocker-info-item:last-child { margin-bottom: 0; }
 
         .blocker-info-item i {
-            color: #C9A961;
+            color: #55d082;
             font-size: 16px;
         }
 
         .open-app-btn {
             width: 100%;
             padding: 18px 24px;
-            background: linear-gradient(135deg, #C9A961 0%, #D4AF37 100%);
-            color: #001208;
+            background: linear-gradient(135deg, #2c7a47 0%, #1f6e3f 100%);
+            color: white;
             border: none;
             border-radius: 18px;
             font-size: 17px;
@@ -1307,13 +1312,13 @@
             gap: 10px;
             transition: all 0.3s ease;
             font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(201, 169, 97, 0.35);
+            box-shadow: 0 8px 25px rgba(44, 122, 71, 0.35);
             touch-action: manipulation;
         }
 
         .open-app-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(201, 169, 97, 0.45);
+            box-shadow: 0 12px 30px rgba(44, 122, 71, 0.45);
         }
 
         .open-app-btn:active {
@@ -1322,7 +1327,7 @@
 
         @media (prefers-color-scheme: light) {
             #already-installed-blocker {
-                background: radial-gradient(ellipse at 50% 30%, rgba(201, 169, 97, 0.15) 0%, transparent 60%),
+                background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.15) 0%, transparent 60%),
                             #e8f5ed;
             }
             .blocker-card {
@@ -1491,214 +1496,16 @@
             }
         }
 
-        /* =========================================
-           13. BROWSER ACCESS BLOCKER (NEW)
-           ========================================= */
-        #browser-blocker {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100005;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(201, 169, 97, 0.25) 0%, transparent 60%),
-                        #001208;
-            font-family: 'Inter', sans-serif;
-        }
-
-        #browser-blocker.active { display: flex; }
-
-        .browser-blocker-card {
-            background: rgba(0, 30, 15, 0.98);
-            max-width: 400px;
-            padding: 45px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
-                        0 0 0 2px rgba(85, 208, 130, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .browser-blocker-icon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 48px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
-            animation: pulseWarning 2s ease-in-out infinite;
-        }
-
-        .browser-blocker-card h2 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            color: #ffffff;
-        }
-
-        .browser-blocker-card p {
-            font-size: 15px;
-            color: #aaaaaa;
-            line-height: 1.7;
-            margin-bottom: 25px;
-        }
-
-        .browser-blocker-info {
-            background: rgba(85, 208, 130, 0.1);
-            border: 1px solid rgba(85, 208, 130, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .browser-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #cccccc;
-        }
-
-        .browser-info-item:last-child { margin-bottom: 0; }
-
-        .browser-info-item i {
-            color: #55d082;
-            font-size: 16px;
-        }
-
-        .browser-info-item i.fa-circle-xmark {
-            color: #e74c3c;
-        }
-
-        @media (prefers-color-scheme: light) {
-            #browser-blocker {
-                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-                            #e8f5ed;
-            }
-            .browser-blocker-card {
-                background: rgba(255, 255, 255, 0.98);
-            }
-            .browser-blocker-card h2 { color: #0a2e16; }
-            .browser-blocker-card p { color: #5a6a60; }
-            .browser-info-item { color: #444; }
-        }
-
-        /* =========================================
-           14. MACRO PRELOADER SCREEN (NEW)
-           ========================================= */
-        #macro-preloader {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 99990;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            background: #001208;
-            font-family: 'Inter', sans-serif;
-        }
-
-        #macro-preloader.active { display: flex; }
-
-        .macro-loader-card {
-            background: rgba(0, 30, 15, 0.95);
-            max-width: 340px;
-            padding: 40px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        }
-
-        .macro-spinner {
-            width: 70px;
-            height: 70px;
-            border: 4px solid rgba(85, 208, 130, 0.2);
-            border-top-color: #55d082;
-            border-radius: 50%;
-            margin: 0 auto 25px;
-            animation: spin 1s linear infinite;
-        }
-
-        .macro-loader-card h3 {
-            font-size: 20px;
-            color: #ffffff;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .macro-loader-card p {
-            font-size: 14px;
-            color: #888;
-            margin: 0;
-        }
-
-        @media (prefers-color-scheme: light) {
-            #macro-preloader { background: #e8f5ed; }
-            .macro-loader-card { background: rgba(255, 255, 255, 0.98); }
-            .macro-loader-card h3 { color: #0a2e16; }
-        }
-
     </style>
 <base target="_blank">
 </head>
 <body>
 
-    <!-- Macro Preloader Screen -->
-    <div id="macro-preloader">
-        <div class="macro-loader-card">
-            <div class="macro-spinner"></div>
-            <h3>Initializing Portal...</h3>
-            <p>Loading secure connection</p>
-        </div>
-    </div>
-
-    <!-- Browser Blocker Screen (Shows if user has app data but opens in browser) -->
-    <div id="browser-blocker">
-        <div class="browser-blocker-card">
-            <div class="browser-blocker-icon">
-                <i class="fas fa-mobile-screen-button"></i>
-            </div>
-            <h2>App Already Installed</h2>
-            <p>You have already installed Shwari Finance on this device. For security reasons, the portal is only accessible through the installed app.</p>
-            <div class="browser-blocker-info">
-                <div class="browser-info-item">
-                    <i class="fas fa-check-circle"></i>
-                    <span>App detected on device</span>
-                </div>
-                <div class="browser-info-item">
-                    <i class="fas fa-circle-xmark"></i>
-                    <span>Browser access restricted</span>
-                </div>
-                <div class="browser-info-item">
-                    <i class="fas fa-shield-halved"></i>
-                    <span>Secure app-only access enforced</span>
-                </div>
-            </div>
-            <button class="open-app-btn" id="launch-installed-app-btn">
-                <i class="fas fa-arrow-up-right-from-square"></i>
-                <span>Open Shwari Finance App</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Network Toast -->
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
         <span id="toast-message">Checking connection...</span>
     </div>
 
-    <!-- Network Error Screen -->
     <div id="network-error-screen">
         <div class="error-particle ep1"></div>
         <div class="error-particle ep2"></div>
@@ -1737,7 +1544,6 @@
         </div>
     </div>
 
-    <!-- Device Error Screen -->
     <div id="device-error">
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
@@ -1746,7 +1552,6 @@
         </div>
     </div>
 
-    <!-- Duplicate App Error Screen -->
     <div id="duplicate-app-screen">
         <div class="duplicate-card">
             <div class="duplicate-icon">
@@ -1775,7 +1580,6 @@
         </div>
     </div>
 
-    <!-- Storage Permission Modal -->
     <div id="storage-permission-modal">
         <div class="permission-card">
             <div class="permission-icon">
@@ -1790,7 +1594,6 @@
         </div>
     </div>
 
-    <!-- Forced Install Screen -->
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
@@ -1802,7 +1605,6 @@
         </div>
     </div>
 
-    <!-- Auth Portal -->
     <div id="auth-portal" class="hidden">
         <div id="reg-screen" class="auth-card hidden">
             <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
@@ -1826,7 +1628,6 @@
         </div>
     </div>
 
-    <!-- Continue Overlay -->
     <div id="continue-overlay" class="hidden">
         <div class="continue-header">
             <h3 class="dept-title">Shwari Finance<br></h3>
@@ -1849,7 +1650,6 @@
         </div>
     </div>
 
-    <!-- UI Wrapper -->
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
         <div class="particle p1"></div>
@@ -1858,12 +1658,10 @@
         <div class="particle p4"></div>
     </div>
 
-    <!-- App Iframe -->
     <div class="app" id="app">
         <iframe id="macro-frame"></iframe>
     </div>
 
-    <!-- Install Progress Screen -->
     <div id="install-progress-screen">
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
@@ -1893,36 +1691,34 @@
         </div>
     </div>
 
-    <!-- Already Installed Blocker -->
     <div id="already-installed-blocker">
         <div class="blocker-card">
             <div class="blocker-icon">
-                <i class="fas fa-elephant"></i>
+                <i class="fas fa-mobile-screen"></i>
             </div>
-            <h2>App Already Installed</h2>
-            <p>Shwari Finance is already installed on this device. You cannot install multiple copies for security reasons.</p>
+            <h2>App Only Access</h2>
+            <p>The Shwari Finance portal is not accessible via the browser. You have already installed the app on this device.</p>
             <div class="blocker-info">
                 <div class="blocker-info-item">
-                    <i class="fas fa-shield-halved"></i>
-                    <span>Single instance enforced</span>
+                    <i class="fas fa-ban"></i>
+                    <span>Browser access blocked for security</span>
                 </div>
                 <div class="blocker-info-item">
-                    <i class="fas fa-mobile-screen"></i>
-                    <span>Check your home screen</span>
+                    <i class="fas fa-home"></i>
+                    <span>Locate the green Elephant icon on your home screen</span>
                 </div>
                 <div class="blocker-info-item">
                     <i class="fas fa-circle-check"></i>
-                    <span>App verified and active</span>
+                    <span>Launch the app directly to proceed</span>
                 </div>
             </div>
             <button class="open-app-btn" id="open-shwari-btn">
                 <i class="fas fa-arrow-up-right-from-square"></i>
-                <span>Open Shwari Finance</span>
+                <span>Close Browser & Open App</span>
             </button>
         </div>
     </div>
 
-    <!-- Post-Installation Guide -->
     <div id="post-install-guide">
         <div class="guide-card">
             <div class="guide-icon">
@@ -1966,77 +1762,21 @@
     (function () {
         "use strict";
 
+        // =========================================
+        // BACKEND INITIALIZATION (URGENT PRIORITY)
+        // =========================================
+        // We set the source immediately to start the backend "warmup" in the background
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyhHmIcPbvcZ8aC79DeGzRfA5rzYWc7u9p_s5mLcParteRxDpHbVi2MMO769gtpMWVd/exec";
         const macroIframe = document.getElementById('macro-frame');
+        
+        let isMacroLoaded = false;
+        macroIframe.onload = function() {
+            isMacroLoaded = true;
+        };
+        macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
+
         const APP_VERSION = '5.0.0';
         const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
-        
-        // =========================================
-        // MACRO URL PRELOADER (NEW)
-        // Ensures the Google Apps Script is running before showing animations
-        // =========================================
-        async function preloadMacroUrl() {
-            return new Promise((resolve) => {
-                let loaded = false;
-                
-                // Set iframe source with cache buster
-                macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
-                
-                // Success handler
-                macroIframe.onload = () => {
-                    loaded = true;
-                    console.log('Macro URL loaded successfully');
-                    resolve(true);
-                };
-                
-                // Error handler - still resolve after timeout to not block UI completely
-                macroIframe.onerror = () => {
-                    console.warn('Macro URL load error, continuing anyway');
-                    resolve(false);
-                };
-                
-                // Timeout fallback - don't block UI for more than 3 seconds
-                setTimeout(() => {
-                    if (!loaded) {
-                        console.log('Macro preload timeout - proceeding');
-                        resolve(true);
-                    }
-                }, 3000);
-            });
-        }
-
-        // =========================================
-        // BROWSER ACCESS BLOCKER (NEW)
-        // Blocks browser access if user has app installed (cache/localStorage)
-        // =========================================
-        function checkBrowserAccess() {
-            // Check if running in browser (not PWA/Standalone)
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                window.navigator.standalone === true || 
-                                document.referrer.includes('android-app://');
-            
-            // Check if user has app data (meaning they installed it before)
-            const hasAppData = localStorage.getItem('shwari_registered') === 'true' || 
-                              localStorage.getItem('shwari_app_installed') === 'true' ||
-                              localStorage.getItem('emp_email') !== null;
-            
-            // If browser mode AND has app data, show blocker
-            if (!isStandalone && hasAppData) {
-                document.getElementById('browser-blocker').classList.add('active');
-                return false;
-            }
-            return true;
-        }
-
-        // Handle "Open App" button on browser blocker
-        document.getElementById('launch-installed-app-btn').addEventListener('click', function() {
-            // Try to open the PWA by navigating to same origin
-            // This works on some Android devices to trigger the app
-            window.location.href = window.location.origin + window.location.pathname;
-            
-            // Show instructions if that didn't work
-            alert('Please open Shwari Finance from your home screen or app drawer.');
-        });
 
         // =========================================
         // SUPER RESPONSIVE BUTTON INITIALIZATION
@@ -2045,9 +1785,9 @@
             const allButtons = document.querySelectorAll('button, .auth-btn, .install-btn, .retry-btn, .uninstall-btn, .permission-btn');
             
             allButtons.forEach(btn => {
-                // Touch events for mobile - immediate feedback
+                // Touch events for mobile
                 btn.addEventListener('touchstart', function(e) {
-                    this.style.transform = 'scale(0.92)';
+                    this.style.transform = 'scale(0.96)';
                     this.style.transition = 'transform 0.1s ease';
                 }, { passive: true });
                 
@@ -2064,7 +1804,7 @@
 
                 // Mouse events for desktop
                 btn.addEventListener('mousedown', function(e) {
-                    this.style.transform = 'scale(0.92)';
+                    this.style.transform = 'scale(0.96)';
                 });
                 
                 btn.addEventListener('mouseup', function(e) {
@@ -2079,7 +1819,7 @@
                 btn.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        this.style.transform = 'scale(0.92)';
+                        this.style.transform = 'scale(0.96)';
                         this.click();
                         setTimeout(() => {
                             this.style.transform = '';
@@ -2314,27 +2054,8 @@
         // MAIN INITIALIZATION
         // =========================================
         async function initializeApp() {
-            // Initialize super responsive buttons first
+            // Initialize super responsive buttons
             initSuperResponsiveButtons();
-            
-            // Check browser access blocker first (NEW)
-            if (!checkBrowserAccess()) {
-                return; // Stop initialization if showing browser blocker
-            }
-            
-            // Show macro preloader (NEW)
-            const preloader = document.getElementById('macro-preloader');
-            preloader.classList.add('active');
-            
-            // Preload Macro URL in background
-            await preloadMacroUrl();
-            
-            // Hide preloader after macro is ready
-            preloader.style.opacity = '0';
-            setTimeout(() => {
-                preloader.classList.remove('active');
-                preloader.style.display = 'none';
-            }, 500);
             
             // Check for duplicate apps
             const isDuplicate = await checkDuplicateApp();
@@ -2404,10 +2125,22 @@
         };
 
         window.initAuth = () => {
+            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
+
+            // Feature Addition: Explicit Browser Access Blocker
             if (!isPWA()) {
-                document.getElementById('forcedInstall').style.display = 'flex';
-                return; 
+                if (isInstalledLocally) {
+                    showAlreadyInstalledBlocker();
+                    return; 
+                } else {
+                    const forcedInstall = document.getElementById('forcedInstall');
+                    forcedInstall.style.display = 'flex';
+                    forcedInstall.querySelector('.install-card').style.animation = 'cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    return; 
+                }
             }
+
+            // Normal PWA Mode Logic
             const isRegistered = localStorage.getItem('shwari_registered');
             if (isRegistered === 'true') {
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
@@ -2561,31 +2294,45 @@
         };
 
         const executeTransition = () => {
-            const uiWrapper = document.getElementById('ui');
-            const appPanel = document.getElementById('app');
-            let isParallaxActive = true;
-            let rafId;
-            
-            if (!isParallaxActive) return;
-            isParallaxActive = false;
-            cancelAnimationFrame(rafId);
-            
-            // Graceful fade out of the animated background elements
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    uiWrapper.classList.add('pull-active');
-                });
-            });
-
-            // Smooth crossfade into the preloaded App
-            setTimeout(() => {
-                appPanel.classList.add('active');
+            const transitionLogic = () => {
+                const uiWrapper = document.getElementById('ui');
+                const appPanel = document.getElementById('app');
+                let isParallaxActive = true;
+                let rafId;
                 
-                // Completely remove background elements once faded out
+                if (!isParallaxActive) return;
+                isParallaxActive = false;
+                cancelAnimationFrame(rafId);
+                
+                // Graceful fade out of the animated background elements
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        uiWrapper.classList.add('pull-active');
+                    });
+                });
+
+                // Smooth crossfade into the preloaded App
                 setTimeout(() => {
-                    if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                }, 1200);
-            }, 300);
+                    appPanel.classList.add('active');
+                    
+                    // Completely remove background elements once faded out
+                    setTimeout(() => {
+                        if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+                    }, 1200);
+                }, 300);
+            };
+
+            // Hard-check to ensure MACRO background frame is loaded before transitioning
+            if (isMacroLoaded) {
+                transitionLogic();
+            } else {
+                // If network is slow, wait up to 8 seconds maximum
+                let fallbackTimer = setTimeout(transitionLogic, 8000);
+                macroIframe.addEventListener('load', () => {
+                    clearTimeout(fallbackTimer);
+                    transitionLogic();
+                }, {once: true});
+            }
         };
 
 
@@ -2815,26 +2562,10 @@
             if (!isPWA()) installOverlay.style.display = 'flex';
         });
 
-        // Enhanced Install Button with immediate feedback and guaranteed prompt
-        installBtn.addEventListener('click', async function(e) {
-            // Immediate visual feedback
-            this.classList.add('pressed');
-            setTimeout(() => this.classList.remove('pressed'), 150);
-            
-            if (!deferredPrompt) {
-                // If no deferred prompt, try to trigger install differently or reload
-                console.log('Install prompt not available');
-                return;
-            }
-            
-            // Show installing state
-            this.classList.add('installing');
-            this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>Preparing...</span>';
-            
-            try {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                
                 if (outcome === 'accepted') {
                     // Hide the install card and show progress screen
                     installOverlay.style.opacity = '0';
@@ -2846,16 +2577,8 @@
                             window.initAuth();
                         });
                     }, 500);
-                } else {
-                    // User dismissed, reset button
-                    this.classList.remove('installing');
-                    this.innerHTML = '<i class="fas fa-download"></i> <span>Install Now</span>';
                 }
                 deferredPrompt = null;
-            } catch (err) {
-                console.error('Install error:', err);
-                this.classList.remove('installing');
-                this.innerHTML = '<i class="fas fa-download"></i> <span>Install Now</span>';
             }
         });
 
@@ -2937,13 +2660,11 @@
 
         // Event listener for open app button
         document.getElementById('open-shwari-btn').addEventListener('click', function() {
-            // Try to open the standalone app
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                window.location.reload();
-            } else {
-                // Show message to user
-                alert('Please open Shwari Finance from your home screen.');
-            }
+            // Attempt to close the current web browser tab to ensure user goes to the app. 
+            // In most modern browsers window.close() won't work unless opened by a script, 
+            // so we alert them and attempt.
+            alert('Please close this browser tab and launch Shwari Finance from the green elephant icon on your home screen.');
+            window.close();
         });
 
         // Event listener for close browser/proceed button
