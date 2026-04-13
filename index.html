@@ -3,21 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#001208" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#f0f7f2" media="(prefers-color-scheme: light)">
+    
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    
-    <!-- TWA / Fullscreen Immersive Mode Meta Tags -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="screen-orientation" content="portrait">
-    <meta name="full-screen" content="yes">
-    <meta name="browsermode" content="application">
-    <meta name="x5-fullscreen" content="true">
-    <meta name="x5-page-mode" content="app">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#001208" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f0f7f2" media="(prefers-color-scheme: light)">
     
     <title>Shwari Finance · Digital Assimilation</title>
     
@@ -46,43 +38,12 @@
             overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 70%; -moz-text-size-adjust: 70%; text-size-adjust: 70%;
             background-color: #001208;
-            /* TWA Immersive Mode - Extend into display cutouts/notches */
+            /* Ensures edge-to-edge rendering */
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
         }
 
         html { font-size: 5px !important; }
-
-        /* Fullscreen Display Mode Optimizations */
-        @media all and (display-mode: fullscreen) {
-            html, body {
-                height: 100vh;
-                height: -webkit-fill-available;
-                width: 100vw;
-                overflow: hidden;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-            }
-            
-            #app, iframe {
-                height: 100vh !important;
-                height: -webkit-fill-available !important;
-            }
-        }
-
-        @media all and (display-mode: standalone) {
-            html, body {
-                height: 100vh;
-                height: -webkit-fill-available;
-                width: 100vw;
-                overflow: hidden;
-            }
-        }
 
         /* =========================================
            2. PARALLAX WRAPPER & ANIMATIONS
@@ -121,12 +82,6 @@
             position: fixed; inset: 0; z-index: 50; pointer-events: none;
             display: flex; flex-direction: column; justify-content: space-between;
             transition: opacity 1s ease-in-out;
-            /* Ensure fullscreen coverage */
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
-            top: 0;
-            left: 0;
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
@@ -244,10 +199,6 @@
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
             background: rgba(0, 20, 10, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: opacity 0.6s ease;
-            /* Fullscreen coverage */
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
@@ -323,12 +274,6 @@
             position: fixed; inset: 0; opacity: 0; visibility: hidden; 
             background: #001208; z-index: 2000; 
             transition: opacity 1.2s ease-in-out; 
-            /* Fullscreen immersive */
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
-            top: 0;
-            left: 0;
         }
         .app.active { opacity: 1; visibility: visible; }
         
@@ -337,23 +282,18 @@
             background: #001208; opacity: 0;
             transition: opacity 1.2s ease-in-out 0.2s;
             padding-top: env(safe-area-inset-top); 
-            /* Ensure fullscreen */
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .app.active iframe { opacity: 1; }
 
         /* RESTRICTION SCREENS */
-        #device-error { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.98); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; height: 100vh; height: -webkit-fill-available; width: 100vw; }
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.98); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
         .error-card { background: rgba(0, 30, 15, 0.9); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
         .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
         .error-card p { font-size: 16px; color: #aaaaaa; line-height: 1.6; }
         @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
-        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.95); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; height: 100vh; height: -webkit-fill-available; width: 100vw; }
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.95); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: rgba(0, 30, 15, 0.9); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
@@ -472,9 +412,6 @@
             flex-direction: column;
             padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
 
             /* Dark default */
             background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
@@ -686,9 +623,6 @@
             justify-content: center;
             padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
             background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
                         radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
                         #001208;
@@ -1013,7 +947,7 @@
         /* Network toast notification */
         #network-toast {
             position: fixed;
-            top: max(20px, env(safe-area-inset-top));
+            top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-100px);
             z-index: 100001;
@@ -1062,9 +996,6 @@
             background: rgba(0, 20, 10, 0.9);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
         }
 
         #storage-permission-modal.active { display: flex; }
@@ -1169,9 +1100,6 @@
             background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
                         #001208;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
         }
 
         #duplicate-app-screen.active { display: flex; }
@@ -1305,9 +1233,6 @@
             background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.2) 0%, transparent 60%),
                         #001208;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
         }
 
         #already-installed-blocker.active { display: flex; }
@@ -1442,9 +1367,6 @@
                         radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
                         #001208;
             font-family: 'Inter', sans-serif;
-            height: 100vh;
-            height: -webkit-fill-available;
-            width: 100vw;
             opacity: 0;
             transition: opacity 0.8s ease;
         }
@@ -1751,7 +1673,7 @@
     </div>
 
     <div class="app" id="app">
-        <iframe id="macro-frame" allow="fullscreen; camera; microphone; geolocation; autoplay; encrypted-media; payment; picture-in-picture; clipboard-read; clipboard-write"></iframe>
+        <iframe id="macro-frame"></iframe>
     </div>
 
     <div id="install-progress-screen">
@@ -1853,63 +1775,6 @@
     <script>
     (function () {
         "use strict";
-
-        // =========================================
-        // FULLSCREEN / TWA IMMERSIVE MODE INITIALIZATION
-        // =========================================
-        
-        // Request fullscreen on user interaction for TWA/Immersive mode
-        function requestFullScreen() {
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-                docEl.requestFullscreen().catch(err => console.log('Fullscreen request failed:', err));
-            } else if (docEl.webkitRequestFullscreen) {
-                docEl.webkitRequestFullscreen();
-            } else if (docEl.mozRequestFullScreen) {
-                docEl.mozRequestFullScreen();
-            } else if (docEl.msRequestFullscreen) {
-                docEl.msRequestFullscreen();
-            }
-        }
-
-        // Lock orientation to portrait for TWA immersive experience
-        function lockOrientation() {
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('portrait').catch(err => console.log('Orientation lock failed:', err));
-            }
-        }
-
-        // Handle display mode changes
-        function handleDisplayMode() {
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-            const isFullscreen = window.matchMedia('(display-mode: fullscreen)').matches;
-            const isMinimalUi = window.matchMedia('(display-mode: minimal-ui)').matches;
-            
-            if (isFullscreen || isStandalone) {
-                document.body.classList.add('immersive-mode');
-                lockOrientation();
-            }
-        }
-
-        // Listen for display mode changes
-        if (window.matchMedia) {
-            window.matchMedia('(display-mode: standalone)').addEventListener('change', handleDisplayMode);
-            window.matchMedia('(display-mode: fullscreen)').addEventListener('change', handleDisplayMode);
-        }
-
-        // Initialize immersive mode on load
-        window.addEventListener('load', handleDisplayMode);
-
-        // Request fullscreen on first user tap (required for some browsers)
-        document.addEventListener('click', function initFullscreen() {
-            requestFullScreen();
-            document.removeEventListener('click', initFullscreen);
-        }, { once: true });
-
-        document.addEventListener('touchstart', function initFullscreen() {
-            requestFullScreen();
-            document.removeEventListener('touchstart', initFullscreen);
-        }, { once: true });
 
         // =========================================
         // BACKEND INITIALIZATION (URGENT PRIORITY)
@@ -2157,7 +2022,7 @@
             const toast = document.createElement('div');
             toast.style.cssText = `
                 position: fixed;
-                bottom: max(20px, env(safe-area-inset-bottom));
+                bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
                 background: linear-gradient(135deg, #2c7a47, #1f6e3f);
@@ -2269,7 +2134,6 @@
 
         const isPWA = () => {
             return window.matchMedia('(display-mode: standalone)').matches || 
-                   window.matchMedia('(display-mode: fullscreen)').matches ||
                    window.navigator.standalone === true || 
                    document.referrer.includes('android-app://');
         };
