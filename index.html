@@ -327,6 +327,32 @@
         .install-btn:hover { background: #55d082; color: #001208; }
         .install-btn:active { transform: scale(0.96); }
 
+        /* Web Mode Button Specific Styles */
+        .install-btn.web-mode-btn { 
+            background: rgba(85, 208, 130, 0.1); 
+            color: #55d082; 
+            border: 2px solid rgba(85, 208, 130, 0.5);
+            animation: none;
+            margin-top: 12px;
+        }
+        .install-btn.web-mode-btn:hover { 
+            background: rgba(85, 208, 130, 0.2); 
+            color: #55d082; 
+            border-color: #55d082;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .install-btn.web-mode-btn { 
+                background: rgba(44, 122, 71, 0.1); 
+                color: #2c7a47; 
+                border-color: rgba(44, 122, 71, 0.5);
+            }
+            .install-btn.web-mode-btn:hover { 
+                background: rgba(44, 122, 71, 0.2); 
+                color: #2c7a47; 
+                border-color: #2c7a47;
+            }
+        }
 
         /* =========================================
            6. LIGHT / DARK THEME ADAPTATION
@@ -1611,11 +1637,20 @@
     <div id="forcedInstall">
         <div class="install-card">
             <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
-            <h2 style="font-size: 24px; font-weight: 800; color: #55d082; margin-bottom: 12px;">Install App to Continue</h2>
-            <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">For your security, Shwari Finance must be installed to your phone to access the dashboard.</p>
-            <button class="install-btn" id="installAction">
-                <i class="fas fa-download"></i> <span>Install Now</span>
+            <h2 style="font-size: 24px; font-weight: 800; color:#55d082; margin-bottom: 12px;">Choose Access Method</h2>
+            <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">Select how you'd like to access Shwari Finance. For best experience, we recommend installing the app.</p>
+            
+            <button class="install-btn" id="installAction" style="margin-bottom: 15px;">
+                <i class="fas fa-download"></i> <span>Install App</span>
             </button>
+            
+            <button class="install-btn web-mode-btn" id="continueAsWebBtn">
+                <i class="fas fa-globe"></i> <span>Continue as Website</span>
+            </button>
+            
+            <p style="font-size: 12px; color: #777; margin-top: 20px; font-style: italic;">
+                <i class="fas fa-info-circle"></i> Website mode requires portrait orientation
+            </p>
         </div>
     </div>
 
@@ -2140,9 +2175,10 @@
 
         window.initAuth = () => {
             const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
+            const isWebMode = sessionStorage.getItem('shwari_web_mode') === 'true';
 
-            // Feature Addition: Explicit Browser Access Blocker
-            if (!isPWA()) {
+            // Feature Addition: Explicit Browser Access Blocker with Web Mode Option
+            if (!isPWA() && !isWebMode) {
                 if (isInstalledLocally) {
                     showAlreadyInstalledBlocker();
                     return; 
@@ -2154,7 +2190,7 @@
                 }
             }
 
-            // Normal PWA Mode Logic
+            // Normal PWA Mode Logic or Web Mode Logic
             const isRegistered = localStorage.getItem('shwari_registered');
             if (isRegistered === 'true') {
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
@@ -2569,6 +2605,7 @@
         let deferredPrompt;
         const installOverlay = document.getElementById('forcedInstall');
         const installBtn     = document.getElementById('installAction');
+        const continueAsWebBtn = document.getElementById('continueAsWebBtn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -2595,6 +2632,15 @@
                 deferredPrompt = null;
             }
         });
+
+        // Web Mode Handler - Continue as Website
+        if (continueAsWebBtn) {
+            continueAsWebBtn.addEventListener('click', () => {
+                sessionStorage.setItem('shwari_web_mode', 'true');
+                installOverlay.style.display = 'none';
+                window.initAuth();
+            });
+        }
 
         window.addEventListener('appinstalled', () => {
             // If appinstalled fires and progress screen isn't already running, run it now
