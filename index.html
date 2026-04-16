@@ -1,97 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
+    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <!-- Force dark theme-color always -->
     <meta name="theme-color" content="#000000">
-    <meta name="msapplication-navbutton-color" content="#000000">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    
     <title>Shwari Finance · Digital Assimilation</title>
-
+    
     <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+    
     <script>
-        // Force dark color-scheme before any render
-        document.documentElement.style.colorScheme = 'dark';
         (function() {
             const forceBgPreload = new Image();
             forceBgPreload.src = 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg';
         })();
     </script>
-
+    
     <style>
         /* =========================================
-           FORCE DARK MODE — ALWAYS
+           1. BASE STYLES & FULLSCREEN SETUP
            ========================================= */
-        :root {
-            color-scheme: dark !important;
-            --bg-base:       #000000;
-            --bg-deep:       #000d05;
-            --bg-card:       rgba(0, 18, 10, 0.97);
-            --bg-card-alt:   rgba(0, 25, 14, 0.95);
-            --text-primary:  #ffffff;
-            --text-secondary:#aaaaaa;
-            --text-muted:    #666666;
-            --accent-green:  #55d082;
-            --accent-dark:   #2c7a47;
-            --accent-deeper: #1f6e3f;
-            --accent-gold:   #b78a1a;
-            --border-green:  rgba(85, 208, 130, 0.2);
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --shadow-green:  rgba(85, 208, 130, 0.3);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* =========================================
-           1. BASE STYLES & FULLSCREEN COVERAGE
-           ========================================= */
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html {
-            font-size: 5px !important;
-            /* Fill behind the status bar */
-            background-color: var(--bg-base);
-            color-scheme: dark !important;
-        }
-
-        body {
+        html, body {
             height: 100%; width: 100%;
-            /* Edge-to-edge background including status bar */
             background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
-            background-color: var(--bg-base);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 70%; -moz-text-size-adjust: 70%; text-size-adjust: 70%;
-            /* TRUE FULLSCREEN — covers notification bar */
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            /* Safe area for notch/island devices — body still reaches behind status bar */
-            padding-top: 0;
-            padding-bottom: 0;
-            color-scheme: dark !important;
+            background-color: #000000;
+            /* Fullscreen edge-to-edge rendering */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
-        /* Fullscreen status-bar cover strip */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: env(safe-area-inset-top, 0px);
-            background: var(--bg-base);
-            z-index: 999999;
-            pointer-events: none;
+        /* Force dark mode always */
+        html { 
+            font-size: 5px !important; 
+            color-scheme: dark;
+        }
+
+        /* Fullscreen styles */
+        :fullscreen {
+            background-color: #000000;
+        }
+        :-webkit-full-screen {
+            background-color: #000000;
+        }
+        :-moz-full-screen {
+            background-color: #000000;
+        }
+        :-ms-fullscreen {
+            background-color: #000000;
         }
 
         /* =========================================
@@ -104,22 +74,12 @@
             transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform-style: preserve-3d; will-change: transform, opacity;
             z-index: 10;
-            /* Push below safe-area */
-            margin-top: env(safe-area-inset-top, 0px);
         }
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        .shockwave {
-            position: absolute; top: 50%; left: 50%;
-            width: 100px; height: 100px; border-radius: 50%;
-            border: 2px solid #ffffff;
-            transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none;
-        }
-        .particle {
-            position: absolute; border-radius: 50%; opacity: 0;
-            animation: float 5s infinite ease-in-out; z-index: 20;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity;
-        }
+        /* PARTICLES */
+        .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
+        .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
         .wrapper.pop-in .particle { opacity: 0.6; }
         .p1 { width: 12px; height: 12px; top: 10%; left: 20%; background: #55d082; animation-duration: 4.2s; box-shadow: 0 0 10px #55d082;}
         .p2 { width: 8px;  height: 8px;  top: 80%; left: 80%; background: #ffffff; animation-duration: 6.0s; box-shadow: 0 0 10px #ffffff;}
@@ -127,6 +87,7 @@
         .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #dddddd; animation-duration: 7.0s; box-shadow: 0 0 10px #dddddd;}
         @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.1); } }
 
+        /* SMOOTH SEAMLESS TRANSITION (Fade out background instead of blast) */
         .wrapper.pull-active {
             opacity: 0 !important;
             transition: opacity 1.2s ease-in-out !important;
@@ -140,34 +101,46 @@
             position: fixed; inset: 0; z-index: 50; pointer-events: none;
             display: flex; flex-direction: column; justify-content: space-between;
             transition: opacity 1s ease-in-out;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
-        .continue-header {
-            padding: 60px 20px; text-align: center;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            padding-top: max(60px, calc(env(safe-area-inset-top, 0px) + 40px));
-        }
-        .dept-title  { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
-        .dept-subtitle { font-size: 14px; color: var(--accent-green); letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, env(safe-area-inset-top)); }
+        .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
+        .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
         .continue-footer {
             padding: 80px 20px 40px; text-align: center;
-            background: linear-gradient(to top, rgba(0, 12, 5, 0.98) 0%, rgba(0, 12, 5, 0.82) 40%, rgba(0, 12, 5, 0) 100%);
-            position: relative; min-height: 200px;
-            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            padding-bottom: max(40px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 40%, rgba(0, 0, 0, 0) 100%);
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: max(40px, env(safe-area-inset-bottom));
         }
 
         .elephant-gate {
             position: absolute;
-            bottom: max(80px, calc(40px + env(safe-area-inset-bottom, 0px)));
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 1; transform: scale(1);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            bottom: max(80px, calc(40px + env(safe-area-inset-bottom)));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 10;
         }
-        .elephant-gate.unlocked { opacity: 0; transform: scale(1.8) translateY(-30px); pointer-events: none; }
+
+        .elephant-gate.unlocked {
+            opacity: 0;
+            transform: scale(1.8) translateY(-30px);
+            pointer-events: none;
+        }
 
         .elephant-icon {
             font-size: 90px;
@@ -175,12 +148,15 @@
             background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 30px rgba(201, 169, 97, 0.5));
-            animation: elephantLive 3s ease-in-out infinite, elephantShimmer 4s ease-in-out infinite;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) 
+                    drop-shadow(0 0 30px rgba(201, 169, 97, 0.5));
+            animation: elephantLive 3s ease-in-out infinite, 
+                       elephantShimmer 4s ease-in-out infinite;
             transform-origin: center bottom;
         }
+
         @keyframes elephantLive {
-            0%,100% { transform: translateY(0) rotate(-1deg) scale(1); }
+            0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); }
             15% { transform: translateY(-8px) rotate(2deg) scale(1.05); }
             30% { transform: translateY(0) rotate(-2deg) scale(1); }
             45% { transform: translateY(-5px) rotate(1deg) scale(1.02); }
@@ -188,635 +164,1444 @@
             75% { transform: translateY(-3px) rotate(0.5deg) scale(1.01); }
             90% { transform: translateY(0) rotate(-0.5deg) scale(1); }
         }
+
         @keyframes elephantShimmer {
-            0%,100% { background-position: 0% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 20px rgba(201, 169, 97, 0.4)); }
+            0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 20px rgba(201, 169, 97, 0.4)); }
             50% { background-position: 100% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 40px rgba(201, 169, 97, 0.8)); }
         }
 
         .unlock-ring {
-            position: absolute; width: 120px; height: 120px;
-            border: 2px solid rgba(201, 169, 97, 0.6); border-radius: 50%;
-            opacity: 0; animation: unlockPulse 3s ease-out infinite;
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(201, 169, 97, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            animation: unlockPulse 3s ease-out infinite;
         }
+
         @keyframes unlockPulse {
-            0%   { transform: scale(0.8); opacity: 0.6; border-width: 3px; }
-            100% { transform: scale(1.5); opacity: 0;   border-width: 0px; }
+            0% { transform: scale(0.8); opacity: 0.6; border-width: 3px; }
+            100% { transform: scale(1.5); opacity: 0; border-width: 0px; }
         }
 
         .employee-info {
-            opacity: 0; transform: translateY(30px) scale(0.9);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
-            z-index: 5; display: flex; align-items: center; justify-content: center; gap: 15px;
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, 
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+            z-index: 5;
+            display: flex; align-items: center; justify-content: center; gap: 15px;
         }
-        .employee-info.unlocked { opacity: 1; transform: translateY(0) scale(1); }
+
+        .employee-info.unlocked {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
 
         .elephant-icon-small {
-            font-size: 38px; color: var(--accent-green);
+            font-size: 38px; color: #55d082;
             filter: drop-shadow(0 0 10px rgba(85, 208, 130, 0.5));
             animation: elephantWalk 3s ease-in-out infinite;
         }
         @keyframes elephantWalk {
-            0%,100% { transform: translateY(0) rotate(0deg); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
             25% { transform: translateY(-3px) rotate(-3deg); }
             75% { transform: translateY(-3px) rotate(3deg); }
         }
+
         .text-group { text-align: left; }
-        .medium-font { font-size: 32px !important; color: var(--text-primary); font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
-        .small-email  { font-size: 16px; color: var(--text-secondary); font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
+        .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
+        .small-email { font-size: 16px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
 
         /* =========================================
-           4. REGISTRATION PORTAL — DARK
+           4. REGISTRATION PORTAL
            ========================================= */
         #auth-portal {
-            position: fixed; inset: 0; z-index: 1000;
-            display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(0, 10, 5, 0.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-            transition: opacity 0.6s ease;
-            padding-top: max(20px, env(safe-area-inset-top, 0px));
+            position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: opacity 0.6s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
         .auth-card {
             width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
-            background: linear-gradient(135deg, rgba(0, 22, 12, 0.98), rgba(0, 15, 8, 0.96));
-            border: 1px solid var(--border-green);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(85,208,130,0.08);
-            text-align: center; animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            font-family: 'Inter', sans-serif; transition: transform 0.5s ease, opacity 0.5s ease;
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.98), rgba(20, 20, 20, 0.95));
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 1.5px rgba(85, 208, 130, 0.2); text-align: center;
+            animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
 
-        .auth-icon i {
-            font-size: 50px; margin-bottom: 20px;
-            background: linear-gradient(270deg, #2c7a47, #55d082, #1f6e3f);
-            background-size: 400% 400%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: colorShift 5s ease infinite;
-        }
+        .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #1a1a1a; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
         @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .auth-card h2 { font-size: 26px; color: var(--text-primary); font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
-        .desc-text  { font-size: 15px; color: var(--text-secondary); margin-bottom: 25px; }
+        .auth-card h2 { font-size: 26px; color: #ffffff; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
+        .desc-text { font-size: 15px; color: #aaaaaa; margin-bottom: 25px; }
 
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-group input {
-            pointer-events: auto; width: 100%; padding: 18px 20px;
-            border: 2px solid rgba(85, 208, 130, 0.2); border-radius: 16px;
-            font-size: 16px; font-family: 'Inter', sans-serif;
-            color: var(--text-primary); background: rgba(0, 30, 15, 0.8);
-            transition: all 0.3s ease; -webkit-appearance: none;
-        }
-        .input-group input::placeholder { color: #555; }
-        .input-group input:focus { border-color: var(--accent-green); outline: none; background: rgba(0, 40, 20, 0.9); box-shadow: 0 4px 15px rgba(85, 208, 130, 0.15); }
-        .input-group input.error  { border-color: #e74c3c; background: rgba(30, 5, 5, 0.9); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.15); }
-        .input-group input.success{ border-color: var(--accent-green); background: rgba(0, 30, 15, 0.9); }
-
+        .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; border: 2px solid #333333; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #ffffff; background: #1a1a1a; transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group input::placeholder { color: #666666; }
+        .input-group input:focus { border-color: #55d082; outline: none; background: #222222; box-shadow: 0 4px 15px rgba(85, 208, 130, 0.2); }
+        .input-group input.error { border-color: #e74c3c; background: #2a1a1a; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2); }
+        .input-group input.success { border-color: #55d082; background: #1a2a1f; }
+        
         .error-message {
-            display: none; align-items: center; gap: 6px;
-            font-size: 12px; color: #e74c3c; margin-top: 6px; margin-left: 4px;
-            text-align: left; animation: shakeError 0.4s ease;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #e74c3c;
+            margin-top: 6px;
+            margin-left: 4px;
+            text-align: left;
+            animation: shakeError 0.4s ease;
         }
         .error-message.show { display: flex; }
         .error-message i { font-size: 11px; }
+        
         @keyframes shakeError {
-            0%,100% { transform: translateX(0); }
-            20%,60%  { transform: translateX(-4px); }
-            40%,80%  { transform: translateX(4px); }
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-4px); }
+            40%, 80% { transform: translateX(4px); }
         }
 
-        .auth-btn {
-            width: 100%; pointer-events: auto; padding: 22px;
-            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
-            background-size: 400% 400%; color: white; border: none; border-radius: 20px;
-            font-size: 20px; font-weight: 800; cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.3s ease;
-            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.35);
-            animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif;
-            touch-action: manipulation; user-select: none; -webkit-user-select: none;
+        .auth-btn { 
+            width: 100%; 
+            pointer-events: auto; 
+            padding: 22px; 
+            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); 
+            background-size: 400% 400%; 
+            color: white; 
+            border: none; 
+            border-radius: 20px; 
+            font-size: 20px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: transform 0.15s ease, box-shadow 0.3s ease; 
+            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.4); 
+            animation: colorShift 6s ease infinite; 
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .auth-btn:hover   { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(44, 122, 71, 0.5); }
-        .auth-btn:active  { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.25); }
-        .auth-btn:disabled{ opacity: 0.6; cursor: not-allowed; transform: none; }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(44, 122, 71, 0.5); }
+        .auth-btn:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.3); }
+        .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         /* =========================================
-           5. APP IFRAME — SMOOTH CROSSFADE REVEAL
+           5. APP IFRAME - SMOOTH CROSSFADE REVEAL
            ========================================= */
-        .app {
-            position: fixed;
-            /* Start from very top — covers notification bar */
-            top: 0; left: 0; right: 0; bottom: 0;
-            opacity: 0; visibility: hidden;
-            background: var(--bg-base); z-index: 2000;
-            transition: opacity 1.2s ease-in-out;
+        .app { 
+            position: fixed; inset: 0; opacity: 0; visibility: hidden; 
+            background: #000000; z-index: 2000; 
+            transition: opacity 1.2s ease-in-out; 
         }
         .app.active { opacity: 1; visibility: visible; }
-
-        iframe {
-            width: 100%; height: 100%; border: none;
-            background: var(--bg-base); opacity: 0;
+        
+        iframe { 
+            width: 100%; height: 100%; border: none; 
+            background: #000000; opacity: 0;
             transition: opacity 1.2s ease-in-out 0.2s;
-            /* Iframe content offset for safe area */
-            padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-top: env(safe-area-inset-top); 
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .app.active iframe { opacity: 1; }
 
-        /* =========================================
-           6. ORIENTATION / DEVICE RESTRICTION
-           ========================================= */
-        #device-error {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0, 10, 5, 0.98); backdrop-filter: blur(20px);
-            z-index: 10000; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif;
-        }
-        .error-card {
-            background: var(--bg-card); max-width: 400px; padding: 40px 30px; border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid var(--border-green);
-        }
-        .error-card h2 { font-size: 24px; color: var(--accent-green); font-weight: 800; margin-bottom: 15px; }
-        .error-card p  { font-size: 16px; color: var(--text-secondary); line-height: 1.6; }
-        @media screen and (orientation: landscape), screen and (min-width: 600px) {
-            body > *:not(#device-error) { display: none !important; }
-            #device-error { display: flex !important; }
-        }
+        /* RESTRICTION SCREENS */
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.98); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+        .error-card { background: rgba(20, 20, 20, 0.95); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
+        .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
+        .error-card p { font-size: 16px; color: #aaaaaa; line-height: 1.6; }
+        @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
-        /* =========================================
-           7. WEBSITE INSTALL AD BANNER (new feature)
-           ========================================= */
-        #web-install-banner {
-            display: none;
-            position: fixed;
-            top: env(safe-area-inset-top, 0px);
-            left: 0; right: 0;
-            z-index: 9000;
-            background: linear-gradient(90deg, #0a2e16 0%, #0d3b1e 50%, #0a2e16 100%);
-            border-bottom: 1px solid var(--border-green);
-            padding: 10px 16px 10px calc(env(safe-area-inset-left, 0px) + 16px);
-            display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            animation: bannerSlideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #web-install-banner.hidden { display: none !important; }
-
-        @keyframes bannerSlideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to   { transform: translateY(0);    opacity: 1; }
-        }
-
-        .banner-icon {
-            width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
-            background: linear-gradient(145deg, #1f6e3f, #55d082);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; color: #fff;
-            box-shadow: 0 4px 12px rgba(85,208,130,0.3);
-        }
-        .banner-text { flex: 1; }
-        .banner-text strong { display: block; font-size: 13px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
-        .banner-text span   { font-size: 11px; color: var(--text-secondary); }
-        .banner-install-btn {
-            flex-shrink: 0; padding: 8px 16px;
-            background: linear-gradient(135deg, #2c7a47, #1f6e3f);
-            color: #fff; border: none; border-radius: 10px;
-            font-size: 13px; font-weight: 700; cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 4px 12px rgba(44,122,71,0.4);
-            touch-action: manipulation;
-        }
-        .banner-install-btn:active { transform: scale(0.95); }
-        .banner-dismiss-btn {
-            flex-shrink: 0; width: 28px; height: 28px;
-            background: rgba(255,255,255,0.08); border: none; border-radius: 50%;
-            color: var(--text-secondary); font-size: 14px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            touch-action: manipulation;
-        }
-        .banner-dismiss-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-primary); }
-
-        /* =========================================
-           8. WEB MODE PERIODIC INSTALL MODAL (ad)
-           ========================================= */
-        #web-install-modal {
-            display: none;
-            position: fixed; inset: 0; z-index: 9500;
-            background: rgba(0, 10, 5, 0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            justify-content: flex-end; align-items: flex-end; padding: 20px;
-            padding-bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px));
-            animation: modalFadeIn 0.4s ease;
-        }
-        #web-install-modal.active { display: flex; }
-        @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .install-modal-card {
-            width: 100%; max-width: 420px;
-            background: linear-gradient(135deg, rgba(0, 22, 12, 0.99), rgba(0, 16, 9, 0.97));
-            border: 1px solid var(--border-green);
-            border-radius: 28px; padding: 30px 25px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(85,208,130,0.1);
-            animation: modalSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-            font-family: 'Inter', sans-serif;
-        }
-        @keyframes modalSlideUp {
-            from { transform: translateY(60px) scale(0.96); opacity: 0; }
-            to   { transform: translateY(0) scale(1); opacity: 1; }
-        }
-        .install-modal-header {
-            display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
-        }
-        .install-modal-icon {
-            width: 60px; height: 60px; border-radius: 18px; flex-shrink: 0;
-            background: linear-gradient(145deg, #1f6e3f, #55d082);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px; color: #fff;
-            box-shadow: 0 8px 24px rgba(85,208,130,0.4);
-        }
-        .install-modal-title strong { display: block; font-size: 18px; font-weight: 800; color: var(--text-primary); }
-        .install-modal-title span   { font-size: 13px; color: var(--accent-green); font-weight: 600; }
-
-        .install-modal-benefits {
-            display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;
-        }
-        .benefit-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 14px;
-            background: rgba(85, 208, 130, 0.06);
-            border: 1px solid rgba(85, 208, 130, 0.1); border-radius: 14px;
-        }
-        .benefit-item i { color: var(--accent-green); font-size: 16px; width: 20px; text-align: center; }
-        .benefit-item span { font-size: 14px; color: var(--text-secondary); font-weight: 500; }
-
-        .install-modal-actions { display: flex; flex-direction: column; gap: 10px; }
-        .modal-install-btn {
-            width: 100%; padding: 16px 20px;
-            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
-            background-size: 400% 400%; color: #fff;
-            border: none; border-radius: 16px;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            animation: colorShift 5s ease infinite;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 24px rgba(44,122,71,0.4);
-            touch-action: manipulation;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-        .modal-install-btn:active { transform: scale(0.97); }
-        .modal-dismiss-btn {
-            width: 100%; padding: 12px;
-            background: transparent; color: var(--text-muted);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
-            font-size: 14px; font-weight: 500; cursor: pointer;
-            font-family: 'Inter', sans-serif; touch-action: manipulation;
-        }
-        .modal-dismiss-btn:hover { background: rgba(255,255,255,0.04); color: var(--text-secondary); }
-
-        /* =========================================
-           9. FORCED INSTALL OVERLAY (website entry)
-           ========================================= */
-        #forcedInstall {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0, 10, 5, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 9999; justify-content: center; align-items: center; padding: 20px;
-            padding-top: max(20px, env(safe-area-inset-top, 0px));
-            padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
-        }
-        .install-card {
-            background: var(--bg-card-alt); width: 100%; max-width: 360px;
-            padding: 40px 30px; border-radius: 30px; text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6); border: 1px solid var(--border-green);
-            font-family: 'Inter', sans-serif;
-        }
-        .install-card h2 { color: var(--accent-green); margin-bottom: 12px; font-size: 24px; font-weight: 800;}
-        .install-card p  { color: var(--text-secondary); font-size: 15px; margin-bottom: 30px;}
-
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .install-card { background: rgba(20, 20, 20, 0.95); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
+        .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
+        .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
+        
         @keyframes installPulse {
-            0%   { box-shadow: 0 0 0 0   rgba(85, 208, 130, 0.7); }
-            70%  { box-shadow: 0 0 0 15px rgba(85, 208, 130, 0);   }
-            100% { box-shadow: 0 0 0 0   rgba(85, 208, 130, 0);   }
+            0% { box-shadow: 0 0 0 0 rgba(85, 208, 130, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(85, 208, 130, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(85, 208, 130, 0); }
         }
-
-        .install-btn {
-            background: transparent; color: var(--accent-green); border: 2px solid var(--accent-green);
-            padding: 18px 0; width: 100%; border-radius: 15px;
-            font-size: 18px; font-weight: 700; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
-            margin-top: 20px; font-family: 'Inter', sans-serif; transition: all 0.3s ease;
-            touch-action: manipulation; animation: installPulse 2s infinite;
+        
+        .install-btn { 
+            background: transparent; 
+            color: #55d082; 
+            border: 2px solid #55d082; 
+            padding: 18px 0; 
+            width: 100%; 
+            border-radius: 15px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+            margin-top: 20px; 
+            font-family: 'Inter', sans-serif; 
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            animation: installPulse 2s infinite;
         }
-        .install-btn:hover  { background: var(--accent-green); color: #001208; }
+        .install-btn:hover { background: #55d082; color: #000000; }
         .install-btn:active { transform: scale(0.96); }
 
-        .install-btn.web-mode-btn {
-            background: rgba(85, 208, 130, 0.1); color: var(--accent-green);
-            border: 2px solid rgba(85, 208, 130, 0.5); animation: none; margin-top: 12px;
+        /* Web Mode Button Specific Styles */
+        .install-btn.web-mode-btn { 
+            background: rgba(85, 208, 130, 0.1); 
+            color: #55d082; 
+            border: 2px solid rgba(85, 208, 130, 0.5);
+            animation: none;
+            margin-top: 12px;
         }
-        .install-btn.web-mode-btn:hover { background: rgba(85, 208, 130, 0.2); border-color: var(--accent-green); }
+        .install-btn.web-mode-btn:hover { 
+            background: rgba(85, 208, 130, 0.2); 
+            color: #55d082; 
+            border-color: #55d082;
+        }
 
         /* =========================================
-           10. STORAGE PERMISSION MODAL — DARK
+           6. INSTALL PROGRESS / ANIMATION SCREEN
            ========================================= */
-        #storage-permission-modal {
-            display: none; position: fixed; inset: 0; z-index: 100002;
-            justify-content: center; align-items: center; padding: 20px;
-            background: rgba(0, 10, 5, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-        }
-        #storage-permission-modal.active { display: flex; }
 
-        .permission-card {
-            background: var(--bg-card-alt); width: 100%; max-width: 360px;
-            padding: 40px 30px; border-radius: 30px; text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6); border: 1px solid var(--border-green);
-            animation: cardFloatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .permission-icon {
-            width: 80px; height: 80px;
-            background: linear-gradient(145deg, #2c7a47, #55d082);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 25px; font-size: 36px; color: white;
-            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
-        }
-        .permission-card h2 { font-size: 22px; color: var(--text-primary); font-weight: 800; margin-bottom: 12px; }
-        .permission-card p  { font-size: 15px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 30px; }
-        .permission-buttons { display: flex; gap: 12px; }
-        .permission-btn {
-            flex: 1; padding: 16px 20px; border: none; border-radius: 16px;
-            font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif; touch-action: manipulation;
-        }
-        .permission-btn.allow { background: linear-gradient(135deg, #2c7a47, #1f6e3f); color: white; box-shadow: 0 8px 20px rgba(44,122,71,0.3); }
-        .permission-btn.allow:hover  { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(44,122,71,0.45); }
-        .permission-btn.allow:active { transform: scale(0.96); }
-        .permission-btn.deny  { background: rgba(255,255,255,0.08); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); }
-        .permission-btn.deny:hover  { background: rgba(255,255,255,0.12); }
-        .permission-btn.deny:active { transform: scale(0.96); }
-
-        /* =========================================
-           11. INSTALL PROGRESS SCREEN — DARK
-           ========================================= */
         #install-progress-screen {
-            display: none; position: fixed; inset: 0; z-index: 99999;
-            justify-content: center; align-items: center; flex-direction: column;
-            padding: max(40px, calc(env(safe-area-inset-top, 0px) + 20px)) 30px
-                     max(40px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 40% 60%, rgba(44,122,71,0.18) 0%, transparent 70%),
-                        radial-gradient(ellipse at 70% 30%, rgba(85,208,130,0.10) 0%, transparent 60%),
-                        var(--bg-base);
+            background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
+                        radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
+                        #000000;
             transition: opacity 0.8s ease;
         }
-        #install-progress-screen.active   { display: flex; }
+
+        #install-progress-screen.active { display: flex; }
         #install-progress-screen.fade-out { opacity: 0; pointer-events: none; }
 
+        /* ---- App Icon ---- */
         .install-app-icon {
-            width: 100px; height: 100px; border-radius: 28px;
+            width: 100px;
+            height: 100px;
+            border-radius: 28px;
             background: linear-gradient(145deg, #1f6e3f 0%, #55d082 100%);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 48px; color: #ffffff;
-            box-shadow: 0 12px 40px rgba(85,208,130,0.45), inset 0 1px 0 rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #ffffff;
+            box-shadow: 0 12px 40px rgba(85, 208, 130, 0.45),
+                        inset 0 1px 0 rgba(255,255,255,0.3);
             margin-bottom: 32px;
-            animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0;
+            animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
         }
+
         @keyframes iconBounceIn {
             0%   { opacity: 0; transform: scale(0.4) rotate(-10deg); }
             60%  { opacity: 1; transform: scale(1.1) rotate(2deg); }
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
-        .install-title {
-            font-size: 22px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 6px; color: var(--text-primary);
-            opacity: 0; animation: fadeSlideUp 0.5s ease 0.3s forwards;
-        }
-        .install-subtitle {
-            font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
-            font-weight: 600; margin-bottom: 50px; color: var(--accent-green);
-            opacity: 0; animation: fadeSlideUp 0.5s ease 0.45s forwards;
-        }
-        @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        .install-track-wrap { width: 100%; max-width: 280px; opacity: 0; animation: fadeSlideUp 0.5s ease 0.6s forwards; }
-        .install-track { width: 100%; height: 6px; border-radius: 10px; overflow: hidden; margin-bottom: 14px; position: relative; background: rgba(255,255,255,0.1); }
+        /* ---- Install title ---- */
+        .install-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.3s forwards;
+            color: #ffffff;
+        }
+
+        .install-subtitle {
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 50px;
+            color: #55d082;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.45s forwards;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ---- Progress track ---- */
+        .install-track-wrap {
+            width: 100%;
+            max-width: 280px;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.6s forwards;
+        }
+
+        .install-track {
+            width: 100%;
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            position: relative;
+            background: rgba(255,255,255,0.1);
+        }
+
         .install-bar {
-            height: 100%; width: 0%; border-radius: 10px;
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
             background: linear-gradient(90deg, #2c7a47, #55d082, #2c7a47);
-            background-size: 200% 100%; animation: barShimmer 1.8s linear infinite;
+            background-size: 200% 100%;
+            animation: barShimmer 1.8s linear infinite;
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes barShimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-        .install-status-text { font-size: 13px; font-weight: 500; text-align: center; transition: opacity 0.3s ease; color: rgba(255,255,255,0.5); }
 
-        .install-tick {
-            width: 70px; height: 70px; border-radius: 50%;
-            background: linear-gradient(135deg, #2c7a47, #55d082);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; color: #fff; margin-top: 30px;
-            opacity: 0; transform: scale(0);
-            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 8px 30px rgba(85,208,130,0.5);
+        @keyframes barShimmer {
+            0%   { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
         }
-        .install-tick.show { opacity: 1; transform: scale(1); }
-        .tick-ripple { position: absolute; width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(85,208,130,0.6); opacity: 0; }
-        .tick-ripple.animate { animation: tickRipple 1.4s ease-out forwards; }
-        @keyframes tickRipple { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(2.4); opacity: 0; } }
-        .tick-wrap { position: relative; display: flex; align-items: center; justify-content: center; margin-top: 30px; }
 
-        .install-particle { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; }
+        .install-status-text {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            transition: opacity 0.3s ease;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* ---- Tick / Done state ---- */
+        .install-tick {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c7a47, #55d082);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #ffffff;
+            margin-top: 30px;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 30px rgba(85, 208, 130, 0.5);
+        }
+
+        .install-tick.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ---- Ripple rings around tick ---- */
+        .tick-ripple {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid rgba(85, 208, 130, 0.6);
+            opacity: 0;
+        }
+
+        .tick-ripple.animate {
+            animation: tickRipple 1.4s ease-out forwards;
+        }
+
+        @keyframes tickRipple {
+            0%   { transform: scale(1);   opacity: 0.7; }
+            100% { transform: scale(2.4); opacity: 0;   }
+        }
+
+        .tick-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        /* ---- Floating install particles ---- */
+        .install-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .ip1 { width: 8px;  height: 8px;  background: #55d082; top: 15%; left: 10%; animation: installFloat 3.5s ease-in-out 0.8s infinite; }
         .ip2 { width: 5px;  height: 5px;  background: rgba(85,208,130,0.5); top: 70%; right: 12%; animation: installFloat 4.2s ease-in-out 1.2s infinite; }
         .ip3 { width: 10px; height: 10px; background: rgba(44,122,71,0.7); bottom: 20%; left: 20%; animation: installFloat 5.0s ease-in-out 0.4s infinite; }
         .ip4 { width: 6px;  height: 6px;  background: #b78a1a; top: 30%; right: 8%; animation: installFloat 3.8s ease-in-out 1.8s infinite; }
-        @keyframes installFloat { 0%,100% { opacity: 0.5; transform: translateY(0) scale(1); } 50% { opacity: 0.9; transform: translateY(-18px) scale(1.2); } }
+
+        @keyframes installFloat {
+            0%,100% { opacity: 0.5; transform: translateY(0) scale(1);     }
+            50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
+        }
 
         /* =========================================
-           12. NETWORK ERROR SCREEN — DARK
+           7. NETWORK ERROR SCREEN (CARTOON STYLE)
            ========================================= */
         #network-error-screen {
-            display: none; position: fixed; inset: 0; z-index: 100000;
-            flex-direction: column; align-items: center; justify-content: center;
-            padding: max(40px, env(safe-area-inset-top, 0px)) 30px;
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231,76,60,0.15) 0%, transparent 60%),
-                        radial-gradient(ellipse at 30% 70%, rgba(255,193,7,0.1) 0%, transparent 50%),
-                        var(--bg-base);
+            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+                        #000000;
             transition: opacity 0.5s ease;
         }
-        #network-error-screen.active   { display: flex; }
+
+        #network-error-screen.active { display: flex; }
         #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
 
-        .error-illustration { position: relative; width: 180px; height: 180px; margin-bottom: 30px; }
-        .cartoon-elephant {
-            position: absolute; width: 120px; height: 100px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50% 50% 45% 45%; top: 40px; left: 30px;
-            animation: elephantSad 2s ease-in-out infinite;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        /* Cartoon-style error illustration */
+        .error-illustration {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin-bottom: 30px;
         }
-        .cartoon-elephant::before { content: ''; position: absolute; width: 35px; height: 50px; background: linear-gradient(145deg,#55d082,#2c7a47); border-radius: 50%; top: -20px; left: 15px; transform: rotate(-20deg); }
-        .cartoon-elephant::after  { content: ''; position: absolute; width: 35px; height: 50px; background: linear-gradient(145deg,#55d082,#2c7a47); border-radius: 50%; top: -20px; right: 15px; transform: rotate(20deg); }
-        .elephant-trunk { position: absolute; width: 25px; height: 50px; background: linear-gradient(180deg,#55d082,#2c7a47); border-radius: 0 0 50% 50%; bottom: -30px; left: 50%; transform: translateX(-50%); animation: trunkWiggle 1.5s ease-in-out infinite; }
-        .elephant-eye  { position: absolute; width: 12px; height: 12px; background: #1a1a1a; border-radius: 50%; top: 35px; }
-        .elephant-eye.left  { left: 30px; }
-        .elephant-eye.right { right: 30px; }
-        .elephant-eye::after { content: ''; position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; top: 2px; right: 2px; }
-        .eyebrow { position: absolute; width: 18px; height: 3px; background: #1a1a1a; border-radius: 3px; top: 25px; }
-        .eyebrow.left  { left: 27px;  transform: rotate(20deg);  }
-        .eyebrow.right { right: 27px; transform: rotate(-20deg); }
-        .broken-cable { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 100px; height: 60px; }
-        .cable-left,.cable-right { position: absolute; width: 40px; height: 4px; background: linear-gradient(90deg,#e74c3c,#c0392b); border-radius: 2px; top: 30px; }
-        .cable-left  { left: 0;  transform: rotate(-15deg); animation: cableSpark 0.5s ease-in-out infinite alternate; }
-        .cable-right { right: 0; transform: rotate(15deg);  animation: cableSpark 0.5s ease-in-out infinite alternate 0.25s; }
-        .spark { position: absolute; width: 8px; height: 8px; background: #ffc107; border-radius: 50%; top: 28px; left: 50%; transform: translateX(-50%); animation: sparkFlash 0.3s ease-in-out infinite; box-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800; }
-        @keyframes elephantSad  { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
-        @keyframes trunkWiggle  { 0%,100% { transform: translateX(-50%) rotate(0deg); } 25% { transform: translateX(-50%) rotate(-5deg); } 75% { transform: translateX(-50%) rotate(5deg); } }
-        @keyframes cableSpark   { from { box-shadow: 0 0 5px #e74c3c; } to { box-shadow: 0 0 15px #e74c3c, 0 0 25px #ffc107; } }
-        @keyframes sparkFlash   { 0%,100% { opacity: 1; transform: translateX(-50%) scale(1); } 50% { opacity: 0.5; transform: translateX(-50%) scale(0.8); } }
 
+        /* Cartoon character - sad elephant */
+        .cartoon-elephant {
+            position: absolute;
+            width: 120px;
+            height: 100px;
+            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 50% 50% 45% 45%;
+            top: 40px;
+            left: 30px;
+            animation: elephantSad 2s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cartoon-elephant::before {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 50px;
+            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 50%;
+            top: -20px;
+            left: 15px;
+            transform: rotate(-20deg);
+        }
+
+        .cartoon-elephant::after {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 50px;
+            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 50%;
+            top: -20px;
+            right: 15px;
+            transform: rotate(20deg);
+        }
+
+        /* Elephant trunk */
+        .elephant-trunk {
+            position: absolute;
+            width: 25px;
+            height: 50px;
+            background: linear-gradient(180deg, #55d082 0%, #2c7a47 100%);
+            border-radius: 0 0 50% 50%;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: trunkWiggle 1.5s ease-in-out infinite;
+        }
+
+        /* Sad eyes */
+        .elephant-eye {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            top: 35px;
+        }
+
+        .elephant-eye.left { left: 30px; }
+        .elephant-eye.right { right: 30px; }
+
+        .elephant-eye::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 2px;
+            right: 2px;
+        }
+
+        /* Sad eyebrows */
+        .eyebrow {
+            position: absolute;
+            width: 18px;
+            height: 3px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            top: 25px;
+        }
+
+        .eyebrow.left { left: 27px; transform: rotate(20deg); }
+        .eyebrow.right { right: 27px; transform: rotate(-20deg); }
+
+        /* Broken cable illustration */
+        .broken-cable {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 60px;
+        }
+
+        .cable-left, .cable-right {
+            position: absolute;
+            width: 40px;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            border-radius: 2px;
+            top: 30px;
+        }
+
+        .cable-left { left: 0; transform: rotate(-15deg); animation: cableSpark 0.5s ease-in-out infinite alternate; }
+        .cable-right { right: 0; transform: rotate(15deg); animation: cableSpark 0.5s ease-in-out infinite alternate 0.25s; }
+
+        /* Spark effects */
+        .spark {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffc107;
+            border-radius: 50%;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: sparkFlash 0.3s ease-in-out infinite;
+            box-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;
+        }
+
+        @keyframes elephantSad {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        @keyframes trunkWiggle {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(-5deg); }
+            75% { transform: translateX(-50%) rotate(5deg); }
+        }
+
+        @keyframes cableSpark {
+            from { box-shadow: 0 0 5px #e74c3c; }
+            to { box-shadow: 0 0 15px #e74c3c, 0 0 25px #ffc107; }
+        }
+
+        @keyframes sparkFlash {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.5; transform: translateX(-50%) scale(0.8); }
+        }
+
+        /* Error content styling */
         .network-error-card {
-            background: var(--bg-card); max-width: 380px; padding: 40px 35px; border-radius: 30px;
+            background: rgba(20, 20, 20, 0.95);
+            max-width: 380px;
+            padding: 40px 35px;
+            border-radius: 30px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(231,76,60,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(231, 76, 60, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
             animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes errorCardSlideUp { from { opacity: 0; transform: translateY(40px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        .network-error-title { font-size: 26px; font-weight: 800; margin-bottom: 12px; background: linear-gradient(135deg,#e74c3c,#c0392b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .network-error-message { font-size: 15px; line-height: 1.7; margin-bottom: 25px; color: var(--text-secondary); }
-        .network-status-indicator { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; background: rgba(231,76,60,0.1); border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(231,76,60,0.2); }
-        .status-dot { width: 10px; height: 10px; background: #e74c3c; border-radius: 50%; animation: statusPulse 1.5s ease-in-out infinite; box-shadow: 0 0 10px #e74c3c; }
-        @keyframes statusPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
-        .status-text { font-size: 14px; font-weight: 600; color: #e74c3c; }
-        .retry-btn {
-            width: 100%; padding: 18px 24px; background: linear-gradient(135deg,#e74c3c,#c0392b);
-            color: white; border: none; border-radius: 18px; font-size: 17px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.3s ease; font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(231,76,60,0.4); touch-action: manipulation;
-        }
-        .retry-btn:hover    { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(231,76,60,0.5); }
-        .retry-btn:active   { transform: translateY(0) scale(0.96); }
-        .retry-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .retry-btn.loading i { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .error-particle { position: absolute; border-radius: 50%; opacity: 0.6; pointer-events: none; }
+        @keyframes errorCardSlideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .network-error-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .network-error-message {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+            color: #aaaaaa;
+        }
+
+        .network-status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #e74c3c;
+            border-radius: 50%;
+            animation: statusPulse 1.5s ease-in-out infinite;
+            box-shadow: 0 0 10px #e74c3c;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .status-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .retry-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
+            touch-action: manipulation;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
+        }
+
+        .retry-btn:active {
+            transform: translateY(0) scale(0.96);
+        }
+
+        .retry-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .retry-btn i {
+            animation: none;
+        }
+
+        .retry-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Floating error particles */
+        .error-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
         .ep1 { width: 6px; height: 6px; background: #e74c3c; top: 10%; left: 15%; animation: errorFloat 4s ease-in-out infinite; }
         .ep2 { width: 4px; height: 4px; background: #ffc107; top: 80%; right: 10%; animation: errorFloat 5s ease-in-out infinite 0.5s; }
-        .ep3 { width: 8px; height: 8px; background: rgba(231,76,60,0.5); bottom: 15%; left: 20%; animation: errorFloat 3.5s ease-in-out infinite 1s; }
+        .ep3 { width: 8px; height: 8px; background: rgba(231, 76, 60, 0.5); bottom: 15%; left: 20%; animation: errorFloat 3.5s ease-in-out infinite 1s; }
         .ep4 { width: 5px; height: 5px; background: #ff9800; top: 30%; right: 15%; animation: errorFloat 4.5s ease-in-out infinite 1.5s; }
-        @keyframes errorFloat { 0%,100% { transform: translateY(0) scale(1); opacity: 0.4; } 50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; } }
 
-        /* =========================================
-           13. NETWORK TOAST — DARK
-           ========================================= */
-        #network-toast {
-            position: fixed; top: max(20px, calc(env(safe-area-inset-top, 0px) + 10px)); left: 50%;
-            transform: translateX(-50%) translateY(-100px); z-index: 100001;
-            padding: 14px 24px; border-radius: 14px;
-            display: flex; align-items: center; gap: 12px;
-            font-size: 14px; font-weight: 600; opacity: 0;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        @keyframes errorFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
         }
-        #network-toast.show    { transform: translateX(-50%) translateY(0); opacity: 1; }
-        #network-toast.offline { background: rgba(231,76,60,0.95); color: white; }
-        #network-toast.online  { background: rgba(85,208,130,0.95); color: #001208; }
-        #network-toast i       { font-size: 16px; }
+
+        /* Network toast notification */
+        #network-toast {
+            position: fixed;
+            top: max(20px, env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            z-index: 100001;
+            padding: 14px 24px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        #network-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        #network-toast.offline {
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+        }
+
+        #network-toast.online {
+            background: rgba(85, 208, 130, 0.95);
+            color: #000000;
+        }
+
+        #network-toast i {
+            font-size: 16px;
+        }
 
         /* =========================================
-           14. DUPLICATE APP SCREEN — DARK
+           8. STORAGE PERMISSION MODAL
+           ========================================= */
+        #storage-permission-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100002;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        #storage-permission-modal.active { display: flex; }
+
+        .permission-card {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.98), rgba(20, 20, 20, 0.95));
+            width: 100%;
+            max-width: 360px;
+            padding: 40px 30px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            animation: cardFloatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .permission-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #2c7a47, #55d082);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
+        }
+
+        .permission-card h2 {
+            font-size: 22px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .permission-card p {
+            font-size: 15px;
+            color: #aaaaaa;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .permission-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .permission-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+
+        .permission-btn.allow {
+            background: linear-gradient(135deg, #2c7a47, #1f6e3f);
+            color: white;
+            box-shadow: 0 8px 20px rgba(44, 122, 71, 0.3);
+        }
+
+        .permission-btn.allow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(44, 122, 71, 0.4);
+        }
+
+        .permission-btn.allow:active {
+            transform: scale(0.96);
+        }
+
+        .permission-btn.deny {
+            background: #333333;
+            color: #aaaaaa;
+        }
+
+        .permission-btn.deny:hover {
+            background: #444444;
+        }
+
+        .permission-btn.deny:active {
+            transform: scale(0.96);
+        }
+
+        /* =========================================
+           9. DUPLICATE APP ERROR SCREEN
            ========================================= */
         #duplicate-app-screen {
-            display: none; position: fixed; inset: 0; z-index: 100003;
-            flex-direction: column; align-items: center; justify-content: center;
-            padding: max(40px, env(safe-area-inset-top, 0px)) 30px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231,76,60,0.2) 0%, transparent 60%), var(--bg-base);
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100003;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
+                        #000000;
             font-family: 'Inter', sans-serif;
         }
+
         #duplicate-app-screen.active { display: flex; }
+
         .duplicate-card {
-            background: var(--bg-card); max-width: 400px; padding: 45px 35px; border-radius: 30px;
-            text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 0 2px rgba(231,76,60,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+            background: rgba(20, 20, 20, 0.95);
+            max-width: 400px;
+            padding: 45px 35px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 2px rgba(231, 76, 60, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
             animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .duplicate-icon { width: 100px; height: 100px; background: linear-gradient(135deg,#e74c3c,#c0392b); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 48px; color: white; box-shadow: 0 10px 30px rgba(231,76,60,0.4); animation: pulseWarning 2s ease-in-out infinite; }
-        @keyframes pulseWarning { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .duplicate-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 15px; background: linear-gradient(135deg,#e74c3c,#c0392b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .duplicate-card p  { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 25px; }
-        .duplicate-info { background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.2); border-radius: 16px; padding: 20px; margin-bottom: 25px; text-align: left; }
-        .duplicate-info-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 14px; color: var(--text-secondary); }
+
+        .duplicate-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+            animation: pulseWarning 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseWarning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .duplicate-card h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .duplicate-card p {
+            font-size: 15px;
+            color: #aaaaaa;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .duplicate-info {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .duplicate-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
         .duplicate-info-item:last-child { margin-bottom: 0; }
-        .duplicate-info-item i { color: #e74c3c; font-size: 16px; }
-        .uninstall-btn { width: 100%; padding: 18px 24px; background: linear-gradient(135deg,#e74c3c,#c0392b); color: white; border: none; border-radius: 18px; font-size: 17px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; font-family: 'Inter', sans-serif; box-shadow: 0 8px 25px rgba(231,76,60,0.4); touch-action: manipulation; }
-        .uninstall-btn:hover  { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(231,76,60,0.5); }
-        .uninstall-btn:active { transform: scale(0.96); }
+
+        .duplicate-info-item i {
+            color: #e74c3c;
+            font-size: 16px;
+        }
+
+        .uninstall-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
+            touch-action: manipulation;
+        }
+
+        .uninstall-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
+        }
+
+        .uninstall-btn:active {
+            transform: scale(0.96);
+        }
 
         /* =========================================
-           15. ALREADY INSTALLED BLOCKER — DARK
+           10. ALREADY INSTALLED BLOCKER
            ========================================= */
         #already-installed-blocker {
-            display: none; position: fixed; inset: 0; z-index: 100004;
-            flex-direction: column; align-items: center; justify-content: center;
-            padding: max(40px, env(safe-area-inset-top, 0px)) 30px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(44,122,71,0.2) 0%, transparent 60%), var(--bg-base);
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100004;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.2) 0%, transparent 60%),
+                        #000000;
             font-family: 'Inter', sans-serif;
         }
+
         #already-installed-blocker.active { display: flex; }
-        .blocker-card { background: var(--bg-card); max-width: 400px; padding: 45px 35px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 0 2px rgba(44,122,71,0.4), inset 0 1px 0 rgba(255,255,255,0.05); animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .blocker-icon { width: 100px; height: 100px; background: linear-gradient(135deg,#55d082,#2c7a47); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 48px; color: var(--bg-base); box-shadow: 0 10px 30px rgba(85,208,130,0.4); animation: pulseGreen 2s ease-in-out infinite; }
-        @keyframes pulseGreen { 0%,100% { transform: scale(1); box-shadow: 0 10px 30px rgba(85,208,130,0.4); } 50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(85,208,130,0.6); } }
-        .blocker-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 15px; background: linear-gradient(135deg,#55d082,#2c7a47); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .blocker-card p  { font-size: 15px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 25px; }
-        .blocker-info { background: rgba(85,208,130,0.08); border: 1px solid rgba(85,208,130,0.2); border-radius: 16px; padding: 20px; margin-bottom: 25px; text-align: left; }
-        .blocker-info-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 14px; color: var(--text-secondary); }
+
+        .blocker-card {
+            background: rgba(20, 20, 20, 0.95);
+            max-width: 400px;
+            padding: 45px 35px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 2px rgba(44, 122, 71, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .blocker-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #55d082, #2c7a47);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 48px;
+            color: #000000;
+            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
+            animation: pulseGreen 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGreen {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(85, 208, 130, 0.6); }
+        }
+
+        .blocker-card h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #55d082 0%, #2c7a47 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .blocker-card p {
+            font-size: 15px;
+            color: #aaaaaa;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .blocker-info {
+            background: rgba(85, 208, 130, 0.1);
+            border: 1px solid rgba(85, 208, 130, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .blocker-info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
         .blocker-info-item:last-child { margin-bottom: 0; }
-        .blocker-info-item i { color: var(--accent-green); font-size: 16px; }
-        .open-app-btn { width: 100%; padding: 18px 24px; background: linear-gradient(135deg,#2c7a47,#1f6e3f); color: white; border: none; border-radius: 18px; font-size: 17px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; font-family: 'Inter', sans-serif; box-shadow: 0 8px 25px rgba(44,122,71,0.4); touch-action: manipulation; }
-        .open-app-btn:hover  { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(44,122,71,0.5); }
-        .open-app-btn:active { transform: scale(0.96); }
+
+        .blocker-info-item i {
+            color: #55d082;
+            font-size: 16px;
+        }
+
+        .open-app-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #2c7a47 0%, #1f6e3f 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 25px rgba(44, 122, 71, 0.35);
+            touch-action: manipulation;
+        }
+
+        .open-app-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(44, 122, 71, 0.45);
+        }
+
+        .open-app-btn:active {
+            transform: scale(0.96);
+        }
 
         /* =========================================
-           16. POST-INSTALL GUIDE — DARK
+           11. POST-INSTALLATION GUIDE
            ========================================= */
         #post-install-guide {
-            display: none; position: fixed; inset: 0; z-index: 99998;
-            flex-direction: column; align-items: center; justify-content: center;
-            padding: max(40px, env(safe-area-inset-top, 0px)) 30px max(40px, env(safe-area-inset-bottom, 0px));
-            background: radial-gradient(ellipse at 40% 60%, rgba(44,122,71,0.18) 0%, transparent 70%),
-                        radial-gradient(ellipse at 70% 30%, rgba(85,208,130,0.10) 0%, transparent 60%), var(--bg-base);
-            font-family: 'Inter', sans-serif; opacity: 0; transition: opacity 0.8s ease;
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99998;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
+                        radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
+                        #000000;
+            font-family: 'Inter', sans-serif;
+            opacity: 0;
+            transition: opacity 0.8s ease;
         }
-        #post-install-guide.active   { display: flex; opacity: 1; }
+
+        #post-install-guide.active { 
+            display: flex; 
+            opacity: 1;
+        }
+
         #post-install-guide.fade-out { opacity: 0; }
 
         .guide-card {
-            background: var(--bg-card-alt); width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
-            text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(85,208,130,0.12);
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.98), rgba(20, 20, 20, 0.95));
+            width: 100%;
+            max-width: 380px;
+            padding: 45px 35px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3), 
+                        inset 0 0 0 1.5px rgba(85, 208, 130, 0.2);
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .guide-icon { width: 90px; height: 90px; background: linear-gradient(145deg,#1f6e3f,#55d082); border-radius: 28px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 44px; color: #fff; box-shadow: 0 12px 40px rgba(85,208,130,0.45), inset 0 1px 0 rgba(255,255,255,0.3); animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .guide-card h2 { font-size: 24px; color: var(--text-primary); font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
-        .guide-subtitle { font-size: 15px; color: var(--text-secondary); margin-bottom: 30px; line-height: 1.5; }
-        .guide-steps { text-align: left; margin-bottom: 30px; }
-        .guide-step { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; padding: 15px; background: rgba(85,208,130,0.06); border-radius: 16px; border: 1px solid rgba(85,208,130,0.12); transition: transform 0.3s ease, background 0.3s ease; }
-        .guide-step:hover { transform: translateX(5px); background: rgba(85,208,130,0.1); }
-        .step-number { width: 32px; height: 32px; background: linear-gradient(135deg,#2c7a47,#55d082); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
-        .step-content h3 { font-size: 15px; color: var(--text-primary); font-weight: 700; margin-bottom: 4px; }
-        .step-content p  { font-size: 13px; color: var(--text-secondary); line-height: 1.4; margin: 0; }
-        .proceed-btn { width: 100%; padding: 20px 24px; background: linear-gradient(270deg,#2c7a47,#005c4b,#1f6e3f); background-size: 400% 400%; color: white; border: none; border-radius: 20px; font-size: 17px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.15s ease, box-shadow 0.3s ease; box-shadow: 0 10px 25px rgba(44,122,71,0.35); animation: colorShift 6s ease infinite; font-family: 'Inter', sans-serif; touch-action: manipulation; }
-        .proceed-btn:hover  { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(44,122,71,0.5); }
-        .proceed-btn:active { transform: scale(0.96) translateY(0); }
+
+        .guide-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(145deg, #1f6e3f, #55d082);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 44px;
+            color: #ffffff;
+            box-shadow: 0 12px 40px rgba(85, 208, 130, 0.45),
+                        inset 0 1px 0 rgba(255,255,255,0.3);
+            animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .guide-card h2 {
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .guide-subtitle {
+            font-size: 15px;
+            color: #aaaaaa;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .guide-steps {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(85, 208, 130, 0.08);
+            border-radius: 16px;
+            border: 1px solid rgba(85, 208, 130, 0.15);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .guide-step:hover {
+            transform: translateX(5px);
+            background: rgba(85, 208, 130, 0.12);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2c7a47, #55d082);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 15px;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            font-size: 13px;
+            color: #aaaaaa;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .proceed-btn {
+            width: 100%;
+            padding: 20px 24px;
+            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
+            background-size: 400% 400%;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.15s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3);
+            animation: colorShift 6s ease infinite;
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+
+        .proceed-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(44, 122, 71, 0.4);
+        }
+
+        .proceed-btn:active {
+            transform: scale(0.96) translateY(0);
+        }
+
+        /* =========================================
+           12. INSTALL PROMPT BANNER (WEB MODE)
+           ========================================= */
+        #install-prompt-banner {
+            display: none;
+            position: fixed;
+            bottom: max(20px, env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%) translateY(150%);
+            z-index: 5000;
+            width: calc(100% - 40px);
+            max-width: 400px;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(10, 10, 10, 0.95));
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5),
+                        0 0 0 1px rgba(85, 208, 130, 0.3),
+                        inset 0 1px 0 rgba(255,255,255,0.05);
+            animation: bannerSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        #install-prompt-banner.show {
+            display: block;
+            animation: bannerSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        #install-prompt-banner.hide {
+            animation: bannerSlideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes bannerSlideUp {
+            from { transform: translateX(-50%) translateY(150%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes bannerSlideDown {
+            from { transform: translateX(-50%) translateY(0); opacity: 1; }
+            to { transform: translateX(-50%) translateY(150%); opacity: 0; }
+        }
+
+        .banner-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .banner-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #1f6e3f, #55d082);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .banner-text h3 {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+        }
+
+        .banner-text p {
+            font-size: 13px;
+            color: #aaaaaa;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .banner-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .banner-btn {
+            flex: 1;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+        }
+
+        .banner-btn.install {
+            background: linear-gradient(135deg, #2c7a47, #1f6e3f);
+            color: white;
+            box-shadow: 0 6px 20px rgba(44, 122, 71, 0.3);
+        }
+
+        .banner-btn.install:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(44, 122, 71, 0.4);
+        }
+
+        .banner-btn.dismiss {
+            background: #333333;
+            color: #aaaaaa;
+        }
+
+        .banner-btn.dismiss:hover {
+            background: #444444;
+        }
+
+        .banner-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            color: #aaaaaa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .banner-close:hover {
+            background: rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+
+        /* =========================================
+           13. FULLSCREEN TOGGLE BUTTON
+           ========================================= */
+        #fullscreen-toggle {
+            position: fixed;
+            top: max(15px, env(safe-area-inset-top));
+            right: 15px;
+            z-index: 10000;
+            width: 44px;
+            height: 44px;
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(85, 208, 130, 0.3);
+            border-radius: 12px;
+            color: #55d082;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #fullscreen-toggle:hover {
+            background: rgba(85, 208, 130, 0.2);
+            transform: scale(1.05);
+        }
+
+        #fullscreen-toggle:active {
+            transform: scale(0.95);
+        }
+
+        #fullscreen-toggle.hidden {
+            display: none;
+        }
+
     </style>
-    <base target="_blank">
+<base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
-    <!-- ── NETWORK TOAST ── -->
+    <!-- Fullscreen Toggle Button -->
+    <button id="fullscreen-toggle" title="Toggle Fullscreen">
+        <i class="fas fa-expand"></i>
+    </button>
+
+    <!-- Install Prompt Banner (Web Mode) -->
+    <div id="install-prompt-banner">
+        <button class="banner-close" id="banner-close-btn">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="banner-header">
+            <div class="banner-icon">
+                <i class="fas fa-elephant"></i>
+            </div>
+            <div class="banner-text">
+                <h3>Install Shwari Finance</h3>
+                <p>Get the best experience with our app. Install now for faster access!</p>
+            </div>
+        </div>
+        <div class="banner-actions">
+            <button class="banner-btn dismiss" id="banner-dismiss-btn">Not Now</button>
+            <button class="banner-btn install" id="banner-install-btn">
+                <i class="fas fa-download"></i> Install
+            </button>
+        </div>
+    </div>
+
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
         <span id="toast-message">Checking connection...</span>
     </div>
 
-    <!-- ── NETWORK ERROR SCREEN ── -->
     <div id="network-error-screen">
         <div class="error-particle ep1"></div>
         <div class="error-particle ep2"></div>
         <div class="error-particle ep3"></div>
         <div class="error-particle ep4"></div>
+        
         <div class="error-illustration">
             <div class="broken-cable">
                 <div class="cable-left"></div>
@@ -831,9 +1616,13 @@
                 <div class="elephant-trunk"></div>
             </div>
         </div>
+        
         <div class="network-error-card">
             <h2 class="network-error-title">Connection Lost</h2>
-            <p class="network-error-message">Oops! Looks like the cable got unplugged.<br>Please check your internet connection and try again.</p>
+            <p class="network-error-message">
+                Oops! Looks like the cable got unplugged.<br>
+                Please check your internet connection and try again.
+            </p>
             <div class="network-status-indicator">
                 <div class="status-dot"></div>
                 <span class="status-text">You're offline</span>
@@ -845,129 +1634,121 @@
         </div>
     </div>
 
-    <!-- ── DEVICE / ORIENTATION ERROR ── -->
     <div id="device-error">
         <div class="error-card">
-            <i class="fas fa-mobile-screen" style="font-size:60px;color:#55d082;margin-bottom:20px;"></i>
+            <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
             <h2>Mobile Portrait Only</h2>
             <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone to access your dashboard.</p>
         </div>
     </div>
 
-    <!-- ── DUPLICATE APP SCREEN ── -->
     <div id="duplicate-app-screen">
         <div class="duplicate-card">
-            <div class="duplicate-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="duplicate-icon">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
             <h2>Duplicate App Detected</h2>
             <p>Another version of Shwari Finance is already installed on this device. Please uninstall the old version before using this one.</p>
             <div class="duplicate-info">
-                <div class="duplicate-info-item"><i class="fas fa-circle-exclamation"></i><span>Multiple app instances detected</span></div>
-                <div class="duplicate-info-item"><i class="fas fa-box-open"></i><span>Conflicting service workers found</span></div>
-                <div class="duplicate-info-item"><i class="fas fa-database"></i><span>Cache storage conflicts</span></div>
+                <div class="duplicate-info-item">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>Multiple app instances detected</span>
+                </div>
+                <div class="duplicate-info-item">
+                    <i class="fas fa-box-open"></i>
+                    <span>Conflicting service workers found</span>
+                </div>
+                <div class="duplicate-info-item">
+                    <i class="fas fa-database"></i>
+                    <span>Cache storage conflicts</span>
+                </div>
             </div>
-            <button class="uninstall-btn" id="uninstall-old-btn"><i class="fas fa-trash-can"></i><span>Uninstall Old Version</span></button>
+            <button class="uninstall-btn" id="uninstall-old-btn">
+                <i class="fas fa-trash-can"></i>
+                <span>Uninstall Old Version</span>
+            </button>
         </div>
     </div>
 
-    <!-- ── STORAGE PERMISSION MODAL ── -->
     <div id="storage-permission-modal">
         <div class="permission-card">
-            <div class="permission-icon"><i class="fas fa-database"></i></div>
+            <div class="permission-icon">
+                <i class="fas fa-database"></i>
+            </div>
             <h2>Storage Permission Required</h2>
             <p>Shwari Finance needs permission to store data locally on your device for offline access and better performance.</p>
             <div class="permission-buttons">
-                <button class="permission-btn deny"  id="deny-storage-btn">Not Now</button>
+                <button class="permission-btn deny" id="deny-storage-btn">Not Now</button>
                 <button class="permission-btn allow" id="allow-storage-btn">Allow</button>
             </div>
         </div>
     </div>
 
-    <!-- ── FORCED INSTALL / CHOOSE ACCESS ── -->
     <div id="forcedInstall">
         <div class="install-card">
-            <i class="fas fa-mobile-screen-button" style="font-size:60px;color:#55d082;margin-bottom:20px;"></i>
-            <h2>Choose Access Method</h2>
-            <p>Select how you'd like to access Shwari Finance. For the best experience, we recommend installing the app.</p>
-            <button class="install-btn" id="installAction"><i class="fas fa-download"></i><span>Install App</span></button>
-            <button class="install-btn web-mode-btn" id="continueAsWebBtn"><i class="fas fa-globe"></i><span>Continue as Website</span></button>
-            <p style="font-size:12px;color:#555;margin-top:20px;font-style:italic;"><i class="fas fa-info-circle"></i> Website mode requires portrait orientation</p>
+            <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
+            <h2 style="font-size: 24px; font-weight: 800; color:#55d082; margin-bottom: 12px;">Choose Access Method</h2>
+            <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">Select how you'd like to access Shwari Finance. For best experience, we recommend installing the app.</p>
+            
+            <button class="install-btn" id="installAction" style="margin-bottom: 15px;">
+                <i class="fas fa-download"></i> <span>Install App</span>
+            </button>
+            
+            <button class="install-btn web-mode-btn" id="continueAsWebBtn">
+                <i class="fas fa-globe"></i> <span>Continue as Website</span>
+            </button>
+            
+            <p style="font-size: 12px; color: #666666; margin-top: 20px; font-style: italic;">
+                <i class="fas fa-info-circle"></i> Website mode requires portrait orientation
+            </p>
         </div>
     </div>
 
-    <!-- ── WEB INSTALL BANNER (ad — shown in web/browser mode) ── -->
-    <div id="web-install-banner" class="hidden">
-        <div class="banner-icon"><i class="fas fa-elephant"></i></div>
-        <div class="banner-text">
-            <strong>Get the Shwari App</strong>
-            <span>Faster · Offline · Secure</span>
-        </div>
-        <button class="banner-install-btn" id="banner-install-btn">Install</button>
-        <button class="banner-dismiss-btn" id="banner-dismiss-btn" title="Dismiss"><i class="fas fa-xmark"></i></button>
-    </div>
-
-    <!-- ── PERIODIC INSTALL MODAL (ad — shown in web mode every N minutes) ── -->
-    <div id="web-install-modal">
-        <div class="install-modal-card">
-            <div class="install-modal-header">
-                <div class="install-modal-icon"><i class="fas fa-elephant"></i></div>
-                <div class="install-modal-title">
-                    <strong>Install Shwari Finance</strong>
-                    <span>For a better experience</span>
-                </div>
-            </div>
-            <div class="install-modal-benefits">
-                <div class="benefit-item"><i class="fas fa-bolt-lightning"></i><span>Up to 3× faster than the website</span></div>
-                <div class="benefit-item"><i class="fas fa-wifi-slash"></i><span>Works offline — no connection needed</span></div>
-                <div class="benefit-item"><i class="fas fa-shield-halved"></i><span>Enhanced security &amp; privacy</span></div>
-                <div class="benefit-item"><i class="fas fa-bell"></i><span>Push notifications for updates</span></div>
-            </div>
-            <div class="install-modal-actions">
-                <button class="modal-install-btn" id="modal-install-btn"><i class="fas fa-download"></i> Install Free App</button>
-                <button class="modal-dismiss-btn" id="modal-dismiss-btn">Maybe Later</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── AUTH PORTAL ── -->
     <div id="auth-portal" class="hidden">
         <div id="reg-screen" class="auth-card hidden">
             <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
             <h2>Device Activation</h2>
             <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
-                <input type="text"  id="reg-name"  placeholder="Full Name (e.g. Surname, Other)" autocomplete="off">
-                <div class="error-message" id="name-error"><i class="fas fa-circle-exclamation"></i><span>Please enter your full name</span></div>
+                <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other)" autocomplete="off">
+                <div class="error-message" id="name-error">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>Please enter your full name</span>
+                </div>
             </div>
             <div class="input-group">
                 <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="off">
-                <div class="error-message" id="email-error"><i class="fas fa-circle-exclamation"></i><span>Please enter a valid email address</span></div>
+                <div class="error-message" id="email-error">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>Please enter a valid email address</span>
+                </div>
             </div>
             <button class="auth-btn" id="activate-btn">Activate Device</button>
         </div>
     </div>
 
-    <!-- ── CONTINUE OVERLAY ── -->
     <div id="continue-overlay" class="hidden">
         <div class="continue-header">
-            <h3 class="dept-title">Shwari Finance</h3>
+            <h3 class="dept-title">Shwari Finance<br></h3>
             <p class="dept-subtitle">Self Service Portal</p>
         </div>
+
         <div class="continue-footer">
             <div id="elephant-gate" class="elephant-gate">
                 <div class="unlock-ring"></div>
                 <i class="fas fa-elephant elephant-icon"></i>
             </div>
+            
             <div id="employee-info" class="employee-info">
                 <i class="fa-solid fa-elephant elephant-icon-small"></i>
                 <div class="text-group">
-                    <h2 id="display-name"  class="medium-font"></h2>
-                    <p  id="display-email" class="small-email"></p>
+                    <h2 id="display-name" class="medium-font"></h2>
+                    <p id="display-email" class="small-email"></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ── PARALLAX WRAPPER ── -->
     <div class="wrapper" id="ui">
         <div class="shockwave"></div>
         <div class="particle p1"></div>
@@ -976,58 +1757,103 @@
         <div class="particle p4"></div>
     </div>
 
-    <!-- ── APP IFRAME ── -->
     <div class="app" id="app">
         <iframe id="macro-frame"></iframe>
     </div>
 
-    <!-- ── INSTALL PROGRESS SCREEN ── -->
     <div id="install-progress-screen">
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
         <div class="install-particle ip3"></div>
         <div class="install-particle ip4"></div>
-        <div class="install-app-icon"><i class="fas fa-elephant"></i></div>
+
+        <div class="install-app-icon">
+            <i class="fas fa-elephant"></i>
+        </div>
+
         <p class="install-title">Installing Shwari Finance</p>
         <p class="install-subtitle">Setting up your portal</p>
+
         <div class="install-track-wrap">
-            <div class="install-track"><div class="install-bar" id="install-bar"></div></div>
+            <div class="install-track">
+                <div class="install-bar" id="install-bar"></div>
+            </div>
             <p class="install-status-text" id="install-status-text">Preparing files…</p>
         </div>
+
         <div class="tick-wrap" id="tick-wrap">
             <div class="tick-ripple" id="tick-ripple-1"></div>
             <div class="tick-ripple" id="tick-ripple-2" style="animation-delay:0.3s;"></div>
-            <div class="install-tick" id="install-tick"><i class="fas fa-check"></i></div>
+            <div class="install-tick" id="install-tick">
+                <i class="fas fa-check"></i>
+            </div>
         </div>
     </div>
 
-    <!-- ── ALREADY INSTALLED BLOCKER ── -->
     <div id="already-installed-blocker">
         <div class="blocker-card">
-            <div class="blocker-icon"><i class="fas fa-mobile-screen"></i></div>
+            <div class="blocker-icon">
+                <i class="fas fa-mobile-screen"></i>
+            </div>
             <h2>App Only Access</h2>
             <p>The Shwari Finance portal is not accessible via the browser. You have already installed the app on this device.</p>
             <div class="blocker-info">
-                <div class="blocker-info-item"><i class="fas fa-ban"></i><span>Browser access blocked for security</span></div>
-                <div class="blocker-info-item"><i class="fas fa-home"></i><span>Locate the green Elephant icon on your home screen</span></div>
-                <div class="blocker-info-item"><i class="fas fa-circle-check"></i><span>Launch the app directly to proceed</span></div>
+                <div class="blocker-info-item">
+                    <i class="fas fa-ban"></i>
+                    <span>Browser access blocked for security</span>
+                </div>
+                <div class="blocker-info-item">
+                    <i class="fas fa-home"></i>
+                    <span>Locate the green Elephant icon on your home screen</span>
+                </div>
+                <div class="blocker-info-item">
+                    <i class="fas fa-circle-check"></i>
+                    <span>Launch the app directly to proceed</span>
+                </div>
             </div>
-            <button class="open-app-btn" id="open-shwari-btn"><i class="fas fa-arrow-up-right-from-square"></i><span>Close Browser &amp; Open App</span></button>
+            <button class="open-app-btn" id="open-shwari-btn">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+                <span>Close Browser & Open App</span>
+            </button>
         </div>
     </div>
 
-    <!-- ── POST-INSTALL GUIDE ── -->
     <div id="post-install-guide">
         <div class="guide-card">
-            <div class="guide-icon"><i class="fas fa-elephant"></i></div>
+            <div class="guide-icon">
+                <i class="fas fa-elephant"></i>
+            </div>
             <h2>Installation Complete!</h2>
             <p class="guide-subtitle">Follow these steps to start using Shwari Finance</p>
+            
             <div class="guide-steps">
-                <div class="guide-step"><div class="step-number">1</div><div class="step-content"><h3>Close Browser Tab</h3><p>Close this browser tab to avoid duplicate instances</p></div></div>
-                <div class="guide-step"><div class="step-number">2</div><div class="step-content"><h3>Find on Home Screen</h3><p>Look for the green elephant icon on your home screen</p></div></div>
-                <div class="guide-step"><div class="step-number">3</div><div class="step-content"><h3>Launch App</h3><p>Tap the Shwari Finance icon to open your portal</p></div></div>
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Close Browser Tab</h3>
+                        <p>Close this browser tab to avoid duplicate instances</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Find on Home Screen</h3>
+                        <p>Look for the green elephant icon on your home screen</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Launch App</h3>
+                        <p>Tap the Shwari Finance icon to open your portal</p>
+                    </div>
+                </div>
             </div>
-            <button class="proceed-btn" id="close-browser-btn"><i class="fas fa-check-circle"></i><span>I've Closed the Browser</span></button>
+            
+            <button class="proceed-btn" id="close-browser-btn">
+                <i class="fas fa-check-circle"></i>
+                <span>I've Closed the Browser</span>
+            </button>
         </div>
     </div>
 
@@ -1035,92 +1861,270 @@
     (function () {
         "use strict";
 
-        /* =====================================================
-           CONSTANTS
-           ===================================================== */
-        const MACRO_URL    = "https://script.google.com/macros/s/AKfycbyhHmIcPbvcZ8aC79DeGzRfA5rzYWc7u9p_s5mLcParteRxDpHbVi2MMO769gtpMWVd/exec";
-        const APP_VERSION  = '5.0.0';
+        // =========================================
+        // FULLSCREEN FUNCTIONALITY
+        // =========================================
+        const fullscreenToggle = document.getElementById('fullscreen-toggle');
+        const fullscreenIcon = fullscreenToggle.querySelector('i');
+        let isFullscreen = false;
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement && 
+                !document.webkitFullscreenElement && 
+                !document.mozFullScreenElement && 
+                !document.msFullscreenElement) {
+                // Enter fullscreen
+                const docEl = document.documentElement;
+                if (docEl.requestFullscreen) {
+                    docEl.requestFullscreen();
+                } else if (docEl.webkitRequestFullscreen) {
+                    docEl.webkitRequestFullscreen();
+                } else if (docEl.mozRequestFullScreen) {
+                    docEl.mozRequestFullScreen();
+                } else if (docEl.msRequestFullscreen) {
+                    docEl.msRequestFullscreen();
+                }
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        function updateFullscreenIcon() {
+            isFullscreen = !!(document.fullscreenElement || 
+                             document.webkitFullscreenElement || 
+                             document.mozFullScreenElement || 
+                             document.msFullscreenElement);
+            fullscreenIcon.className = isFullscreen ? 'fas fa-compress' : 'fas fa-expand';
+        }
+
+        fullscreenToggle.addEventListener('click', toggleFullscreen);
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+        document.addEventListener('mozfullscreenchange', updateFullscreenIcon);
+        document.addEventListener('MSFullscreenChange', updateFullscreenIcon);
+
+        // Auto-request fullscreen on first user interaction
+        let fullscreenRequested = false;
+        function autoRequestFullscreen() {
+            if (!fullscreenRequested && !isFullscreen && !isPWA()) {
+                fullscreenRequested = true;
+                setTimeout(() => {
+                    toggleFullscreen();
+                }, 500);
+            }
+        }
+        document.addEventListener('click', autoRequestFullscreen, { once: true });
+        document.addEventListener('touchstart', autoRequestFullscreen, { once: true });
+
+        // =========================================
+        // INSTALL PROMPT BANNER (WEB MODE)
+        // =========================================
+        const installBanner = document.getElementById('install-prompt-banner');
+        const bannerCloseBtn = document.getElementById('banner-close-btn');
+        const bannerDismissBtn = document.getElementById('banner-dismiss-btn');
+        const bannerInstallBtn = document.getElementById('banner-install-btn');
+        let bannerDismissed = sessionStorage.getItem('shwari_banner_dismissed') === 'true';
+        let bannerShown = false;
+
+        function showInstallBanner() {
+            if (bannerDismissed || bannerShown || isPWA()) return;
+            
+            // Check if install prompt is available
+            if (deferredPrompt) {
+                installBanner.classList.add('show');
+                installBanner.classList.remove('hide');
+                bannerShown = true;
+            }
+        }
+
+        function hideInstallBanner() {
+            installBanner.classList.add('hide');
+            installBanner.classList.remove('show');
+            setTimeout(() => {
+                bannerShown = false;
+            }, 400);
+        }
+
+        function dismissBanner() {
+            bannerDismissed = true;
+            sessionStorage.setItem('shwari_banner_dismissed', 'true');
+            hideInstallBanner();
+        }
+
+        bannerCloseBtn.addEventListener('click', dismissBanner);
+        bannerDismissBtn.addEventListener('click', dismissBanner);
+
+        bannerInstallBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    hideInstallBanner();
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // Show banner periodically in web mode
+        function scheduleBanner() {
+            if (isPWA() || bannerDismissed) return;
+            
+            // Show after 30 seconds
+            setTimeout(() => {
+                showInstallBanner();
+            }, 30000);
+
+            // Show again every 5 minutes if dismissed
+            setInterval(() => {
+                if (!bannerDismissed && !bannerShown) {
+                    showInstallBanner();
+                }
+            }, 300000);
+        }
+
+        // =========================================
+        // BACKEND INITIALIZATION (URGENT PRIORITY)
+        // =========================================
+        const MACRO_URL = "https://script.google.com/macros/s/AKfycbyhHmIcPbvcZ8aC79DeGzRfA5rzYWc7u9p_s5mLcParteRxDpHbVi2MMO769gtpMWVd/exec";
+        const macroIframe = document.getElementById('macro-frame');
+        
+        let isMacroLoaded = false;
+        macroIframe.onload = function() {
+            isMacroLoaded = true;
+        };
+        macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
+
+        const APP_VERSION = '5.0.0';
         const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
 
-        // Pre-warm the backend iframe immediately
-        const macroIframe  = document.getElementById('macro-frame');
-        let   isMacroLoaded = false;
-        macroIframe.onload  = () => { isMacroLoaded = true; };
-        macroIframe.src     = MACRO_URL + "?cb=" + Date.now();
-
-        /* =====================================================
-           SUPER RESPONSIVE BUTTON INIT
-           ===================================================== */
+        // =========================================
+        // SUPER RESPONSIVE BUTTON INITIALIZATION
+        // =========================================
         function initSuperResponsiveButtons() {
-            document.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('touchstart', function() { this.style.transform = 'scale(0.96)'; this.style.transition = 'transform 0.1s ease'; }, { passive: true });
-                btn.addEventListener('touchend',   function() { this.style.transform = ''; setTimeout(() => { this.style.transition = ''; }, 100); }, { passive: true });
-                btn.addEventListener('touchcancel',function() { this.style.transform = ''; }, { passive: true });
-                btn.addEventListener('mousedown',  function() { this.style.transform = 'scale(0.96)'; });
-                btn.addEventListener('mouseup',    function() { this.style.transform = ''; });
-                btn.addEventListener('mouseleave', function() { this.style.transform = ''; });
+            const allButtons = document.querySelectorAll('button, .auth-btn, .install-btn, .retry-btn, .uninstall-btn, .permission-btn, .banner-btn');
+            
+            allButtons.forEach(btn => {
+                // Touch events for mobile
+                btn.addEventListener('touchstart', function(e) {
+                    this.style.transform = 'scale(0.96)';
+                    this.style.transition = 'transform 0.1s ease';
+                }, { passive: true });
+                
+                btn.addEventListener('touchend', function(e) {
+                    this.style.transform = '';
+                    setTimeout(() => {
+                        this.style.transition = '';
+                    }, 100);
+                }, { passive: true });
+                
+                btn.addEventListener('touchcancel', function(e) {
+                    this.style.transform = '';
+                }, { passive: true });
+
+                // Mouse events for desktop
+                btn.addEventListener('mousedown', function(e) {
+                    this.style.transform = 'scale(0.96)';
+                });
+                
+                btn.addEventListener('mouseup', function(e) {
+                    this.style.transform = '';
+                });
+                
+                btn.addEventListener('mouseleave', function(e) {
+                    this.style.transform = '';
+                });
+
+                // Keyboard accessibility
                 btn.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault(); this.style.transform = 'scale(0.96)'; this.click();
-                        setTimeout(() => { this.style.transform = ''; }, 150);
+                        e.preventDefault();
+                        this.style.transform = 'scale(0.96)';
+                        this.click();
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
                     }
                 });
+
+                // Focus states
+                btn.addEventListener('focus', function(e) {
+                    this.style.outline = '2px solid #55d082';
+                    this.style.outlineOffset = '2px';
+                });
+                
+                btn.addEventListener('blur', function(e) {
+                    this.style.outline = '';
+                    this.style.outlineOffset = '';
+                });
+
+                // Prevent double firing
                 btn.addEventListener('click', function(e) {
-                    if (this.dataset.processing === 'true') { e.preventDefault(); e.stopPropagation(); return false; }
+                    if (this.dataset.processing === 'true') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
                 });
             });
         }
 
-        /* =====================================================
-           HELPERS
-           ===================================================== */
-        const formatName = str => str ? str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : '';
-        const isPWA = () =>
-            window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true ||
-            document.referrer.includes('android-app://');
-
-        const validateEmail = email => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        const validateName  = name  => name.trim().length >= 2;
-
-        const showFieldError = (fieldId, errorId, show) => {
-            const f = document.getElementById(fieldId), e = document.getElementById(errorId);
-            if (show) { f.classList.add('error'); f.classList.remove('success'); e.classList.add('show'); }
-            else       { f.classList.remove('error'); f.classList.add('success'); e.classList.remove('show'); }
-        };
-        const clearFieldErrors = () => {
-            ['reg-name','reg-email'].forEach(id => document.getElementById(id).classList.remove('error','success'));
-            ['name-error','email-error'].forEach(id => document.getElementById(id).classList.remove('show'));
-        };
-
-        /* =====================================================
-           VERSION COMPARISON
-           ===================================================== */
-        function compareVersions(v1, v2) {
-            const p1 = v1.split('.').map(Number), p2 = v2.split('.').map(Number);
-            for (let i = 0; i < Math.max(p1.length, p2.length); i++) {
-                const a = p1[i]||0, b = p2[i]||0;
-                if (a > b) return 1; if (a < b) return -1;
-            }
-            return 0;
+        // =========================================
+        // DUPLICATE APP DETECTION
+        // =========================================
+        function checkDuplicateApp() {
+            return new Promise((resolve) => {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        const shwariRegs = registrations.filter(reg => 
+                            reg.scope && reg.scope.includes('shwari')
+                        );
+                        
+                        if (shwariRegs.length > 1) {
+                            showDuplicateAppScreen();
+                            resolve(true);
+                        } else {
+                            const existingInstance = localStorage.getItem('shwari_instance_id');
+                            const existingVersion = localStorage.getItem('shwari_app_version');
+                            
+                            if (existingInstance && existingInstance !== APP_INSTANCE_ID) {
+                                if (existingVersion && compareVersions(existingVersion, APP_VERSION) > 0) {
+                                    showDuplicateAppScreen();
+                                    resolve(true);
+                                    return;
+                                }
+                            }
+                            
+                            localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
+                            localStorage.setItem('shwari_app_version', APP_VERSION);
+                            resolve(false);
+                        }
+                    });
+                } else {
+                    resolve(false);
+                }
+            });
         }
 
-        /* =====================================================
-           DUPLICATE APP DETECTION
-           ===================================================== */
-        async function checkDuplicateApp() {
-            if (!('serviceWorker' in navigator)) return false;
-            const regs = await navigator.serviceWorker.getRegistrations();
-            const shwariRegs = regs.filter(r => r.scope && r.scope.includes('shwari'));
-            if (shwariRegs.length > 1) { showDuplicateAppScreen(); return true; }
-            const existingInstance = localStorage.getItem('shwari_instance_id');
-            const existingVersion  = localStorage.getItem('shwari_app_version');
-            if (existingInstance && existingInstance !== APP_INSTANCE_ID) {
-                if (existingVersion && compareVersions(existingVersion, APP_VERSION) > 0) { showDuplicateAppScreen(); return true; }
+        function compareVersions(v1, v2) {
+            const parts1 = v1.split('.').map(Number);
+            const parts2 = v2.split('.').map(Number);
+            
+            for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+                const p1 = parts1[i] || 0;
+                const p2 = parts2[i] || 0;
+                if (p1 > p2) return 1;
+                if (p1 < p2) return -1;
             }
-            localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
-            localStorage.setItem('shwari_app_version', APP_VERSION);
-            return false;
+            return 0;
         }
 
         function showDuplicateAppScreen() {
@@ -1130,179 +2134,594 @@
         document.getElementById('uninstall-old-btn').addEventListener('click', async function() {
             this.dataset.processing = 'true';
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Uninstalling...</span>';
+            
             try {
                 if ('serviceWorker' in navigator) {
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    for (const r of regs) await r.unregister();
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const reg of registrations) {
+                        await reg.unregister();
+                    }
                 }
+                
                 const cacheNames = await caches.keys();
-                await Promise.all(cacheNames.map(n => caches.delete(n)));
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                
+                const currentInstance = localStorage.getItem('shwari_instance_id');
                 localStorage.clear();
                 localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
                 localStorage.setItem('shwari_app_version', APP_VERSION);
+                
                 window.location.reload();
-            } catch (err) {
-                console.error('Uninstall error:', err);
-                this.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Error — Try Manual Uninstall</span>';
+            } catch (error) {
+                console.error('Uninstall error:', error);
+                this.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Error - Try Manual Uninstall</span>';
             }
         });
 
-        /* =====================================================
-           STORAGE PERMISSION
-           ===================================================== */
+        // =========================================
+        // STORAGE PERMISSION HANDLING
+        // =========================================
         function requestStoragePermission() {
-            return new Promise(resolve => {
-                const granted = localStorage.getItem('shwari_storage_permission');
-                if (granted === 'granted') return resolve(true);
-                if (granted === 'denied')  return resolve(false);
-                const modal    = document.getElementById('storage-permission-modal');
+            return new Promise((resolve) => {
+                const permissionGranted = localStorage.getItem('shwari_storage_permission');
+                
+                if (permissionGranted === 'granted') {
+                    resolve(true);
+                    return;
+                }
+                
+                if (permissionGranted === 'denied') {
+                    resolve(false);
+                    return;
+                }
+                
+                const modal = document.getElementById('storage-permission-modal');
                 const allowBtn = document.getElementById('allow-storage-btn');
-                const denyBtn  = document.getElementById('deny-storage-btn');
+                const denyBtn = document.getElementById('deny-storage-btn');
+                
                 modal.classList.add('active');
-                allowBtn.addEventListener('click', () => { localStorage.setItem('shwari_storage_permission','granted'); modal.classList.remove('active'); resolve(true);  }, { once: true });
-                denyBtn.addEventListener('click',  () => { localStorage.setItem('shwari_storage_permission','denied');  modal.classList.remove('active'); resolve(false); }, { once: true });
+                
+                allowBtn.addEventListener('click', function() {
+                    localStorage.setItem('shwari_storage_permission', 'granted');
+                    modal.classList.remove('active');
+                    resolve(true);
+                }, { once: true });
+                
+                denyBtn.addEventListener('click', function() {
+                    localStorage.setItem('shwari_storage_permission', 'denied');
+                    modal.classList.remove('active');
+                    resolve(false);
+                }, { once: true });
             });
         }
 
-        /* =====================================================
-           SERVICE WORKER REGISTRATION
-           ===================================================== */
+        // =========================================
+        // ENHANCED SERVICE WORKER REGISTRATION
+        // =========================================
         async function registerServiceWorker() {
-            if (!('serviceWorker' in navigator)) return;
-            try {
-                const reg = await navigator.serviceWorker.register('sw.js');
-                reg.addEventListener('updatefound', () => {
-                    const nw = reg.installing;
-                    nw.addEventListener('statechange', () => {
-                        if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateNotification();
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    console.log('SW registered:', registration.scope);
+                    
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                showUpdateNotification();
+                            }
+                        });
                     });
-                });
-                return reg;
-            } catch (err) { console.error('SW registration failed:', err); }
+                    
+                    return registration;
+                } catch (error) {
+                    console.error('SW registration failed:', error);
+                }
+            }
         }
 
         function showUpdateNotification() {
             const toast = document.createElement('div');
-            toast.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2c7a47,#1f6e3f);color:white;padding:16px 24px;border-radius:16px;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;z-index:100004;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4);`;
-            toast.innerHTML = `<i class="fas fa-rotate"></i><span>Update available!</span><button style="background:white;color:#2c7a47;border:none;padding:8px 16px;border-radius:8px;font-weight:700;cursor:pointer;margin-left:8px;">Update</button>`;
-            toast.querySelector('button').addEventListener('click', () => window.location.reload());
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, #2c7a47, #1f6e3f);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 16px;
+                font-family: 'Inter', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                z-index: 100004;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            `;
+            toast.innerHTML = `
+                <i class="fas fa-rotate"></i>
+                <span>Update available!</span>
+                <button style="
+                    background: white;
+                    color: #2c7a47;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    margin-left: 8px;
+                ">Update</button>
+            `;
+            
+            toast.querySelector('button').addEventListener('click', () => {
+                window.location.reload();
+            });
+            
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 10000);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 10000);
         }
 
-        /* =====================================================
-           WEBSITE MODE — INSTALL ADS
-           ===================================================== */
-        let deferredPrompt = null;
-
-        window.addEventListener('beforeinstallprompt', e => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (!isPWA()) {
-                // Show the forced-install choice only when not in web mode yet
-                const isWebMode = sessionStorage.getItem('shwari_web_mode') === 'true';
-                if (!isWebMode) document.getElementById('forcedInstall').style.display = 'flex';
-                // Always update the banner
-                showWebInstallBanner();
+        // =========================================
+        // MAIN INITIALIZATION
+        // =========================================
+        async function initializeApp() {
+            initSuperResponsiveButtons();
+            
+            const isDuplicate = await checkDuplicateApp();
+            if (isDuplicate) {
+                return;
             }
-        });
+            
+            await requestStoragePermission();
+            await registerServiceWorker();
+            
+            const uiWrapper = document.getElementById('ui');
+            const appPanel  = document.getElementById('app');
+            let isParallaxActive = true;
+            let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+            let rafId;
 
-        function showWebInstallBanner() {
-            const banner = document.getElementById('web-install-banner');
-            const dismissed = sessionStorage.getItem('shwari_banner_dismissed');
-            if (!dismissed) banner.classList.remove('hidden');
-        }
+            const onPointerMove = (e) => {
+                if (!isParallaxActive) return;
+                const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
+                const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
+                targetX = Math.max(-8, Math.min(8, (window.innerWidth  / 2 - cx) / 35));
+                targetY = Math.max(-8, Math.min(8, (window.innerHeight / 2 - cy) / 35));
+            };
 
-        function hideWebInstallBanner() {
-            document.getElementById('web-install-banner').classList.add('hidden');
-            sessionStorage.setItem('shwari_banner_dismissed', 'true');
-        }
+            const lerp = (a, b, t) => a + (b - a) * t;
 
-        document.getElementById('banner-dismiss-btn').addEventListener('click', hideWebInstallBanner);
-
-        async function triggerInstallPrompt() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    hideWebInstallBanner();
-                    hideInstallModal();
-                    startInstallAnimation(() => window.initAuth());
+            const tickParallax = () => {
+                if (!isParallaxActive) return;
+                currentX = lerp(currentX, targetX, 0.07);
+                currentY = lerp(currentY, targetY, 0.07);
+                if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
+                    uiWrapper.style.transform = `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
                 }
-                deferredPrompt = null;
-            } else {
-                alert('To install, open your browser menu and choose "Add to Home Screen" or "Install App".');
+                rafId = requestAnimationFrame(tickParallax);
+            };
+
+            document.addEventListener('mousemove', onPointerMove, { passive: true });
+            document.addEventListener('touchmove', onPointerMove, { passive: true });
+
+            uiWrapper.classList.add('pop-in');
+            tickParallax();
+            
+            window.initAuth();
+        }
+
+        initializeApp();
+
+        // =========================================
+        // EXISTING FUNCTIONS (ENHANCED)
+        // =========================================
+        const formatName = (str) => {
+            if (!str) return "";
+            return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+
+        const isPWA = () => {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true || 
+                   document.referrer.includes('android-app://');
+        };
+
+        window.initAuth = () => {
+            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
+            const isWebMode = sessionStorage.getItem('shwari_web_mode') === 'true';
+
+            if (!isPWA() && !isWebMode) {
+                if (isInstalledLocally) {
+                    showAlreadyInstalledBlocker();
+                    return; 
+                } else {
+                    const forcedInstall = document.getElementById('forcedInstall');
+                    forcedInstall.style.display = 'flex';
+                    forcedInstall.querySelector('.install-card').style.animation = 'cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+                    return; 
+                }
             }
-        }
 
-        document.getElementById('banner-install-btn').addEventListener('click', triggerInstallPrompt);
+            // Start install banner scheduling for web mode
+            if (isWebMode && !isPWA()) {
+                scheduleBanner();
+            }
 
-        // Periodic install modal (every 3 minutes in web mode, max 3 times per session)
-        let modalShowCount = 0;
-        const MAX_MODAL_SHOWS = 3;
+            // Hide fullscreen toggle in PWA mode
+            if (isPWA()) {
+                fullscreenToggle.classList.add('hidden');
+            }
 
-        function showInstallModal() {
-            if (modalShowCount >= MAX_MODAL_SHOWS) return;
-            if (!deferredPrompt) return;
-            if (isPWA()) return;
-            document.getElementById('web-install-modal').classList.add('active');
-            modalShowCount++;
-        }
-        function hideInstallModal() {
-            document.getElementById('web-install-modal').classList.remove('active');
-        }
+            const isRegistered = localStorage.getItem('shwari_registered');
+            if (isRegistered === 'true') {
+                document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
+                document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
+                document.getElementById('continue-overlay').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('elephant-gate').classList.add('unlocked');
+                    document.getElementById('employee-info').classList.add('unlocked');
+                }, 3000);
+                setTimeout(() => {
+                    handleContinue();
+                }, 6500);
+            } else {
+                const authPortal = document.getElementById('auth-portal');
+                authPortal.classList.remove('hidden');
+                document.getElementById('reg-screen').classList.remove('hidden');
+            }
+        };
 
-        document.getElementById('modal-install-btn').addEventListener('click', async () => {
-            hideInstallModal();
-            await triggerInstallPrompt();
+        // Form Validation Functions
+        const validateEmail = (email) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        };
+
+        const validateName = (name) => {
+            return name.trim().length >= 2;
+        };
+
+        const showFieldError = (fieldId, errorId, show) => {
+            const field = document.getElementById(fieldId);
+            const error = document.getElementById(errorId);
+            if (show) {
+                field.classList.add('error');
+                field.classList.remove('success');
+                error.classList.add('show');
+            } else {
+                field.classList.remove('error');
+                field.classList.add('success');
+                error.classList.remove('show');
+            }
+        };
+
+        const clearFieldErrors = () => {
+            document.getElementById('reg-name').classList.remove('error', 'success');
+            document.getElementById('reg-email').classList.remove('error', 'success');
+            document.getElementById('name-error').classList.remove('show');
+            document.getElementById('email-error').classList.remove('show');
+        };
+
+        document.getElementById('reg-name').addEventListener('blur', function() {
+            const name = this.value.trim();
+            if (name.length > 0) {
+                showFieldError('reg-name', 'name-error', !validateName(name));
+            }
         });
-        document.getElementById('modal-dismiss-btn').addEventListener('click', () => {
-            hideInstallModal();
-            // Next modal appears after 3 minutes
-            setTimeout(showInstallModal, 3 * 60 * 1000);
+
+        document.getElementById('reg-name').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                showFieldError('reg-name', 'name-error', !validateName(this.value.trim()));
+            }
         });
 
-        // Schedule first modal 90s after web mode session starts
-        function scheduleInstallModals() {
-            setTimeout(showInstallModal, 90 * 1000);
-        }
+        document.getElementById('reg-email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email.length > 0) {
+                showFieldError('reg-email', 'email-error', !validateEmail(email));
+            }
+        });
+
+        document.getElementById('reg-email').addEventListener('input', function() {
+            if (this.classList.contains('error')) {
+                showFieldError('reg-email', 'email-error', !validateEmail(this.value.trim()));
+            }
+        });
+
+        document.getElementById('activate-btn').addEventListener('click', function() {
+            const nameInput = document.getElementById('reg-name');
+            const emailInput = document.getElementById('reg-email');
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim().toLowerCase();
+            
+            let isValid = true;
+            
+            if (!validateName(name)) {
+                showFieldError('reg-name', 'name-error', true);
+                isValid = false;
+            } else {
+                showFieldError('reg-name', 'name-error', false);
+            }
+            
+            if (!validateEmail(email)) {
+                showFieldError('reg-email', 'email-error', true);
+                isValid = false;
+            } else {
+                showFieldError('reg-email', 'email-error', false);
+            }
+            
+            if (!isValid) {
+                const btn = document.getElementById('activate-btn');
+                btn.style.animation = 'shakeError 0.4s ease';
+                setTimeout(() => { btn.style.animation = ''; }, 400);
+                return;
+            }
+            
+            clearFieldErrors();
+            
+            localStorage.setItem('emp_name', name);
+            localStorage.setItem('emp_email', email);
+            localStorage.setItem('shwari_registered', 'true');
+            const authPortal = document.getElementById('auth-portal');
+            const regScreen = document.getElementById('reg-screen');
+            const continueOverlay = document.getElementById('continue-overlay');
+            document.getElementById('display-name').innerText = formatName(name);
+            document.getElementById('display-email').innerText = email;
+            regScreen.style.transform = 'scale(0.9)';
+            regScreen.style.opacity = '0';
+            setTimeout(() => {
+                authPortal.style.opacity = '0';
+                setTimeout(() => {
+                    authPortal.classList.add('hidden');
+                    regScreen.classList.add('hidden');
+                    continueOverlay.classList.remove('hidden');
+                    continueOverlay.style.opacity = '0';
+                    void continueOverlay.offsetWidth;
+                    continueOverlay.style.opacity = '1';
+                    setTimeout(() => {
+                        document.getElementById('elephant-gate').classList.add('unlocked');
+                        document.getElementById('employee-info').classList.add('unlocked');
+                    }, 3000);
+                    setTimeout(() => {
+                        handleContinue();
+                    }, 6500);
+                }, 500);
+            }, 400);
+        });
+
+        window.handleContinue = () => {
+            const continueOverlay = document.getElementById('continue-overlay');
+            continueOverlay.style.opacity = '0';
+            setTimeout(() => { 
+                continueOverlay.style.display = 'none'; 
+                executeTransition();
+            }, 600);
+        };
+
+        const executeTransition = () => {
+            const transitionLogic = () => {
+                const uiWrapper = document.getElementById('ui');
+                const appPanel = document.getElementById('app');
+                let isParallaxActive = true;
+                let rafId;
+                
+                if (!isParallaxActive) return;
+                isParallaxActive = false;
+                cancelAnimationFrame(rafId);
+                
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        uiWrapper.classList.add('pull-active');
+                    });
+                });
+
+                setTimeout(() => {
+                    appPanel.classList.add('active');
+                    
+                    setTimeout(() => {
+                        if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+                    }, 1200);
+                }, 300);
+            };
+
+            if (isMacroLoaded) {
+                transitionLogic();
+            } else {
+                let fallbackTimer = setTimeout(transitionLogic, 8000);
+                macroIframe.addEventListener('load', () => {
+                    clearTimeout(fallbackTimer);
+                    transitionLogic();
+                }, {once: true});
+            }
+        };
 
         /* =====================================================
-           INSTALL PROGRESS ANIMATION
-           ===================================================== */
-        const installScreen = document.getElementById('install-progress-screen');
-        const installBar    = document.getElementById('install-bar');
-        const installStatus = document.getElementById('install-status-text');
-        const installTick   = document.getElementById('install-tick');
-        const tickRipple1   = document.getElementById('tick-ripple-1');
-        const tickRipple2   = document.getElementById('tick-ripple-2');
+           NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
+           ====================================================== */
+        
+        const networkErrorScreen = document.getElementById('network-error-screen');
+        const networkToast = document.getElementById('network-toast');
+        const toastMessage = document.getElementById('toast-message');
+        let wasOffline = false;
+        let isCheckingConnection = false;
+
+        const showToast = (message, isOnline) => {
+            toastMessage.textContent = message;
+            networkToast.className = isOnline ? 'online' : 'offline';
+            networkToast.classList.add('show');
+            
+            setTimeout(() => {
+                networkToast.classList.remove('show');
+            }, 3000);
+        };
+
+        const checkConnectivity = async () => {
+            if (isCheckingConnection) return navigator.onLine;
+            isCheckingConnection = true;
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch('https://www.google.com/favicon.ico', {
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                isCheckingConnection = false;
+                return true;
+            } catch (error) {
+                isCheckingConnection = false;
+                return false;
+            }
+        };
+
+        const showNetworkError = () => {
+            networkErrorScreen.classList.add('active');
+            networkErrorScreen.classList.remove('fade-out');
+        };
+
+        const hideNetworkError = () => {
+            networkErrorScreen.classList.add('fade-out');
+            setTimeout(() => {
+                networkErrorScreen.classList.remove('active');
+            }, 500);
+        };
+
+        const handleOnline = async () => {
+            const isConnected = await checkConnectivity();
+            if (isConnected) {
+                if (wasOffline) {
+                    showToast('Back online!', true);
+                    hideNetworkError();
+                    wasOffline = false;
+                }
+            }
+        };
+
+        const handleOffline = () => {
+            wasOffline = true;
+            showToast('Connection lost', false);
+            showNetworkError();
+        };
+
+        const checkAndRetryConnection = async () => {
+            const retryBtn = document.getElementById('retry-connection-btn');
+            const btnText = retryBtn.querySelector('span');
+            const btnIcon = retryBtn.querySelector('i');
+            
+            retryBtn.disabled = true;
+            retryBtn.classList.add('loading');
+            btnText.textContent = 'Checking...';
+            
+            const isConnected = await checkConnectivity();
+            
+            retryBtn.disabled = false;
+            retryBtn.classList.remove('loading');
+            btnText.textContent = 'Try Again';
+            
+            if (isConnected) {
+                showToast('Connection restored!', true);
+                hideNetworkError();
+                wasOffline = false;
+            } else {
+                retryBtn.style.animation = 'shakeError 0.4s ease';
+                setTimeout(() => { retryBtn.style.animation = ''; }, 400);
+            }
+        };
+
+        document.getElementById('retry-connection-btn').addEventListener('click', checkAndRetryConnection);
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        setInterval(async () => {
+            if (wasOffline || !navigator.onLine) {
+                const isConnected = await checkConnectivity();
+                if (isConnected && wasOffline) {
+                    handleOnline();
+                } else if (!isConnected && !wasOffline && !navigator.onLine) {
+                    handleOffline();
+                }
+            }
+        }, 5000);
+
+        window.addEventListener('load', async () => {
+            if (!navigator.onLine) {
+                handleOffline();
+            } else {
+                const isConnected = await checkConnectivity();
+                if (!isConnected) {
+                    handleOffline();
+                }
+            }
+        });
+
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible') {
+                if (!navigator.onLine) {
+                    handleOffline();
+                } else {
+                    const isConnected = await checkConnectivity();
+                    if (isConnected && wasOffline) {
+                        handleOnline();
+                    }
+                }
+            }
+        });
+
+        /* =====================================================
+           INSTALL PROGRESS SCREEN
+           ====================================================== */
+
+        const installScreen  = document.getElementById('install-progress-screen');
+        const installBar     = document.getElementById('install-bar');
+        const installStatus  = document.getElementById('install-status-text');
+        const installTick    = document.getElementById('install-tick');
+        const tickRipple1    = document.getElementById('tick-ripple-1');
+        const tickRipple2    = document.getElementById('tick-ripple-2');
 
         const installSteps = [
-            { pct: 12, label: 'Downloading resources…'   },
-            { pct: 28, label: 'Verifying packages…'       },
-            { pct: 45, label: 'Configuring app data…'     },
-            { pct: 62, label: 'Securing your device…'     },
-            { pct: 80, label: 'Optimising performance…'   },
-            { pct: 95, label: 'Almost there…'             },
-            { pct:100, label: 'Done!'                     },
+            { pct: 12, label: 'Downloading resources…'  },
+            { pct: 28, label: 'Verifying packages…'      },
+            { pct: 45, label: 'Configuring app data…'    },
+            { pct: 62, label: 'Securing your device…'    },
+            { pct: 80, label: 'Optimising performance…'  },
+            { pct: 95, label: 'Almost there…'            },
+            { pct: 100, label: 'Done!'                   },
         ];
 
-        function startInstallAnimation(onComplete) {
+        function runInstallAnimation(onComplete) {
             installScreen.classList.add('active');
+
             let step = 0;
+
             function nextStep() {
                 if (step >= installSteps.length) return;
                 const s = installSteps[step++];
                 installBar.style.width = s.pct + '%';
                 installStatus.style.opacity = '0';
-                setTimeout(() => { installStatus.textContent = s.label; installStatus.style.opacity = '1'; }, 200);
+                setTimeout(() => {
+                    installStatus.textContent = s.label;
+                    installStatus.style.opacity = '1';
+                }, 200);
+
                 if (s.pct < 100) {
-                    setTimeout(nextStep, 350 + Math.random() * 300);
+                    const delay = 350 + Math.random() * 300;
+                    setTimeout(nextStep, delay);
                 } else {
                     setTimeout(() => {
                         installTick.classList.add('show');
                         tickRipple1.classList.add('animate');
-                        setTimeout(() => tickRipple2.classList.add('animate'), 300);
+                        setTimeout(() => { tickRipple2.classList.add('animate'); }, 300);
+
                         setTimeout(() => {
                             installScreen.classList.add('fade-out');
                             setTimeout(() => {
@@ -1313,24 +2732,21 @@
                     }, 400);
                 }
             }
+
             setTimeout(nextStep, 300);
         }
 
-        // Wrap so flags get set
-        function runInstallAnimation(onComplete) {
-            startInstallAnimation(() => {
-                localStorage.setItem('shwari_app_installed', 'true');
-                localStorage.setItem('shwari_show_guide',   'true');
-                if (onComplete) onComplete();
-            });
-        }
-
-        /* =====================================================
-           FORCED INSTALL OVERLAY HANDLERS
-           ===================================================== */
+        /* ---- Patch the install flow ---- */
+        let deferredPrompt;
         const installOverlay = document.getElementById('forcedInstall');
         const installBtn     = document.getElementById('installAction');
         const continueAsWebBtn = document.getElementById('continueAsWebBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (!isPWA()) installOverlay.style.display = 'flex';
+        });
 
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
@@ -1341,51 +2757,67 @@
                     installOverlay.style.transition = 'opacity 0.5s ease';
                     setTimeout(() => {
                         installOverlay.style.display = 'none';
-                        runInstallAnimation(() => window.initAuth());
+                        runInstallAnimation(() => {
+                            window.initAuth();
+                        });
                     }, 500);
                 }
                 deferredPrompt = null;
             }
         });
 
-        continueAsWebBtn.addEventListener('click', () => {
-            sessionStorage.setItem('shwari_web_mode', 'true');
-            installOverlay.style.display = 'none';
-            showWebInstallBanner();
-            scheduleInstallModals();
-            window.initAuth();
-        });
+        if (continueAsWebBtn) {
+            continueAsWebBtn.addEventListener('click', () => {
+                sessionStorage.setItem('shwari_web_mode', 'true');
+                installOverlay.style.display = 'none';
+                window.initAuth();
+            });
+        }
 
         window.addEventListener('appinstalled', () => {
             if (!installScreen.classList.contains('active')) {
-                installOverlay.style.opacity = '0';
-                installOverlay.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => {
-                    installOverlay.style.display = 'none';
-                    runInstallAnimation(() => window.initAuth());
-                }, 500);
+                if (installOverlay.style.display !== 'none') {
+                    installOverlay.style.opacity = '0';
+                    installOverlay.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        installOverlay.style.display = 'none';
+                        runInstallAnimation(() => { window.initAuth(); });
+                    }, 500);
+                }
             }
-            localStorage.setItem('shwari_app_installed','true');
-            localStorage.setItem('shwari_show_guide','true');
         });
 
         /* =====================================================
-           ALREADY-INSTALLED BLOCKER
-           ===================================================== */
+           NEW FEATURES: DUPLICATE BLOCKER & POST-INSTALL GUIDE
+           ====================================================== */
+        
         async function checkIfAppAlreadyInstalled() {
             if ('getInstalledRelatedApps' in navigator) {
                 try {
-                    const apps = await navigator.getInstalledRelatedApps();
-                    if (apps.some(a => a.id === 'shwari-finance' || a.url?.includes('shwari') || a.scope?.includes('shwari'))) {
-                        showAlreadyInstalledBlocker(); return true;
+                    const relatedApps = await navigator.getInstalledRelatedApps();
+                    const shwariInstalled = relatedApps.some(app => 
+                        app.id === 'shwari-finance' || 
+                        app.url?.includes('shwari') ||
+                        app.scope?.includes('shwari')
+                    );
+                    
+                    if (shwariInstalled) {
+                        showAlreadyInstalledBlocker();
+                        return true;
                     }
-                } catch(e) { /* ignore */ }
+                } catch (e) {
+                    console.log('getInstalledRelatedApps check failed:', e);
+                }
             }
+            
             const isInstalled = localStorage.getItem('shwari_app_installed') === 'true';
-            const hasInstance  = localStorage.getItem('shwari_instance_id');
+            const hasInstance = localStorage.getItem('shwari_instance_id');
+            
             if (isInstalled && hasInstance && hasInstance !== APP_INSTANCE_ID) {
-                showAlreadyInstalledBlocker(); return true;
+                showAlreadyInstalledBlocker();
+                return true;
             }
+            
             return false;
         }
 
@@ -1393,21 +2825,28 @@
             document.getElementById('already-installed-blocker').classList.add('active');
         }
 
-        document.getElementById('open-shwari-btn').addEventListener('click', () => {
-            alert('Please close this browser tab and launch Shwari Finance from the green elephant icon on your home screen.');
-            window.close();
-        });
-
-        /* =====================================================
-           POST-INSTALL GUIDE
-           ===================================================== */
         function showPostInstallGuide() {
             const guide = document.getElementById('post-install-guide');
             guide.style.display = 'flex';
             void guide.offsetWidth;
             guide.classList.add('active');
+            
             localStorage.setItem('shwari_app_installed', 'true');
         }
+
+        const originalInitAuth = window.initAuth;
+        window.initAuth = function() {
+            if (localStorage.getItem('shwari_show_guide') === 'true') {
+                showPostInstallGuide();
+                return;
+            }
+            return originalInitAuth.apply(this, arguments);
+        };
+
+        document.getElementById('open-shwari-btn').addEventListener('click', function() {
+            alert('Please close this browser tab and launch Shwari Finance from the green elephant icon on your home screen.');
+            window.close();
+        });
 
         document.getElementById('close-browser-btn').addEventListener('click', function() {
             const guide = document.getElementById('post-install-guide');
@@ -1416,244 +2855,26 @@
             setTimeout(() => {
                 guide.style.display = 'none';
                 localStorage.removeItem('shwari_show_guide');
-                coreInitAuth();
+                originalInitAuth();
             }, 800);
         });
 
-        /* =====================================================
-           NETWORK CONNECTIVITY
-           ===================================================== */
-        const networkErrorScreen = document.getElementById('network-error-screen');
-        const networkToast       = document.getElementById('network-toast');
-        const toastMessage       = document.getElementById('toast-message');
-        let wasOffline           = false;
-        let isCheckingConnection = false;
-
-        const showToast = (message, isOnline) => {
-            toastMessage.textContent = message;
-            networkToast.className   = isOnline ? 'online' : 'offline';
-            networkToast.classList.add('show');
-            setTimeout(() => networkToast.classList.remove('show'), 3000);
-        };
-
-        const checkConnectivity = async () => {
-            if (isCheckingConnection) return navigator.onLine;
-            isCheckingConnection = true;
-            try {
-                const ctrl = new AbortController();
-                const tid  = setTimeout(() => ctrl.abort(), 5000);
-                await fetch('https://www.google.com/favicon.ico', { method:'HEAD', mode:'no-cors', signal: ctrl.signal });
-                clearTimeout(tid);
-                isCheckingConnection = false;
-                return true;
-            } catch { isCheckingConnection = false; return false; }
-        };
-
-        const showNetworkError = () => { networkErrorScreen.classList.add('active'); networkErrorScreen.classList.remove('fade-out'); };
-        const hideNetworkError = () => { networkErrorScreen.classList.add('fade-out'); setTimeout(() => networkErrorScreen.classList.remove('active'), 500); };
-
-        const handleOnline = async () => {
-            const ok = await checkConnectivity();
-            if (ok && wasOffline) { showToast('Back online!', true); hideNetworkError(); wasOffline = false; }
-        };
-        const handleOffline = () => { wasOffline = true; showToast('Connection lost', false); showNetworkError(); };
-
-        document.getElementById('retry-connection-btn').addEventListener('click', async function() {
-            const btn = this, txtSpan = btn.querySelector('span'), icon = btn.querySelector('i');
-            btn.disabled = true; btn.classList.add('loading'); txtSpan.textContent = 'Checking...';
-            const ok = await checkConnectivity();
-            btn.disabled = false; btn.classList.remove('loading'); txtSpan.textContent = 'Try Again';
-            if (ok) { showToast('Connection restored!', true); hideNetworkError(); wasOffline = false; }
-            else { btn.style.animation = 'shakeError 0.4s ease'; setTimeout(() => btn.style.animation = '', 400); }
+        window.addEventListener('appinstalled', () => {
+            localStorage.setItem('shwari_app_installed', 'true');
+            localStorage.setItem('shwari_show_guide', 'true');
         });
 
-        window.addEventListener('online',  handleOnline);
-        window.addEventListener('offline', handleOffline);
-
-        setInterval(async () => {
-            if (wasOffline || !navigator.onLine) {
-                const ok = await checkConnectivity();
-                if (ok && wasOffline) handleOnline();
-                else if (!ok && !wasOffline && !navigator.onLine) handleOffline();
-            }
-        }, 5000);
-
-        window.addEventListener('load', async () => {
-            if (!navigator.onLine) { handleOffline(); return; }
-            const ok = await checkConnectivity();
-            if (!ok) handleOffline();
-        });
-
-        document.addEventListener('visibilitychange', async () => {
-            if (document.visibilityState === 'visible') {
-                if (!navigator.onLine) { handleOffline(); return; }
-                const ok = await checkConnectivity();
-                if (ok && wasOffline) handleOnline();
-            }
-        });
-
-        /* =====================================================
-           AUTH — CORE
-           ===================================================== */
-        function coreInitAuth() {
-            const isWebMode     = sessionStorage.getItem('shwari_web_mode') === 'true';
-            const isInstalledLS = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
-
-            if (!isPWA() && !isWebMode) {
-                // Browser without web-mode: show install-or-web chooser
-                if (isInstalledLS) { showAlreadyInstalledBlocker(); return; }
-                const fi = document.getElementById('forcedInstall');
-                fi.style.display = 'flex';
-                fi.querySelector('.install-card').style.animation = 'cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-                return;
-            }
-
-            // In web mode — always show banner (soft prompt)
-            if (isWebMode && !isPWA()) {
-                showWebInstallBanner();
-                scheduleInstallModals();
-            }
-
-            // Normal PWA or web-mode flow
-            if (localStorage.getItem('shwari_registered') === 'true') {
-                document.getElementById('display-name').innerText  = formatName(localStorage.getItem('emp_name'));
-                document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
-                document.getElementById('continue-overlay').classList.remove('hidden');
-                setTimeout(() => { document.getElementById('elephant-gate').classList.add('unlocked'); document.getElementById('employee-info').classList.add('unlocked'); }, 3000);
-                setTimeout(handleContinue, 6500);
-            } else {
-                document.getElementById('auth-portal').classList.remove('hidden');
-                document.getElementById('reg-screen').classList.remove('hidden');
-            }
-        }
-
-        window.initAuth = function() {
-            if (localStorage.getItem('shwari_show_guide') === 'true') { showPostInstallGuide(); return; }
-            return coreInitAuth();
-        };
-
-        /* =====================================================
-           AUTH — FORM HANDLERS
-           ===================================================== */
-        document.getElementById('reg-name').addEventListener('blur', function() {
-            if (this.value.trim()) showFieldError('reg-name','name-error',!validateName(this.value.trim()));
-        });
-        document.getElementById('reg-name').addEventListener('input', function() {
-            if (this.classList.contains('error')) showFieldError('reg-name','name-error',!validateName(this.value.trim()));
-        });
-        document.getElementById('reg-email').addEventListener('blur', function() {
-            if (this.value.trim()) showFieldError('reg-email','email-error',!validateEmail(this.value.trim()));
-        });
-        document.getElementById('reg-email').addEventListener('input', function() {
-            if (this.classList.contains('error')) showFieldError('reg-email','email-error',!validateEmail(this.value.trim()));
-        });
-
-        document.getElementById('activate-btn').addEventListener('click', function() {
-            const name  = document.getElementById('reg-name').value.trim();
-            const email = document.getElementById('reg-email').value.trim().toLowerCase();
-            let valid   = true;
-            if (!validateName(name))   { showFieldError('reg-name','name-error',true);    valid = false; } else { showFieldError('reg-name','name-error',false); }
-            if (!validateEmail(email)) { showFieldError('reg-email','email-error',true); valid = false; } else { showFieldError('reg-email','email-error',false); }
-            if (!valid) {
-                const btn = document.getElementById('activate-btn');
-                btn.style.animation = 'shakeError 0.4s ease';
-                setTimeout(() => btn.style.animation = '', 400);
-                return;
-            }
-            clearFieldErrors();
-            localStorage.setItem('emp_name', name);
-            localStorage.setItem('emp_email', email);
-            localStorage.setItem('shwari_registered', 'true');
-            document.getElementById('display-name').innerText  = formatName(name);
-            document.getElementById('display-email').innerText = email;
-            const authPortal     = document.getElementById('auth-portal');
-            const regScreen      = document.getElementById('reg-screen');
-            const continueOverlay= document.getElementById('continue-overlay');
-            regScreen.style.transform = 'scale(0.9)'; regScreen.style.opacity = '0';
-            setTimeout(() => {
-                authPortal.style.opacity = '0';
-                setTimeout(() => {
-                    authPortal.classList.add('hidden'); regScreen.classList.add('hidden');
-                    continueOverlay.classList.remove('hidden');
-                    continueOverlay.style.opacity = '0'; void continueOverlay.offsetWidth; continueOverlay.style.opacity = '1';
-                    setTimeout(() => { document.getElementById('elephant-gate').classList.add('unlocked'); document.getElementById('employee-info').classList.add('unlocked'); }, 3000);
-                    setTimeout(handleContinue, 6500);
-                }, 500);
-            }, 400);
-        });
-
-        /* =====================================================
-           TRANSITION INTO APP
-           ===================================================== */
-        window.handleContinue = () => {
-            const co = document.getElementById('continue-overlay');
-            co.style.opacity = '0';
-            setTimeout(() => { co.style.display = 'none'; executeTransition(); }, 600);
-        };
-
-        const executeTransition = () => {
-            const doTransition = () => {
-                const uiWrapper = document.getElementById('ui');
-                const appPanel  = document.getElementById('app');
-                requestAnimationFrame(() => requestAnimationFrame(() => uiWrapper.classList.add('pull-active')));
-                setTimeout(() => {
-                    appPanel.classList.add('active');
-                    setTimeout(() => { if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper); }, 1200);
-                }, 300);
+        const originalRunInstallAnimation = runInstallAnimation;
+        runInstallAnimation = function(onComplete) {
+            const wrappedCallback = function() {
+                localStorage.setItem('shwari_app_installed', 'true');
+                localStorage.setItem('shwari_show_guide', 'true');
+                if (onComplete) onComplete();
             };
-            if (isMacroLoaded) { doTransition(); }
-            else {
-                const fallback = setTimeout(doTransition, 8000);
-                macroIframe.addEventListener('load', () => { clearTimeout(fallback); doTransition(); }, { once: true });
-            }
+            return originalRunInstallAnimation(wrappedCallback);
         };
 
-        /* =====================================================
-           PARALLAX
-           ===================================================== */
-        function initParallax() {
-            const uiWrapper = document.getElementById('ui');
-            let isParallaxActive = true, targetX = 0, targetY = 0, currentX = 0, currentY = 0, rafId;
-            const onPointerMove = e => {
-                if (!isParallaxActive) return;
-                const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth/2;
-                const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight/2;
-                targetX = Math.max(-8, Math.min(8, (window.innerWidth/2  - cx) / 35));
-                targetY = Math.max(-8, Math.min(8, (window.innerHeight/2 - cy) / 35));
-            };
-            const lerp = (a, b, t) => a + (b - a) * t;
-            const tick = () => {
-                if (!isParallaxActive) return;
-                currentX = lerp(currentX, targetX, 0.07);
-                currentY = lerp(currentY, targetY, 0.07);
-                if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005)
-                    uiWrapper.style.transform = `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
-                rafId = requestAnimationFrame(tick);
-            };
-            document.addEventListener('mousemove', onPointerMove, { passive: true });
-            document.addEventListener('touchmove', onPointerMove, { passive: true });
-            uiWrapper.classList.add('pop-in');
-            tick();
-        }
-
-        /* =====================================================
-           MAIN INITIALIZATION
-           ===================================================== */
-        async function initializeApp() {
-            initSuperResponsiveButtons();
-
-            const isDuplicate = await checkDuplicateApp();
-            if (isDuplicate) return;
-
-            await requestStoragePermission();
-            await registerServiceWorker();
-            await checkIfAppAlreadyInstalled();
-
-            initParallax();
-            window.initAuth();
-        }
-
-        initializeApp();
+        checkIfAppAlreadyInstalled();
 
     })();
     </script>
