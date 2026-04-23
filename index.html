@@ -394,71 +394,26 @@
            6. LIGHT / DARK THEME ADAPTATION
            ========================================= */
 
-        /* --- LIGHT THEME OVERRIDES --- */
+        /* --- LIGHT THEME DISABLED: FORCED DARK MODE --- */
         @media (prefers-color-scheme: light) {
-
-            /* Page background: soft fresh light green instead of deep black */
-            html, body {
-                background-color: #e8f5ed;
-            }
-
-            /* Particles adapt to be visible on light bg */
-            .p2 { background: #2c7a47 !important; box-shadow: 0 0 10px #2c7a47 !important; }
-            .p4 { background: #444444 !important; box-shadow: 0 0 10px #444444 !important; }
-
-            /* Continue overlay header text */
-            .dept-title { color: #0a2e16; text-shadow: 0 2px 8px rgba(255,255,255,0.4); }
-            .dept-subtitle { color: #1f6e3f; }
-
-            /* Continue footer gradient — light bottom fade */
+            /* We override the light theme triggers to remain dark */
+            html, body, .app, iframe { background-color: #001208 !important; }
+            .dept-title, .medium-font { color: #ffffff !important; }
+            .dept-subtitle { color: #55d082 !important; }
+            .small-email { color: #bbbbbb !important; }
+            
             .continue-footer {
-                background: linear-gradient(
-                    to top,
-                    rgba(220, 245, 230, 0.98) 0%,
-                    rgba(220, 245, 230, 0.85) 40%,
-                    rgba(220, 245, 230, 0) 100%
-                );
+                background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%) !important;
             }
 
-            /* Employee name and email on light bg */
-            .medium-font { color: #0a2e16; }
-            .small-email  { color: #3a5c45; }
-
-            /* Auth portal backdrop */
-            #auth-portal {
-                background: rgba(200, 240, 215, 0.75);
+            #auth-portal { background: rgba(0, 20, 10, 0.7) !important; }
+            #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: #001208 !important; }
+            .error-card, .install-card, .network-error-card { 
+                background: rgba(0, 30, 15, 0.9) !important; 
+                border-color: rgba(85, 208, 130, 0.2) !important;
             }
-
-            /* Device error screen */
-            #device-error {
-                background: rgba(230, 248, 237, 0.98);
-            }
-            .error-card {
-                background: rgba(255, 255, 255, 0.9);
-                border-color: rgba(44, 122, 71, 0.25);
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
-            }
-            .error-card p { color: #4a6a55; }
-
-            /* Forced install screen */
-            #forcedInstall {
-                background: rgba(225, 245, 232, 0.97);
-            }
-            .install-card {
-                background: rgba(255, 255, 255, 0.95);
-                border-color: rgba(44, 122, 71, 0.2);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
-            }
-            .install-card p { color: #4a6a55; }
-
-            /* App iframe background */
-            .app { background: #e8f5ed; }
-            iframe { background: #e8f5ed; }
-
-            /* Shockwave border on light bg */
-            .shockwave { border-color: #2c7a47; }
+            .error-card p, .install-card p, .network-error-message { color: #aaaaaa !important; }
         }
-
 
         /* =========================================
            7. INSTALL PROGRESS / ANIMATION SCREEN
