@@ -1,145 +1,516 @@
-/* Shwari Finance - Auth UI Styles (Optimized for Mobile PWA) */
+/* ─────────────────────────────────────────────────────────────────────────────
+   Shwari Finance — Auth UI v2
+   Mobile-first PWA auth styles. Optimised for iOS Safari, Android Chrome,
+   and standalone display mode.
+───────────────────────────────────────────────────────────────────────────── */
 
+/* ─── Design Tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --auth-green-900:  #0d3d22;
+  --auth-green-700:  #1a5c35;
+  --auth-green-500:  #2c7a47;
+  --auth-green-400:  #3a9057;
+  --auth-green-100:  #e8f5ee;
+  --auth-green-50:   #f1f9ec;
+
+  --auth-red:        #c0392b;
+  --auth-red-light:  #fdf2f2;
+
+  --auth-text-900:   #0f1210;
+  --auth-text-600:   #4b5563;
+  --auth-text-400:   #9ca3af;
+
+  --auth-surface:    rgba(255, 255, 255, 0.97);
+  --auth-border:     rgba(0, 0, 0, 0.07);
+  --auth-ring:       rgba(44, 122, 71, 0.18);
+  --auth-shadow-card:
+    0 4px 6px  rgba(0, 0, 0, 0.04),
+    0 12px 24px rgba(0, 0, 0, 0.10),
+    0 32px 64px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --auth-shadow-btn:
+    0 4px 12px rgba(44, 122, 71, 0.35),
+    0 1px  2px rgba(44, 122, 71, 0.20);
+
+  --auth-radius-card:  22px;
+  --auth-radius-input: 13px;
+  --auth-radius-btn:   13px;
+
+  --auth-duration-fast:   120ms;
+  --auth-duration-normal: 260ms;
+  --auth-duration-slow:   500ms;
+  --auth-ease-spring:     cubic-bezier(0.16, 1, 0.3, 1);
+  --auth-ease-out:        cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+/* ─── Overlay ───────────────────────────────────────────────────────────────── */
 #auth-portal {
-    position: fixed;
-    inset: 0;
-    z-index: 1000; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); /* Crucial for smooth iPhone glass effect */
-    transition: opacity 0.4s ease;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* safe-area insets for notched iPhones */
+  padding: max(20px, env(safe-area-inset-top))
+           max(20px, env(safe-area-inset-right))
+           max(20px, env(safe-area-inset-bottom))
+           max(20px, env(safe-area-inset-left));
+
+  /* layered blur + subtle dark tint */
+  background: rgba(10, 20, 14, 0.30);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+
+  opacity: 1;
+  transition:
+    opacity var(--auth-duration-normal) var(--auth-ease-out),
+    backdrop-filter var(--auth-duration-normal) var(--auth-ease-out);
 }
 
+#auth-portal.hiding {
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+
+/* use .hiding then remove from DOM — avoids display:none jump */
 #auth-portal.hidden {
-    display: none;
-    opacity: 0;
-    pointer-events: none;
+  display: none;
 }
 
+/* ─── Card ──────────────────────────────────────────────────────────────────── */
 .auth-card {
-    background: rgba(255, 255, 255, 0.95);
-    width: 100%;
-    max-width: 360px;
-    padding: 40px 30px;
-    border-radius: 24px;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.5);
-    text-align: center;
-    animation: cardFloatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    will-change: transform, opacity; /* Hardware acceleration for smooth entry */
+  background: var(--auth-surface);
+  width: 100%;
+  max-width: 368px;
+  padding: 44px 32px 36px;
+  border-radius: var(--auth-radius-card);
+  box-shadow: var(--auth-shadow-card);
+  text-align: center;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  /* GPU-composited entrance — no layout thrash */
+  animation: cardEntrance var(--auth-duration-slow) var(--auth-ease-spring) both;
+  will-change: transform, opacity;
+
+  /* subtle top-border highlight */
+  border: 1px solid var(--auth-border);
+  border-top-color: rgba(255, 255, 255, 0.9);
 }
 
-@keyframes cardFloatUp {
-    from { transform: translateY(40px) scale(0.95); opacity: 0; }
-    to { transform: translateY(0) scale(1); opacity: 1; }
+.auth-card.hidden {
+  display: none;
 }
 
-.auth-card.hidden { display: none; }
-
-.auth-icon i, .auth-avatar i {
-    font-size: 3rem;
-    color: #2c7a47;
-    margin-bottom: 15px;
+.auth-card.exit {
+  animation: cardExit var(--auth-duration-normal) var(--auth-ease-out) both;
 }
 
+@keyframes cardEntrance {
+  from {
+    transform: translateY(32px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes cardExit {
+  to {
+    transform: translateY(16px) scale(0.97);
+    opacity: 0;
+  }
+}
+
+/* ─── Avatar ────────────────────────────────────────────────────────────────── */
 .auth-avatar {
-    width: 80px;
-    height: 80px;
-    background: #f1f9ec;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto 20px;
-    border: 3px solid #fff;
-    box-shadow: 0 8px 16px rgba(44, 122, 71, 0.15);
+  width: 76px;
+  height: 76px;
+  background: var(--auth-green-50);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 22px;
+  border: 3px solid #fff;
+  box-shadow:
+    0 0 0 1px var(--auth-border),
+    0 6px 16px rgba(44, 122, 71, 0.14);
+  transition: transform var(--auth-duration-normal) var(--auth-ease-spring);
+}
+
+.auth-avatar:hover {
+  transform: scale(1.05);
+}
+
+.auth-avatar i,
+.auth-icon i {
+  font-size: 2.4rem;
+  color: var(--auth-green-500);
+  line-height: 1;
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────────── */
+.welcome-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--auth-text-400);
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .auth-card h2 {
-    font-size: 1.8rem;
-    color: #111;
-    font-weight: 800;
-    margin-bottom: 5px;
-    letter-spacing: -0.5px;
+  font-size: 1.75rem;
+  color: var(--auth-text-900);
+  font-weight: 800;
+  margin: 0 0 6px;
+  letter-spacing: -0.6px;
+  line-height: 1.15;
 }
 
-.medium-font {
-    font-size: 1.6rem !important; 
-    letter-spacing: -0.5px;
-    color: #111;
-}
-
-.welcome-label {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888;
-    font-weight: 800;
-    margin-bottom: 5px;
+/* variant for longer names that need to shrink slightly */
+.auth-card h2.medium-font {
+  font-size: 1.45rem;
+  letter-spacing: -0.4px;
 }
 
 .small-email {
-    font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 30px;
-    font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--auth-text-400);
+  margin: 0 0 28px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.input-group input {
-    width: 100%;
-    padding: 18px 16px; /* Slightly larger touch area */
-    margin-bottom: 15px;
-    border: 2px solid #eee;
-    border-radius: 14px;
-    font-size: 16px; /* 16px explicitly prevents iPhone auto-zoom */
-    font-family: 'Inter', sans-serif;
-    color: #333;
-    background: #fafafa;
-    transition: all 0.3s ease;
-    -webkit-appearance: none; 
+/* ─── Divider ───────────────────────────────────────────────────────────────── */
+.auth-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--auth-border), transparent);
+  margin: 0 -8px 28px;
 }
 
-.input-group input:focus {
-    border-color: #2c7a47;
-    outline: none;
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(44, 122, 71, 0.1);
+/* ─── Inputs ────────────────────────────────────────────────────────────────── */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper .input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--auth-text-400);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: color var(--auth-duration-fast) ease;
+}
+
+.input-wrapper input {
+  width: 100%;
+  /* account for icon if present */
+  padding: 17px 16px 17px 44px;
+  border: 1.5px solid var(--auth-border);
+  border-radius: var(--auth-radius-input);
+  font-size: 16px;           /* prevents iOS auto-zoom */
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--auth-text-900);
+  background: #f9fafb;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    border-color var(--auth-duration-fast) ease,
+    background   var(--auth-duration-fast) ease,
+    box-shadow   var(--auth-duration-fast) ease;
+  outline: none;
+}
+
+/* no icon variant */
+.input-group > input {
+  width: 100%;
+  padding: 17px 16px;
+  border: 1.5px solid var(--auth-border);
+  border-radius: var(--auth-radius-input);
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--auth-text-900);
+  background: #f9fafb;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    border-color var(--auth-duration-fast) ease,
+    background   var(--auth-duration-fast) ease,
+    box-shadow   var(--auth-duration-fast) ease;
+  outline: none;
+}
+
+.input-wrapper input:focus,
+.input-group > input:focus {
+  border-color: var(--auth-green-500);
+  background: #fff;
+  box-shadow: 0 0 0 4px var(--auth-ring);
+}
+
+.input-wrapper input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+  color: var(--auth-green-500);
+}
+
+/* error state */
+.input-wrapper input.input-error,
+.input-group > input.input-error {
+  border-color: var(--auth-red);
+  background: var(--auth-red-light);
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.10);
+}
+
+.input-error-msg {
+  font-size: 0.77rem;
+  color: var(--auth-red);
+  font-weight: 600;
+  text-align: left;
+  margin-top: -6px;
+  padding-left: 4px;
+  animation: shakeIn 300ms var(--auth-ease-spring);
+}
+
+@keyframes shakeIn {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-4px); }
+  75%       { transform: translateX(4px); }
+}
+
+/* ─── Button ─────────────────────────────────────────────────────────────────── */
 .auth-btn {
-    width: 100%;
-    padding: 18px;
-    background: #2c7a47;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-size: 1.1rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    transition: transform 0.1s, background 0.2s; /* Faster response time */
-    -webkit-tap-highlight-color: transparent; /* Removes blue tap flash on Android */
+  position: relative;
+  width: 100%;
+  padding: 17px 20px;
+  margin-top: 4px;
+  background: var(--auth-green-500);
+  color: #fff;
+  border: none;
+  border-radius: var(--auth-radius-btn);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--auth-shadow-btn);
+  overflow: hidden;
+
+  /* separate transform + bg transitions for snappier feel */
+  transition:
+    transform      var(--auth-duration-fast)   var(--auth-ease-spring),
+    box-shadow     var(--auth-duration-fast)   ease,
+    background     var(--auth-duration-normal) ease;
+
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;   /* removes 300ms tap delay on mobile */
+}
+
+/* shine sweep on hover (desktop) */
+.auth-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.14) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 400ms ease;
+}
+
+.auth-btn:hover::after {
+  transform: translateX(100%);
+}
+
+.auth-btn:hover {
+  background: var(--auth-green-400);
+  box-shadow:
+    0 6px 18px rgba(44, 122, 71, 0.40),
+    0 1px  3px rgba(44, 122, 71, 0.25);
 }
 
 .auth-btn:active {
-    transform: scale(0.96);
-    background: #1f6e3f;
+  transform: scale(0.97);
+  background: var(--auth-green-700);
+  box-shadow: 0 2px 6px rgba(44, 122, 71, 0.30);
+  transition-duration: var(--auth-duration-fast);
 }
 
+.auth-btn:disabled,
+.auth-btn[aria-busy="true"] {
+  background: var(--auth-green-700);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+  opacity: 0.7;
+}
+
+/* loading spinner inside button */
+.auth-btn .btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 600ms linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Reset / secondary link ────────────────────────────────────────────────── */
 .reset-link {
-    margin-top: 25px;
-    font-size: 0.85rem;
-    color: #c0392b;
-    text-decoration: underline;
-    cursor: pointer;
-    font-weight: 600;
-    display: inline-block;
-    padding: 10px; /* Better touch target for reset link */
+  display: inline-block;
+  margin-top: 22px;
+  padding: 10px 14px;        /* generous tap target (≥ 44px effective) */
+  font-size: 0.82rem;
+  color: var(--auth-red);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background var(--auth-duration-fast) ease,
+    color      var(--auth-duration-fast) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reset-link:hover {
+  background: var(--auth-red-light);
+}
+
+.reset-link:active {
+  opacity: 0.75;
+}
+
+/* secondary (non-destructive) link variant */
+.auth-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  color: var(--auth-green-500);
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--auth-duration-fast) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.auth-link:hover {
+  background: var(--auth-green-100);
+}
+
+/* ─── Status / feedback banner ──────────────────────────────────────────────── */
+.auth-status {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 11px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 18px;
+  animation: statusSlideIn 250ms var(--auth-ease-spring);
+}
+
+.auth-status.visible {
+  display: flex;
+}
+
+.auth-status.error {
+  background: var(--auth-red-light);
+  color: var(--auth-red);
+  border: 1px solid rgba(192, 57, 43, 0.15);
+}
+
+.auth-status.success {
+  background: var(--auth-green-50);
+  color: var(--auth-green-700);
+  border: 1px solid rgba(44, 122, 71, 0.15);
+}
+
+@keyframes statusSlideIn {
+  from { transform: translateY(-6px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ─── Standalone PWA bottom-spacing (home-indicator) ────────────────────────── */
+@media (display-mode: standalone) {
+  #auth-portal {
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ─── Reduced-motion ─────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .auth-card,
+  .auth-status,
+  .auth-btn::after {
+    animation: none;
+    transition: none;
+  }
+
+  .auth-btn {
+    transition: background var(--auth-duration-fast) ease;
+  }
+}
+
+/* ─── Landscape mobile ───────────────────────────────────────────────────────── */
+@media (max-height: 600px) and (orientation: landscape) {
+  .auth-card {
+    padding: 24px 28px 20px;
+    max-width: 420px;
+  }
+
+  .auth-avatar {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 14px;
+  }
+
+  .auth-avatar i { font-size: 1.8rem; }
+
+  .auth-card h2 { font-size: 1.4rem; margin-bottom: 2px; }
+
+  .input-wrapper input,
+  .input-group > input {
+    padding: 13px 16px 13px 40px;
+  }
+
+  .auth-btn {
+    padding: 14px 20px;
+  }
+
+  .reset-link, .auth-link {
+    margin-top: 14px;
+  }
 }
