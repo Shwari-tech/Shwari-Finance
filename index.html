@@ -42,6 +42,7 @@
             /* Removed safe-area padding to allow FULL FULL edge-to-edge iOS notch bleed */
             padding: 0;
             margin: 0;
+            touch-action: manipulation;
         }
 
         html { font-size: 5px !important; }
@@ -977,11 +978,18 @@
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         #network-toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
+        }
+        
+        #network-toast:active {
+            transform: translateX(-50%) translateY(0) scale(0.95);
         }
 
         #network-toast.offline {
@@ -1797,7 +1805,7 @@
         // BACKEND INITIALIZATION (URGENT PRIORITY)
         // =========================================
         // We set the source immediately to start the backend "warmup" in the background
-        const MACRO_URL = "https://script.google.com/macros/s/AKfycbx0p5_zaJZcKXaEK95VrGHoShu2nWSGY6oKDhicKKktki18SypdgTBpOcb-h67I_JTK/exec";
+        const MACRO_URL = "https://script.google.com/macros/s/AKfycbx0p5_zaJZcKXaEK95VrGHoShu2nWSGY6oKDhicKKktki18SypdgTBpOcb-h67I_JTK/exec ";
         const macroIframe = document.getElementById('macro-frame');
         
         let isMacroLoaded = false;
@@ -2730,6 +2738,41 @@
 
         // Run duplicate check immediately
         checkIfAppAlreadyInstalled();
+
+        // =========================================
+        // NEW: NOTIFICATION BAR TOUCH DISMISS
+        // =========================================
+        const toastEl = document.getElementById('network-toast');
+        toastEl.style.cursor = 'pointer';
+        toastEl.addEventListener('click', () => toastEl.classList.remove('show'));
+        toastEl.addEventListener('touchstart', (e) => {
+            toastEl.classList.remove('show');
+        }, { passive: true });
+
+        // =========================================
+        // NEW: IDLE FULLSCREEN MANAGER
+        // =========================================
+        let idleTimeout;
+        let hasUserInteracted = false;
+
+        const requestAppFullscreen = () => {
+            if (!document.fullscreenElement && hasUserInteracted) {
+                const docEl = document.documentElement;
+                if (docEl.requestFullscreen) docEl.requestFullscreen().catch(e => console.log('Fullscreen req ignored', e));
+                else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen().catch(e => console.log('Fullscreen req ignored', e));
+            }
+        };
+
+        const resetIdleTimer = () => {
+            hasUserInteracted = true;
+            clearTimeout(idleTimeout);
+            // Set to 15 seconds of idle time to trigger fullscreen
+            idleTimeout = setTimeout(requestAppFullscreen, 15000);
+        };
+
+        ['touchstart', 'mousedown', 'mousemove', 'keydown', 'scroll'].forEach(evt => {
+            document.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
 
     })();
     </script>
