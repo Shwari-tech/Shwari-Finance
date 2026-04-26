@@ -3,7 +3,7 @@
  * Upgraded for Offline Support & Instant Memory
  */
 
-const MACRO_URL = "https://script.google.com/macros/s/AKfycbyfWRNzWAIdwm30l4I_M_Wj6FlVT2ToNY1LjJr3riHiud5Y2JnFw8XfrHwZBtKjZQwY/exec";
+const MACRO_URL = "https://script.google.com/macros/s/AKfycbx0p5_zaJZcKXaEK95VrGHoShu2nWSGY6oKDhicKKktki18SypdgTBpOcb-h67I_JTK/exec";
 
 // 1. FORMAT NAME (e.g. "emilio thuku" -> "Emilio Thuku")
 const formatName = (str) => {
