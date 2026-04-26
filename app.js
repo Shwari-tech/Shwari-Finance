@@ -14,7 +14,7 @@
 // ─────────────────────────────────────────────────────────────
 
 const MACRO_URL =
-  "https://script.google.com/macros/s/AKfycbx0p5_zaJZcKXaEK95VrGHoShu2nWSGY6oKDhicKKktki18SypdgTBpOcb-h67I_JTK/exec";
+  "https://script.google.com/macros/s/AKfycbxdkOCgNzBIIf3MsO9E-pkr9SwNh3gH9avkKXI-v8A-HkXbj1iOZwLIJXWXgl4YyN6c/exec";
 
 const CONFIG = {
   APP_NAME: "Shwari Finance",
