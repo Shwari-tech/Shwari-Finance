@@ -1,318 +1,524 @@
 /**
- * Shwari Finance - Enhanced Service Worker v5
- * Massive offline caching with aggressive cache strategies
+ * Shwari Finance — Service Worker v6
+ * Production-grade caching, offline support, and background sync
+ *
+ * Strategies used:
+ *  - HTML pages        → Network First  (freshness > speed)
+ *  - Images            → Cache First    (stale-while-revalidate in BG)
+ *  - CSS / JS / Fonts  → Stale-While-Revalidate
+ *  - API / GAS calls   → Network Only   (never cached)
+ *  - Everything else   → Network with Cache Fallback
  */
 
-const CACHE_NAME = 'shwari-pay-v5';
-const DATA_CACHE_NAME = 'shwari-data-v5';
-const IMAGE_CACHE_NAME = 'shwari-images-v5';
-const APP_VERSION = '5.0.0';
+'use strict';
 
-// Core app assets - always cached
-const CORE_ASSETS = [
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+const APP_VERSION      = '6.0.0';
+const CACHE_VERSION    = 'v6';
+
+const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
+const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
+const CACHE_IMAGES     = `shwari-images-${CACHE_VERSION}`;
+
+// All known cache names this SW manages — used for safe cleanup
+const KNOWN_CACHES     = new Set([CACHE_STATIC, CACHE_DYNAMIC, CACHE_IMAGES]);
+
+// Maximum items in each dynamic cache to prevent unbounded growth
+const MAX_DYNAMIC_ITEMS = 80;
+const MAX_IMAGE_ITEMS   = 60;
+
+// Network request timeout (ms) before falling back to cache
+const NETWORK_TIMEOUT_MS = 5000;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATIC ASSETS — Pre-cached on install
+// ─────────────────────────────────────────────────────────────────────────────
+
+const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/sw.js'
 ];
 
-// External CDN assets
 const CDN_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/webfonts/fa-solid-900.woff2',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/webfonts/fa-regular-400.woff2',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap'
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
 ];
 
-// Icon assets
 const ICON_ASSETS = [
   'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s'
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s',
 ];
 
-// Background image
-const BACKGROUND_ASSETS = [
-  'https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg'
+const IMAGE_ASSETS = [
+  'https://shwarimoversandcleaners.co.ke/wp-content/uploads/2022/02/BOB_1049.jpg',
 ];
 
-// Combine all cache assets
-const CACHE_ASSETS = [...CORE_ASSETS, ...CDN_ASSETS, ...ICON_ASSETS];
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
 
-// =========================================
-// INSTALL EVENT - Cache core assets
-// =========================================
-self.addEventListener('install', (event) => {
-  console.log(`[Service Worker v${APP_VERSION}] Installing...`);
-  
-  event.waitUntil(
-    Promise.all([
-      // Cache core assets
-      caches.open(CACHE_NAME).then((cache) => {
-        console.log(`[Service Worker v${APP_VERSION}] Caching core assets`);
-        return cache.addAll(CACHE_ASSETS);
-      }),
-      
-      // Cache background image separately
-      caches.open(IMAGE_CACHE_NAME).then((cache) => {
-        console.log(`[Service Worker v${APP_VERSION}] Caching images`);
-        return cache.addAll(BACKGROUND_ASSETS);
-      }),
-      
-      // Pre-cache Google Fonts
-      caches.open(CACHE_NAME).then((cache) => {
-        return fetch('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap')
-          .then(response => {
-            if (response.ok) {
-              return cache.put('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap', response);
-            }
-          })
-          .catch(err => console.log('Font pre-cache failed:', err));
+/**
+ * Logs a message with version prefix.
+ */
+const log  = (...args) => console.log(`[SW ${APP_VERSION}]`, ...args);
+const warn = (...args) => console.warn(`[SW ${APP_VERSION}]`, ...args);
+const err  = (...args) => console.error(`[SW ${APP_VERSION}]`, ...args);
+
+/**
+ * Opens a cache and safely caches all URLs, skipping any that fail.
+ * Using addAll would abort the entire batch if one URL fails.
+ */
+async function cacheAllSafe(cacheName, urls) {
+  const cache = await caches.open(cacheName);
+  const results = await Promise.allSettled(
+    urls.map(url =>
+      cache.add(url).catch(e => {
+        warn(`Failed to pre-cache ${url}:`, e.message);
       })
-    ])
-    .then(() => {
-      console.log(`[Service Worker v${APP_VERSION}] Install complete`);
-      return self.skipWaiting();
-    })
-    .catch((error) => {
-      console.error(`[Service Worker v${APP_VERSION}] Install failed:`, error);
-    })
+    )
   );
-});
-
-// =========================================
-// ACTIVATE EVENT - Clean up old caches
-// =========================================
-self.addEventListener('activate', (event) => {
-  console.log(`[Service Worker v${APP_VERSION}] Activating...`);
-  
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          // Delete old version caches
-          if (!cache.includes(APP_VERSION.split('.')[0])) {
-            console.log(`[Service Worker v${APP_VERSION}] Deleting old cache:`, cache);
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
-    .then(() => {
-      console.log(`[Service Worker v${APP_VERSION}] Activation complete`);
-      // Force all clients to verify their version and state immediately upon activation
-      self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(clients => {
-          clients.forEach(client => client.postMessage({ type: 'FORCE_DUPLICATE_VERIFICATION', version: APP_VERSION }));
-      });
-      return self.clients.claim();
-    })
-  );
-});
-
-// =========================================
-// FETCH EVENT - Advanced caching strategies
-// =========================================
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-  
-  // Skip non-GET requests
-  if (request.method !== 'GET') return;
-  
-  // Skip Google Apps Script - never cache
-  if (url.href.includes('script.google.com') || 
-      url.href.includes('googleusercontent.com')) {
-    return;
-  }
-
-  // =========================================
-  // Strategy 1: Network First for HTML
-  // =========================================
-  if (request.mode === 'navigate' || request.headers.get('accept').includes('text/html')) {
-    event.respondWith(
-      fetch(request)
-        .then((networkResponse) => {
-          // Update cache with fresh version
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
-          return networkResponse;
-        })
-        .catch(() => {
-          console.log('[Service Worker] Network failed, serving HTML from cache');
-          return caches.match(request);
-        })
-    );
-    return;
-  }
-
-  // =========================================
-  // Strategy 2: Cache First for Images
-  // =========================================
-  if (request.destination === 'image' || 
-      url.href.includes('.jpg') || 
-      url.href.includes('.png') || 
-      url.href.includes('.webp') ||
-      url.href.includes('.gif')) {
-    event.respondWith(
-      caches.open(IMAGE_CACHE_NAME).then((cache) => {
-        return cache.match(request).then((cachedResponse) => {
-          if (cachedResponse) {
-            // Return cached and update in background
-            fetch(request).then((networkResponse) => {
-              if (networkResponse.ok) {
-                cache.put(request, networkResponse);
-              }
-            }).catch(() => {});
-            return cachedResponse;
-          }
-          
-          // Not in cache, fetch and store
-          return fetch(request).then((networkResponse) => {
-            if (networkResponse.ok) {
-              cache.put(request, networkResponse.clone());
-            }
-            return networkResponse;
-          });
-        });
-      })
-    );
-    return;
-  }
-
-  // =========================================
-  // Strategy 3: Stale While Revalidate for CSS/JS/Fonts
-  // =========================================
-  if (request.destination === 'style' || 
-      request.destination === 'script' || 
-      request.destination === 'font' ||
-      url.href.includes('cdnjs') ||
-      url.href.includes('fonts.googleapis') ||
-      url.href.includes('fonts.gstatic')) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then((cache) => {
-        return cache.match(request).then((cachedResponse) => {
-          const fetchPromise = fetch(request).then((networkResponse) => {
-            if (networkResponse.ok) {
-              cache.put(request, networkResponse.clone());
-            }
-            return networkResponse;
-          }).catch(() => {
-            console.log('[Service Worker] Network failed for asset:', url.href);
-          });
-          
-          return cachedResponse || fetchPromise;
-        });
-      })
-    );
-    return;
-  }
-
-  // =========================================
-  // Strategy 4: Default - Network with Cache Fallback
-  // =========================================
-  event.respondWith(
-    fetch(request)
-      .then((networkResponse) => {
-        // Cache valid responses
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          const isCacheable = 
-            url.origin === self.location.origin ||
-            url.href.includes('cdnjs') ||
-            url.href.includes('flaticon') ||
-            url.href.includes('gstatic') ||
-            url.href.includes('googleapis') ||
-            url.href.includes('shwarimoversandcleaners');
-          
-          if (isCacheable) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
-          }
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        return caches.match(request);
-      })
-  );
-});
-
-// =========================================
-// BACKGROUND SYNC - Queue failed requests
-// =========================================
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-data') {
-    event.waitUntil(syncData());
-  }
-});
-
-async function syncData() {
-  // Implement background sync logic here
-  console.log('[Service Worker] Background sync triggered');
+  const failed = results.filter(r => r.status === 'rejected').length;
+  log(`Pre-cached ${urls.length - failed}/${urls.length} assets into "${cacheName}"`);
 }
 
-// =========================================
-// PUSH NOTIFICATIONS
-// =========================================
-self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'New notification from Shwari Finance',
-    icon: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
-    badge: 'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
-    vibrate: [100, 50, 100],
-    data: {
-      url: '/'
-    }
-  };
-  
+/**
+ * Trims a cache to a maximum number of entries (oldest-first eviction).
+ */
+async function trimCache(cacheName, maxItems) {
+  const cache = await caches.open(cacheName);
+  const keys  = await cache.keys();
+  if (keys.length > maxItems) {
+    const toDelete = keys.slice(0, keys.length - maxItems);
+    await Promise.all(toDelete.map(k => cache.delete(k)));
+    log(`Trimmed ${toDelete.length} items from "${cacheName}"`);
+  }
+}
+
+/**
+ * Race a fetch against a timeout. Rejects with a TimeoutError on expiry.
+ */
+function fetchWithTimeout(request, ms = NETWORK_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+
+  // Clone the request to attach the abort signal safely
+  const req = new Request(request, { signal: controller.signal });
+
+  return fetch(req).finally(() => clearTimeout(timer));
+}
+
+/**
+ * Returns true for URLs that should never be cached (live APIs).
+ */
+function isNeverCache(url) {
+  return (
+    url.href.includes('script.google.com') ||
+    url.href.includes('googleusercontent.com') ||
+    url.href.includes('accounts.google.com') ||
+    url.pathname.startsWith('/api/')
+  );
+}
+
+/**
+ * Returns true for requests that are navigations or expect HTML.
+ */
+function isHtmlRequest(request) {
+  return (
+    request.mode === 'navigate' ||
+    (request.method === 'GET' && request.headers.get('accept')?.includes('text/html'))
+  );
+}
+
+/**
+ * Returns true for image requests.
+ */
+function isImageRequest(request, url) {
+  return (
+    request.destination === 'image' ||
+    /\.(jpe?g|png|gif|webp|svg|ico)(\?|$)/i.test(url.pathname) ||
+    /\.(jpe?g|png|gif|webp|svg|ico)(\?|$)/i.test(url.href)
+  );
+}
+
+/**
+ * Returns true for static asset requests (CSS, JS, fonts, CDN).
+ */
+function isStaticAsset(request, url) {
+  return (
+    request.destination === 'style' ||
+    request.destination === 'script' ||
+    request.destination === 'font' ||
+    url.href.includes('cdnjs.cloudflare.com') ||
+    url.href.includes('fonts.googleapis.com') ||
+    url.href.includes('fonts.gstatic.com')
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INSTALL — Pre-cache all static assets
+// ─────────────────────────────────────────────────────────────────────────────
+
+self.addEventListener('install', (event) => {
+  log('Installing…');
+
   event.waitUntil(
-    self.registration.showNotification('Shwari Finance', options)
+    Promise.all([
+      cacheAllSafe(CACHE_STATIC, [...STATIC_ASSETS, ...CDN_ASSETS, ...ICON_ASSETS]),
+      cacheAllSafe(CACHE_IMAGES, IMAGE_ASSETS),
+    ])
+    .then(() => {
+      log('Install complete — activating immediately');
+      // Take control without waiting for old SW to release clients
+      return self.skipWaiting();
+    })
+    .catch(e => err('Install failed:', e))
+  );
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACTIVATE — Delete stale caches, claim clients
+// ─────────────────────────────────────────────────────────────────────────────
+
+self.addEventListener('activate', (event) => {
+  log('Activating…');
+
+  event.waitUntil(
+    caches.keys()
+      .then(async (allCaches) => {
+        const deletions = allCaches
+          .filter(name => !KNOWN_CACHES.has(name))
+          .map(name => {
+            log('Deleting stale cache:', name);
+            return caches.delete(name);
+          });
+        await Promise.all(deletions);
+      })
+      .then(() => {
+        log('Activation complete — claiming all clients');
+        // Notify open tabs that a new SW version is active
+        return self.clients.matchAll({ includeUncontrolled: true, type: 'window' })
+          .then(clients => {
+            clients.forEach(client =>
+              client.postMessage({ type: 'SW_ACTIVATED', version: APP_VERSION })
+            );
+            return self.clients.claim();
+          });
+      })
+      .catch(e => err('Activation failed:', e))
+  );
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FETCH — Route requests to the right strategy
+// ─────────────────────────────────────────────────────────────────────────────
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+
+  // Ignore non-GET
+  if (request.method !== 'GET') return;
+
+  let url;
+  try {
+    url = new URL(request.url);
+  } catch {
+    return; // Malformed URL — ignore
+  }
+
+  // Never cache live API endpoints
+  if (isNeverCache(url)) return;
+
+  // ── Strategy 1: Network First (HTML pages) ────────────────────────────────
+  if (isHtmlRequest(request)) {
+    event.respondWith(networkFirstHTML(request));
+    return;
+  }
+
+  // ── Strategy 2: Cache First + BG Revalidate (Images) ─────────────────────
+  if (isImageRequest(request, url)) {
+    event.respondWith(cacheFirstImage(request));
+    return;
+  }
+
+  // ── Strategy 3: Stale-While-Revalidate (CSS / JS / Fonts) ────────────────
+  if (isStaticAsset(request, url)) {
+    event.respondWith(staleWhileRevalidate(request, CACHE_STATIC));
+    return;
+  }
+
+  // ── Strategy 4: Network with Cache Fallback (everything else) ─────────────
+  event.respondWith(networkWithCacheFallback(request));
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STRATEGY IMPLEMENTATIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Network First — try network with timeout, fall back to cache.
+ * Updates cache on successful network response.
+ */
+async function networkFirstHTML(request) {
+  try {
+    const networkRes = await fetchWithTimeout(request);
+    if (networkRes.ok) {
+      const cache = await caches.open(CACHE_STATIC);
+      cache.put(request, networkRes.clone());
+    }
+    return networkRes;
+  } catch (e) {
+    log('Network failed for HTML, serving from cache:', request.url);
+    const cached = await caches.match(request, { ignoreSearch: true });
+    return cached || caches.match('/index.html'); // Ultimate fallback
+  }
+}
+
+/**
+ * Cache First — return cached image immediately, update cache silently.
+ * Trims cache when it gets too large.
+ */
+async function cacheFirstImage(request) {
+  const cache    = await caches.open(CACHE_IMAGES);
+  const cached   = await cache.match(request);
+
+  if (cached) {
+    // Background revalidation — fire and forget
+    fetchAndCacheImage(cache, request);
+    return cached;
+  }
+
+  // Not in cache — fetch, store, return
+  return fetchAndCacheImage(cache, request);
+}
+
+async function fetchAndCacheImage(cache, request) {
+  try {
+    const networkRes = await fetch(request);
+    if (networkRes.ok) {
+      cache.put(request, networkRes.clone());
+      trimCache(CACHE_IMAGES, MAX_IMAGE_ITEMS);
+    }
+    return networkRes;
+  } catch (e) {
+    warn('Image fetch failed:', request.url);
+    // Return a transparent 1×1 PNG as placeholder (no broken-image icon)
+    return new Response(
+      // Minimal valid PNG
+      Uint8Array.from(atob(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
+      ), c => c.charCodeAt(0)),
+      { headers: { 'Content-Type': 'image/png' } }
+    );
+  }
+}
+
+/**
+ * Stale-While-Revalidate — return cache immediately, update in background.
+ * Falls back to network if not cached yet.
+ */
+async function staleWhileRevalidate(request, cacheName) {
+  const cache    = await caches.open(cacheName);
+  const cached   = await cache.match(request);
+
+  // Always kick off a background refresh
+  const networkPromise = fetch(request).then(res => {
+    if (res.ok) cache.put(request, res.clone());
+    return res;
+  }).catch(() => null);
+
+  return cached || networkPromise;
+}
+
+/**
+ * Network with Cache Fallback — try network, serve cache if offline.
+ * Caches successful responses from trusted origins.
+ */
+async function networkWithCacheFallback(request) {
+  const url = new URL(request.url);
+
+  try {
+    const networkRes = await fetchWithTimeout(request);
+    if (networkRes && networkRes.status === 200) {
+      const isTrusted =
+        url.origin === self.location.origin ||
+        url.href.includes('cdnjs.cloudflare.com') ||
+        url.href.includes('flaticon.com') ||
+        url.href.includes('gstatic.com') ||
+        url.href.includes('googleapis.com') ||
+        url.href.includes('shwarimoversandcleaners.co.ke');
+
+      if (isTrusted) {
+        const cache = await caches.open(CACHE_DYNAMIC);
+        cache.put(request, networkRes.clone());
+        trimCache(CACHE_DYNAMIC, MAX_DYNAMIC_ITEMS);
+      }
+    }
+    return networkRes;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+
+    // Return a structured JSON error for non-HTML requests
+    return new Response(
+      JSON.stringify({ error: 'offline', message: 'You appear to be offline.' }),
+      {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BACKGROUND SYNC
+// ─────────────────────────────────────────────────────────────────────────────
+
+self.addEventListener('sync', (event) => {
+  log('Background sync triggered:', event.tag);
+  if (event.tag === 'sync-payroll-data') {
+    event.waitUntil(syncPayrollData());
+  }
+});
+
+async function syncPayrollData() {
+  try {
+    // Retrieve queued requests from IndexedDB here if implemented
+    log('Syncing queued payroll data…');
+  } catch (e) {
+    err('Background sync failed:', e);
+    throw e; // Re-throw so the browser retries
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PUSH NOTIFICATIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+self.addEventListener('push', (event) => {
+  let payload = { title: 'Shwari Finance', body: 'You have a new update.' };
+
+  if (event.data) {
+    try {
+      payload = event.data.json(); // Prefer structured JSON payloads
+    } catch {
+      payload.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body:    payload.body,
+    icon:    'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
+    badge:   'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
+    vibrate: [100, 50, 100],
+    tag:     payload.tag || 'shwari-notification', // Deduplicate same-type notifications
+    renotify: !!payload.tag,
+    data:    { url: payload.url || '/' },
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title || 'Shwari Finance', options)
   );
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+  const targetUrl = event.notification.data?.url || '/';
+
   event.waitUntil(
-    clients.openWindow(event.notification.data.url)
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(clients => {
+        // Focus an existing tab if open, otherwise open a new one
+        const existing = clients.find(c => c.url.includes(targetUrl));
+        if (existing) return existing.focus();
+        return self.clients.openWindow(targetUrl);
+      })
   );
 });
 
-// =========================================
-// MESSAGE HANDLING - Communication with main thread & Anti-Duplicate Security
-// =========================================
-self.addEventListener('message', (event) => {
-  if (event.data === 'skipWaiting') {
-    self.skipWaiting();
-  }
-  
-  if (event.data === 'getVersion') {
-    event.ports[0].postMessage({ version: APP_VERSION });
-  }
-  
-  if (event.data === 'clearCache') {
-    event.waitUntil(
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cache) => caches.delete(cache))
-        );
-      })
-    );
-  }
+// ─────────────────────────────────────────────────────────────────────────────
+// PERIODIC BACKGROUND SYNC (Chrome 80+)
+// ─────────────────────────────────────────────────────────────────────────────
 
-  // --- NEW: ANTI-DUPLICATE SYSTEM INTERFACE ---
-  if (event.data && event.data.type === 'CHECK_DUPLICATE_INSTALL') {
-      self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
-          // Reports back to the requesting tab how many instances are actively attached to this worker
-          if (event.ports && event.ports[0]) {
-              event.ports[0].postMessage({
-                  clientCount: windowClients.length,
-                  activeVersion: APP_VERSION
-              });
-          }
-      });
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'refresh-payroll') {
+    log('Periodic sync: refreshing payroll data');
+    event.waitUntil(
+      caches.open(CACHE_STATIC).then(cache => {
+        return cache.delete('/index.html').then(() => {
+          return fetch('/index.html').then(res => cache.put('/index.html', res));
+        });
+      }).catch(e => warn('Periodic sync failed:', e))
+    );
   }
 });
 
-console.log(`[Service Worker v${APP_VERSION}] Loaded successfully`);
+// ─────────────────────────────────────────────────────────────────────────────
+// MESSAGE HANDLING — Main thread ↔ Service Worker bridge
+// ─────────────────────────────────────────────────────────────────────────────
+
+self.addEventListener('message', (event) => {
+  const { data } = event;
+  if (!data) return;
+
+  // Accept string or object form
+  const type = typeof data === 'string' ? data : data.type;
+
+  switch (type) {
+
+    case 'SKIP_WAITING':
+    case 'skipWaiting':
+      log('Received SKIP_WAITING — activating immediately');
+      self.skipWaiting();
+      break;
+
+    case 'GET_VERSION':
+    case 'getVersion':
+      event.ports?.[0]?.postMessage({ version: APP_VERSION, caches: [...KNOWN_CACHES] });
+      break;
+
+    case 'CLEAR_CACHE':
+    case 'clearCache':
+      log('Clearing all caches on request');
+      event.waitUntil(
+        caches.keys().then(names =>
+          Promise.all(names.map(n => caches.delete(n)))
+        ).then(() => {
+          event.ports?.[0]?.postMessage({ cleared: true });
+          log('All caches cleared');
+        })
+      );
+      break;
+
+    case 'TRIM_CACHES':
+      event.waitUntil(
+        Promise.all([
+          trimCache(CACHE_DYNAMIC, MAX_DYNAMIC_ITEMS),
+          trimCache(CACHE_IMAGES, MAX_IMAGE_ITEMS),
+        ])
+      );
+      break;
+
+    case 'CHECK_DUPLICATE_INSTALL':
+      self.clients.matchAll({ includeUncontrolled: true, type: 'window' })
+        .then(clients => {
+          event.ports?.[0]?.postMessage({
+            clientCount:   clients.length,
+            activeVersion: APP_VERSION,
+          });
+        });
+      break;
+
+    default:
+      warn('Unknown message type received:', type);
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+log('Loaded successfully');
