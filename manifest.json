@@ -3,19 +3,54 @@
   "name": "Shwari Finance",
   "short_name": "Shwari",
   "description": "Digital Payroll Certified by Shwari Finance Department",
-  "start_url": "/index.html",
+  "start_url": "/index.html?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
   "background_color": "#001208",
   "theme_color": "#001208",
   "orientation": "portrait-primary",
   "categories": ["finance", "business", "productivity"],
-  
+  "dir": "ltr",
+  "lang": "en-US",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "handle_links": "preferred",
+
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
-      "sizes": "48x48 96x96 128x128",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s",
+      "sizes": "152x152",
       "type": "image/png",
       "purpose": "any"
     },
@@ -27,36 +62,42 @@
     },
     {
       "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpxUalu5VVwbs1UNYjhK-3aJ5Uwcy--A1Vlg&s",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  
+
   "shortcuts": [
     {
       "name": "View Ledger",
       "short_name": "Ledger",
       "description": "Quickly check your payment ledger",
-      "url": "/index.html?tab=work",
-      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96" }]
+      "url": "/index.html?tab=work&source=shortcut",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "HR Dashboard",
       "short_name": "HR",
       "description": "View KPI and HR Profile",
-      "url": "/index.html?tab=hr",
-      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96" }]
+      "url": "/index.html?tab=hr&source=shortcut",
+      "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96", "type": "image/png" }]
     }
   ],
-  
+
   "screenshots": [
     {
       "src": "https://cdn.prod.website-files.com/5e4d02fd9692e694f86e0e98/6462b9fc8b1022bf196f08e4_Payroll%20Run%402x.webp",
       "sizes": "800x600",
       "type": "image/webp",
       "form_factor": "wide",
-      "label": "Welcome Back Screen"
+      "label": "Payroll Dashboard"
     },
     {
       "src": "https://cdn.prod.website-files.com/5e4d02fd9692e694f86e0e98/6096ae63c96bb36b0225dae0_price_mockup.webp",
@@ -66,23 +107,15 @@
       "label": "Mobile Dashboard"
     }
   ],
-  
-  "related_applications": [],
-  "prefer_related_applications": false,
-  
+
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
   },
-  
-  "handle_links": "preferred",
-  
+
   "edge_side_panel": {
     "preferred_width": 400
   },
-  
-  "dir": "ltr",
-  "lang": "en-US",
-  
+
   "serviceworker": {
     "src": "/sw.js",
     "scope": "/",
