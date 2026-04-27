@@ -9,7 +9,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     <meta name="theme-color" content="#001208">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
@@ -25,30 +24,42 @@
     
     <style>
         /* =========================================
-           1. BASE STYLES & IMAGE BACKGROUND
+           0. FULLSCREEN & KEYBOARD STABLE BASE
            ========================================= */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --vh: 1vh;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
 
         html, body {
             height: 100%; width: 100%;
             min-height: 100vh;
             min-height: -webkit-fill-available;
+            min-height: calc(var(--vh, 1vh) * 100);
             background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden; position: relative; perspective: 1200px;
             -webkit-text-size-adjust: 70%; -moz-text-size-adjust: 70%; text-size-adjust: 70%;
             background-color: #001208;
-            /* Removed safe-area padding to allow FULL FULL edge-to-edge iOS notch bleed */
-            padding: 0;
-            margin: 0;
+            padding: 0; margin: 0;
             touch-action: manipulation;
+            overscroll-behavior-y: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         html { font-size: 5px !important; }
 
+        /* Keyboard-open body adjustment */
+        body.keyboard-open {
+            overflow: hidden;
+        }
+
         /* =========================================
-           2. PARALLAX WRAPPER & ANIMATIONS
+           1. PARALLAX WRAPPER & ANIMATIONS
            ========================================= */
         .wrapper {
             position: absolute; width: min(500px, 92vw); height: min(500px, 92vw);
@@ -60,7 +71,6 @@
         }
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
-        /* PARTICLES */
         .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
         .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
         .wrapper.pop-in .particle { opacity: 0.6; }
@@ -70,7 +80,6 @@
         .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #dddddd; animation-duration: 7.0s; box-shadow: 0 0 10px #dddddd;}
         @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.1); } }
 
-        /* SMOOTH SEAMLESS TRANSITION (Fade out background instead of blast) */
         .wrapper.pull-active {
             opacity: 0 !important;
             transition: opacity 1.2s ease-in-out !important;
@@ -78,7 +87,7 @@
         }
 
         /* =========================================
-           3. AUTO-CONTINUE SCREEN OVERLAY
+           2. AUTO-CONTINUE SCREEN OVERLAY
            ========================================= */
         #continue-overlay {
             position: fixed; inset: 0; z-index: 50; pointer-events: none;
@@ -87,7 +96,7 @@
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
-        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, env(safe-area-inset-top)); }
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); }
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
@@ -100,12 +109,12 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: max(40px, env(safe-area-inset-bottom));
+            padding-bottom: max(40px, var(--safe-bottom));
         }
 
         .elephant-gate {
             position: absolute;
-            bottom: max(40px, calc(40px + env(safe-area-inset-bottom)));
+            bottom: max(40px, calc(40px + var(--safe-bottom)));
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -173,11 +182,11 @@
                         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
             z-index: 5;
             display: flex; 
-            flex-direction: column; /* Centered Layout Modification */
+            flex-direction: column;
             align-items: center; 
             justify-content: center; 
             gap: 15px;
-            position: relative; /* Container for the water wave */
+            position: relative;
         }
 
         .employee-info.unlocked {
@@ -185,7 +194,6 @@
             transform: translateY(0) scale(1);
         }
 
-        /* WATER DRIPPING WAVES EFFECT */
         .water-wave {
             position: absolute;
             top: 50%; left: 50%;
@@ -230,9 +238,8 @@
             75% { transform: translateY(-3px) rotate(3deg); }
         }
 
-        .text-group { text-align: center; } /* Center text alignment */
+        .text-group { text-align: center; }
         
-        /* SLOW MOTION POP OUT ANIMATION FOR WORDS */
         .employee-info.unlocked .text-group {
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
@@ -247,7 +254,7 @@
         .small-email { font-size: 16px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
 
         /* =========================================
-           4. REGISTRATION PORTAL
+           3. REGISTRATION PORTAL
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
@@ -261,6 +268,9 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
             transition: transform 0.5s ease, opacity 0.5s ease;
+            max-height: calc(var(--vh, 1vh) * 90);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
@@ -321,14 +331,15 @@
         .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         /* =========================================
-           5. APP IFRAME - SMOOTH CROSSFADE REVEAL
+           4. APP IFRAME - SMOOTH CROSSFADE REVEAL
            ========================================= */
         .app { 
             position: fixed; inset: 0; opacity: 0; visibility: hidden; 
             background: #001208; z-index: 2000; 
             transition: opacity 1.2s ease-in-out; 
-            width: 100vw; height: 100vh;
-            height: -webkit-fill-available;
+            width: 100vw; 
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
         }
         .app.active { opacity: 1; visibility: visible; }
         
@@ -338,11 +349,9 @@
             transition: opacity 1.2s ease-in-out 0.2s;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            /* Zoom feature to open with an 90% zoom as default medium size */
             zoom: 0.9;
             -moz-transform: scale(0.9);
             -moz-transform-origin: top center;
-            /* Removed safe-area padding constraint to allow true full screen iOS bleed */
             padding: 0 !important;
             margin: 0 !important;
         }
@@ -391,12 +400,9 @@
 
 
         /* =========================================
-           6. LIGHT / DARK THEME ADAPTATION
+           5. LIGHT / DARK THEME ADAPTATION
            ========================================= */
-
-        /* --- LIGHT THEME DISABLED: FORCED DARK MODE --- */
         @media (prefers-color-scheme: light) {
-            /* We override the light theme triggers to remain dark */
             html, body, .app, iframe { background-color: #001208 !important; }
             .dept-title, .medium-font { color: #ffffff !important; }
             .dept-subtitle { color: #55d082 !important; }
@@ -416,9 +422,8 @@
         }
 
         /* =========================================
-           7. INSTALL PROGRESS / ANIMATION SCREEN
+           6. INSTALL PROGRESS / ANIMATION SCREEN
            ========================================= */
-
         #install-progress-screen {
             display: none;
             position: fixed;
@@ -429,8 +434,6 @@
             flex-direction: column;
             padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-
-            /* Dark default */
             background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
                         radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
                         #001208;
@@ -440,7 +443,6 @@
         #install-progress-screen.active { display: flex; }
         #install-progress-screen.fade-out { opacity: 0; pointer-events: none; }
 
-        /* Light theme override for install screen */
         @media (prefers-color-scheme: light) {
             #install-progress-screen {
                 background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
@@ -449,7 +451,6 @@
             }
         }
 
-        /* ---- App Icon ---- */
         .install-app-icon {
             width: 100px;
             height: 100px;
@@ -473,7 +474,6 @@
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
-        /* ---- Install title ---- */
         .install-title {
             font-size: 22px;
             font-weight: 800;
@@ -506,7 +506,6 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ---- Progress track ---- */
         .install-track-wrap {
             width: 100%;
             max-width: 280px;
@@ -559,7 +558,6 @@
             .install-status-text { color: rgba(10, 46, 22, 0.5); }
         }
 
-        /* ---- Tick / Done state ---- */
         .install-tick {
             width: 70px;
             height: 70px;
@@ -582,7 +580,6 @@
             transform: scale(1);
         }
 
-        /* ---- Ripple rings around tick ---- */
         .tick-ripple {
             position: absolute;
             width: 70px;
@@ -609,7 +606,6 @@
             margin-top: 30px;
         }
 
-        /* ---- Floating install particles ---- */
         .install-particle {
             position: absolute;
             border-radius: 50%;
@@ -628,7 +624,7 @@
         }
 
         /* =========================================
-           8. NETWORK ERROR SCREEN (CARTOON STYLE)
+           7. NETWORK ERROR SCREEN (CARTOON STYLE)
            ========================================= */
         #network-error-screen {
             display: none;
@@ -657,7 +653,6 @@
             }
         }
 
-        /* Cartoon-style error illustration */
         .error-illustration {
             position: relative;
             width: 180px;
@@ -665,7 +660,6 @@
             margin-bottom: 30px;
         }
 
-        /* Cartoon character - sad elephant */
         .cartoon-elephant {
             position: absolute;
             width: 120px;
@@ -702,7 +696,6 @@
             transform: rotate(20deg);
         }
 
-        /* Elephant trunk */
         .elephant-trunk {
             position: absolute;
             width: 25px;
@@ -715,7 +708,6 @@
             animation: trunkWiggle 1.5s ease-in-out infinite;
         }
 
-        /* Sad eyes */
         .elephant-eye {
             position: absolute;
             width: 12px;
@@ -739,7 +731,6 @@
             right: 2px;
         }
 
-        /* Sad eyebrows */
         .eyebrow {
             position: absolute;
             width: 18px;
@@ -752,7 +743,6 @@
         .eyebrow.left { left: 27px; transform: rotate(20deg); }
         .eyebrow.right { right: 27px; transform: rotate(-20deg); }
 
-        /* Broken cable illustration */
         .broken-cable {
             position: absolute;
             top: -20px;
@@ -774,7 +764,6 @@
         .cable-left { left: 0; transform: rotate(-15deg); animation: cableSpark 0.5s ease-in-out infinite alternate; }
         .cable-right { right: 0; transform: rotate(15deg); animation: cableSpark 0.5s ease-in-out infinite alternate 0.25s; }
 
-        /* Spark effects */
         .spark {
             position: absolute;
             width: 8px;
@@ -809,7 +798,6 @@
             50% { opacity: 0.5; transform: translateX(-50%) scale(0.8); }
         }
 
-        /* Error content styling */
         .network-error-card {
             background: rgba(0, 30, 15, 0.95);
             max-width: 380px;
@@ -943,7 +931,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Floating error particles */
         .error-particle {
             position: absolute;
             border-radius: 50%;
@@ -961,10 +948,9 @@
             50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
         }
 
-        /* Network toast notification */
         #network-toast {
             position: fixed;
-            top: 20px;
+            top: max(20px, var(--safe-top));
             left: 50%;
             transform: translateX(-50%) translateY(-100px);
             z-index: 100001;
@@ -1007,7 +993,7 @@
         }
 
         /* =========================================
-           9. STORAGE PERMISSION MODAL
+           8. STORAGE PERMISSION MODAL
            ========================================= */
         #storage-permission-modal {
             display: none;
@@ -1110,7 +1096,7 @@
         }
 
         /* =========================================
-           10. DUPLICATE APP ERROR SCREEN
+           9. DUPLICATE APP ERROR SCREEN
            ========================================= */
         #duplicate-app-screen {
             display: none;
@@ -1243,7 +1229,7 @@
         }
 
         /* =========================================
-           11. ALREADY INSTALLED BLOCKER
+           10. ALREADY INSTALLED BLOCKER
            ========================================= */
         #already-installed-blocker {
             display: none;
@@ -1376,7 +1362,7 @@
         }
 
         /* =========================================
-           12. POST-INSTALLATION GUIDE
+           11. POST-INSTALLATION GUIDE
            ========================================= */
         #post-install-guide {
             display: none;
@@ -1535,7 +1521,6 @@
         }
 
     </style>
-<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -1803,36 +1788,164 @@
         "use strict";
 
         // =========================================
-        // IMMEDIATE FULLSCREEN ENGINE
+        // CAPABILITY-AWARE FULLSCREEN MANAGER
         // =========================================
-        const requestImmediateFullscreen = () => {
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-                docEl.requestFullscreen().catch(err => console.log('Fullscreen auto-blocked:', err));
-            } else if (docEl.webkitRequestFullscreen) {
-                docEl.webkitRequestFullscreen();
-            } else if (docEl.msRequestFullscreen) {
-                docEl.msRequestFullscreen();
+        const FullscreenManager = {
+            isSupported: false,
+            isActive: false,
+            hasAttempted: false,
+            isNativeApp: false,
+
+            init() {
+                this.isNativeApp = (
+                    window.matchMedia('(display-mode: standalone)').matches || 
+                    window.navigator.standalone === true || 
+                    document.referrer.includes('android-app://')
+                );
+                
+                this.checkSupport();
+                
+                if (this.isNativeApp) {
+                    this.applyStableViewport();
+                    return;
+                }
+                
+                if (this.isSupported) {
+                    this.applyStableViewport();
+                    this.bindInteractionTrigger();
+                    this.bindFullscreenChange();
+                    this.bindKeyboardHandlers();
+                    this.bindResizeHandler();
+                }
+            },
+
+            checkSupport() {
+                const el = document.documentElement;
+                this.isSupported = !!(
+                    el.requestFullscreen || 
+                    el.webkitRequestFullscreen || 
+                    el.msRequestFullscreen
+                );
+            },
+
+            applyStableViewport() {
+                // Update CSS custom property for true viewport height
+                const setVH = () => {
+                    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+                    document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
+                };
+                setVH();
+                window.addEventListener('resize', setVH, { passive: true });
+                if (window.visualViewport) {
+                    window.visualViewport.addEventListener('resize', setVH, { passive: true });
+                }
+            },
+
+            async enter() {
+                if (this.hasAttempted || this.isActive || !this.isSupported || this.isNativeApp) return;
+                this.hasAttempted = true;
+
+                const el = document.documentElement;
+                try {
+                    let promise;
+                    if (el.requestFullscreen) {
+                        promise = el.requestFullscreen();
+                    } else if (el.webkitRequestFullscreen) {
+                        promise = el.webkitRequestFullscreen();
+                    } else if (el.msRequestFullscreen) {
+                        promise = el.msRequestFullscreen();
+                    }
+                    
+                    if (promise) await promise;
+                    this.isActive = true;
+                    document.body.classList.add('is-fullscreen');
+                    
+                    // Lock portrait orientation if possible
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('portrait').catch(() => {});
+                    }
+                } catch (err) {
+                    console.log('Fullscreen capability rejected:', err.name);
+                    this.isActive = false;
+                    document.body.classList.remove('is-fullscreen');
+                    // Stay normal — no forced behavior
+                }
+            },
+
+            bindInteractionTrigger() {
+                // Browsers require a user gesture for fullscreen
+                const triggerEvents = ['touchstart', 'click', 'keydown'];
+                const handler = (e) => {
+                    // Ignore if user is just scrolling or touching non-interactive area gently
+                    if (e.type === 'touchstart' && e.touches.length > 1) return;
+                    this.enter();
+                    triggerEvents.forEach(evt => document.removeEventListener(evt, handler));
+                };
+                triggerEvents.forEach(evt => document.addEventListener(evt, handler, { passive: true }));
+            },
+
+            bindFullscreenChange() {
+                const handler = () => {
+                    const active = !!(
+                        document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.msFullscreenElement
+                    );
+                    this.isActive = active;
+                    document.body.classList.toggle('is-fullscreen', active);
+                    
+                    if (!active && this.hasAttempted) {
+                        // User exited fullscreen — stay normal, don't fight them
+                        this.hasAttempted = false; // Allow re-entry on next interaction if desired
+                    }
+                };
+                document.addEventListener('fullscreenchange', handler);
+                document.addEventListener('webkitfullscreenchange', handler);
+                document.addEventListener('msfullscreenchange', handler);
+            },
+
+            bindKeyboardHandlers() {
+                // Keep inputs visible when keyboard opens
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', () => {
+                        document.body.classList.add('keyboard-open');
+                        setTimeout(() => {
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
+                    });
+                    input.addEventListener('blur', () => {
+                        document.body.classList.remove('keyboard-open');
+                    });
+                });
+
+                // Prevent fullscreen loss on input focus (some Android keyboards)
+                if (window.visualViewport) {
+                    window.visualViewport.addEventListener('resize', () => {
+                        const vv = window.visualViewport;
+                        const isKeyboardOpen = vv.height < window.innerHeight * 0.85;
+                        document.body.classList.toggle('keyboard-open', isKeyboardOpen);
+                    }, { passive: true });
+                }
+            },
+
+            bindResizeHandler() {
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        // Recalculate layout safely
+                        window.dispatchEvent(new Event('vh-update'));
+                    }, 150);
+                }, { passive: true });
             }
         };
 
-        // Fire fullscreen as early as possible
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', requestImmediateFullscreen);
-        } else {
-            requestImmediateFullscreen();
-        }
-        window.addEventListener('load', requestImmediateFullscreen);
-
-        // Re-capture fullscreen on visibility change (when user returns to tab)
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                requestImmediateFullscreen();
-            }
-        });
+        // Initialize fullscreen manager immediately
+        FullscreenManager.init();
 
         // =========================================
-        // BACKEND INITIALIZATION (URGENT PRIORITY)
+        // BACKEND INITIALIZATION
         // =========================================
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbx01KQoLYzas7P6XMeo4GjMXI3DqxWpl_q1_PC9zjRbOdowYX9F3yEaBnvHZOHmLtI6/exec";
         const macroIframe = document.getElementById('macro-frame');
@@ -2116,7 +2229,6 @@
             await registerServiceWorker();
             
             const uiWrapper = document.getElementById('ui');
-            const appPanel  = document.getElementById('app');
             let isParallaxActive = true;
             let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
             let rafId;
@@ -2439,7 +2551,6 @@
         const checkAndRetryConnection = async () => {
             const retryBtn = document.getElementById('retry-connection-btn');
             const btnText = retryBtn.querySelector('span');
-            const btnIcon = retryBtn.querySelector('i');
             
             retryBtn.disabled = true;
             retryBtn.classList.add('loading');
@@ -2702,30 +2813,6 @@
         toastEl.addEventListener('touchstart', (e) => {
             toastEl.classList.remove('show');
         }, { passive: true });
-
-        // =========================================
-        // IDLE FULLSCREEN MANAGER (FALLBACK)
-        // =========================================
-        let idleTimeout;
-        let hasUserInteracted = false;
-
-        const requestAppFullscreen = () => {
-            if (!document.fullscreenElement && hasUserInteracted) {
-                const docEl = document.documentElement;
-                if (docEl.requestFullscreen) docEl.requestFullscreen().catch(e => console.log('Fullscreen req ignored', e));
-                else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen().catch(e => console.log('Fullscreen req ignored', e));
-            }
-        };
-
-        const resetIdleTimer = () => {
-            hasUserInteracted = true;
-            clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(requestAppFullscreen, 15000);
-        };
-
-        ['touchstart', 'mousedown', 'mousemove', 'keydown', 'scroll'].forEach(evt => {
-            document.addEventListener(evt, resetIdleTimer, { passive: true });
-        });
 
     })();
     </script>
