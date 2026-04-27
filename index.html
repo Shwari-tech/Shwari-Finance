@@ -60,12 +60,13 @@
             background-color: var(--bg-dark);
             pointer-events: none;
             will-change: transform;
-            transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1);
+            /* Superfast, slow-motion unified sync transition */
+            transition: transform 0.7s cubic-bezier(0.1, 1, 0.2, 1);
         }
 
         /* Keyboard-open body adjustment */
         body.keyboard-open .bg-layer {
-            transform: scale(1.02);
+            transform: scale(1.05) translateY(-3%);
         }
 
         /* =========================================
@@ -269,15 +270,17 @@
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
             background: rgba(17, 24, 39, 0.95); 
-            transition: opacity 0.6s ease, padding 0.15s cubic-bezier(0.2, 0.9, 0.3, 1);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            /* Superfast padding transition to glide content out of keyboard's way */
+            transition: opacity 0.6s ease, padding 0.7s cubic-bezier(0.1, 1, 0.2, 1);
+            will-change: padding;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
         #auth-portal.keyboard-adjust {
-            align-items: flex-start;
-            padding-top: 20px;
-            padding-bottom: 20px;
+            /* Smoothly squeeze the container padding to elevate the card precisely */
+            padding-bottom: max(35vh, 250px);
+            padding-top: 10px;
         }
 
         .auth-card {
@@ -285,14 +288,21 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
-            transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.15s ease;
+            transition: transform 0.7s cubic-bezier(0.1, 1, 0.2, 1), opacity 0.5s ease;
             max-height: calc(var(--vh, 1vh) * 90);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             margin: auto;
+            will-change: transform;
         }
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
+
+        /* Unified scaling for depth effect during keyboard pull */
+        body.keyboard-open .auth-card {
+            transform: scale(0.97) translateY(-10px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 0 0 1.5px rgba(255,255,255,0.8);
+        }
 
         .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
         @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -1919,18 +1929,13 @@
 
             bindKeyboardHandlers() {
                 const inputs = document.querySelectorAll('input');
-                
-                // Ultra-smooth and instantaneous scroll adjustment without artificial delays
-                const syncView = (input) => {
-                    requestAnimationFrame(() => {
-                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    });
-                };
-
                 inputs.forEach(input => {
                     input.addEventListener('focus', () => {
                         document.body.classList.add('keyboard-open');
-                        syncView(input);
+                        // Reduced to incredibly fast trigger to match smooth transition sequence perfectly
+                        setTimeout(() => {
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 50); 
                     });
                     input.addEventListener('blur', () => {
                         document.body.classList.remove('keyboard-open');
@@ -1946,9 +1951,6 @@
                         const authPortal = document.getElementById('auth-portal');
                         if (isKeyboardOpen) {
                             authPortal.classList.add('keyboard-adjust');
-                            if (document.activeElement && document.activeElement.tagName === 'INPUT') {
-                                syncView(document.activeElement);
-                            }
                         } else {
                             authPortal.classList.remove('keyboard-adjust');
                         }
