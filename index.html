@@ -1,2852 +1,6467 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
     <meta name="mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
+
     <meta name="theme-color" content="#111827">
+
     <title>Shwari Finance · Digital Assimilation</title>
+
     
+
     <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
+
     <link rel="manifest" href="manifest.json">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
     
+
     <script>
+
         (function() {
+
             const forceBgPreload = new Image();
+
             forceBgPreload.src = 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg';
+
         })();
+
     </script>
+
     
+
     <style>
+
         /* =========================================
+
            0. FULLSCREEN & KEYBOARD STABLE BASE
+
            ========================================= */
+
         :root {
+
             --vh: 1vh;
+
             --safe-top: env(safe-area-inset-top);
+
             --safe-bottom: env(safe-area-inset-bottom);
+
             --bg-dark: #111827;
+
             --bg-card: #1f2937;
+
             --accent: #55d082;
+
         }
+
+
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
 
+
+
         html, body {
+
             height: 100%; width: 100%;
+
             min-height: 100vh;
+
             min-height: -webkit-fill-available;
+
             min-height: calc(var(--vh, 1vh) * 100);
+
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
             overflow: hidden; position: relative; perspective: 1200px;
+
             -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
+
             background-color: var(--bg-dark);
+
             padding: 0; margin: 0;
+
             touch-action: manipulation;
+
             overscroll-behavior-y: none;
+
             -webkit-overflow-scrolling: touch;
+
         }
+
+
 
         /* Fixed background layer — intro only, black everywhere else */
+
         .bg-layer {
+
             position: fixed;
+
             inset: 0;
+
             z-index: 0;
+
             background: #000000;
+
             pointer-events: none;
+
             will-change: transform;
+
             transition: transform 0s;
-        }
-        body.intro-active .bg-layer {
-            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
-            background-color: #111827;
-        }
-        /* Keyboard — bg-layer never moves */
-        body.keyboard-open .bg-layer,
-        body:not(.keyboard-open) .bg-layer {
-            transform: none !important;
-            transition: none !important;
+
         }
 
-        /* =========================================
-           1. PARALLAX WRAPPER & ANIMATIONS
-           ========================================= */
-        .wrapper {
-            position: absolute; width: min(500px, 92vw); height: min(500px, 92vw);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; transform: scale(0.8);
-            transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transform-style: preserve-3d; will-change: transform, opacity;
-            z-index: 10;
+        body.intro-active .bg-layer {
+
+            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
+
+            background-color: #111827;
+
         }
+
+        /* Keyboard — bg-layer never moves */
+
+        body.keyboard-open .bg-layer,
+
+        body:not(.keyboard-open) .bg-layer {
+
+            transform: none !important;
+
+            transition: none !important;
+
+        }
+
+
+
+        /* =========================================
+
+           1. PARALLAX WRAPPER & ANIMATIONS
+
+           ========================================= */
+
+        .wrapper {
+
+            position: absolute; width: min(500px, 92vw); height: min(500px, 92vw);
+
+            display: flex; justify-content: center; align-items: center;
+
+            opacity: 0; transform: scale(0.8);
+
+            transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+            transform-style: preserve-3d; will-change: transform, opacity;
+
+            z-index: 10;
+
+        }
+
         .wrapper.pop-in { opacity: 1; transform: scale(1); }
 
+
+
         .shockwave { position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; border-radius: 50%; border: 2px solid #ffffff; transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 10; pointer-events: none; }
+
         .particle { position: absolute; border-radius: 50%; opacity: 0; animation: float 5s infinite ease-in-out; z-index: 20; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); will-change: transform, top, left, opacity; }
+
         .wrapper.pop-in .particle { opacity: 0.6; }
+
         .p1 { width: 12px; height: 12px; top: 10%; left: 20%; background: #55d082; animation-duration: 4.2s; box-shadow: 0 0 10px #55d082;}
+
         .p2 { width: 8px;  height: 8px;  top: 60%; left: 80%; background: #ffffff; animation-duration: 6.0s; box-shadow: 0 0 10px #ffffff;}
+
         .p3 { width: 16px; height: 16px; top: 75%; left: 15%; background: #b78a1a; animation-duration: 5.4s; box-shadow: 0 0 10px #b78a1a;}
+
         .p4 { width: 9px;  height: 9px;  top: 25%; left: 85%; background: #dddddd; animation-duration: 7.0s; box-shadow: 0 0 10px #dddddd;}
+
         @keyframes float { 0%, 100% { transform: translateY(0) scale(1.0); } 50% { transform: translateY(-15px) scale(1.1); } }
 
+
+
         .wrapper.pull-active {
+
             opacity: 0 !important;
+
             transition: opacity 1.2s ease-in-out !important;
+
             pointer-events: none;
+
         }
 
+
+
         /* =========================================
+
            2. AUTO-CONTINUE SCREEN OVERLAY
+
            ========================================= */
+
         #continue-overlay {
+
             position: fixed; inset: 0; z-index: 50; pointer-events: none;
+
             display: flex; flex-direction: column; justify-content: space-between;
+
             transition: opacity 1s ease-in-out;
+
         }
+
         #continue-overlay.hidden { display: none; opacity: 0; }
 
+
+
         .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); }
+
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
+
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
+
+
         .continue-footer {
+
             padding: 40px 20px 40px; text-align: center;
+
             background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%);
+
             position: relative;
+
             min-height: 200px;
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: flex-end;
+
             align-items: center;
+
             padding-bottom: max(40px, var(--safe-bottom));
+
         }
+
+
 
         .elephant-gate {
+
             position: absolute;
+
             bottom: max(40px, calc(40px + var(--safe-bottom)));
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             opacity: 1;
+
             transform: scale(1);
+
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+
                         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
             z-index: 10;
+
         }
+
+
 
         .elephant-gate.unlocked {
+
             opacity: 0;
+
             transform: scale(1.8) translateY(-30px);
+
             pointer-events: none;
+
         }
+
+
 
         .elephant-icon {
+
             font-size: 90px;
+
             background: linear-gradient(135deg, #C9A961 0%, #F4E5C2 30%, #D4AF37 60%, #8B7355 100%);
+
             background-size: 200% 200%;
+
             -webkit-background-clip: text;
+
             -webkit-text-fill-color: transparent;
+
             filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) 
+
                     drop-shadow(0 0 30px rgba(201, 169, 97, 0.5));
+
             animation: elephantLive 3s ease-in-out infinite, 
+
                        elephantShimmer 4s ease-in-out infinite;
+
             transform-origin: center bottom;
+
         }
+
+
 
         @keyframes elephantLive {
+
             0%, 100% { transform: translateY(0) rotate(-1deg) scale(1); }
+
             15% { transform: translateY(-8px) rotate(2deg) scale(1.05); }
+
             30% { transform: translateY(0) rotate(-2deg) scale(1); }
+
             45% { transform: translateY(-5px) rotate(1deg) scale(1.02); }
+
             60% { transform: translateY(0) rotate(-1deg) scale(1); }
+
             75% { transform: translateY(-3px) rotate(0.5deg) scale(1.01); }
+
             90% { transform: translateY(0) rotate(-0.5deg) scale(1); }
+
         }
+
+
 
         @keyframes elephantShimmer {
+
             0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 20px rgba(201, 169, 97, 0.4)); }
+
             50% { background-position: 100% 50%; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)) drop-shadow(0 0 40px rgba(201, 169, 97, 0.8)); }
+
         }
+
+
 
         .unlock-ring {
+
             position: absolute;
+
             width: 120px;
+
             height: 120px;
+
             border: 2px solid rgba(201, 169, 97, 0.6);
+
             border-radius: 50%;
+
             opacity: 0;
+
             animation: unlockPulse 3s ease-out infinite;
+
         }
+
+
 
         @keyframes unlockPulse {
+
             0% { transform: scale(0.8); opacity: 0.6; border-width: 3px; }
+
             100% { transform: scale(1.5); opacity: 0; border-width: 0px; }
+
         }
+
+
 
         .employee-info {
+
             opacity: 0;
+
             transform: translateY(30px) scale(0.9);
+
             transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, 
+
                         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+
             z-index: 5;
+
             display: flex; 
+
             flex-direction: column;
+
             align-items: center; 
+
             justify-content: center; 
+
             gap: 15px;
+
             position: relative;
+
         }
+
+
 
         .employee-info.unlocked {
+
             opacity: 1;
+
             transform: translateY(0) scale(1);
+
         }
+
+
 
         .water-wave {
+
             position: absolute;
+
             top: 50%; left: 50%;
+
             transform: translate(-50%, -50%);
+
             width: 1px; height: 1px;
+
             z-index: -1;
+
             pointer-events: none;
+
         }
+
+
 
         .employee-info.unlocked .water-wave::before,
+
         .employee-info.unlocked .water-wave::after {
+
             content: '';
+
             position: absolute;
+
             top: 50%; left: 50%;
+
             transform: translate(-50%, -50%);
+
             border-radius: 50%;
+
             border: 2px solid rgba(85, 208, 130, 0.5);
+
             opacity: 0;
+
         }
+
+
 
         .employee-info.unlocked .water-wave::before {
+
             animation: dripWave 3.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+
         }
+
+
 
         .employee-info.unlocked .water-wave::after {
+
             animation: dripWave 3.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite 1.75s;
+
         }
+
+
 
         @keyframes dripWave {
+
             0% { width: 40px; height: 40px; opacity: 1; border-width: 4px; }
+
             100% { width: 300px; height: 300px; opacity: 0; border-width: 0px; }
+
         }
+
+
 
         .elephant-icon-small {
+
             font-size: 38px; color: #55d082;
+
             filter: drop-shadow(0 0 10px rgba(85, 208, 130, 0.5));
+
             animation: elephantWalk 3s ease-in-out infinite;
+
         }
+
         @keyframes elephantWalk {
+
             0%, 100% { transform: translateY(0) rotate(0deg); }
+
             25% { transform: translateY(-3px) rotate(-3deg); }
+
             75% { transform: translateY(-3px) rotate(3deg); }
+
         }
+
+
 
         .text-group { text-align: center; }
+
         
+
         .employee-info.unlocked .text-group {
+
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+
         }
+
+
 
         @keyframes slowMotionPop {
+
             0% { opacity: 0; transform: scale(0.6) translateY(20px); }
+
             40% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+
             100% { opacity: 1; transform: scale(1) translateY(0); }
+
         }
+
+
 
         .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
+
         .small-email { font-size: 16px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
 
+
+
         /* =========================================
+
            3. REGISTRATION PORTAL
+
            ========================================= */
+
         #auth-portal {
+
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
+
             background: #000000;
+
             overflow-y: auto;
+
             -webkit-overflow-scrolling: touch;
+
             transition: opacity 0.6s ease;
+
             will-change: padding;
+
         }
+
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
+
         #auth-portal.keyboard-adjust {
+
             align-items: flex-start;
+
             padding-top: 20px;
+
             padding-bottom: 20px;
+
         }
+
         body.keyboard-open #auth-portal {
+
             background: #000000 !important;
+
         }
+
+
 
         .auth-card {
+
             width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
+
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
+
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
+
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
+
             transition: transform 0.7s cubic-bezier(0.1, 1, 0.2, 1), opacity 0.5s ease;
+
             max-height: calc(var(--vh, 1vh) * 90);
+
             overflow-y: auto;
+
             -webkit-overflow-scrolling: touch;
+
             margin: auto;
+
             will-change: transform;
+
         }
+
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
         .auth-card.hidden { display: none; }
 
+
+
         /* Card stays perfectly still during keyboard open */
+
         body.keyboard-open .auth-card {
+
             transform: none;
+
         }
+
+
 
         .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
+
         @keyframes colorShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
         .auth-card h2 { font-size: 26px; color: #111; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;}
+
         .desc-text { font-size: 15px; color: #666; margin-bottom: 25px; }
 
+
+
         .input-group { position: relative; margin-bottom: 15px; }
+
         .input-group input { pointer-events: auto; width: 100%; padding: 18px 20px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 16px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
+
         .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
+
         .input-group input.error { border-color: #e74c3c; background: #fff5f5; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1); }
+
         .input-group input.success { border-color: #55d082; background: #f0fff5; }
+
         
+
         .error-message {
+
             display: none;
+
             align-items: center;
+
             gap: 6px;
+
             font-size: 12px;
+
             color: #e74c3c;
+
             margin-top: 6px;
+
             margin-left: 4px;
+
             text-align: left;
+
             animation: shakeError 0.4s ease;
+
         }
+
         .error-message.show { display: flex; }
+
         .error-message i { font-size: 11px; }
+
         
+
         @keyframes shakeError {
+
             0%, 100% { transform: translateX(0); }
+
             20%, 60% { transform: translateX(-4px); }
+
             40%, 80% { transform: translateX(4px); }
+
         }
+
+
 
         .auth-btn { 
+
             width: 100%; 
+
             pointer-events: auto; 
+
             padding: 22px; 
+
             background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f); 
+
             background-size: 400% 400%; 
+
             color: white; 
+
             border: none; 
+
             border-radius: 20px; 
+
             font-size: 20px; 
+
             font-weight: 800; 
+
             cursor: pointer; 
+
             transition: transform 0.15s ease, box-shadow 0.3s ease; 
+
             box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3); 
+
             animation: colorShift 6s ease infinite; 
+
             font-family: 'Inter', sans-serif;
+
             touch-action: manipulation;
+
             user-select: none;
+
             -webkit-user-select: none;
+
         }
+
         .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(44, 122, 71, 0.4); }
+
         .auth-btn:active { transform: scale(0.96) translateY(0); box-shadow: 0 5px 10px rgba(44, 122, 71, 0.2); }
+
         .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+
+
         /* =========================================
+
            4. APP IFRAME - SMOOTH CROSSFADE REVEAL
+
            ========================================= */
+
         .app { 
+
             position: fixed; inset: 0; opacity: 0; visibility: hidden; 
+
             background: var(--bg-dark); z-index: 2000; 
+
             transition: opacity 1.2s ease-in-out; 
+
             width: 100vw; 
+
             height: 100vh;
+
             height: calc(var(--vh, 1vh) * 100);
+
         }
+
         .app.active { opacity: 1; visibility: visible; }
+
         
+
         iframe { 
+
             width: 100%; height: 100%; border: none; 
+
             background: var(--bg-dark); opacity: 0;
+
             transition: opacity 1.2s ease-in-out 0.2s;
+
             position: absolute;
+
             top: 0; left: 0; right: 0; bottom: 0;
+
             zoom: 0.9;
+
             -moz-transform: scale(0.9);
+
             -moz-transform-origin: top center;
+
             padding: 0 !important;
+
             margin: 0 !important;
+
         }
+
         .app.active iframe { opacity: 1; }
 
+
+
         /* RESTRICTION SCREENS */
+
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+
         .error-card { background: var(--bg-card); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
+
         .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
+
         .error-card p { font-size: 16px; color: #aaaaaa; line-height: 1.6; }
+
         @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
+
+
         #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+
         .install-card { background: var(--bg-card); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
+
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
+
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
+
         
+
         @keyframes installPulse {
+
             0% { box-shadow: 0 0 0 0 rgba(85, 208, 130, 0.7); }
+
             70% { box-shadow: 0 0 0 15px rgba(85, 208, 130, 0); }
+
             100% { box-shadow: 0 0 0 0 rgba(85, 208, 130, 0); }
+
         }
+
         
+
         .install-btn { 
+
             background: transparent; 
+
             color: #55d082; 
+
             border: 2px solid #55d082; 
+
             padding: 18px 0; 
+
             width: 100%; 
+
             border-radius: 15px; 
+
             font-size: 18px; 
+
             font-weight: 700; 
+
             cursor: pointer; 
+
             display: flex; 
+
             justify-content: center; 
+
             align-items: center; 
+
             gap: 10px; 
+
             margin-top: 20px; 
+
             font-family: 'Inter', sans-serif; 
+
             transition: all 0.3s ease;
+
             touch-action: manipulation;
+
             animation: installPulse 2s infinite;
+
         }
+
         .install-btn:hover { background: #55d082; color: #111827; }
+
         .install-btn:active { transform: scale(0.96); }
 
+
+
         /* =========================================
+
            5. LIGHT / DARK THEME ADAPTATION
+
            ========================================= */
+
         @media (prefers-color-scheme: light) {
+
             html, body, .app, iframe { background-color: var(--bg-dark) !important; }
+
             .dept-title, .medium-font { color: #ffffff !important; }
+
             .dept-subtitle { color: #55d082 !important; }
+
             .small-email { color: #bbbbbb !important; }
+
             
+
             .continue-footer {
+
                 background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%) !important;
+
             }
+
+
 
             #auth-portal { background: #000000 !important; }
+
             #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: var(--bg-dark) !important; }
+
             .error-card, .install-card, .network-error-card { 
+
                 background: var(--bg-card) !important; 
+
                 border-color: rgba(85, 208, 130, 0.2) !important;
+
             }
+
             .error-card p, .install-card p, .network-error-message { color: #aaaaaa !important; }
+
         }
 
+
+
         /* =========================================
+
            6. INSTALL PROGRESS / ANIMATION SCREEN
+
            ========================================= */
+
         #install-progress-screen {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             z-index: 99999;
+
             justify-content: center;
+
             align-items: center;
+
             flex-direction: column;
+
             padding: 40px 30px;
+
             font-family: 'Inter', sans-serif;
+
             background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
+
                         radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
+
                         var(--bg-dark);
+
             transition: opacity 0.8s ease;
+
         }
+
+
 
         #install-progress-screen.active { display: flex; }
+
         #install-progress-screen.fade-out { opacity: 0; pointer-events: none; }
 
+
+
         @media (prefers-color-scheme: light) {
+
             #install-progress-screen {
+
                 background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
+
                             radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.08) 0%, transparent 60%),
+
                             #e8f5ed;
+
             }
+
         }
+
+
 
         .install-app-icon {
+
             width: 100px;
+
             height: 100px;
+
             border-radius: 28px;
+
             background: linear-gradient(145deg, #1f6e3f 0%, #55d082 100%);
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-size: 48px;
+
             color: #ffffff;
+
             box-shadow: 0 12px 40px rgba(85, 208, 130, 0.45),
+
                         inset 0 1px 0 rgba(255,255,255,0.3);
+
             margin-bottom: 32px;
+
             animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+
             opacity: 0;
+
         }
+
+
 
         @keyframes iconBounceIn {
+
             0%   { opacity: 0; transform: scale(0.4) rotate(-10deg); }
+
             60%  { opacity: 1; transform: scale(1.1) rotate(2deg); }
+
             100% { opacity: 1; transform: scale(1) rotate(0deg); }
+
         }
+
+
 
         .install-title {
+
             font-size: 22px;
+
             font-weight: 800;
+
             letter-spacing: -0.3px;
+
             margin-bottom: 6px;
+
             opacity: 0;
+
             animation: fadeSlideUp 0.5s ease 0.3s forwards;
+
         }
 
+
+
         @media (prefers-color-scheme: dark) {
+
             .install-title { color: #ffffff; }
+
         }
+
         @media (prefers-color-scheme: light) {
+
             .install-title { color: #0a2e16; }
+
         }
+
+
 
         .install-subtitle {
+
             font-size: 13px;
+
             letter-spacing: 3px;
+
             text-transform: uppercase;
+
             font-weight: 600;
+
             margin-bottom: 50px;
+
             color: #55d082;
+
             opacity: 0;
+
             animation: fadeSlideUp 0.5s ease 0.45s forwards;
+
         }
+
+
 
         @keyframes fadeSlideUp {
+
             from { opacity: 0; transform: translateY(12px); }
+
             to   { opacity: 1; transform: translateY(0); }
+
         }
+
+
 
         .install-track-wrap {
+
             width: 100%;
+
             max-width: 280px;
+
             opacity: 0;
+
             animation: fadeSlideUp 0.5s ease 0.6s forwards;
+
         }
+
+
 
         .install-track {
+
             width: 100%;
+
             height: 6px;
+
             border-radius: 10px;
+
             overflow: hidden;
+
             margin-bottom: 14px;
+
             position: relative;
+
         }
 
+
+
         @media (prefers-color-scheme: dark) {
+
             .install-track { background: rgba(255,255,255,0.1); }
+
         }
+
         @media (prefers-color-scheme: light) {
+
             .install-track { background: rgba(44, 122, 71, 0.15); }
+
         }
+
+
 
         .install-bar {
+
             height: 100%;
+
             width: 0%;
+
             border-radius: 10px;
+
             background: linear-gradient(90deg, #2c7a47, #55d082, #2c7a47);
+
             background-size: 200% 100%;
+
             animation: barShimmer 1.8s linear infinite;
+
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
         }
+
+
 
         @keyframes barShimmer {
+
             0%   { background-position: 100% 0; }
+
             100% { background-position: -100% 0; }
+
         }
+
+
 
         .install-status-text {
+
             font-size: 13px;
+
             font-weight: 500;
+
             text-align: center;
+
             transition: opacity 0.3s ease;
+
         }
+
+
 
         @media (prefers-color-scheme: dark) {
+
             .install-status-text { color: rgba(255,255,255,0.5); }
+
         }
+
         @media (prefers-color-scheme: light) {
+
             .install-status-text { color: rgba(10, 46, 22, 0.5); }
+
         }
+
+
 
         .install-tick {
+
             width: 70px;
+
             height: 70px;
+
             border-radius: 50%;
+
             background: linear-gradient(135deg, #2c7a47, #55d082);
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-size: 32px;
+
             color: #ffffff;
+
             margin-top: 30px;
+
             opacity: 0;
+
             transform: scale(0);
+
             transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
             box-shadow: 0 8px 30px rgba(85, 208, 130, 0.5);
+
         }
+
+
 
         .install-tick.show {
+
             opacity: 1;
+
             transform: scale(1);
+
         }
+
+
 
         .tick-ripple {
+
             position: absolute;
+
             width: 70px;
+
             height: 70px;
+
             border-radius: 50%;
+
             border: 2px solid rgba(85, 208, 130, 0.6);
+
             opacity: 0;
+
         }
+
+
 
         .tick-ripple.animate {
+
             animation: tickRipple 1.4s ease-out forwards;
+
         }
+
+
 
         @keyframes tickRipple {
+
             0%   { transform: scale(1);   opacity: 0.7; }
+
             100% { transform: scale(2.4); opacity: 0;   }
+
         }
+
+
 
         .tick-wrap {
+
             position: relative;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             margin-top: 30px;
+
         }
+
+
 
         .install-particle {
+
             position: absolute;
+
             border-radius: 50%;
+
             opacity: 0;
+
             pointer-events: none;
+
         }
+
+
 
         .ip1 { width: 8px;  height: 8px;  background: #55d082; top: 15%; left: 10%; animation: installFloat 3.5s ease-in-out 0.8s infinite; }
+
         .ip2 { width: 5px;  height: 5px;  background: rgba(85,208,130,0.5); top: 70%; right: 12%; animation: installFloat 4.2s ease-in-out 1.2s infinite; }
+
         .ip3 { width: 10px; height: 10px; background: rgba(44,122,71,0.7); bottom: 20%; left: 20%; animation: installFloat 5.0s ease-in-out 0.4s infinite; }
+
         .ip4 { width: 6px;  height: 6px;  background: #b78a1a; top: 30%; right: 8%; animation: installFloat 3.8s ease-in-out 1.8s infinite; }
 
+
+
         @keyframes installFloat {
+
             0%,100% { opacity: 0.5; transform: translateY(0) scale(1);     }
+
             50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
+
         }
 
+
+
         /* =========================================
-           7. NETWORK ERROR SCREEN (CARTOON STYLE)
+
+           7. NETWORK ERROR SCREEN (ULTRA MODERN CARTOON)
+
            ========================================= */
+
         #network-error-screen {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             z-index: 100000;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             padding: 40px 30px;
+
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-                        radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+
+            background: radial-gradient(ellipse at 50% 20%, rgba(231, 76, 60, 0.22) 0%, transparent 70%),
+
+                        radial-gradient(ellipse at 20% 80%, rgba(255, 193, 7, 0.12) 0%, transparent 60%),
+
+                        radial-gradient(ellipse at 80% 80%, rgba(85, 208, 130, 0.04) 0%, transparent 50%),
+
                         var(--bg-dark);
-            transition: opacity 0.5s ease;
+
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+            overflow: hidden;
+
         }
 
         #network-error-screen.active { display: flex; }
+
         #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
 
         @media (prefers-color-scheme: light) {
+
             #network-error-screen {
-                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.1) 0%, transparent 60%),
-                            radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
+
+                background: radial-gradient(ellipse at 50% 20%, rgba(231, 76, 60, 0.14) 0%, transparent 70%),
+
+                            radial-gradient(ellipse at 20% 80%, rgba(255, 193, 7, 0.08) 0%, transparent 60%),
+
+                            radial-gradient(ellipse at 80% 80%, rgba(44, 122, 71, 0.06) 0%, transparent 50%),
+
                             #e8f5ed;
+
             }
-        }
 
-        .error-illustration {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            margin-bottom: 30px;
-        }
-
-        .cartoon-elephant {
-            position: absolute;
-            width: 120px;
-            height: 100px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50% 50% 45% 45%;
-            top: 40px;
-            left: 30px;
-            animation: elephantSad 2s ease-in-out infinite;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .cartoon-elephant::before {
-            content: '';
-            position: absolute;
-            width: 35px;
-            height: 50px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50%;
-            top: -20px;
-            left: 15px;
-            transform: rotate(-20deg);
-        }
-
-        .cartoon-elephant::after {
-            content: '';
-            position: absolute;
-            width: 35px;
-            height: 50px;
-            background: linear-gradient(145deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 50%;
-            top: -20px;
-            right: 15px;
-            transform: rotate(20deg);
-        }
-
-        .elephant-trunk {
-            position: absolute;
-            width: 25px;
-            height: 50px;
-            background: linear-gradient(180deg, #55d082 0%, #2c7a47 100%);
-            border-radius: 0 0 50% 50%;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: trunkWiggle 1.5s ease-in-out infinite;
-        }
-
-        .elephant-eye {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #1a1a1a;
-            border-radius: 50%;
-            top: 35px;
-        }
-
-        .elephant-eye.left { left: 30px; }
-        .elephant-eye.right { right: 30px; }
-
-        .elephant-eye::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffffff;
-            border-radius: 50%;
-            top: 2px;
-            right: 2px;
-        }
-
-        .eyebrow {
-            position: absolute;
-            width: 18px;
-            height: 3px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            top: 25px;
-        }
-
-        .eyebrow.left { left: 27px; transform: rotate(20deg); }
-        .eyebrow.right { right: 27px; transform: rotate(-20deg); }
-
-        .broken-cable {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 60px;
-        }
-
-        .cable-left, .cable-right {
-            position: absolute;
-            width: 40px;
-            height: 4px;
-            background: linear-gradient(90deg, #e74c3c, #c0392b);
-            border-radius: 2px;
-            top: 30px;
-        }
-
-        .cable-left { left: 0; transform: rotate(-15deg); animation: cableSpark 0.5s ease-in-out infinite alternate; }
-        .cable-right { right: 0; transform: rotate(15deg); animation: cableSpark 0.5s ease-in-out infinite alternate 0.25s; }
-
-        .spark {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ffc107;
-            border-radius: 50%;
-            top: 28px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: sparkFlash 0.3s ease-in-out infinite;
-            box-shadow: 0 0 10px #ffc107, 0 0 20px #ff9800;
-        }
-
-        @keyframes elephantSad {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(5px); }
-        }
-
-        @keyframes trunkWiggle {
-            0%, 100% { transform: translateX(-50%) rotate(0deg); }
-            25% { transform: translateX(-50%) rotate(-5deg); }
-            75% { transform: translateX(-50%) rotate(5deg); }
-        }
-
-        @keyframes cableSpark {
-            from { box-shadow: 0 0 5px #e74c3c; }
-            to { box-shadow: 0 0 15px #e74c3c, 0 0 25px #ffc107; }
-        }
-
-        @keyframes sparkFlash {
-            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
-            50% { opacity: 0.5; transform: translateX(-50%) scale(0.8); }
-        }
-
-        .network-error-card {
-            background: var(--bg-card);
-            max-width: 380px;
-            padding: 40px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
-                        0 0 0 1px rgba(231, 76, 60, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes errorCardSlideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-error-card {
-                background: rgba(255, 255, 255, 0.98);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
-                            0 0 0 1px rgba(231, 76, 60, 0.2),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            }
-        }
-
-        .network-error-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .network-error-message {
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 25px;
-            color: #aaaaaa;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-error-message { color: #5a6a60; }
-        }
-
-        .network-status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px 20px;
-            background: rgba(231, 76, 60, 0.1);
-            border-radius: 16px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-status-indicator {
-                background: rgba(231, 76, 60, 0.08);
-                border-color: rgba(231, 76, 60, 0.15);
-            }
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background: #e74c3c;
-            border-radius: 50%;
-            animation: statusPulse 1.5s ease-in-out infinite;
-            box-shadow: 0 0 10px #e74c3c;
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.85); }
-        }
-
-        .status-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e74c3c;
-        }
-
-        .retry-btn {
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
-            touch-action: manipulation;
-        }
-
-        .retry-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
-        }
-
-        .retry-btn:active {
-            transform: translateY(0) scale(0.96);
-        }
-
-        .retry-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .retry-btn i {
-            animation: none;
-        }
-
-        .retry-btn.loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .error-particle {
+
             position: absolute;
+
             border-radius: 50%;
-            opacity: 0.6;
-            pointer-events: none;
-        }
 
-        .ep1 { width: 6px; height: 6px; background: #e74c3c; top: 10%; left: 15%; animation: errorFloat 4s ease-in-out infinite; }
-        .ep2 { width: 4px; height: 4px; background: #ffc107; top: 80%; right: 10%; animation: errorFloat 5s ease-in-out infinite 0.5s; }
-        .ep3 { width: 8px; height: 8px; background: rgba(231, 76, 60, 0.5); bottom: 15%; left: 20%; animation: errorFloat 3.5s ease-in-out infinite 1s; }
-        .ep4 { width: 5px; height: 5px; background: #ff9800; top: 30%; right: 15%; animation: errorFloat 4.5s ease-in-out infinite 1.5s; }
-
-        @keyframes errorFloat {
-            0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
-            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
-        }
-
-        #network-toast {
-            position: fixed;
-            top: max(20px, var(--safe-top));
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            z-index: 100001;
-            padding: 14px 24px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 600;
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            background: #1E293B;
-            border: 1px solid #334155;
-            color: #F1F5F9;
+
+            pointer-events: none;
+
+            animation: errorFloatParticle 6s ease-in-out infinite;
+
         }
 
-        #network-toast.offline i {
-            color: #F87171;
+        .ep1 { width: 10px; height: 10px; background: rgba(231, 76, 60, 0.5); top: 12%; left: 8%; animation-delay: 0s; }
+
+        .ep2 { width: 6px; height: 6px; background: rgba(255, 193, 7, 0.6); top: 78%; right: 12%; animation-delay: 1.2s; }
+
+        .ep3 { width: 14px; height: 14px; background: rgba(231, 76, 60, 0.25); bottom: 18%; left: 22%; animation-delay: 2.5s; }
+
+        .ep4 { width: 8px; height: 8px; background: rgba(255, 152, 0, 0.45); top: 32%; right: 8%; animation-delay: 0.8s; }
+
+        .ep5 { width: 5px; height: 5px; background: rgba(244, 67, 54, 0.7); top: 62%; left: 6%; animation-delay: 3.5s; }
+
+        .ep6 { width: 12px; height: 12px; background: rgba(255, 87, 34, 0.35); bottom: 32%; right: 18%; animation-delay: 1.8s; }
+
+        @keyframes errorFloatParticle {
+
+            0%, 100% { opacity: 0; transform: translateY(0) translateX(0) scale(0.8); }
+
+            20% { opacity: 0.8; }
+
+            50% { opacity: 0.4; transform: translateY(-30px) translateX(15px) scale(1.2); }
+
+            80% { opacity: 0.6; }
+
         }
 
-        #network-toast.online i {
-            color: #34D399;
+        .wifi-icon-broken {
+
+            position: absolute;
+
+            font-size: 22px;
+
+            color: rgba(231, 76, 60, 0.35);
+
+            animation: wifiBrokenFloat 5s ease-in-out infinite;
+
+            pointer-events: none;
+
         }
 
-        #network-toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-        
-        #network-toast:active {
-            transform: translateX(-50%) translateY(0) scale(0.95);
+        .wb1 { top: 18%; left: 12%; animation-delay: 0s; }
+
+        .wb2 { top: 72%; right: 10%; animation-delay: 1.5s; font-size: 16px; }
+
+        .wb3 { bottom: 22%; left: 16%; animation-delay: 3s; font-size: 18px; }
+
+        .wb4 { top: 38%; right: 6%; animation-delay: 2s; font-size: 14px; }
+
+        @keyframes wifiBrokenFloat {
+
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.7; }
+
         }
 
-        #network-toast i {
+        .error-illustration {
+
+            position: relative;
+
+            width: 220px;
+
+            height: 220px;
+
+            margin-bottom: 35px;
+
+            animation: illustrationEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+            opacity: 0;
+
+            transform: scale(0.8) translateY(20px);
+
+        }
+
+        @keyframes illustrationEnter {
+
+            to { opacity: 1; transform: scale(1) translateY(0); }
+
+        }
+
+        .cartoon-elephant {
+
+            position: absolute;
+
+            width: 130px;
+
+            height: 110px;
+
+            background: linear-gradient(145deg, #55d082 0%, #3d9e62 50%, #2c7a47 100%);
+
+            border-radius: 50% 50% 45% 45%;
+
+            top: 50px;
+
+            left: 45px;
+
+            animation: elephantSadBreathe 3s ease-in-out infinite;
+
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), inset 0 -5px 15px rgba(0,0,0,0.1);
+
+            z-index: 2;
+
+        }
+
+        @keyframes elephantSadBreathe {
+
+            0%, 100% { transform: translateY(0) scale(1); }
+
+            50% { transform: translateY(4px) scale(1.02); }
+
+        }
+
+        .cartoon-elephant::before {
+
+            content: '';
+
+            position: absolute;
+
+            width: 45px;
+
+            height: 65px;
+
+            background: linear-gradient(145deg, #55d082 0%, #3d9e62 100%);
+
+            border-radius: 50%;
+
+            top: -25px;
+
+            left: 10px;
+
+            transform: rotate(-25deg);
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+            border: 2px solid rgba(255,255,255,0.1);
+
+        }
+
+        .cartoon-elephant::after {
+
+            content: '';
+
+            position: absolute;
+
+            width: 45px;
+
+            height: 65px;
+
+            background: linear-gradient(145deg, #55d082 0%, #3d9e62 100%);
+
+            border-radius: 50%;
+
+            top: -25px;
+
+            right: 10px;
+
+            transform: rotate(25deg);
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+            border: 2px solid rgba(255,255,255,0.1);
+
+        }
+
+        .elephant-leg {
+
+            position: absolute;
+
+            width: 22px;
+
+            height: 35px;
+
+            background: linear-gradient(180deg, #3d9e62 0%, #2c7a47 100%);
+
+            border-radius: 0 0 12px 12px;
+
+            bottom: -20px;
+
+            z-index: 1;
+
+        }
+
+        .elephant-leg.left { left: 25px; animation: legTap 2s ease-in-out infinite; }
+
+        .elephant-leg.right { right: 25px; animation: legTap 2s ease-in-out infinite 0.5s; }
+
+        @keyframes legTap {
+
+            0%, 100% { transform: translateY(0); }
+
+            50% { transform: translateY(-3px); }
+
+        }
+
+        .elephant-tail {
+
+            position: absolute;
+
+            width: 30px;
+
+            height: 4px;
+
+            background: #2c7a47;
+
+            border-radius: 2px;
+
+            bottom: 30px;
+
+            left: -15px;
+
+            transform: rotate(-30deg);
+
+            transform-origin: right center;
+
+            animation: tailWag 2s ease-in-out infinite;
+
+        }
+
+        @keyframes tailWag {
+
+            0%, 100% { transform: rotate(-30deg); }
+
+            50% { transform: rotate(-40deg); }
+
+        }
+
+        .elephant-tail::after {
+
+            content: '';
+
+            position: absolute;
+
+            width: 8px;
+
+            height: 8px;
+
+            background: #2c7a47;
+
+            border-radius: 50%;
+
+            left: -4px;
+
+            top: -2px;
+
+        }
+
+        .elephant-trunk {
+
+            position: absolute;
+
+            width: 28px;
+
+            height: 60px;
+
+            background: linear-gradient(180deg, #55d082 0%, #2c7a47 100%);
+
+            border-radius: 0 0 50% 50%;
+
+            bottom: -35px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            animation: trunkSadWiggle 2s ease-in-out infinite;
+
+            z-index: 3;
+
+        }
+
+        @keyframes trunkSadWiggle {
+
+            0%, 100% { transform: translateX(-50%) rotate(0deg) scaleY(1); }
+
+            25% { transform: translateX(-50%) rotate(-8deg) scaleY(0.95); }
+
+            75% { transform: translateX(-50%) rotate(5deg) scaleY(0.98); }
+
+        }
+
+        .elephant-eye {
+
+            position: absolute;
+
+            width: 16px;
+
+            height: 16px;
+
+            background: #1a1a1a;
+
+            border-radius: 50%;
+
+            top: 40px;
+
+            z-index: 4;
+
+            animation: blinkEyes 4s ease-in-out infinite;
+
+        }
+
+        .elephant-eye.left { left: 32px; }
+
+        .elephant-eye.right { right: 32px; }
+
+        .elephant-eye::after {
+
+            content: '';
+
+            position: absolute;
+
+            width: 5px;
+
+            height: 5px;
+
+            background: #ffffff;
+
+            border-radius: 50%;
+
+            top: 3px;
+
+            right: 3px;
+
+            animation: eyeShine 3s ease-in-out infinite;
+
+        }
+
+        @keyframes blinkEyes {
+
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+
+            50% { transform: scaleY(0.1); }
+
+        }
+
+        @keyframes eyeShine {
+
+            0%, 100% { opacity: 1; }
+
+            50% { opacity: 0.6; }
+
+        }
+
+        .eyebrow {
+
+            position: absolute;
+
+            width: 22px;
+
+            height: 4px;
+
+            background: #1a1a1a;
+
+            border-radius: 4px;
+
+            top: 28px;
+
+            z-index: 5;
+
+            animation: eyebrowWorry 2s ease-in-out infinite;
+
+        }
+
+        .eyebrow.left { left: 28px; transform: rotate(25deg); }
+
+        .eyebrow.right { right: 28px; transform: rotate(-25deg); }
+
+        @keyframes eyebrowWorry {
+
+            0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+
+            50% { transform: translateY(-2px) rotate(var(--rot, 0deg)); }
+
+        }
+
+        .eyebrow.left { --rot: 25deg; }
+
+        .eyebrow.right { --rot: -25deg; }
+
+        .tear-drop {
+
+            position: absolute;
+
+            width: 8px;
+
+            height: 12px;
+
+            background: linear-gradient(180deg, #81d4fa 0%, #29b6f6 100%);
+
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+
+            top: 58px;
+
+            opacity: 0;
+
+            z-index: 6;
+
+            animation: tearFall 3s ease-in-out infinite;
+
+            box-shadow: 0 0 6px rgba(129, 212, 250, 0.6);
+
+        }
+
+        .tear-drop.left { left: 36px; animation-delay: 0.5s; }
+
+        .tear-drop.right { right: 36px; animation-delay: 1.8s; }
+
+        @keyframes tearFall {
+
+            0% { opacity: 0; transform: translateY(0) scale(0.5); }
+
+            20% { opacity: 1; transform: translateY(5px) scale(1); }
+
+            80% { opacity: 1; transform: translateY(25px) scale(0.8); }
+
+            100% { opacity: 0; transform: translateY(35px) scale(0.5); }
+
+        }
+
+        .sweat-drop {
+
+            position: absolute;
+
+            width: 10px;
+
+            height: 14px;
+
+            background: linear-gradient(180deg, #e1f5fe 0%, #81d4fa 100%);
+
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+
+            top: 15px;
+
+            right: 35px;
+
+            opacity: 0;
+
+            z-index: 6;
+
+            animation: sweatDrop 2.5s ease-in-out infinite;
+
+        }
+
+        @keyframes sweatDrop {
+
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+
+            30% { opacity: 0.9; transform: translateY(8px) scale(1); }
+
+            70% { opacity: 0.7; transform: translateY(18px) scale(0.9); }
+
+            90% { opacity: 0; }
+
+        }
+
+        .elephant-mouth {
+
+            position: absolute;
+
+            width: 24px;
+
+            height: 12px;
+
+            border-bottom: 3px solid #1a1a1a;
+
+            border-radius: 0 0 24px 24px;
+
+            bottom: 25px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            z-index: 4;
+
+            animation: mouthSad 3s ease-in-out infinite;
+
+        }
+
+        @keyframes mouthSad {
+
+            0%, 100% { transform: translateX(-50%) scaleX(1); }
+
+            50% { transform: translateX(-50%) scaleX(1.1); }
+
+        }
+
+        .broken-cable {
+
+            position: absolute;
+
+            top: -10px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 120px;
+
+            height: 70px;
+
+            z-index: 10;
+
+        }
+
+        .cable-left, .cable-right {
+
+            position: absolute;
+
+            width: 50px;
+
+            height: 5px;
+
+            background: linear-gradient(90deg, #e74c3c, #c0392b, #e74c3c);
+
+            background-size: 200% 100%;
+
+            border-radius: 3px;
+
+            top: 35px;
+
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+
+        }
+
+        .cable-left { left: 0; transform: rotate(-20deg); animation: cableSpark 0.6s ease-in-out infinite alternate; }
+
+        .cable-right { right: 0; transform: rotate(20deg); animation: cableSpark 0.6s ease-in-out infinite alternate 0.3s; }
+
+        @keyframes cableSpark {
+
+            from { box-shadow: 0 0 5px #e74c3c, 0 0 10px rgba(231, 76, 60, 0.3); }
+
+            to { box-shadow: 0 0 20px #e74c3c, 0 0 30px #ffc107, 0 0 40px rgba(255, 193, 7, 0.5); }
+
+        }
+
+        .spark {
+
+            position: absolute;
+
+            width: 12px;
+
+            height: 12px;
+
+            background: radial-gradient(circle, #fff 0%, #ffc107 40%, #ff9800 100%);
+
+            border-radius: 50%;
+
+            top: 32px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            animation: sparkFlashEnhanced 0.4s ease-in-out infinite;
+
+            box-shadow: 0 0 15px #ffc107, 0 0 30px #ff9800, 0 0 45px rgba(255, 152, 0, 0.5);
+
+            z-index: 11;
+
+        }
+
+        .spark::before, .spark::after {
+
+            content: '';
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            background: #ffc107;
+
+            left: 50%;
+
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+        }
+
+        .spark::before { width: 20px; height: 20px; opacity: 0.4; animation: sparkRing 0.8s ease-out infinite; }
+
+        .spark::after { width: 30px; height: 30px; opacity: 0.2; animation: sparkRing 0.8s ease-out infinite 0.2s; }
+
+        @keyframes sparkFlashEnhanced {
+
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+
+            50% { opacity: 0.6; transform: translateX(-50%) scale(0.7); }
+
+        }
+
+        @keyframes sparkRing {
+
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.6; }
+
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+
+        }
+
+        .cable-piece {
+
+            position: absolute;
+
+            width: 6px;
+
+            height: 6px;
+
+            background: #e74c3c;
+
+            border-radius: 2px;
+
+            top: 35px;
+
+            left: 50%;
+
+            z-index: 12;
+
+            animation: pieceFly 1.5s ease-out infinite;
+
+        }
+
+        .cp1 { transform: translateX(-50%) rotate(45deg); animation-delay: 0s; margin-left: -20px; }
+
+        .cp2 { transform: translateX(-50%) rotate(-30deg); animation-delay: 0.5s; margin-left: 15px; width: 4px; height: 4px; }
+
+        .cp3 { transform: translateX(-50%) rotate(60deg); animation-delay: 0.8s; margin-left: -10px; width: 5px; height: 5px; background: #ffc107; }
+
+        @keyframes pieceFly {
+
+            0% { opacity: 1; transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); }
+
+            100% { opacity: 0; transform: translateX(-50%) translateY(-40px) rotate(180deg) scale(0.3); }
+
+        }
+
+        .disconnect-cloud {
+
+            position: absolute;
+
+            top: -5px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            background: rgba(255, 255, 255, 0.1);
+
+            border-radius: 30px;
+
+            padding: 8px 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            border: 1px solid rgba(231, 76, 60, 0.3);
+
+            backdrop-filter: blur(10px);
+
+            animation: cloudPulse 2s ease-in-out infinite;
+
+            z-index: 15;
+
+        }
+
+        @keyframes cloudPulse {
+
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.9; }
+
+            50% { transform: translateX(-50%) translateY(-5px); opacity: 1; }
+
+        }
+
+        .disconnect-cloud i {
+
+            color: #e74c3c;
+
+            font-size: 14px;
+
+            animation: wifiX 1s ease-in-out infinite;
+
+        }
+
+        .disconnect-cloud span {
+
+            color: #ffcdd2;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+        @keyframes wifiX {
+
+            0%, 100% { transform: scale(1); opacity: 1; }
+
+            50% { transform: scale(1.2); opacity: 0.7; }
+
+        }
+
+        .network-error-card {
+
+            background: rgba(31, 41, 55, 0.95);
+
+            max-width: 400px;
+
+            width: 100%;
+
+            padding: 45px 35px;
+
+            border-radius: 32px;
+
+            text-align: center;
+
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5),
+
+                        0 0 0 1px rgba(231, 76, 60, 0.25),
+
+                        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+            animation: errorCardSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+
+            backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(231, 76, 60, 0.15);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+        .network-error-card::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            right: 0;
+
+            height: 3px;
+
+            background: linear-gradient(90deg, transparent, #e74c3c, #ffc107, #e74c3c, transparent);
+
+            background-size: 200% 100%;
+
+            animation: borderShimmer 2s linear infinite;
+
+        }
+
+        @keyframes borderShimmer {
+
+            0% { background-position: 100% 0; }
+
+            100% { background-position: -100% 0; }
+
+        }
+
+        @keyframes errorCardSlideUp {
+
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+
+            to { opacity: 1; transform: translateY(0) scale(1); }
+
+        }
+
+        @media (prefers-color-scheme: light) {
+
+            .network-error-card {
+
+                background: rgba(255, 255, 255, 0.98);
+
+                box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15),
+
+                            0 0 0 1px rgba(231, 76, 60, 0.15),
+
+                            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+                border: 1px solid rgba(231, 76, 60, 0.1);
+
+            }
+
+            .disconnect-cloud {
+
+                background: rgba(255, 255, 255, 0.8);
+
+                border-color: rgba(231, 76, 60, 0.2);
+
+            }
+
+            .disconnect-cloud span { color: #c62828; }
+
+        }
+
+        .network-error-title {
+
+            font-size: 32px;
+
+            font-weight: 900;
+
+            margin-bottom: 16px;
+
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 30%, #e74c3c 60%, #c0392b 100%);
+
+            background-size: 200% 200%;
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+
+            animation: titleGradient 3s ease infinite;
+
+            letter-spacing: -0.5px;
+
+            line-height: 1.2;
+
+        }
+
+        @keyframes titleGradient {
+
+            0%, 100% { background-position: 0% 50%; }
+
+            50% { background-position: 100% 50%; }
+
+        }
+
+        .network-error-message {
+
             font-size: 16px;
+
+            line-height: 1.8;
+
+            margin-bottom: 28px;
+
+            color: #d1d5db;
+
+            font-weight: 500;
+
         }
+
+        @media (prefers-color-scheme: light) {
+
+            .network-error-message { color: #4b5563; }
+
+        }
+
+        .network-status-indicator {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            padding: 18px 24px;
+
+            background: rgba(231, 76, 60, 0.12);
+
+            border-radius: 20px;
+
+            margin-bottom: 28px;
+
+            border: 1px solid rgba(231, 76, 60, 0.2);
+
+            animation: statusPulseBox 2s ease-in-out infinite;
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+        .network-status-indicator::before {
+
+            content: '';
+
+            position: absolute;
+
+            inset: 0;
+
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.1), transparent);
+
+            animation: statusShimmer 2s linear infinite;
+
+        }
+
+        @keyframes statusPulseBox {
+
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.2); }
+
+            50% { box-shadow: 0 0 20px 5px rgba(231, 76, 60, 0.1); }
+
+        }
+
+        @keyframes statusShimmer {
+
+            0% { transform: translateX(-100%); }
+
+            100% { transform: translateX(100%); }
+
+        }
+
+        @media (prefers-color-scheme: light) {
+
+            .network-status-indicator {
+
+                background: rgba(231, 76, 60, 0.08);
+
+                border-color: rgba(231, 76, 60, 0.12);
+
+            }
+
+        }
+
+        .status-dot {
+
+            width: 12px;
+
+            height: 12px;
+
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+
+            border-radius: 50%;
+
+            animation: statusPulseEnhanced 1.5s ease-in-out infinite;
+
+            box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+        .status-dot::after {
+
+            content: '';
+
+            position: absolute;
+
+            inset: -4px;
+
+            border-radius: 50%;
+
+            border: 2px solid rgba(231, 76, 60, 0.3);
+
+            animation: statusRipple 1.5s ease-out infinite;
+
+        }
+
+        @keyframes statusPulseEnhanced {
+
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+
+            50% { transform: scale(0.85); box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+
+        }
+
+        @keyframes statusRipple {
+
+            0% { transform: scale(0.8); opacity: 1; }
+
+            100% { transform: scale(1.8); opacity: 0; }
+
+        }
+
+        .status-text {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            color: #ef5350;
+
+            letter-spacing: 0.5px;
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+        .retry-btn {
+
+            width: 100%;
+
+            padding: 20px 28px;
+
+            background: linear-gradient(135deg, #e74c3c 0%, #d32f2f 50%, #c0392b 100%);
+
+            background-size: 200% 200%;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 20px;
+
+            font-size: 18px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+            font-family: 'Inter', sans-serif;
+
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.35), 0 0 0 1px rgba(255,255,255,0.1) inset;
+
+            position: relative;
+
+            overflow: hidden;
+
+            letter-spacing: 0.3px;
+
+        }
+
+        .retry-btn::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0;
+
+            left: -100%;
+
+            width: 100%;
+
+            height: 100%;
+
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+
+            transition: left 0.5s ease;
+
+        }
+
+        .retry-btn:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.45), 0 0 0 1px rgba(255,255,255,0.1) inset;
+
+            background-position: 100% 0;
+
+        }
+
+        .retry-btn:hover::before {
+
+            left: 100%;
+
+        }
+
+        .retry-btn:active {
+
+            transform: translateY(-1px) scale(0.97);
+
+        }
+
+        .retry-btn:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+            transform: none !important;
+
+        }
+
+        .retry-btn i {
+
+            font-size: 18px;
+
+            transition: transform 0.3s ease;
+
+        }
+
+        .retry-btn:hover i {
+
+            transform: rotate(180deg);
+
+        }
+
+        .retry-btn.loading i {
+
+            animation: spin 0.8s linear infinite;
+
+        }
+
+        .auto-reload-indicator {
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top: 20px;
+
+            font-size: 13px;
+
+            color: #9ca3af;
+
+            animation: fadeSlideUp 0.5s ease;
+
+        }
+
+        .auto-reload-indicator.active {
+
+            display: flex;
+
+        }
+
+        .auto-reload-indicator i {
+
+            color: #55d082;
+
+            animation: spin 1.5s linear infinite;
+
+        }
+
+        .auto-reload-indicator span {
+
+            font-weight: 600;
+
+        }
+
+        .connection-restored {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 100001;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: rgba(17, 24, 39, 0.9);
+
+            backdrop-filter: blur(10px);
+
+            opacity: 0;
+
+            transition: opacity 0.5s ease;
+
+        }
+
+        .connection-restored.active {
+
+            display: flex;
+
+            opacity: 1;
+
+        }
+
+        .restored-card {
+
+            background: linear-gradient(135deg, #1f6e3f, #2c7a47);
+
+            padding: 40px;
+
+            border-radius: 30px;
+
+            text-align: center;
+
+            color: white;
+
+            box-shadow: 0 30px 60px rgba(44, 122, 71, 0.4);
+
+            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+            max-width: 320px;
+
+            width: 90%;
+
+        }
+
+        .restored-card i {
+
+            font-size: 60px;
+
+            margin-bottom: 20px;
+
+            display: block;
+
+            animation: checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+
+        }
+
+        .restored-card h3 {
+
+            font-size: 24px;
+
+            font-weight: 800;
+
+            margin-bottom: 10px;
+
+        }
+
+        .restored-card p {
+
+            font-size: 15px;
+
+            opacity: 0.9;
+
+            margin-bottom: 25px;
+
+        }
+
+        .restored-spinner {
+
+            width: 40px;
+
+            height: 40px;
+
+            border: 3px solid rgba(255,255,255,0.3);
+
+            border-top-color: #ffffff;
+
+            border-radius: 50%;
+
+            margin: 0 auto;
+
+            animation: spin 0.8s linear infinite;
+
+        }
+
+        @keyframes checkPop {
+
+            from { transform: scale(0) rotate(-10deg); opacity: 0; }
+
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
+
+        }
+
+
 
         /* =========================================
+
            8. STORAGE PERMISSION MODAL
+
            ========================================= */
+
         #storage-permission-modal {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             z-index: 100002;
+
             justify-content: center;
+
             align-items: center;
+
             padding: 20px;
+
             background: rgba(17, 24, 39, 0.95);
+
         }
+
+
 
         #storage-permission-modal.active { display: flex; }
 
+
+
         .permission-card {
+
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
+
             width: 100%;
+
             max-width: 360px;
+
             padding: 40px 30px;
+
             border-radius: 30px;
+
             text-align: center;
+
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+
             animation: cardFloatUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+
         }
+
+
 
         .permission-icon {
+
             width: 80px;
+
             height: 80px;
+
             background: linear-gradient(145deg, #2c7a47, #55d082);
+
             border-radius: 50%;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             margin: 0 auto 25px;
+
             font-size: 36px;
+
             color: white;
+
             box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
+
         }
+
+
 
         .permission-card h2 {
+
             font-size: 22px;
+
             color: #111;
+
             font-weight: 800;
+
             margin-bottom: 12px;
+
         }
+
+
 
         .permission-card p {
+
             font-size: 15px;
+
             color: #666;
+
             line-height: 1.6;
+
             margin-bottom: 30px;
+
         }
+
+
 
         .permission-buttons {
+
             display: flex;
+
             gap: 12px;
+
         }
+
+
 
         .permission-btn {
+
             flex: 1;
+
             padding: 16px 20px;
+
             border: none;
+
             border-radius: 16px;
+
             font-size: 16px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             transition: all 0.3s ease;
+
             font-family: 'Inter', sans-serif;
+
             touch-action: manipulation;
+
         }
+
+
 
         .permission-btn.allow {
+
             background: linear-gradient(135deg, #2c7a47, #1f6e3f);
+
             color: white;
+
             box-shadow: 0 8px 20px rgba(44, 122, 71, 0.3);
+
         }
+
+
 
         .permission-btn.allow:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 12px 25px rgba(44, 122, 71, 0.4);
+
         }
+
+
 
         .permission-btn.allow:active {
+
             transform: scale(0.96);
+
         }
+
+
 
         .permission-btn.deny {
+
             background: #f0f0f0;
+
             color: #666;
+
         }
+
+
 
         .permission-btn.deny:hover {
+
             background: #e5e5e5;
+
         }
+
+
 
         .permission-btn.deny:active {
+
             transform: scale(0.96);
+
         }
 
+
+
         /* =========================================
+
            9. DUPLICATE APP ERROR SCREEN
+
            ========================================= */
+
         #duplicate-app-screen {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             z-index: 100003;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             padding: 40px 30px;
+
             background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
+
                         var(--bg-dark);
+
             font-family: 'Inter', sans-serif;
+
         }
+
+
 
         #duplicate-app-screen.active { display: flex; }
 
+
+
         .duplicate-card {
+
             background: var(--bg-card);
+
             max-width: 400px;
+
             padding: 45px 35px;
+
             border-radius: 30px;
+
             text-align: center;
+
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+
                         0 0 0 2px rgba(231, 76, 60, 0.4),
+
                         inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
             animation: errorCardSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
         }
+
+
 
         .duplicate-icon {
+
             width: 100px;
+
             height: 100px;
+
             background: linear-gradient(135deg, #e74c3c, #c0392b);
+
             border-radius: 50%;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             margin: 0 auto 25px;
+
             font-size: 48px;
+
             color: white;
+
             box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+
             animation: pulseWarning 2s ease-in-out infinite;
+
         }
+
+
 
         @keyframes pulseWarning {
+
             0%, 100% { transform: scale(1); }
+
             50% { transform: scale(1.05); }
+
         }
+
+
 
         .duplicate-card h2 {
+
             font-size: 24px;
+
             font-weight: 800;
+
             margin-bottom: 15px;
+
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+
             -webkit-background-clip: text;
+
             -webkit-text-fill-color: transparent;
+
         }
+
+
 
         .duplicate-card p {
+
             font-size: 15px;
+
             color: #aaaaaa;
+
             line-height: 1.7;
+
             margin-bottom: 25px;
+
         }
+
+
 
         .duplicate-info {
+
             background: rgba(231, 76, 60, 0.1);
+
             border: 1px solid rgba(231, 76, 60, 0.2);
+
             border-radius: 16px;
+
             padding: 20px;
+
             margin-bottom: 25px;
+
             text-align: left;
+
         }
 
+
+
         .duplicate-info-item {
+
             display: flex;
+
             align-items: center;
+
             gap: 12px;
+
             margin-bottom: 12px;
+
             font-size: 14px;
+
             color: #cccccc;
+
         }
+
+
 
         .duplicate-info-item:last-child { margin-bottom: 0; }
 
+
+
         .duplicate-info-item i {
+
             color: #e74c3c;
+
             font-size: 16px;
+
         }
+
+
 
         .uninstall-btn {
+
             width: 100%;
+
             padding: 18px 24px;
+
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+
             color: white;
+
             border: none;
+
             border-radius: 18px;
+
             font-size: 17px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             gap: 10px;
+
             transition: all 0.3s ease;
+
             font-family: 'Inter', sans-serif;
+
             box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
+
             touch-action: manipulation;
+
         }
+
+
 
         .uninstall-btn:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
+
         }
+
+
 
         .uninstall-btn:active {
+
             transform: scale(0.96);
+
         }
+
+
 
         @media (prefers-color-scheme: light) {
+
             #duplicate-app-screen {
+
                 background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
+
                             #e8f5ed;
+
             }
+
             .duplicate-card {
+
                 background: rgba(255, 255, 255, 0.98);
+
             }
+
             .duplicate-card p { color: #5a6a60; }
+
             .duplicate-info-item { color: #444; }
+
         }
 
+
+
         /* =========================================
+
            10. ALREADY INSTALLED BLOCKER
+
            ========================================= */
+
         #already-installed-blocker {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             z-index: 100004;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             padding: 40px 30px;
+
             background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.2) 0%, transparent 60%),
+
                         var(--bg-dark);
+
             font-family: 'Inter', sans-serif;
+
         }
+
+
 
         #already-installed-blocker.active { display: flex; }
 
+
+
         .blocker-card {
+
             background: var(--bg-card);
+
             max-width: 400px;
+
             padding: 45px 35px;
+
             border-radius: 30px;
+
             text-align: center;
+
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+
                         0 0 0 2px rgba(44, 122, 71, 0.4),
+
                         inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
             animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
         }
+
+
 
         .blocker-icon {
+
             width: 100px;
+
             height: 100px;
+
             background: linear-gradient(135deg, #55d082, #2c7a47);
+
             border-radius: 50%;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             margin: 0 auto 25px;
+
             font-size: 48px;
+
             color: #111827;
+
             box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
+
             animation: pulseGreen 2s ease-in-out infinite;
+
         }
+
+
 
         @keyframes pulseGreen {
+
             0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4); }
+
             50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(85, 208, 130, 0.6); }
+
         }
+
+
 
         .blocker-card h2 {
+
             font-size: 24px;
+
             font-weight: 800;
+
             margin-bottom: 15px;
+
             background: linear-gradient(135deg, #55d082 0%, #2c7a47 100%);
+
             -webkit-background-clip: text;
+
             -webkit-text-fill-color: transparent;
+
         }
+
+
 
         .blocker-card p {
+
             font-size: 15px;
+
             color: #aaaaaa;
+
             line-height: 1.7;
+
             margin-bottom: 25px;
+
         }
+
+
 
         .blocker-info {
+
             background: rgba(85, 208, 130, 0.1);
+
             border: 1px solid rgba(85, 208, 130, 0.2);
+
             border-radius: 16px;
+
             padding: 20px;
+
             margin-bottom: 25px;
+
             text-align: left;
+
         }
 
+
+
         .blocker-info-item {
+
             display: flex;
+
             align-items: center;
+
             gap: 12px;
+
             margin-bottom: 12px;
+
             font-size: 14px;
+
             color: #cccccc;
+
         }
+
+
 
         .blocker-info-item:last-child { margin-bottom: 0; }
 
+
+
         .blocker-info-item i {
+
             color: #55d082;
+
             font-size: 16px;
+
         }
+
+
 
         .open-app-btn {
+
             width: 100%;
+
             padding: 18px 24px;
+
             background: linear-gradient(135deg, #2c7a47 0%, #1f6e3f 100%);
+
             color: white;
+
             border: none;
+
             border-radius: 18px;
+
             font-size: 17px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             gap: 10px;
+
             transition: all 0.3s ease;
+
             font-family: 'Inter', sans-serif;
+
             box-shadow: 0 8px 25px rgba(44, 122, 71, 0.35);
+
             touch-action: manipulation;
+
         }
+
+
 
         .open-app-btn:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 12px 30px rgba(44, 122, 71, 0.45);
+
         }
+
+
 
         .open-app-btn:active {
+
             transform: scale(0.96);
+
         }
+
+
 
         @media (prefers-color-scheme: light) {
+
             #already-installed-blocker {
+
                 background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.15) 0%, transparent 60%),
+
                             #e8f5ed;
+
             }
+
             .blocker-card {
+
                 background: rgba(255, 255, 255, 0.98);
+
             }
+
             .blocker-card p { color: #5a6a60; }
+
             .blocker-info-item { color: #444; }
+
         }
+
+
 
         /* =========================================
+
            11. POST-INSTALLATION GUIDE
+
            ========================================= */
+
         #post-install-guide {
+
             display: none;
+
             position: fixed;
+
             inset: 0;
+
             z-index: 99998;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             padding: 40px 30px;
+
             background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
+
                         radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
+
                         var(--bg-dark);
+
             font-family: 'Inter', sans-serif;
+
             opacity: 0;
+
             transition: opacity 0.8s ease;
+
         }
 
+
+
         #post-install-guide.active { 
+
             display: flex; 
+
             opacity: 1;
+
         }
+
+
 
         #post-install-guide.fade-out { opacity: 0; }
 
+
+
         .guide-card {
+
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
+
             width: 100%;
+
             max-width: 380px;
+
             padding: 45px 35px;
+
             border-radius: 30px;
+
             text-align: center;
+
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), 
+
                         inset 0 0 0 1.5px rgba(255,255,255,0.8);
+
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+
         }
+
+
 
         .guide-icon {
+
             width: 90px;
+
             height: 90px;
+
             background: linear-gradient(145deg, #1f6e3f, #55d082);
+
             border-radius: 28px;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             margin: 0 auto 25px;
+
             font-size: 44px;
+
             color: #ffffff;
+
             box-shadow: 0 12px 40px rgba(85, 208, 130, 0.45),
+
                         inset 0 1px 0 rgba(255,255,255,0.3);
+
             animation: iconBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+
         }
+
+
 
         .guide-card h2 {
+
             font-size: 24px;
+
             color: #111;
+
             font-weight: 800;
+
             margin-bottom: 8px;
+
             letter-spacing: -0.5px;
+
         }
+
+
 
         .guide-subtitle {
+
             font-size: 15px;
+
             color: #666;
+
             margin-bottom: 30px;
+
             line-height: 1.5;
+
         }
+
+
 
         .guide-steps {
+
             text-align: left;
+
             margin-bottom: 30px;
+
         }
+
+
 
         .guide-step {
+
             display: flex;
+
             align-items: flex-start;
+
             gap: 15px;
+
             margin-bottom: 20px;
+
             padding: 15px;
+
             background: rgba(85, 208, 130, 0.08);
+
             border-radius: 16px;
+
             border: 1px solid rgba(85, 208, 130, 0.15);
+
             transition: transform 0.3s ease, background 0.3s ease;
+
         }
+
+
 
         .guide-step:hover {
+
             transform: translateX(5px);
+
             background: rgba(85, 208, 130, 0.12);
+
         }
+
+
 
         .step-number {
+
             width: 32px;
+
             height: 32px;
+
             background: linear-gradient(135deg, #2c7a47, #55d082);
+
             color: white;
+
             border-radius: 50%;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-weight: 700;
+
             font-size: 14px;
+
             flex-shrink: 0;
+
         }
+
+
 
         .step-content h3 {
+
             font-size: 15px;
+
             color: #111;
+
             font-weight: 700;
+
             margin-bottom: 4px;
+
         }
+
+
 
         .step-content p {
+
             font-size: 13px;
+
             color: #666;
+
             line-height: 1.4;
+
             margin: 0;
+
         }
+
+
 
         .proceed-btn {
+
             width: 100%;
+
             padding: 20px 24px;
+
             background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
+
             background-size: 400% 400%;
+
             color: white;
+
             border: none;
+
             border-radius: 20px;
+
             font-size: 17px;
+
             font-weight: 700;
+
             cursor: pointer;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             gap: 10px;
+
             transition: transform 0.15s ease, box-shadow 0.3s ease;
+
             box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3);
+
             animation: colorShift 6s ease infinite;
+
             font-family: 'Inter', sans-serif;
+
             touch-action: manipulation;
+
         }
+
+
 
         .proceed-btn:hover {
+
             transform: translateY(-2px);
+
             box-shadow: 0 14px 30px rgba(44, 122, 71, 0.4);
+
         }
+
+
 
         .proceed-btn:active {
+
             transform: scale(0.96) translateY(0);
+
         }
+
+
 
         @media (prefers-color-scheme: light) {
+
             #post-install-guide {
+
                 background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
+
                             radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.08) 0%, transparent 60%),
+
                             #e8f5ed;
+
             }
+
         }
 
+
+
     </style>
+
 <base target="_blank">
+
 </head>
+
 <body>
+
+
 
     <div class="bg-layer"></div>
 
+
+
     <div id="network-toast">
+
         <i class="fas fa-wifi"></i>
+
         <span id="toast-message">Checking connection...</span>
+
     </div>
+
+
 
     <div id="network-error-screen">
+
         <div class="error-particle ep1"></div>
+
         <div class="error-particle ep2"></div>
+
         <div class="error-particle ep3"></div>
+
         <div class="error-particle ep4"></div>
+
+        <div class="error-particle ep5"></div>
+
+        <div class="error-particle ep6"></div>
+
+        <div class="wifi-icon-broken wb1"><i class="fas fa-wifi"></i></div>
+
+        <div class="wifi-icon-broken wb2"><i class="fas fa-wifi"></i></div>
+
+        <div class="wifi-icon-broken wb3"><i class="fas fa-wifi"></i></div>
+
+        <div class="wifi-icon-broken wb4"><i class="fas fa-wifi"></i></div>
+
         
+
         <div class="error-illustration">
+
+            <div class="disconnect-cloud">
+
+                <i class="fas fa-xmark"></i>
+
+                <span>Offline</span>
+
+            </div>
+
             <div class="broken-cable">
+
                 <div class="cable-left"></div>
+
                 <div class="cable-right"></div>
+
                 <div class="spark"></div>
+
+                <div class="cable-piece cp1"></div>
+
+                <div class="cable-piece cp2"></div>
+
+                <div class="cable-piece cp3"></div>
+
             </div>
+
             <div class="cartoon-elephant">
+
                 <div class="eyebrow left"></div>
+
                 <div class="eyebrow right"></div>
+
                 <div class="elephant-eye left"></div>
+
                 <div class="elephant-eye right"></div>
+
+                <div class="elephant-mouth"></div>
+
                 <div class="elephant-trunk"></div>
+
+                <div class="tear-drop left"></div>
+
+                <div class="tear-drop right"></div>
+
+                <div class="sweat-drop"></div>
+
             </div>
+
+            <div class="elephant-leg left"></div>
+
+            <div class="elephant-leg right"></div>
+
+            <div class="elephant-tail"></div>
+
         </div>
+
         
+
         <div class="network-error-card">
+
             <h2 class="network-error-title">Connection Lost</h2>
+
             <p class="network-error-message">
+
                 Oops! Looks like the cable got unplugged.<br>
+
                 Please check your internet connection and try again.
+
             </p>
+
             <div class="network-status-indicator">
+
                 <div class="status-dot"></div>
+
                 <span class="status-text">You're offline</span>
+
             </div>
+
             <button class="retry-btn" id="retry-connection-btn">
+
                 <i class="fas fa-rotate-right"></i>
+
                 <span>Try Again</span>
+
             </button>
+
+            <div class="auto-reload-indicator" id="auto-reload-indicator">
+
+                <i class="fas fa-arrows-rotate"></i>
+
+                <span>Auto-reloading when connection returns...</span>
+
+            </div>
+
         </div>
+
     </div>
+
+
+
+    <div id="connection-restored" class="connection-restored">
+
+        <div class="restored-card">
+
+            <i class="fas fa-circle-check"></i>
+
+            <h3>Back Online!</h3>
+
+            <p>Reloading your dashboard...</p>
+
+            <div class="restored-spinner"></div>
+
+        </div>
+
+    </div>
+
+
 
     <div id="device-error">
+
         <div class="error-card">
+
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
+
             <h2>Mobile Portrait Only</h2>
+
             <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone to access your dashboard.</p>
+
         </div>
+
     </div>
+
+
 
     <div id="duplicate-app-screen">
+
         <div class="duplicate-card">
+
             <div class="duplicate-icon">
+
                 <i class="fas fa-triangle-exclamation"></i>
+
             </div>
+
             <h2>Duplicate App Detected</h2>
+
             <p>Another version of Shwari Finance is already installed on this device. Please uninstall the old version before using this one.</p>
+
             <div class="duplicate-info">
+
                 <div class="duplicate-info-item">
+
                     <i class="fas fa-circle-exclamation"></i>
+
                     <span>Multiple app instances detected</span>
+
                 </div>
+
                 <div class="duplicate-info-item">
+
                     <i class="fas fa-box-open"></i>
+
                     <span>Conflicting service workers found</span>
+
                 </div>
+
                 <div class="duplicate-info-item">
+
                     <i class="fas fa-database"></i>
+
                     <span>Cache storage conflicts</span>
+
                 </div>
+
             </div>
+
             <button class="uninstall-btn" id="uninstall-old-btn">
+
                 <i class="fas fa-trash-can"></i>
+
                 <span>Uninstall Old Version</span>
+
             </button>
+
         </div>
+
     </div>
+
+
 
     <div id="storage-permission-modal">
+
         <div class="permission-card">
+
             <div class="permission-icon">
+
                 <i class="fas fa-database"></i>
+
             </div>
+
             <h2>Storage Permission Required</h2>
+
             <p>Shwari Finance needs permission to store data locally on your device for offline access and better performance.</p>
+
             <div class="permission-buttons">
+
                 <button class="permission-btn deny" id="deny-storage-btn">Not Now</button>
+
                 <button class="permission-btn allow" id="allow-storage-btn">Allow</button>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <div id="forcedInstall">
+
         <div class="install-card">
+
             <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
+
             <h2 style="font-size: 24px; font-weight: 800; color: #55d082; margin-bottom: 12px;">Install App to Continue</h2>
+
             <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">For your security, Shwari Finance must be installed to your phone to access the dashboard.</p>
+
             <button class="install-btn" id="installAction">
+
                 <i class="fas fa-download"></i> <span>Install Now</span>
+
             </button>
+
         </div>
+
     </div>
+
+
 
     <div id="auth-portal" class="hidden">
+
         <div id="reg-screen" class="auth-card hidden">
+
             <div class="auth-icon"><i class="fas fa-fingerprint"></i></div>
+
             <h2>Device Activation</h2>
+
             <p class="desc-text">Register this device once to secure access.</p>
+
             <div class="input-group">
+
                 <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other)" autocomplete="off" autocapitalize="words">
+
                 <div class="error-message" id="name-error">
+
                     <i class="fas fa-circle-exclamation"></i>
+
                     <span>Please enter your full name</span>
+
                 </div>
+
             </div>
+
             <div class="input-group">
+
                 <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="off" autocapitalize="none">
+
                 <div class="error-message" id="email-error">
+
                     <i class="fas fa-circle-exclamation"></i>
+
                     <span>Please enter a valid email address</span>
+
                 </div>
+
             </div>
+
             <button class="auth-btn" id="activate-btn">Activate Device</button>
+
         </div>
+
     </div>
+
+
 
     <div id="continue-overlay" class="hidden">
+
         <div class="continue-header">
+
             <h3 class="dept-title">Shwari Finance<br></h3>
+
             <p class="dept-subtitle">Self Service Portal</p>
+
         </div>
+
+
 
         <div class="continue-footer">
+
             <div id="elephant-gate" class="elephant-gate">
+
                 <div class="unlock-ring"></div>
+
                 <i class="fas fa-elephant elephant-icon"></i>
+
             </div>
+
             
+
             <div id="employee-info" class="employee-info">
+
                 <div class="water-wave"></div>
+
                 <i class="fa-solid fa-elephant elephant-icon-small"></i>
+
                 <div class="text-group">
+
                     <h2 id="display-name" class="medium-font"></h2>
+
                     <p id="display-email" class="small-email"></p>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <div class="wrapper" id="ui">
+
         <div class="shockwave"></div>
+
         <div class="particle p1"></div>
+
         <div class="particle p2"></div>
+
         <div class="particle p3"></div>
+
         <div class="particle p4"></div>
+
     </div>
+
+
 
     <div class="app" id="app">
+
         <iframe id="macro-frame"></iframe>
+
     </div>
+
+
 
     <div id="install-progress-screen">
+
         <div class="install-particle ip1"></div>
+
         <div class="install-particle ip2"></div>
+
         <div class="install-particle ip3"></div>
+
         <div class="install-particle ip4"></div>
 
+
+
         <div class="install-app-icon">
+
             <i class="fas fa-elephant"></i>
+
         </div>
+
+
 
         <p class="install-title">Installing Shwari Finance</p>
+
         <p class="install-subtitle">Setting up your portal</p>
 
+
+
         <div class="install-track-wrap">
+
             <div class="install-track">
+
                 <div class="install-bar" id="install-bar"></div>
+
             </div>
+
             <p class="install-status-text" id="install-status-text">Preparing files…</p>
+
         </div>
+
+
 
         <div class="tick-wrap" id="tick-wrap">
+
             <div class="tick-ripple" id="tick-ripple-1"></div>
+
             <div class="tick-ripple" id="tick-ripple-2" style="animation-delay:0.3s;"></div>
+
             <div class="install-tick" id="install-tick">
+
                 <i class="fas fa-check"></i>
+
             </div>
+
         </div>
+
     </div>
+
+
 
     <div id="already-installed-blocker">
+
         <div class="blocker-card">
+
             <div class="blocker-icon">
+
                 <i class="fas fa-mobile-screen"></i>
+
             </div>
+
             <h2>App Only Access</h2>
+
             <p>The Shwari Finance portal is not accessible via the browser. You have already installed the app on this device.</p>
+
             <div class="blocker-info">
+
                 <div class="blocker-info-item">
+
                     <i class="fas fa-ban"></i>
+
                     <span>Browser access blocked for security</span>
+
                 </div>
+
                 <div class="blocker-info-item">
+
                     <i class="fas fa-home"></i>
+
                     <span>Locate the green Elephant icon on your home screen</span>
+
                 </div>
+
                 <div class="blocker-info-item">
+
                     <i class="fas fa-circle-check"></i>
+
                     <span>Launch the app directly to proceed</span>
+
                 </div>
+
             </div>
+
             <button class="open-app-btn" id="open-shwari-btn">
+
                 <i class="fas fa-arrow-up-right-from-square"></i>
+
                 <span>Close Browser & Open App</span>
+
             </button>
+
         </div>
+
     </div>
+
+
 
     <div id="post-install-guide">
+
         <div class="guide-card">
+
             <div class="guide-icon">
+
                 <i class="fas fa-elephant"></i>
+
             </div>
+
             <h2>Installation Complete!</h2>
+
             <p class="guide-subtitle">Follow these steps to start using Shwari Finance</p>
+
             
+
             <div class="guide-steps">
+
                 <div class="guide-step">
+
                     <div class="step-number">1</div>
+
                     <div class="step-content">
+
                         <h3>Close Browser Tab</h3>
+
                         <p>Close this browser tab to avoid duplicate instances</p>
+
                     </div>
+
                 </div>
+
                 <div class="guide-step">
+
                     <div class="step-number">2</div>
+
                     <div class="step-content">
+
                         <h3>Find on Home Screen</h3>
+
                         <p>Look for the green elephant icon on your home screen</p>
+
                     </div>
+
                 </div>
+
                 <div class="guide-step">
+
                     <div class="step-number">3</div>
+
                     <div class="step-content">
+
                         <h3>Launch App</h3>
+
                         <p>Tap the Shwari Finance icon to open your portal</p>
+
                     </div>
+
                 </div>
+
             </div>
+
             
+
             <button class="proceed-btn" id="close-browser-btn">
+
                 <i class="fas fa-check-circle"></i>
+
                 <span>I've Closed the Browser</span>
+
             </button>
+
         </div>
+
     </div>
 
+
+
     <script>
+
     (function () {
+
         "use strict";
 
+
+
         // =========================================
+
         // CAPABILITY-AWARE FULLSCREEN MANAGER
+
         // =========================================
+
         const FullscreenManager = {
+
             isSupported: false,
+
             isActive: false,
+
             hasAttempted: false,
+
             isNativeApp: false,
 
+
+
             init() {
+
                 this.isNativeApp = (
+
                     window.matchMedia('(display-mode: standalone)').matches || 
+
                     window.navigator.standalone === true || 
+
                     document.referrer.includes('android-app://')
+
                 );
+
                 
+
                 this.checkSupport();
+
                 
+
                 if (this.isNativeApp) {
+
                     this.applyStableViewport();
+
                     return;
+
                 }
+
                 
+
                 if (this.isSupported) {
+
                     this.applyStableViewport();
+
                     this.bindInteractionTrigger();
+
                     this.bindFullscreenChange();
+
                     this.bindKeyboardHandlers();
+
                     this.bindResizeHandler();
+
                 }
+
             },
+
+
 
             checkSupport() {
+
                 const el = document.documentElement;
+
                 this.isSupported = !!(
+
                     el.requestFullscreen || 
+
                     el.webkitRequestFullscreen || 
+
                     el.msRequestFullscreen
+
                 );
+
             },
+
+
 
             applyStableViewport() {
+
                 const setVH = () => {
+
                     const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
                     document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
+
                 };
+
                 setVH();
+
                 window.addEventListener('resize', setVH, { passive: true });
+
                 if (window.visualViewport) {
+
                     window.visualViewport.addEventListener('resize', setVH, { passive: true });
+
                 }
+
             },
+
+
 
             async enter() {
+
                 if (this.hasAttempted || this.isActive || !this.isSupported || this.isNativeApp) return;
+
                 this.hasAttempted = true;
 
+
+
                 const el = document.documentElement;
+
                 try {
+
                     let promise;
+
                     if (el.requestFullscreen) {
+
                         promise = el.requestFullscreen();
+
                     } else if (el.webkitRequestFullscreen) {
+
                         promise = el.webkitRequestFullscreen();
+
                     } else if (el.msRequestFullscreen) {
+
                         promise = el.msRequestFullscreen();
+
                     }
+
                     
+
                     if (promise) await promise;
+
                     this.isActive = true;
+
                     document.body.classList.add('is-fullscreen');
+
                     
+
                     if (screen.orientation && screen.orientation.lock) {
+
                         screen.orientation.lock('portrait').catch(() => {});
+
                     }
+
                 } catch (err) {
+
                     console.log('Fullscreen capability rejected:', err.name);
+
                     this.isActive = false;
+
                     document.body.classList.remove('is-fullscreen');
+
                 }
+
             },
+
+
 
             bindInteractionTrigger() {
+
                 const triggerEvents = ['touchstart', 'click', 'keydown'];
+
                 const handler = (e) => {
+
                     if (e.type === 'touchstart' && e.touches.length > 1) return;
+
                     this.enter();
+
                     triggerEvents.forEach(evt => document.removeEventListener(evt, handler));
+
                 };
+
                 triggerEvents.forEach(evt => document.addEventListener(evt, handler, { passive: true }));
+
             },
+
+
 
             bindFullscreenChange() {
+
                 const handler = () => {
+
                     const active = !!(
+
                         document.fullscreenElement || 
+
                         document.webkitFullscreenElement || 
+
                         document.msFullscreenElement
+
                     );
+
                     this.isActive = active;
+
                     document.body.classList.toggle('is-fullscreen', active);
+
                     
+
                     if (!active && this.hasAttempted) {
+
                         this.hasAttempted = false;
+
                     }
+
                 };
+
                 document.addEventListener('fullscreenchange', handler);
+
                 document.addEventListener('webkitfullscreenchange', handler);
+
                 document.addEventListener('msfullscreenchange', handler);
+
             },
+
+
 
             bindKeyboardHandlers() {
+
                 const inputs = document.querySelectorAll('input');
+
                 inputs.forEach(input => {
+
                     input.addEventListener('focus', () => {
+
                         document.body.classList.add('keyboard-open');
-                        // Reduced to incredibly fast trigger to match smooth transition sequence perfectly
+
                         setTimeout(() => {
+
                             input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
                         }, 50); 
+
                     });
+
                     input.addEventListener('blur', () => {
+
                         document.body.classList.remove('keyboard-open');
+
                     });
+
                 });
 
+
+
                 if (window.visualViewport) {
+
                     window.visualViewport.addEventListener('resize', () => {
+
                         const vv = window.visualViewport;
+
                         const isKeyboardOpen = vv.height < window.innerHeight * 0.75;
+
                         const authPortal = document.getElementById('auth-portal');
 
-                        // Clamp portal height to visible viewport instantly
+
+
                         authPortal.style.height = vv.height + 'px';
+
                         authPortal.style.top = vv.offsetTop + 'px';
+
                         authPortal.style.background = '#000000';
 
+
+
                         document.body.classList.toggle('keyboard-open', isKeyboardOpen);
+
                         authPortal.classList.toggle('keyboard-adjust', isKeyboardOpen);
+
                     }, { passive: true });
+
                 }
+
             },
 
+
+
             bindResizeHandler() {
+
                 let resizeTimer;
+
                 window.addEventListener('resize', () => {
+
                     clearTimeout(resizeTimer);
+
                     resizeTimer = setTimeout(() => {
+
                         window.dispatchEvent(new Event('vh-update'));
+
                     }, 150);
+
                 }, { passive: true });
+
             }
+
         };
+
+
 
         FullscreenManager.init();
 
+
+
         // =========================================
+
         // BACKEND INITIALIZATION
+
         // =========================================
+
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbyYvxp2bVZ9rbFD7Yopg_ryjHIKS_3bvw-rVelDQSIWWwJAm4Y4ABDGrrlrZto-4JQp/exec";
+
         const macroIframe = document.getElementById('macro-frame');
+
         
+
         let isMacroLoaded = false;
+
         macroIframe.onload = function() {
+
             isMacroLoaded = true;
+
         };
+
         macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
+
+
         const APP_VERSION = '5.0.0';
+
         const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
 
+
+
         // =========================================
+
         // SUPER RESPONSIVE BUTTON INITIALIZATION
+
         // =========================================
+
         function initSuperResponsiveButtons() {
+
             const allButtons = document.querySelectorAll('button, .auth-btn, .install-btn, .retry-btn, .uninstall-btn, .permission-btn');
+
             
+
             allButtons.forEach(btn => {
+
                 btn.addEventListener('touchstart', function(e) {
+
                     this.style.transform = 'scale(0.96)';
+
                     this.style.transition = 'transform 0.1s ease';
+
                 }, { passive: true });
+
                 
+
                 btn.addEventListener('touchend', function(e) {
+
                     this.style.transform = '';
+
                     setTimeout(() => {
+
                         this.style.transition = '';
+
                     }, 100);
+
                 }, { passive: true });
+
                 
+
                 btn.addEventListener('touchcancel', function(e) {
+
                     this.style.transform = '';
+
                 }, { passive: true });
+
+
 
                 btn.addEventListener('mousedown', function(e) {
+
                     this.style.transform = 'scale(0.96)';
+
                 });
+
                 
+
                 btn.addEventListener('mouseup', function(e) {
+
                     this.style.transform = '';
+
                 });
+
                 
+
                 btn.addEventListener('mouseleave', function(e) {
+
                     this.style.transform = '';
+
                 });
+
+
 
                 btn.addEventListener('keydown', function(e) {
+
                     if (e.key === 'Enter' || e.key === ' ') {
+
                         e.preventDefault();
+
                         this.style.transform = 'scale(0.96)';
+
                         this.click();
+
                         setTimeout(() => {
+
                             this.style.transform = '';
+
                         }, 150);
+
                     }
+
                 });
+
+
 
                 btn.addEventListener('focus', function(e) {
+
                     this.style.outline = '2px solid #55d082';
+
                     this.style.outlineOffset = '2px';
+
                 });
+
                 
+
                 btn.addEventListener('blur', function(e) {
+
                     this.style.outline = '';
+
                     this.style.outlineOffset = '';
+
                 });
+
+
 
                 btn.addEventListener('click', function(e) {
+
                     if (this.dataset.processing === 'true') {
+
                         e.preventDefault();
+
                         e.stopPropagation();
+
                         return false;
+
                     }
+
                 });
+
             });
+
         }
 
+
+
         // =========================================
+
         // DUPLICATE APP DETECTION
+
         // =========================================
+
         function checkDuplicateApp() {
+
             return new Promise((resolve) => {
+
                 if ('serviceWorker' in navigator) {
+
                     navigator.serviceWorker.getRegistrations().then(registrations => {
+
                         const shwariRegs = registrations.filter(reg => 
+
                             reg.scope && reg.scope.includes('shwari')
+
                         );
+
                         
+
                         if (shwariRegs.length > 1) {
+
                             showDuplicateAppScreen();
+
                             resolve(true);
+
                         } else {
+
                             const existingInstance = localStorage.getItem('shwari_instance_id');
+
                             const existingVersion = localStorage.getItem('shwari_app_version');
+
                             
+
                             if (existingInstance && existingInstance !== APP_INSTANCE_ID) {
+
                                 if (existingVersion && compareVersions(existingVersion, APP_VERSION) > 0) {
+
                                     showDuplicateAppScreen();
+
                                     resolve(true);
+
                                     return;
+
                                 }
+
                             }
+
                             
+
                             localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
+
                             localStorage.setItem('shwari_app_version', APP_VERSION);
+
                             resolve(false);
+
                         }
+
                     });
+
                 } else {
+
                     resolve(false);
+
                 }
+
             });
+
         }
+
+
 
         function compareVersions(v1, v2) {
+
             const parts1 = v1.split('.').map(Number);
+
             const parts2 = v2.split('.').map(Number);
+
             
+
             for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+
                 const p1 = parts1[i] || 0;
+
                 const p2 = parts2[i] || 0;
+
                 if (p1 > p2) return 1;
+
                 if (p1 < p2) return -1;
+
             }
+
             return 0;
+
         }
+
+
 
         function showDuplicateAppScreen() {
+
             document.getElementById('duplicate-app-screen').classList.add('active');
+
         }
+
+
 
         document.getElementById('uninstall-old-btn').addEventListener('click', async function() {
+
             this.dataset.processing = 'true';
+
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Uninstalling...</span>';
+
             
+
             try {
+
                 if ('serviceWorker' in navigator) {
+
                     const registrations = await navigator.serviceWorker.getRegistrations();
+
                     for (const reg of registrations) {
+
                         await reg.unregister();
+
                     }
+
                 }
+
                 
+
                 const cacheNames = await caches.keys();
+
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
+
                 
+
                 const currentInstance = localStorage.getItem('shwari_instance_id');
+
                 localStorage.clear();
+
                 localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
+
                 localStorage.setItem('shwari_app_version', APP_VERSION);
+
                 
+
                 window.location.reload();
+
             } catch (error) {
+
                 console.error('Uninstall error:', error);
+
                 this.innerHTML = '<i class="fas fa-triangle-exclamation"></i><span>Error - Try Manual Uninstall</span>';
+
             }
+
         });
 
-        // =========================================
-        // STORAGE PERMISSION HANDLING
-        // =========================================
-        function requestStoragePermission() {
-            return new Promise((resolve) => {
-                const permissionGranted = localStorage.getItem('shwari_storage_permission');
-                
-                if (permissionGranted === 'granted') {
-                    resolve(true);
-                    return;
-                }
-                
-                if (permissionGranted === 'denied') {
-                    resolve(false);
-                    return;
-                }
-                
-                const modal = document.getElementById('storage-permission-modal');
-                const allowBtn = document.getElementById('allow-storage-btn');
-                const denyBtn = document.getElementById('deny-storage-btn');
-                
-                modal.classList.add('active');
-                
-                allowBtn.addEventListener('click', function() {
-                    localStorage.setItem('shwari_storage_permission', 'granted');
-                    modal.classList.remove('active');
-                    resolve(true);
-                }, { once: true });
-                
-                denyBtn.addEventListener('click', function() {
-                    localStorage.setItem('shwari_storage_permission', 'denied');
-                    modal.classList.remove('active');
-                    resolve(false);
-                }, { once: true });
-            });
-        }
+
 
         // =========================================
-        // ENHANCED SERVICE WORKER REGISTRATION
+
+        // STORAGE PERMISSION HANDLING
+
         // =========================================
-        async function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                try {
-                    const registration = await navigator.serviceWorker.register('sw.js');
-                    console.log('SW registered:', registration.scope);
-                    
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                showUpdateNotification();
-                            }
-                        });
-                    });
-                    
-                    return registration;
-                } catch (error) {
-                    console.error('SW registration failed:', error);
+
+        function requestStoragePermission() {
+
+            return new Promise((resolve) => {
+
+                const permissionGranted = localStorage.getItem('shwari_storage_permission');
+
+                
+
+                if (permissionGranted === 'granted') {
+
+                    resolve(true);
+
+                    return;
+
                 }
-            }
+
+                
+
+                if (permissionGranted === 'denied') {
+
+                    resolve(false);
+
+                    return;
+
+                }
+
+                
+
+                const modal = document.getElementById('storage-permission-modal');
+
+                const allowBtn = document.getElementById('allow-storage-btn');
+
+                const denyBtn = document.getElementById('deny-storage-btn');
+
+                
+
+                modal.classList.add('active');
+
+                
+
+                allowBtn.addEventListener('click', function() {
+
+                    localStorage.setItem('shwari_storage_permission', 'granted');
+
+                    modal.classList.remove('active');
+
+                    resolve(true);
+
+                }, { once: true });
+
+                
+
+                denyBtn.addEventListener('click', function() {
+
+                    localStorage.setItem('shwari_storage_permission', 'denied');
+
+                    modal.classList.remove('active');
+
+                    resolve(false);
+
+                }, { once: true });
+
+            });
+
         }
+
+
+
+        // =========================================
+
+        // ENHANCED SERVICE WORKER REGISTRATION
+
+        // =========================================
+
+        async function registerServiceWorker() {
+
+            if ('serviceWorker' in navigator) {
+
+                try {
+
+                    const registration = await navigator.serviceWorker.register('sw.js');
+
+                    console.log('SW registered:', registration.scope);
+
+                    
+
+                    registration.addEventListener('updatefound', () => {
+
+                        const newWorker = registration.installing;
+
+                        newWorker.addEventListener('statechange', () => {
+
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+
+                                showUpdateNotification();
+
+                            }
+
+                        });
+
+                    });
+
+                    
+
+                    return registration;
+
+                } catch (error) {
+
+                    console.error('SW registration failed:', error);
+
+                }
+
+            }
+
+        }
+
+
 
         function showUpdateNotification() {
+
             const toast = document.createElement('div');
+
             toast.style.cssText = `
+
                 position: fixed;
+
                 bottom: 20px;
+
                 left: 50%;
+
                 transform: translateX(-50%);
+
                 background: #1E293B;
+
                 border: 1px solid #334155;
+
                 color: #F1F5F9;
+
                 padding: 16px 24px;
+
                 border-radius: 16px;
+
                 font-family: 'Inter', sans-serif;
+
                 font-size: 14px;
+
                 font-weight: 600;
+
                 z-index: 100004;
+
                 display: flex;
+
                 align-items: center;
+
                 gap: 12px;
+
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+
             `;
+
             toast.innerHTML = `
+
                 <i class="fas fa-rotate" style="color: #3B82F6;"></i>
+
                 <span>Update available!</span>
+
                 <button style="
+
                     background: #334155;
+
                     color: #F1F5F9;
+
                     border: 1px solid #475569;
+
                     padding: 8px 16px;
+
                     border-radius: 8px;
+
                     font-weight: 700;
+
                     cursor: pointer;
+
                     margin-left: 8px;
+
                 ">Update</button>
+
             `;
+
             
+
             toast.querySelector('button').addEventListener('click', () => {
+
                 window.location.reload();
+
             });
+
             
+
             document.body.appendChild(toast);
+
             
+
             setTimeout(() => {
+
                 toast.remove();
+
             }, 10000);
+
         }
 
+
+
         // =========================================
+
         // MAIN INITIALIZATION
+
         // =========================================
+
         async function initializeApp() {
+
             initSuperResponsiveButtons();
+
             
+
             const isDuplicate = await checkDuplicateApp();
+
             if (isDuplicate) {
+
                 return;
+
             }
+
             
+
             await requestStoragePermission();
+
             await registerServiceWorker();
+
             
+
             const uiWrapper = document.getElementById('ui');
+
             let isParallaxActive = true;
+
             let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
             let rafId;
 
+
+
             const onPointerMove = (e) => {
+
                 if (!isParallaxActive) return;
+
                 const cx = e.clientX ?? e.touches?.[0]?.clientX ?? window.innerWidth  / 2;
+
                 const cy = e.clientY ?? e.touches?.[0]?.clientY ?? window.innerHeight / 2;
+
                 targetX = Math.max(-8, Math.min(8, (window.innerWidth  / 2 - cx) / 35));
+
                 targetY = Math.max(-8, Math.min(8, (window.innerHeight / 2 - cy) / 35));
+
             };
+
+
 
             const lerp = (a, b, t) => a + (b - a) * t;
 
+
+
             const tickParallax = () => {
+
                 if (!isParallaxActive) return;
+
                 currentX = lerp(currentX, targetX, 0.07);
+
                 currentY = lerp(currentY, targetY, 0.07);
+
                 if (Math.abs(currentX - targetX) > 0.005 || Math.abs(currentY - targetY) > 0.005) {
+
                     uiWrapper.style.transform = `scale(1) rotateY(${currentX.toFixed(3)}deg) rotateX(${currentY.toFixed(3)}deg) translateZ(0)`;
+
                 }
+
                 rafId = requestAnimationFrame(tickParallax);
+
             };
 
+
+
             document.addEventListener('mousemove', onPointerMove, { passive: true });
+
             document.addEventListener('touchmove', onPointerMove, { passive: true });
 
+
+
             uiWrapper.classList.add('pop-in');
+
             document.body.classList.add('intro-active');
+
             tickParallax();
+
             
+
             window.initAuth();
+
         }
+
+
 
         initializeApp();
 
+
+
         // =========================================
+
         // EXISTING FUNCTIONS (ENHANCED)
+
         // =========================================
+
         const formatName = (str) => {
+
             if (!str) return "";
+
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
         };
+
+
 
         const isPWA = () => {
+
             return window.matchMedia('(display-mode: standalone)').matches || 
+
                    window.navigator.standalone === true || 
+
                    document.referrer.includes('android-app://');
+
         };
+
+
 
         window.initAuth = () => {
+
             const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
 
+
+
             if (!isPWA()) {
+
                 if (isInstalledLocally) {
+
                     showAlreadyInstalledBlocker();
+
                     return; 
+
                 } else {
+
                     const forcedInstall = document.getElementById('forcedInstall');
+
                     forcedInstall.style.display = 'flex';
+
                     forcedInstall.querySelector('.install-card').style.animation = 'cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+
                     return; 
+
                 }
+
             }
+
+
 
             const isRegistered = localStorage.getItem('shwari_registered');
+
             if (isRegistered === 'true') {
+
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
+
                 document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
+
                 document.getElementById('continue-overlay').classList.remove('hidden');
+
                 setTimeout(() => {
+
                     document.getElementById('elephant-gate').classList.add('unlocked');
+
                     document.getElementById('employee-info').classList.add('unlocked');
+
                 }, 3000);
+
                 setTimeout(() => {
+
                     handleContinue();
+
                 }, 6500);
+
             } else {
+
                 const authPortal = document.getElementById('auth-portal');
+
                 authPortal.classList.remove('hidden');
+
                 document.getElementById('reg-screen').classList.remove('hidden');
+
             }
+
         };
+
+
 
         const validateEmail = (email) => {
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
             return emailRegex.test(email);
+
         };
+
+
 
         const validateName = (name) => {
+
             return name.trim().length >= 2;
+
         };
+
+
 
         const showFieldError = (fieldId, errorId, show) => {
+
             const field = document.getElementById(fieldId);
+
             const error = document.getElementById(errorId);
+
             if (show) {
+
                 field.classList.add('error');
+
                 field.classList.remove('success');
+
                 error.classList.add('show');
+
             } else {
+
                 field.classList.remove('error');
+
                 field.classList.add('success');
+
                 error.classList.remove('show');
+
             }
+
         };
+
+
 
         const clearFieldErrors = () => {
+
             document.getElementById('reg-name').classList.remove('error', 'success');
+
             document.getElementById('reg-email').classList.remove('error', 'success');
+
             document.getElementById('name-error').classList.remove('show');
+
             document.getElementById('email-error').classList.remove('show');
+
         };
+
+
 
         document.getElementById('reg-name').addEventListener('blur', function() {
+
             const name = this.value.trim();
+
             if (name.length > 0) {
+
                 showFieldError('reg-name', 'name-error', !validateName(name));
+
             }
+
         });
+
+
 
         document.getElementById('reg-name').addEventListener('input', function() {
+
             if (this.classList.contains('error')) {
+
                 showFieldError('reg-name', 'name-error', !validateName(this.value.trim()));
+
             }
+
         });
+
+
 
         document.getElementById('reg-email').addEventListener('blur', function() {
+
             const email = this.value.trim();
+
             if (email.length > 0) {
+
                 showFieldError('reg-email', 'email-error', !validateEmail(email));
+
             }
+
         });
+
+
 
         document.getElementById('reg-email').addEventListener('input', function() {
+
             if (this.classList.contains('error')) {
+
                 showFieldError('reg-email', 'email-error', !validateEmail(this.value.trim()));
+
             }
+
         });
+
+
 
         document.getElementById('activate-btn').addEventListener('click', function() {
+
             const nameInput = document.getElementById('reg-name');
+
             const emailInput = document.getElementById('reg-email');
+
             const name = nameInput.value.trim();
+
             const email = emailInput.value.trim().toLowerCase();
+
             
+
             let isValid = true;
+
             
+
             if (!validateName(name)) {
+
                 showFieldError('reg-name', 'name-error', true);
+
                 isValid = false;
+
             } else {
+
                 showFieldError('reg-name', 'name-error', false);
+
             }
+
             
+
             if (!validateEmail(email)) {
+
                 showFieldError('reg-email', 'email-error', true);
+
                 isValid = false;
+
             } else {
+
                 showFieldError('reg-email', 'email-error', false);
+
             }
+
             
+
             if (!isValid) {
+
                 const btn = document.getElementById('activate-btn');
+
                 btn.style.animation = 'shakeError 0.4s ease';
+
                 setTimeout(() => { btn.style.animation = ''; }, 400);
+
                 return;
+
             }
+
             
+
             clearFieldErrors();
+
             
+
             localStorage.setItem('emp_name', name);
+
             localStorage.setItem('emp_email', email);
+
             localStorage.setItem('shwari_registered', 'true');
+
             const authPortal = document.getElementById('auth-portal');
+
             const regScreen = document.getElementById('reg-screen');
+
             const continueOverlay = document.getElementById('continue-overlay');
+
             document.getElementById('display-name').innerText = formatName(name);
+
             document.getElementById('display-email').innerText = email;
+
             regScreen.style.transform = 'scale(0.9)';
+
             regScreen.style.opacity = '0';
+
             setTimeout(() => {
+
                 authPortal.style.opacity = '0';
+
                 setTimeout(() => {
+
                     authPortal.classList.add('hidden');
+
                     regScreen.classList.add('hidden');
+
                     continueOverlay.classList.remove('hidden');
+
                     continueOverlay.style.opacity = '0';
+
                     void continueOverlay.offsetWidth;
+
                     continueOverlay.style.opacity = '1';
+
                     setTimeout(() => {
+
                         document.getElementById('elephant-gate').classList.add('unlocked');
+
                         document.getElementById('employee-info').classList.add('unlocked');
+
                     }, 3000);
+
                     setTimeout(() => {
+
                         handleContinue();
+
                     }, 6500);
+
                 }, 500);
+
             }, 400);
+
         });
 
+
+
         window.handleContinue = () => {
+
             const continueOverlay = document.getElementById('continue-overlay');
+
             continueOverlay.style.opacity = '0';
+
             setTimeout(() => { 
+
                 continueOverlay.style.display = 'none'; 
+
                 executeTransition();
+
             }, 600);
+
         };
+
+
 
         const executeTransition = () => {
+
             const transitionLogic = () => {
+
                 const uiWrapper = document.getElementById('ui');
+
                 const appPanel = document.getElementById('app');
+
                 let isParallaxActive = true;
+
                 let rafId;
+
                 
+
                 if (!isParallaxActive) return;
+
                 isParallaxActive = false;
+
                 cancelAnimationFrame(rafId);
+
                 
+
                 requestAnimationFrame(() => {
+
                     requestAnimationFrame(() => {
+
                         uiWrapper.classList.add('pull-active');
+
                         document.body.classList.remove('intro-active');
+
                     });
+
                 });
+
+
 
                 setTimeout(() => {
+
                     appPanel.classList.add('active');
+
                     
+
                     setTimeout(() => {
+
                         if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+
                     }, 1200);
+
                 }, 300);
+
             };
 
+
+
             if (isMacroLoaded) {
+
                 transitionLogic();
+
             } else {
+
                 let fallbackTimer = setTimeout(transitionLogic, 8000);
+
                 macroIframe.addEventListener('load', () => {
+
                     clearTimeout(fallbackTimer);
+
                     transitionLogic();
+
                 }, {once: true});
+
             }
+
         };
+
+
 
         /* =====================================================
+
            NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
+
            ====================================================== */
+
         
+
         const networkErrorScreen = document.getElementById('network-error-screen');
+
         const networkToast = document.getElementById('network-toast');
+
         const toastMessage = document.getElementById('toast-message');
+
         let wasOffline = false;
+
         let isCheckingConnection = false;
 
+        let autoReloadTimer = null;
+
+        let isReloading = false;
+
+
+
         const showToast = (message, isOnline) => {
+
             toastMessage.textContent = message;
+
             networkToast.className = isOnline ? 'online' : 'offline';
+
             networkToast.classList.add('show');
+
             
+
             setTimeout(() => {
+
                 networkToast.classList.remove('show');
+
             }, 3000);
+
         };
+
+
 
         const checkConnectivity = async () => {
+
             if (isCheckingConnection) return navigator.onLine;
+
             isCheckingConnection = true;
+
             
+
             try {
+
                 const controller = new AbortController();
+
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
+
                 
+
                 const response = await fetch('https://www.google.com/favicon.ico', {
+
                     method: 'HEAD',
+
                     mode: 'no-cors',
+
                     signal: controller.signal
+
                 });
+
                 
+
                 clearTimeout(timeoutId);
+
                 isCheckingConnection = false;
+
                 return true;
+
             } catch (error) {
+
                 isCheckingConnection = false;
+
                 return false;
+
             }
+
         };
+
+
 
         const showNetworkError = () => {
+
             networkErrorScreen.classList.add('active');
+
             networkErrorScreen.classList.remove('fade-out');
+
+            if (autoReloadTimer) {
+
+                clearInterval(autoReloadTimer);
+
+                autoReloadTimer = null;
+
+            }
+
         };
+
+
 
         const hideNetworkError = () => {
+
             networkErrorScreen.classList.add('fade-out');
+
             setTimeout(() => {
+
                 networkErrorScreen.classList.remove('active');
+
             }, 500);
+
         };
+
+
+
+        const performAutoReload = () => {
+
+            if (isReloading) return;
+
+            isReloading = true;
+
+            
+
+            const restoredOverlay = document.getElementById('connection-restored');
+
+            if (restoredOverlay) {
+
+                restoredOverlay.classList.add('active');
+
+            }
+
+            
+
+            setTimeout(() => {
+
+                const iframe = document.getElementById('macro-frame');
+
+                if (iframe && iframe.src) {
+
+                    const currentSrc = iframe.src.split('?')[0];
+
+                    iframe.src = currentSrc + '?cb=' + new Date().getTime();
+
+                }
+
+                
+
+                const appPanel = document.getElementById('app');
+
+                if (appPanel && appPanel.classList.contains('active')) {
+
+                    setTimeout(() => {
+
+                        window.location.reload();
+
+                    }, 1500);
+
+                } else {
+
+                    setTimeout(() => {
+
+                        if (restoredOverlay) restoredOverlay.classList.remove('active');
+
+                        isReloading = false;
+
+                    }, 2000);
+
+                }
+
+            }, 1000);
+
+        };
+
+
 
         const handleOnline = async () => {
+
             const isConnected = await checkConnectivity();
+
             if (isConnected) {
+
                 if (wasOffline) {
-                    showToast('Back online!', true);
+
+                    showToast('Back online! Reloading...', true);
+
                     hideNetworkError();
+
                     wasOffline = false;
+
+                    performAutoReload();
+
                 }
+
             }
+
         };
+
+
 
         const handleOffline = () => {
+
             wasOffline = true;
+
             showToast('Connection lost', false);
+
             showNetworkError();
+
+            
+
+            if (!autoReloadTimer) {
+
+                autoReloadTimer = setInterval(async () => {
+
+                    if (navigator.onLine) {
+
+                        const isConnected = await checkConnectivity();
+
+                        if (isConnected) {
+
+                            handleOnline();
+
+                        }
+
+                    }
+
+                }, 3000);
+
+            }
+
         };
 
+
+
         const checkAndRetryConnection = async () => {
+
             const retryBtn = document.getElementById('retry-connection-btn');
+
             const btnText = retryBtn.querySelector('span');
+
+            const autoIndicator = document.getElementById('auto-reload-indicator');
+
             
+
             retryBtn.disabled = true;
+
             retryBtn.classList.add('loading');
-            btnText.textContent = 'Checking...';
+
+            btnText.textContent = 'Checking connection...';
+
             
+
             const isConnected = await checkConnectivity();
+
             
+
             retryBtn.disabled = false;
+
             retryBtn.classList.remove('loading');
+
             btnText.textContent = 'Try Again';
+
             
+
             if (isConnected) {
-                showToast('Connection restored!', true);
+
+                showToast('Connection restored! Reloading...', true);
+
                 hideNetworkError();
+
                 wasOffline = false;
+
+                performAutoReload();
+
             } else {
-                retryBtn.style.animation = 'shakeError 0.4s ease';
-                setTimeout(() => { retryBtn.style.animation = ''; }, 400);
+
+                retryBtn.style.animation = 'shakeError 0.5s ease';
+
+                setTimeout(() => { retryBtn.style.animation = ''; }, 500);
+
+                if (autoIndicator) autoIndicator.classList.add('active');
+
             }
+
         };
+
+
 
         document.getElementById('retry-connection-btn').addEventListener('click', checkAndRetryConnection);
 
+
+
         window.addEventListener('online', handleOnline);
+
         window.addEventListener('offline', handleOffline);
 
+
+
         setInterval(async () => {
+
             if (wasOffline || !navigator.onLine) {
+
                 const isConnected = await checkConnectivity();
+
                 if (isConnected && wasOffline) {
+
                     handleOnline();
+
                 } else if (!isConnected && !wasOffline && !navigator.onLine) {
+
                     handleOffline();
+
                 }
+
             }
+
         }, 5000);
 
+
+
         window.addEventListener('load', async () => {
+
             if (!navigator.onLine) {
+
                 handleOffline();
+
             } else {
+
                 const isConnected = await checkConnectivity();
+
                 if (!isConnected) {
+
                     handleOffline();
+
                 }
+
             }
+
         });
+
+
 
         document.addEventListener('visibilitychange', async () => {
+
             if (document.visibilityState === 'visible') {
+
                 if (!navigator.onLine) {
+
                     handleOffline();
+
                 } else {
+
                     const isConnected = await checkConnectivity();
+
                     if (isConnected && wasOffline) {
+
                         handleOnline();
+
                     }
+
                 }
+
             }
+
         });
 
+
+
         /* =====================================================
+
            INSTALL PROGRESS SCREEN
+
            ====================================================== */
 
+
+
         const installScreen  = document.getElementById('install-progress-screen');
+
         const installBar     = document.getElementById('install-bar');
+
         const installStatus  = document.getElementById('install-status-text');
+
         const installTick    = document.getElementById('install-tick');
+
         const tickRipple1    = document.getElementById('tick-ripple-1');
+
         const tickRipple2    = document.getElementById('tick-ripple-2');
 
+
+
         const installSteps = [
+
             { pct: 12, label: 'Downloading resources…'  },
+
             { pct: 28, label: 'Verifying packages…'      },
+
             { pct: 45, label: 'Configuring app data…'    },
+
             { pct: 62, label: 'Securing your device…'    },
+
             { pct: 80, label: 'Optimising performance…'  },
+
             { pct: 95, label: 'Almost there…'            },
+
             { pct: 100, label: 'Done!'                   },
+
         ];
 
+
+
         function runInstallAnimation(onComplete) {
+
             installScreen.classList.add('active');
+
+
 
             let step = 0;
 
+
+
             function nextStep() {
+
                 if (step >= installSteps.length) return;
+
                 const s = installSteps[step++];
+
                 installBar.style.width = s.pct + '%';
+
                 installStatus.style.opacity = '0';
+
                 setTimeout(() => {
+
                     installStatus.textContent = s.label;
+
                     installStatus.style.opacity = '1';
+
                 }, 200);
 
+
+
                 if (s.pct < 100) {
+
                     const delay = 350 + Math.random() * 300;
+
                     setTimeout(nextStep, delay);
+
                 } else {
+
                     setTimeout(() => {
+
                         installTick.classList.add('show');
+
                         tickRipple1.classList.add('animate');
+
                         setTimeout(() => { tickRipple2.classList.add('animate'); }, 300);
 
+
+
                         setTimeout(() => {
+
                             installScreen.classList.add('fade-out');
+
                             setTimeout(() => {
+
                                 installScreen.style.display = 'none';
+
                                 if (typeof onComplete === 'function') onComplete();
+
                             }, 800);
+
                         }, 1800);
+
                     }, 400);
+
                 }
+
             }
+
+
 
             setTimeout(nextStep, 300);
+
         }
+
+
 
         /* ---- Patch the install flow ---- */
+
         let deferredPrompt;
+
         const installOverlay = document.getElementById('forcedInstall');
+
         const installBtn     = document.getElementById('installAction');
 
+
+
         window.addEventListener('beforeinstallprompt', (e) => {
+
             e.preventDefault();
+
             deferredPrompt = e;
+
             if (!isPWA()) installOverlay.style.display = 'flex';
+
         });
+
+
 
         installBtn.addEventListener('click', async () => {
+
             if (deferredPrompt) {
+
                 deferredPrompt.prompt();
+
                 const { outcome } = await deferredPrompt.userChoice;
+
                 if (outcome === 'accepted') {
+
                     installOverlay.style.opacity = '0';
+
                     installOverlay.style.transition = 'opacity 0.5s ease';
+
                     setTimeout(() => {
+
                         installOverlay.style.display = 'none';
+
                         runInstallAnimation(() => {
+
                             window.initAuth();
+
                         });
+
                     }, 500);
+
                 }
+
                 deferredPrompt = null;
+
             }
+
         });
 
+
+
         window.addEventListener('appinstalled', () => {
+
             if (!installScreen.classList.contains('active')) {
+
                 if (installOverlay.style.display !== 'none') {
+
                     installOverlay.style.opacity = '0';
+
                     installOverlay.style.transition = 'opacity 0.5s ease';
+
                     setTimeout(() => {
+
                         installOverlay.style.display = 'none';
+
                         runInstallAnimation(() => { window.initAuth(); });
+
                     }, 500);
+
                 }
+
             }
+
         });
+
+
 
         /* =====================================================
+
            NEW FEATURES: DUPLICATE BLOCKER & POST-INSTALL GUIDE
+
            ====================================================== */
+
         
+
         async function checkIfAppAlreadyInstalled() {
+
             if ('getInstalledRelatedApps' in navigator) {
+
                 try {
+
                     const relatedApps = await navigator.getInstalledRelatedApps();
+
                     const shwariInstalled = relatedApps.some(app => 
+
                         app.id === 'shwari-finance' || 
+
                         app.url?.includes('shwari') ||
+
                         app.scope?.includes('shwari')
+
                     );
+
                     
+
                     if (shwariInstalled) {
+
                         showAlreadyInstalledBlocker();
+
                         return true;
+
                     }
+
                 } catch (e) {
+
                     console.log('getInstalledRelatedApps check failed:', e);
+
                 }
+
             }
+
             
+
             const isInstalled = localStorage.getItem('shwari_app_installed') === 'true';
+
             const hasInstance = localStorage.getItem('shwari_instance_id');
+
             
+
             if (isInstalled && hasInstance && hasInstance !== APP_INSTANCE_ID) {
+
                 showAlreadyInstalledBlocker();
+
                 return true;
+
             }
+
             
+
             return false;
+
         }
+
+
 
         function showAlreadyInstalledBlocker() {
+
             document.getElementById('already-installed-blocker').classList.add('active');
+
         }
+
+
 
         function showPostInstallGuide() {
+
             const guide = document.getElementById('post-install-guide');
+
             guide.style.display = 'flex';
+
             void guide.offsetWidth;
+
             guide.classList.add('active');
+
             
+
             localStorage.setItem('shwari_app_installed', 'true');
+
         }
 
+
+
         const originalInitAuth = window.initAuth;
+
         window.initAuth = function() {
+
             if (localStorage.getItem('shwari_show_guide') === 'true') {
+
                 showPostInstallGuide();
+
                 return;
+
             }
+
             return originalInitAuth.apply(this, arguments);
+
         };
+
+
 
         document.getElementById('open-shwari-btn').addEventListener('click', function() {
+
             alert('Please close this browser tab and launch Shwari Finance from the green elephant icon on your home screen.');
+
             window.close();
+
         });
+
+
 
         document.getElementById('close-browser-btn').addEventListener('click', function() {
+
             const guide = document.getElementById('post-install-guide');
+
             guide.classList.add('fade-out');
+
             guide.classList.remove('active');
+
             setTimeout(() => {
+
                 guide.style.display = 'none';
+
                 localStorage.removeItem('shwari_show_guide');
+
                 originalInitAuth();
+
             }, 800);
+
         });
+
+
 
         window.addEventListener('appinstalled', () => {
+
             localStorage.setItem('shwari_app_installed', 'true');
+
             localStorage.setItem('shwari_show_guide', 'true');
+
         });
 
+
+
         const originalRunInstallAnimation = runInstallAnimation;
+
         runInstallAnimation = function(onComplete) {
+
             const wrappedCallback = function() {
+
                 localStorage.setItem('shwari_app_installed', 'true');
+
                 localStorage.setItem('shwari_show_guide', 'true');
+
                 if (onComplete) onComplete();
+
             };
+
             return originalRunInstallAnimation(wrappedCallback);
+
         };
+
+
 
         checkIfAppAlreadyInstalled();
 
+
+
         // =========================================
+
         // NOTIFICATION BAR TOUCH DISMISS
+
         // =========================================
+
         const toastEl = document.getElementById('network-toast');
+
         toastEl.style.cursor = 'pointer';
+
         toastEl.addEventListener('click', () => toastEl.classList.remove('show'));
+
         toastEl.addEventListener('touchstart', (e) => {
+
             toastEl.classList.remove('show');
+
         }, { passive: true });
 
+
+
     })();
+
     </script>
+
 </body>
+
 </html>
