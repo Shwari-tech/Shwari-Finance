@@ -657,7 +657,7 @@
         }
 
         /* =========================================
-           7. NETWORK ERROR SCREEN (ADVANCED HUMAN CARTOON)
+           7. NETWORK ERROR SCREEN (ULTRA MODERN CARTOON)
            ========================================= */
         #network-error-screen {
             display: none;
@@ -669,786 +669,729 @@
             justify-content: center;
             padding: 40px 30px;
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-                        radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
+            background: radial-gradient(ellipse at 50% 20%, rgba(231, 76, 60, 0.22) 0%, transparent 70%),
+                        radial-gradient(ellipse at 20% 80%, rgba(255, 193, 7, 0.12) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 80%, rgba(85, 208, 130, 0.04) 0%, transparent 50%),
                         var(--bg-dark);
-            transition: opacity 0.6s var(--anim-smooth);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
         }
-
         #network-error-screen.active { display: flex; }
         #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
 
         @media (prefers-color-scheme: light) {
             #network-error-screen {
-                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.1) 0%, transparent 60%),
-                            radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
+                background: radial-gradient(ellipse at 50% 20%, rgba(231, 76, 60, 0.14) 0%, transparent 70%),
+                            radial-gradient(ellipse at 20% 80%, rgba(255, 193, 7, 0.08) 0%, transparent 60%),
+                            radial-gradient(ellipse at 80% 80%, rgba(44, 122, 71, 0.06) 0%, transparent 50%),
                             #e8f5ed;
             }
         }
 
+        .error-particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            animation: errorFloatParticle 6s ease-in-out infinite;
+        }
+        .ep1 { width: 10px; height: 10px; background: rgba(231, 76, 60, 0.5); top: 12%; left: 8%; animation-delay: 0s; }
+        .ep2 { width: 6px; height: 6px; background: rgba(255, 193, 7, 0.6); top: 78%; right: 12%; animation-delay: 1.2s; }
+        .ep3 { width: 14px; height: 14px; background: rgba(231, 76, 60, 0.25); bottom: 18%; left: 22%; animation-delay: 2.5s; }
+        .ep4 { width: 8px; height: 8px; background: rgba(255, 152, 0, 0.45); top: 32%; right: 8%; animation-delay: 0.8s; }
+        .ep5 { width: 5px; height: 5px; background: rgba(244, 67, 54, 0.7); top: 62%; left: 6%; animation-delay: 3.5s; }
+        .ep6 { width: 12px; height: 12px; background: rgba(255, 87, 34, 0.35); bottom: 32%; right: 18%; animation-delay: 1.8s; }
+
+        @keyframes errorFloatParticle {
+            0%, 100% { opacity: 0; transform: translateY(0) translateX(0) scale(0.8); }
+            20% { opacity: 0.8; }
+            50% { opacity: 0.4; transform: translateY(-30px) translateX(15px) scale(1.2); }
+            80% { opacity: 0.6; }
+        }
+
+        .wifi-icon-broken {
+            position: absolute;
+            font-size: 22px;
+            color: rgba(231, 76, 60, 0.35);
+            animation: wifiBrokenFloat 5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .wb1 { top: 18%; left: 12%; animation-delay: 0s; }
+        .wb2 { top: 72%; right: 10%; animation-delay: 1.5s; font-size: 16px; }
+        .wb3 { bottom: 22%; left: 16%; animation-delay: 3s; font-size: 18px; }
+        .wb4 { top: 38%; right: 6%; animation-delay: 2s; font-size: 14px; }
+
+        @keyframes wifiBrokenFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.7; }
+        }
+
         .error-illustration {
             position: relative;
-            width: 180px;
-            height: 180px;
-            margin-bottom: 40px;
+            width: 220px;
+            height: 220px;
+            margin-bottom: 35px;
+            animation: illustrationEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+        }
+
+        @keyframes illustrationEnter {
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* --- THE HUMAN CARTOON (TECH WORKER SVG-STYLE USING HTML/CSS) --- */
+        
+        .human-avatar {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: avatarBreathe 3s ease-in-out infinite;
+            z-index: 5;
+        }
+        @keyframes avatarBreathe {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(4px); }
+        }
+
+        .human-head {
+            position: absolute;
+            width: 65px;
+            height: 75px;
+            background: linear-gradient(145deg, #ffdbac, #f1c27d);
+            border-radius: 40% 40% 50% 50%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 3;
+            animation: headBobble 3s ease-in-out infinite;
+        }
+        @keyframes headBobble {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(3deg); }
+            75% { transform: translateX(-50%) rotate(-3deg); }
+        }
+
+        .human-hair {
+            position: absolute;
+            width: 75px;
+            height: 40px;
+            background: #111827;
+            border-radius: 40px 40px 10px 10px;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            box-shadow: inset 0 -3px 10px rgba(255,255,255,0.1);
+        }
+        .human-hair::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #111827;
+            border-radius: 50%;
+            right: -5px;
+            top: 15px;
+        }
+
+        .human-eye {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #111;
+            border-radius: 50%;
+            top: 35px;
+            animation: humanBlink 4s infinite;
+        }
+        .human-eye.left { left: 18px; }
+        .human-eye.right { right: 18px; }
+        .human-eye::after {
+            content:'';
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            top: 1px;
+            right: 1px;
+        }
+        @keyframes humanBlink {
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+
+        .human-eyebrow {
+            position: absolute;
+            width: 14px;
+            height: 3px;
+            background: #111;
+            border-radius: 3px;
+            top: 25px;
+            animation: eyebrowWorry 2s ease-in-out infinite;
+        }
+        .human-eyebrow.left { left: 14px; transform: rotate(25deg); }
+        .human-eyebrow.right { right: 14px; transform: rotate(-25deg); }
+        @keyframes eyebrowWorry {
+            0%, 100% { transform: translateY(0) rotate(var(--rot)); }
+            50% { transform: translateY(-2px) rotate(var(--rot)); }
+        }
+
+        .human-mouth {
+            position: absolute;
+            width: 16px;
+            height: 8px;
+            border-bottom: 2px solid #111;
+            border-radius: 0 0 16px 16px;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: mouthO 2s ease-in-out infinite;
+        }
+        @keyframes mouthO {
+            0%, 100% { width: 16px; height: 8px; border-bottom: 2px solid #111; border-radius: 0 0 16px 16px; background: transparent; }
+            50% { width: 12px; height: 12px; border: 2px solid #111; border-radius: 50%; background: #333; }
+        }
+
+        .human-sweat {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: linear-gradient(180deg, #e1f5fe 0%, #81d4fa 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 15px;
+            right: -10px;
+            opacity: 0;
+            z-index: 5;
+            animation: sweatDropModern 2.5s ease-in-out infinite;
+            box-shadow: 0 2px 5px rgba(129, 212, 250, 0.5);
+        }
+        @keyframes sweatDropModern {
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+            30% { opacity: 1; transform: translateY(10px) scale(1); }
+            70% { opacity: 0.8; transform: translateY(25px) scale(0.9); }
+            90% { opacity: 0; }
+        }
+
+        .human-body {
+            position: absolute;
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(145deg, #1f2937 0%, #111827 100%);
+            border-radius: 40px 40px 20px 20px;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 2px 10px rgba(255,255,255,0.05);
+            z-index: 2;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .human-body::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: #f1c27d;
+            border-radius: 0 0 15px 15px;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            box-shadow: inset 0 10px 10px rgba(0,0,0,0.3);
+        }
+
+        .human-arm {
+            position: absolute;
+            width: 30px;
+            height: 60px;
+            background: #1f2937;
+            border-radius: 15px;
+            top: 70px;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .human-arm.left { 
+            left: 10px; 
+            transform-origin: top center;
+            transform: rotate(35deg); 
+            animation: armShakeLeft 1s ease-in-out infinite alternate;
+        }
+        .human-arm.right { 
+            right: 10px; 
+            transform-origin: top center;
+            transform: rotate(-35deg); 
+            animation: armShakeRight 1s ease-in-out infinite alternate 0.2s;
+        }
+        @keyframes armShakeLeft { 0% { transform: rotate(30deg); } 100% { transform: rotate(40deg); } }
+        @keyframes armShakeRight { 0% { transform: rotate(-30deg); } 100% { transform: rotate(-40deg); } }
+
+        .human-hand {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: #f1c27d;
+            border-radius: 50%;
+            bottom: -10px;
+            left: 2px;
+            z-index: 3;
+        }
+
+        /* --- END HUMAN CARTOON --- */
+
+        .disconnect-cloud {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 8px 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            backdrop-filter: blur(10px);
+            animation: cloudPulse 2s ease-in-out infinite;
+            z-index: 15;
+        }
+        @keyframes cloudPulse {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.9; }
+            50% { transform: translateX(-50%) translateY(-5px); opacity: 1; }
+        }
+        .disconnect-cloud i {
+            color: #e74c3c;
+            font-size: 14px;
+            animation: wifiX 1s ease-in-out infinite;
+        }
+        .disconnect-cloud span {
+            color: #ffcdd2;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        @keyframes wifiX {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
         }
 
-        /* SVG Human Character Styles & Keyframes */
-        .human-svg { overflow: visible; width: 100%; height: 100%; }
-        .pulse-circle { animation: pulseGlow 2.5s infinite ease-in-out; transform-origin: center; }
-        .head-bob { animation: headBob 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); transform-origin: 100px 70px; }
-        .eye-blink { animation: eyeBlink 4s infinite linear; transform-origin: 100px 65px; }
-        .body-breathe { animation: bodyBreathe 3s infinite ease-in-out; transform-origin: 100px 180px; }
-        .cable-shake { animation: cableShake 0.5s infinite alternate ease-in-out; }
-        .spark-anim { animation: sparkFlash 0.3s infinite alternate; }
-        .spark-anim-2 { animation: sparkFlash 0.4s infinite alternate-reverse; }
+        .broken-cable {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 170px;
+            height: 70px;
+            z-index: 10;
+        }
+        .cable-left, .cable-right {
+            position: absolute;
+            width: 60px;
+            height: 8px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b, #e74c3c);
+            background-size: 200% 100%;
+            border-radius: 4px;
+            top: 35px;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
+        }
+        .cable-left { left: 0; transform: rotate(-15deg); animation: cableSpark 0.6s ease-in-out infinite alternate; }
+        .cable-right { right: 0; transform: rotate(15deg); animation: cableSpark 0.6s ease-in-out infinite alternate 0.3s; }
+        
+        @keyframes cableSpark {
+            from { box-shadow: 0 0 5px #e74c3c, 0 0 10px rgba(231, 76, 60, 0.3); }
+            to { box-shadow: 0 0 20px #e74c3c, 0 0 30px #ffc107, 0 0 40px rgba(255, 193, 7, 0.5); }
+        }
 
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(0.9); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        .spark {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: radial-gradient(circle, #fff 0%, #ffc107 40%, #ff9800 100%);
+            border-radius: 50%;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: sparkFlashEnhanced 0.4s ease-in-out infinite;
+            box-shadow: 0 0 15px #ffc107, 0 0 30px #ff9800, 0 0 45px rgba(255, 152, 0, 0.5);
+            z-index: 11;
         }
-        @keyframes headBob {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-4px) rotate(2deg); }
+        .spark::before, .spark::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: #ffc107;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
-        @keyframes bodyBreathe {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(1.02) translateY(-2px); }
+        .spark::before { width: 25px; height: 25px; opacity: 0.4; animation: sparkRing 0.8s ease-out infinite; }
+        .spark::after { width: 35px; height: 35px; opacity: 0.2; animation: sparkRing 0.8s ease-out infinite 0.2s; }
+        
+        @keyframes sparkFlashEnhanced {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.6; transform: translateX(-50%) scale(0.7); }
         }
-        @keyframes eyeBlink {
-            0%, 90%, 100% { transform: scaleY(1); }
-            95% { transform: scaleY(0.1); }
+        @keyframes sparkRing {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.6; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
         }
-        @keyframes cableShake {
-            0% { transform: translateY(0px) translateX(0px); }
-            100% { transform: translateY(4px) translateX(-2px); }
+
+        .cable-piece {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #e74c3c;
+            border-radius: 2px;
+            top: 35px;
+            left: 50%;
+            z-index: 12;
+            animation: pieceFly 1.5s ease-out infinite;
+        }
+        .cp1 { transform: translateX(-50%) rotate(45deg); animation-delay: 0s; margin-left: -20px; }
+        .cp2 { transform: translateX(-50%) rotate(-30deg); animation-delay: 0.5s; margin-left: 15px; width: 4px; height: 4px; }
+        .cp3 { transform: translateX(-50%) rotate(60deg); animation-delay: 0.8s; margin-left: -10px; width: 5px; height: 5px; background: #ffc107; }
+        @keyframes pieceFly {
+            0% { opacity: 1; transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-50px) rotate(180deg) scale(0.3); }
         }
 
         .network-error-card {
-            background: rgba(31, 41, 55, 0.85); /* Modern Glassmorphism */
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            max-width: 380px;
-            padding: 40px 35px;
-            border-radius: 30px;
+            background: rgba(31, 41, 55, 0.95);
+            max-width: 400px;
+            width: 100%;
+            padding: 45px 35px;
+            border-radius: 32px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
-                        0 0 0 1px rgba(231, 76, 60, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: errorCardSlideUp 0.8s var(--anim-smooth);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5),
+                        0 0 0 1px rgba(231, 76, 60, 0.25),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            animation: errorCardSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(231, 76, 60, 0.15);
+            position: relative;
+            overflow: hidden;
         }
-
+        .network-error-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #e74c3c, #ffc107, #e74c3c, transparent);
+            background-size: 200% 100%;
+            animation: borderShimmer 2s linear infinite;
+        }
+        @keyframes borderShimmer {
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
+        }
         @keyframes errorCardSlideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         @media (prefers-color-scheme: light) {
             .network-error-card {
-                background: rgba(255, 255, 255, 0.95);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
-                            0 0 0 1px rgba(231, 76, 60, 0.3),
+                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 40px 80px rgba(0, 0, 0, 0.15),
+                            0 0 0 1px rgba(231, 76, 60, 0.15),
                             inset 0 1px 0 rgba(255, 255, 255, 0.8);
+                border: 1px solid rgba(231, 76, 60, 0.1);
             }
+            .disconnect-cloud {
+                background: rgba(255, 255, 255, 0.8);
+                border-color: rgba(231, 76, 60, 0.2);
+            }
+            .disconnect-cloud span { color: #c62828; }
         }
 
         .network-error-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 30%, #e74c3c 60%, #c0392b 100%);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: titleGradient 3s ease infinite;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        @keyframes titleGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .network-error-message {
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 25px;
-            color: #aaaaaa;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 28px;
+            color: #d1d5db;
+            font-weight: 500;
         }
-
         @media (prefers-color-scheme: light) {
-            .network-error-message { color: #5a6a60; }
+            .network-error-message { color: #4b5563; }
         }
 
         .network-status-indicator {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 15px 20px;
-            background: rgba(231, 76, 60, 0.1);
-            border-radius: 16px;
-            margin-bottom: 25px;
+            gap: 12px;
+            padding: 18px 24px;
+            background: rgba(231, 76, 60, 0.12);
+            border-radius: 20px;
+            margin-bottom: 28px;
             border: 1px solid rgba(231, 76, 60, 0.2);
-            transition: all 0.3s ease;
+            animation: statusPulseBox 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
         }
-
+        .network-status-indicator::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.1), transparent);
+            animation: statusShimmer 2s linear infinite;
+        }
+        @keyframes statusPulseBox {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.2); }
+            50% { box-shadow: 0 0 20px 5px rgba(231, 76, 60, 0.1); }
+        }
+        @keyframes statusShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
         @media (prefers-color-scheme: light) {
             .network-status-indicator {
                 background: rgba(231, 76, 60, 0.08);
-                border-color: rgba(231, 76, 60, 0.15);
+                border-color: rgba(231, 76, 60, 0.12);
             }
         }
 
         .status-dot {
-            width: 10px;
-            height: 10px;
-            background: #e74c3c;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             border-radius: 50%;
-            animation: statusPulse 1.5s ease-in-out infinite;
-            box-shadow: 0 0 10px #e74c3c;
+            animation: statusPulseEnhanced 1.5s ease-in-out infinite;
+            box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            position: relative;
+            z-index: 1;
         }
-
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.85); }
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            animation: statusRipple 1.5s ease-out infinite;
+        }
+        @keyframes statusPulseEnhanced {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            50% { transform: scale(0.85); box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+        }
+        @keyframes statusRipple {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
         }
 
         .status-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e74c3c;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ef5350;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
         }
 
         .retry-btn {
             width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: transform 0.2s var(--anim-smooth), box-shadow 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
-            touch-action: manipulation;
-        }
-
-        .retry-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
-        }
-
-        .retry-btn:active {
-            transform: translateY(0) scale(0.96);
-        }
-
-        .retry-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .retry-btn i {
-            animation: none;
-        }
-
-        .retry-btn.loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .error-particle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .ep1 { width: 6px; height: 6px; background: #e74c3c; top: 10%; left: 15%; animation: errorFloat 4s ease-in-out infinite; }
-        .ep2 { width: 4px; height: 4px; background: #ffc107; top: 80%; right: 10%; animation: errorFloat 5s ease-in-out infinite 0.5s; }
-        .ep3 { width: 8px; height: 8px; background: rgba(231, 76, 60, 0.5); bottom: 15%; left: 20%; animation: errorFloat 3.5s ease-in-out infinite 1s; }
-        .ep4 { width: 5px; height: 5px; background: #ff9800; top: 30%; right: 15%; animation: errorFloat 4.5s ease-in-out infinite 1.5s; }
-
-        @keyframes errorFloat {
-            0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
-            50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
-        }
-
-        #network-toast {
-            position: fixed;
-            top: max(20px, var(--safe-top));
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            z-index: 100001;
-            padding: 14px 24px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            opacity: 0;
-            transition: all 0.6s var(--anim-smooth);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            background: #1E293B;
-            border: 1px solid #334155;
-            color: #F1F5F9;
-        }
-
-        #network-toast.offline i {
-            color: #F87171;
-        }
-
-        #network-toast.online i {
-            color: #34D399;
-        }
-
-        #network-toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-        
-        #network-toast:active {
-            transform: translateX(-50%) translateY(0) scale(0.95);
-        }
-
-        #network-toast i {
-            font-size: 16px;
-        }
-
-        /* =========================================
-           8. STORAGE PERMISSION MODAL
-           ========================================= */
-        #storage-permission-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100002;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background: rgba(17, 24, 39, 0.95);
-        }
-
-        #storage-permission-modal.active { display: flex; }
-
-        .permission-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
-            width: 100%;
-            max-width: 360px;
-            padding: 40px 30px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            animation: cardFloatUp 0.7s var(--anim-smooth);
-        }
-
-        .permission-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(145deg, #2c7a47, #55d082);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 36px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
-        }
-
-        .permission-card h2 {
-            font-size: 22px;
-            color: #111;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .permission-card p {
-            font-size: 15px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .permission-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .permission-btn {
-            flex: 1;
-            padding: 16px 20px;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s var(--anim-smooth);
-            font-family: 'Inter', sans-serif;
-            touch-action: manipulation;
-        }
-
-        .permission-btn.allow {
-            background: linear-gradient(135deg, #2c7a47, #1f6e3f);
-            color: white;
-            box-shadow: 0 8px 20px rgba(44, 122, 71, 0.3);
-        }
-
-        .permission-btn.allow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(44, 122, 71, 0.4);
-        }
-
-        .permission-btn.allow:active {
-            transform: scale(0.96);
-        }
-
-        .permission-btn.deny {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-        .permission-btn.deny:hover {
-            background: #e5e5e5;
-        }
-
-        .permission-btn.deny:active {
-            transform: scale(0.96);
-        }
-
-        /* =========================================
-           9. DUPLICATE APP ERROR SCREEN
-           ========================================= */
-        #duplicate-app-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100003;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
-                        var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-        }
-
-        #duplicate-app-screen.active { display: flex; }
-
-        .duplicate-card {
-            background: var(--bg-card);
-            max-width: 400px;
-            padding: 45px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
-                        0 0 0 2px rgba(231, 76, 60, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            animation: errorCardSlideUp 0.8s var(--anim-smooth);
-        }
-
-        .duplicate-icon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 48px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
-            animation: pulseWarning 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseWarning {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .duplicate-card h2 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .duplicate-card p {
-            font-size: 15px;
-            color: #aaaaaa;
-            line-height: 1.7;
-            margin-bottom: 25px;
-        }
-
-        .duplicate-info {
-            background: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .duplicate-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #cccccc;
-        }
-
-        .duplicate-info-item:last-child { margin-bottom: 0; }
-
-        .duplicate-info-item i {
-            color: #e74c3c;
-            font-size: 16px;
-        }
-
-        .uninstall-btn {
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: transform 0.2s var(--anim-smooth), box-shadow 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.35);
-            touch-action: manipulation;
-        }
-
-        .uninstall-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.45);
-        }
-
-        .uninstall-btn:active {
-            transform: scale(0.96);
-        }
-
-        @media (prefers-color-scheme: light) {
-            #duplicate-app-screen {
-                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-                            #e8f5ed;
-            }
-            .duplicate-card {
-                background: rgba(255, 255, 255, 0.98);
-            }
-            .duplicate-card p { color: #5a6a60; }
-            .duplicate-info-item { color: #444; }
-        }
-
-        /* =========================================
-           10. ALREADY INSTALLED BLOCKER
-           ========================================= */
-        #already-installed-blocker {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100004;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.2) 0%, transparent 60%),
-                        var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-        }
-
-        #already-installed-blocker.active { display: flex; }
-
-        .blocker-card {
-            background: var(--bg-card);
-            max-width: 400px;
-            padding: 45px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
-                        0 0 0 2px rgba(44, 122, 71, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            animation: cardFloatUp 0.8s var(--anim-smooth);
-        }
-
-        .blocker-icon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #55d082, #2c7a47);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 48px;
-            color: #111827;
-            box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
-            animation: pulseGreen 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseGreen {
-            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(85, 208, 130, 0.6); }
-        }
-
-        .blocker-card h2 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #55d082 0%, #2c7a47 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .blocker-card p {
-            font-size: 15px;
-            color: #aaaaaa;
-            line-height: 1.7;
-            margin-bottom: 25px;
-        }
-
-        .blocker-info {
-            background: rgba(85, 208, 130, 0.1);
-            border: 1px solid rgba(85, 208, 130, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .blocker-info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #cccccc;
-        }
-
-        .blocker-info-item:last-child { margin-bottom: 0; }
-
-        .blocker-info-item i {
-            color: #55d082;
-            font-size: 16px;
-        }
-
-        .open-app-btn {
-            width: 100%;
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #2c7a47 0%, #1f6e3f 100%);
-            color: white;
-            border: none;
-            border-radius: 18px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: transform 0.2s var(--anim-smooth), box-shadow 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 25px rgba(44, 122, 71, 0.35);
-            touch-action: manipulation;
-        }
-
-        .open-app-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(44, 122, 71, 0.45);
-        }
-
-        .open-app-btn:active {
-            transform: scale(0.96);
-        }
-
-        @media (prefers-color-scheme: light) {
-            #already-installed-blocker {
-                background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.15) 0%, transparent 60%),
-                            #e8f5ed;
-            }
-            .blocker-card {
-                background: rgba(255, 255, 255, 0.98);
-            }
-            .blocker-card p { color: #5a6a60; }
-            .blocker-info-item { color: #444; }
-        }
-
-        /* =========================================
-           11. POST-INSTALLATION GUIDE
-           ========================================= */
-        #post-install-guide {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 99998;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
-                        radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
-                        var(--bg-dark);
-            font-family: 'Inter', sans-serif;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        #post-install-guide.active { 
-            display: flex; 
-            opacity: 1;
-        }
-
-        #post-install-guide.fade-out { opacity: 0; }
-
-        .guide-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
-            width: 100%;
-            max-width: 380px;
-            padding: 45px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3), 
-                        inset 0 0 0 1.5px rgba(255,255,255,0.8);
-            animation: cardFloatUp 0.8s var(--anim-smooth);
-        }
-
-        .guide-icon {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(145deg, #1f6e3f, #55d082);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 25px;
-            font-size: 44px;
-            color: #ffffff;
-            box-shadow: 0 12px 40px rgba(85, 208, 130, 0.45),
-                        inset 0 1px 0 rgba(255,255,255,0.3);
-            animation: iconBounceIn 0.8s var(--anim-smooth) forwards;
-        }
-
-        .guide-card h2 {
-            font-size: 24px;
-            color: #111;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .guide-subtitle {
-            font-size: 15px;
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
-        .guide-steps {
-            text-align: left;
-            margin-bottom: 30px;
-        }
-
-        .guide-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(85, 208, 130, 0.08);
-            border-radius: 16px;
-            border: 1px solid rgba(85, 208, 130, 0.15);
-            transition: transform 0.3s var(--anim-smooth), background 0.3s ease;
-        }
-
-        .guide-step:hover {
-            transform: translateX(5px);
-            background: rgba(85, 208, 130, 0.12);
-        }
-
-        .step-number {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #2c7a47, #55d082);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .step-content h3 {
-            font-size: 15px;
-            color: #111;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .step-content p {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.4;
-            margin: 0;
-        }
-
-        .proceed-btn {
-            width: 100%;
-            padding: 20px 24px;
-            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
-            background-size: 400% 400%;
+            padding: 20px 28px;
+            background: linear-gradient(135deg, #e74c3c 0%, #d32f2f 50%, #c0392b 100%);
+            background-size: 200% 200%;
             color: white;
             border: none;
             border-radius: 20px;
-            font-size: 17px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: transform 0.2s var(--anim-smooth), box-shadow 0.3s ease;
-            box-shadow: 0 10px 25px rgba(44, 122, 71, 0.3);
-            animation: colorShift 6s ease infinite;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             font-family: 'Inter', sans-serif;
-            touch-action: manipulation;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.35), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.3px;
         }
-
-        .proceed-btn:hover {
+        .retry-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .retry-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 14px 30px rgba(44, 122, 71, 0.4);
+            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.45), 0 0 0 1px rgba(255,255,255,0.1) inset;
+            background-position: 100% 0;
+        }
+        .retry-btn:hover::before {
+            left: 100%;
+        }
+        .retry-btn:active {
+            transform: translateY(-1px) scale(0.97);
+        }
+        .retry-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
-        .proceed-btn:active {
-            transform: scale(0.96) translateY(0);
+        /* SMART SPINNER SVG */
+        .smart-spinner-icon {
+            display: none;
+            width: 24px;
+            height: 24px;
+            animation: rotateSpinner 2s linear infinite;
+        }
+        .smart-spinner-icon circle {
+            stroke: #ffffff;
+            stroke-width: 3;
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            fill: none;
+            animation: dashSpinner 1.5s ease-in-out infinite;
+        }
+        @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
+        @keyframes dashSpinner {
+            0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+            50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+            100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
         }
 
-        @media (prefers-color-scheme: light) {
-            #post-install-guide {
-                background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
-                            radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.08) 0%, transparent 60%),
-                            #e8f5ed;
-            }
+        .retry-btn.loading .smart-spinner-icon {
+            display: block;
+        }
+        .retry-btn.loading .fa-rotate-right {
+            display: none;
+        }
+        
+        .retry-btn i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        .retry-btn:hover i {
+            transform: rotate(180deg);
+        }
+
+        .auto-reload-indicator {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #9ca3af;
+            animation: fadeSlideUp 0.5s ease;
+        }
+        .auto-reload-indicator.active {
+            display: flex;
+        }
+        .auto-reload-indicator i {
+            color: #55d082;
+            animation: spin 1.5s linear infinite;
+        }
+        .auto-reload-indicator span {
+            font-weight: 600;
+        }
+
+        .connection-restored {
+            position: fixed;
+            inset: 0;
+            z-index: 100001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .connection-restored.active {
+            display: flex;
+            opacity: 1;
+        }
+        .restored-card {
+            background: linear-gradient(135deg, #1f6e3f, #2c7a47);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 30px 60px rgba(44, 122, 71, 0.4);
+            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 320px;
+            width: 90%;
+        }
+        .restored-card .success-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .restored-card .success-ring::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border: 4px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: successSpin 1s ease-out forwards;
+        }
+        .restored-card i {
+            font-size: 40px;
+            opacity: 0;
+            animation: checkPopModern 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+        }
+        .restored-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.8s forwards;
+        }
+        .restored-card p {
+            font-size: 15px;
+            opacity: 0;
+            margin-bottom: 25px;
+            animation: fadeSlideUp 0.5s ease 1s forwards;
+        }
+        @keyframes successSpin {
+            0% { transform: rotate(0deg); border-top-color: #ffffff; border-right-color: transparent; border-bottom-color: transparent; border-left-color: transparent; }
+            50% { transform: rotate(180deg); border-top-color: #ffffff; border-right-color: #ffffff; border-bottom-color: transparent; border-left-color: transparent; }
+            100% { transform: rotate(360deg); border-color: #ffffff; }
+        }
+        @keyframes checkPopModern {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
     </style>
@@ -1468,45 +1411,46 @@
         <div class="error-particle ep2"></div>
         <div class="error-particle ep3"></div>
         <div class="error-particle ep4"></div>
+        <div class="error-particle ep5"></div>
+        <div class="error-particle ep6"></div>
+        <div class="wifi-icon-broken wb1"><i class="fas fa-wifi"></i></div>
+        <div class="wifi-icon-broken wb2"><i class="fas fa-wifi"></i></div>
+        <div class="wifi-icon-broken wb3"><i class="fas fa-wifi"></i></div>
+        <div class="wifi-icon-broken wb4"><i class="fas fa-wifi"></i></div>
         
         <div class="error-illustration">
-            <svg viewBox="0 0 200 200" width="180" height="180" xmlns="http://www.w3.org/2000/svg" class="human-svg">
-                <defs>
-                    <linearGradient id="grad-skin" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#ffcdb2;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#e5989b;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="grad-suit" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#55d082;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#2c7a47;stop-opacity:1" />
-                    </linearGradient>
-                    <linearGradient id="grad-accent" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
-                    </linearGradient>
-                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur stdDeviation="5" result="blur" />
-                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                </defs>
-                <circle cx="100" cy="100" r="80" fill="rgba(231, 76, 60, 0.1)" class="pulse-circle" />
-                <circle cx="100" cy="70" r="30" fill="url(#grad-skin)" class="head-bob" />
-                <path d="M 70 70 Q 100 20 130 70 Q 140 50 100 40 Q 60 50 70 70 Z" fill="#111827" class="head-bob" />
-                <circle cx="90" cy="65" r="4" fill="#111" class="head-bob eye-blink" />
-                <circle cx="110" cy="65" r="4" fill="#111" class="head-bob eye-blink" />
-                <path d="M 85 55 Q 90 50 95 55" stroke="#111" stroke-width="2" fill="transparent" class="head-bob" />
-                <path d="M 105 55 Q 110 50 115 55" stroke="#111" stroke-width="2" fill="transparent" class="head-bob" />
-                <path d="M 92 80 Q 100 75 108 80" stroke="#111" stroke-width="2" fill="transparent" stroke-linecap="round" class="head-bob" />
-                <path d="M 75 100 L 125 100 Q 140 180 100 180 Q 60 180 75 100 Z" fill="url(#grad-suit)" class="body-breathe" />
-                <path d="M 75 110 Q 50 130 80 150" stroke="url(#grad-skin)" stroke-width="12" stroke-linecap="round" fill="transparent" class="arm-left" />
-                <path d="M 125 110 Q 150 130 120 150" stroke="url(#grad-skin)" stroke-width="12" stroke-linecap="round" fill="transparent" class="arm-right" />
-                <path d="M 0 150 Q 40 160 80 150" stroke="#111827" stroke-width="6" fill="transparent" class="cable-shake" />
-                <circle cx="80" cy="150" r="6" fill="url(#grad-accent)" class="cable-shake" />
-                <path d="M 200 150 Q 160 160 120 150" stroke="#111827" stroke-width="6" fill="transparent" class="cable-shake" />
-                <circle cx="120" cy="150" r="6" fill="url(#grad-accent)" class="cable-shake" />
-                <path d="M 95 145 L 100 135 L 105 145 Z" fill="#ffc107" class="spark-anim" filter="url(#glow)" />
-                <path d="M 105 155 L 110 145 L 115 155 Z" fill="#ffc107" class="spark-anim-2" filter="url(#glow)" />
-            </svg>
+            <div class="disconnect-cloud">
+                <i class="fas fa-xmark"></i>
+                <span>Offline</span>
+            </div>
+            
+            <div class="human-avatar">
+                <div class="human-head">
+                    <div class="human-hair"></div>
+                    <div class="human-eyebrow left"></div>
+                    <div class="human-eyebrow right"></div>
+                    <div class="human-eye left"></div>
+                    <div class="human-eye right"></div>
+                    <div class="human-sweat"></div>
+                    <div class="human-mouth"></div>
+                </div>
+                <div class="human-body"></div>
+                <div class="human-arm left">
+                    <div class="human-hand"></div>
+                </div>
+                <div class="human-arm right">
+                    <div class="human-hand"></div>
+                </div>
+            </div>
+
+            <div class="broken-cable">
+                <div class="cable-left"></div>
+                <div class="cable-right"></div>
+                <div class="spark"></div>
+                <div class="cable-piece cp1"></div>
+                <div class="cable-piece cp2"></div>
+                <div class="cable-piece cp3"></div>
+            </div>
         </div>
         
         <div class="network-error-card">
@@ -1520,9 +1464,26 @@
                 <span class="status-text">You're offline</span>
             </div>
             <button class="retry-btn" id="retry-connection-btn">
+                <svg class="smart-spinner-icon" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20"></circle>
+                </svg>
                 <i class="fas fa-rotate-right"></i>
                 <span>Try Again</span>
             </button>
+            <div class="auto-reload-indicator" id="auto-reload-indicator">
+                <i class="fas fa-arrows-rotate"></i>
+                <span>Auto-reloading when connection returns...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="connection-restored" class="connection-restored">
+        <div class="restored-card">
+            <div class="success-ring">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3>Back Online!</h3>
+            <p>Reloading your dashboard...</p>
         </div>
     </div>
 
@@ -1861,7 +1822,6 @@
                 inputs.forEach(input => {
                     input.addEventListener('focus', () => {
                         document.body.classList.add('keyboard-open');
-                        // Reduced to incredibly fast trigger to match smooth transition sequence perfectly
                         setTimeout(() => {
                             input.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }, 50); 
@@ -1877,7 +1837,6 @@
                         const isKeyboardOpen = vv.height < window.innerHeight * 0.75;
                         const authPortal = document.getElementById('auth-portal');
 
-                        // Clamp portal height to visible viewport instantly
                         authPortal.style.height = vv.height + 'px';
                         authPortal.style.top = vv.offsetTop + 'px';
                         authPortal.style.background = '#000000';
@@ -2444,6 +2403,8 @@
         const toastMessage = document.getElementById('toast-message');
         let wasOffline = false;
         let isCheckingConnection = false;
+        let autoReloadTimer = null;
+        let isReloading = false;
 
         const showToast = (message, isOnline) => {
             toastMessage.textContent = message;
@@ -2481,6 +2442,10 @@
         const showNetworkError = () => {
             networkErrorScreen.classList.add('active');
             networkErrorScreen.classList.remove('fade-out');
+            if (autoReloadTimer) {
+                clearInterval(autoReloadTimer);
+                autoReloadTimer = null;
+            }
         };
 
         const hideNetworkError = () => {
@@ -2490,6 +2455,36 @@
             }, 600);
         };
 
+        const performAutoReload = () => {
+            if (isReloading) return;
+            isReloading = true;
+            
+            const restoredOverlay = document.getElementById('connection-restored');
+            if (restoredOverlay) {
+                restoredOverlay.classList.add('active');
+            }
+            
+            setTimeout(() => {
+                const iframe = document.getElementById('macro-frame');
+                if (iframe && iframe.src) {
+                    const currentSrc = iframe.src.split('?')[0];
+                    iframe.src = currentSrc + '?cb=' + new Date().getTime();
+                }
+                
+                const appPanel = document.getElementById('app');
+                if (appPanel && appPanel.classList.contains('active')) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    setTimeout(() => {
+                        if (restoredOverlay) restoredOverlay.classList.remove('active');
+                        isReloading = false;
+                    }, 2000);
+                }
+            }, 1000);
+        };
+
         const handleOnline = async () => {
             const isConnected = await checkConnectivity();
             if (isConnected) {
@@ -2497,9 +2492,7 @@
                     showToast('Back online! Reloading...', true);
                     hideNetworkError();
                     wasOffline = false;
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 800); // Reload URL well integrated after restoring connection
+                    performAutoReload();
                 }
             }
         };
@@ -2508,15 +2501,27 @@
             wasOffline = true;
             showToast('Connection lost', false);
             showNetworkError();
+            
+            if (!autoReloadTimer) {
+                autoReloadTimer = setInterval(async () => {
+                    if (navigator.onLine) {
+                        const isConnected = await checkConnectivity();
+                        if (isConnected) {
+                            handleOnline();
+                        }
+                    }
+                }, 3000);
+            }
         };
 
         const checkAndRetryConnection = async () => {
             const retryBtn = document.getElementById('retry-connection-btn');
             const btnText = retryBtn.querySelector('span');
+            const autoIndicator = document.getElementById('auto-reload-indicator');
             
             retryBtn.disabled = true;
             retryBtn.classList.add('loading');
-            btnText.textContent = 'Checking...';
+            btnText.textContent = 'Checking connection...';
             
             const isConnected = await checkConnectivity();
             
@@ -2528,12 +2533,11 @@
                 showToast('Connection restored! Reloading...', true);
                 hideNetworkError();
                 wasOffline = false;
-                setTimeout(() => {
-                    window.location.reload();
-                }, 800); // URL well integrated reload
+                performAutoReload();
             } else {
-                retryBtn.style.animation = 'shakeError 0.4s ease';
-                setTimeout(() => { retryBtn.style.animation = ''; }, 400);
+                retryBtn.style.animation = 'shakeError 0.5s ease';
+                setTimeout(() => { retryBtn.style.animation = ''; }, 500);
+                if (autoIndicator) autoIndicator.classList.add('active');
             }
         };
 
