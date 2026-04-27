@@ -245,9 +245,9 @@
         }
 
         @keyframes slowMotionPop {
-            0% { opacity: 0; transform: scale(0.6) translateY(20px); filter: blur(4px); }
-            40% { opacity: 1; transform: scale(1.05) translateY(-2px); filter: blur(0px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
+            0% { opacity: 0; transform: scale(0.6) translateY(20px); }
+            40% { opacity: 1; transform: scale(1.05) translateY(-2px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .medium-font { font-size: 32px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
@@ -258,7 +258,7 @@
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(0, 20, 10, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); transition: opacity 0.6s ease;
+            background: rgba(0, 20, 10, 0.9); transition: opacity 0.6s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
@@ -358,13 +358,13 @@
         .app.active iframe { opacity: 1; }
 
         /* RESTRICTION SCREENS */
-        #device-error { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.98); backdrop-filter: blur(20px); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
         .error-card { background: rgba(0, 30, 15, 0.9); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
         .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
         .error-card p { font-size: 16px; color: #aaaaaa; line-height: 1.6; }
         @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
-        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.95); backdrop-filter: blur(15px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(0, 20, 10, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: rgba(0, 30, 15, 0.9); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
@@ -412,7 +412,7 @@
                 background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%) !important;
             }
 
-            #auth-portal { background: rgba(0, 20, 10, 0.7) !important; }
+            #auth-portal { background: rgba(0, 20, 10, 0.9) !important; }
             #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: #001208 !important; }
             .error-card, .install-card, .network-error-card { 
                 background: rgba(0, 30, 15, 0.9) !important; 
@@ -1003,9 +1003,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: rgba(0, 20, 10, 0.9);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(0, 20, 10, 0.95);
         }
 
         #storage-permission-modal.active { display: flex; }
