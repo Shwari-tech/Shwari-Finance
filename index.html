@@ -258,7 +258,7 @@
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(0, 20, 10, 0.9); transition: opacity 0.6s ease;
+            background: rgba(0, 20, 10, 0.7); transition: opacity 0.6s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
@@ -412,7 +412,7 @@
                 background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%) !important;
             }
 
-            #auth-portal { background: rgba(0, 20, 10, 0.9) !important; }
+            #auth-portal { background: rgba(0, 20, 10, 0.7) !important; }
             #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: #001208 !important; }
             .error-card, .install-card, .network-error-card { 
                 background: rgba(0, 30, 15, 0.9) !important; 
@@ -1003,7 +1003,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: rgba(0, 20, 10, 0.95);
+            background: rgba(0, 20, 10, 0.9);
         }
 
         #storage-permission-modal.active { display: flex; }
@@ -2715,7 +2715,7 @@
 
         /* =====================================================
            NEW FEATURES: DUPLICATE BLOCKER & POST-INSTALL GUIDE
-           ===================================================== */
+           ====================================================== */
         
         async function checkIfAppAlreadyInstalled() {
             if ('getInstalledRelatedApps' in navigator) {
