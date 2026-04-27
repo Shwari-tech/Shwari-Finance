@@ -65,13 +65,11 @@
             background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
             background-color: #111827;
         }
-        /* Keyboard-open body adjustment */
-        body.keyboard-open .bg-layer {
-            transform: scale(1.08);
-            transition: transform 0s !important;
-        }
+        /* Keyboard — bg-layer never moves */
+        body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
-            transition: transform 0s !important;
+            transform: none !important;
+            transition: none !important;
         }
 
         /* =========================================
@@ -305,10 +303,9 @@
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
 
-        /* Unified scaling for depth effect during keyboard pull */
+        /* Card stays perfectly still during keyboard open */
         body.keyboard-open .auth-card {
-            transform: scale(0.97) translateY(-10px);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.4), inset 0 0 0 1.5px rgba(255,255,255,0.8);
+            transform: none;
         }
 
         .auth-icon i { font-size: 50px; margin-bottom: 20px; background: #eef7f1; padding: 25px; border-radius: 50%; display: inline-block; background: linear-gradient(270deg, #2c7a47, #00796b, #1f6e3f); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: colorShift 5s ease infinite; }
@@ -1955,12 +1952,13 @@
                         const isKeyboardOpen = vv.height < window.innerHeight * 0.75;
                         const authPortal = document.getElementById('auth-portal');
 
-                        // Instant — no RAF, no timeout, no delay
+                        // Clamp portal height to visible viewport instantly
+                        authPortal.style.height = vv.height + 'px';
+                        authPortal.style.top = vv.offsetTop + 'px';
+                        authPortal.style.background = '#000000';
+
                         document.body.classList.toggle('keyboard-open', isKeyboardOpen);
                         authPortal.classList.toggle('keyboard-adjust', isKeyboardOpen);
-
-                        // Always black — no background shift ever
-                        authPortal.style.background = '#000000';
                     }, { passive: true });
                 }
             },
