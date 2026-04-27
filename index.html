@@ -60,6 +60,7 @@
             background-color: var(--bg-dark);
             pointer-events: none;
             will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
         /* Keyboard-open body adjustment */
@@ -267,7 +268,8 @@
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(17, 24, 39, 0.95); transition: opacity 0.6s ease;
+            background: rgba(17, 24, 39, 0.95); 
+            transition: opacity 0.6s ease, padding 0.15s cubic-bezier(0.2, 0.9, 0.3, 1);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
@@ -283,7 +285,7 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,250,245,0.95));
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
-            transition: transform 0.5s ease, opacity 0.5s ease;
+            transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.15s ease;
             max-height: calc(var(--vh, 1vh) * 90);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -1917,12 +1919,18 @@
 
             bindKeyboardHandlers() {
                 const inputs = document.querySelectorAll('input');
+                
+                // Ultra-smooth and instantaneous scroll adjustment without artificial delays
+                const syncView = (input) => {
+                    requestAnimationFrame(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+                };
+
                 inputs.forEach(input => {
                     input.addEventListener('focus', () => {
                         document.body.classList.add('keyboard-open');
-                        setTimeout(() => {
-                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 300);
+                        syncView(input);
                     });
                     input.addEventListener('blur', () => {
                         document.body.classList.remove('keyboard-open');
@@ -1938,6 +1946,9 @@
                         const authPortal = document.getElementById('auth-portal');
                         if (isKeyboardOpen) {
                             authPortal.classList.add('keyboard-adjust');
+                            if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+                                syncView(document.activeElement);
+                            }
                         } else {
                             authPortal.classList.remove('keyboard-adjust');
                         }
