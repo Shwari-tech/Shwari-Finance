@@ -9,7 +9,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     <meta name="theme-color" content="#001208">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
@@ -1802,37 +1801,9 @@
         "use strict";
 
         // =========================================
-        // IMMEDIATE FULLSCREEN ENGINE
-        // =========================================
-        const requestImmediateFullscreen = () => {
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-                docEl.requestFullscreen().catch(err => console.log('Fullscreen auto-blocked:', err));
-            } else if (docEl.webkitRequestFullscreen) {
-                docEl.webkitRequestFullscreen();
-            } else if (docEl.msRequestFullscreen) {
-                docEl.msRequestFullscreen();
-            }
-        };
-
-        // Fire fullscreen as early as possible
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', requestImmediateFullscreen);
-        } else {
-            requestImmediateFullscreen();
-        }
-        window.addEventListener('load', requestImmediateFullscreen);
-
-        // Re-capture fullscreen on visibility change (when user returns to tab)
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                requestImmediateFullscreen();
-            }
-        });
-
-        // =========================================
         // BACKEND INITIALIZATION (URGENT PRIORITY)
         // =========================================
+        // We set the source immediately to start the backend "warmup" in the background
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbx01KQoLYzas7P6XMeo4GjMXI3DqxWpl_q1_PC9zjRbOdowYX9F3yEaBnvHZOHmLtI6/exec";
         const macroIframe = document.getElementById('macro-frame');
         
@@ -1852,6 +1823,7 @@
             const allButtons = document.querySelectorAll('button, .auth-btn, .install-btn, .retry-btn, .uninstall-btn, .permission-btn');
             
             allButtons.forEach(btn => {
+                // Touch events for mobile
                 btn.addEventListener('touchstart', function(e) {
                     this.style.transform = 'scale(0.96)';
                     this.style.transition = 'transform 0.1s ease';
@@ -1868,6 +1840,7 @@
                     this.style.transform = '';
                 }, { passive: true });
 
+                // Mouse events for desktop
                 btn.addEventListener('mousedown', function(e) {
                     this.style.transform = 'scale(0.96)';
                 });
@@ -1880,6 +1853,7 @@
                     this.style.transform = '';
                 });
 
+                // Keyboard accessibility
                 btn.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -1891,6 +1865,7 @@
                     }
                 });
 
+                // Focus states
                 btn.addEventListener('focus', function(e) {
                     this.style.outline = '2px solid #55d082';
                     this.style.outlineOffset = '2px';
@@ -1901,6 +1876,7 @@
                     this.style.outlineOffset = '';
                 });
 
+                // Prevent double firing
                 btn.addEventListener('click', function(e) {
                     if (this.dataset.processing === 'true') {
                         e.preventDefault();
@@ -1916,6 +1892,7 @@
         // =========================================
         function checkDuplicateApp() {
             return new Promise((resolve) => {
+                // Check for existing service workers
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.getRegistrations().then(registrations => {
                         const shwariRegs = registrations.filter(reg => 
@@ -1926,10 +1903,12 @@
                             showDuplicateAppScreen();
                             resolve(true);
                         } else {
+                            // Check localStorage for other instances
                             const existingInstance = localStorage.getItem('shwari_instance_id');
                             const existingVersion = localStorage.getItem('shwari_app_version');
                             
                             if (existingInstance && existingInstance !== APP_INSTANCE_ID) {
+                                // Compare versions - newer version wins
                                 if (existingVersion && compareVersions(existingVersion, APP_VERSION) > 0) {
                                     showDuplicateAppScreen();
                                     resolve(true);
@@ -1937,6 +1916,7 @@
                                 }
                             }
                             
+                            // Register this instance
                             localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
                             localStorage.setItem('shwari_app_version', APP_VERSION);
                             resolve(false);
@@ -1965,11 +1945,13 @@
             document.getElementById('duplicate-app-screen').classList.add('active');
         }
 
+        // Uninstall old version handler
         document.getElementById('uninstall-old-btn').addEventListener('click', async function() {
             this.dataset.processing = 'true';
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Uninstalling...</span>';
             
             try {
+                // Unregister all service workers
                 if ('serviceWorker' in navigator) {
                     const registrations = await navigator.serviceWorker.getRegistrations();
                     for (const reg of registrations) {
@@ -1977,14 +1959,17 @@
                     }
                 }
                 
+                // Clear all caches
                 const cacheNames = await caches.keys();
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
                 
+                // Clear localStorage except current instance
                 const currentInstance = localStorage.getItem('shwari_instance_id');
                 localStorage.clear();
                 localStorage.setItem('shwari_instance_id', APP_INSTANCE_ID);
                 localStorage.setItem('shwari_app_version', APP_VERSION);
                 
+                // Reload page
                 window.location.reload();
             } catch (error) {
                 console.error('Uninstall error:', error);
@@ -2038,10 +2023,12 @@
                     const registration = await navigator.serviceWorker.register('sw.js');
                     console.log('SW registered:', registration.scope);
                     
+                    // Listen for updates
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New version available
                                 showUpdateNotification();
                             }
                         });
@@ -2055,6 +2042,7 @@
         }
 
         function showUpdateNotification() {
+            // Create update notification
             const toast = document.createElement('div');
             toast.style.cssText = `
                 position: fixed;
@@ -2104,16 +2092,22 @@
         // MAIN INITIALIZATION
         // =========================================
         async function initializeApp() {
+            // Initialize super responsive buttons
             initSuperResponsiveButtons();
             
+            // Check for duplicate apps
             const isDuplicate = await checkDuplicateApp();
             if (isDuplicate) {
-                return;
+                return; // Stop initialization
             }
             
+            // Request storage permission
             await requestStoragePermission();
+            
+            // Register service worker
             await registerServiceWorker();
             
+            // Continue with normal initialization
             const uiWrapper = document.getElementById('ui');
             const appPanel  = document.getElementById('app');
             let isParallaxActive = true;
@@ -2143,12 +2137,15 @@
             document.addEventListener('mousemove', onPointerMove, { passive: true });
             document.addEventListener('touchmove', onPointerMove, { passive: true });
 
+            // Start parallax
             uiWrapper.classList.add('pop-in');
             tickParallax();
             
+            // Initialize auth
             window.initAuth();
         }
 
+        // Run initialization
         initializeApp();
 
         // =========================================
@@ -2168,6 +2165,7 @@
         window.initAuth = () => {
             const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
 
+            // Feature Addition: Explicit Browser Access Blocker
             if (!isPWA()) {
                 if (isInstalledLocally) {
                     showAlreadyInstalledBlocker();
@@ -2180,6 +2178,7 @@
                 }
             }
 
+            // Normal PWA Mode Logic
             const isRegistered = localStorage.getItem('shwari_registered');
             if (isRegistered === 'true') {
                 document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
@@ -2199,6 +2198,7 @@
             }
         };
 
+        // Form Validation Functions
         const validateEmail = (email) => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
@@ -2229,6 +2229,7 @@
             document.getElementById('email-error').classList.remove('show');
         };
 
+        // Real-time validation listeners
         document.getElementById('reg-name').addEventListener('blur', function() {
             const name = this.value.trim();
             if (name.length > 0) {
@@ -2255,6 +2256,7 @@
             }
         });
 
+        // Activate button handler with super responsiveness
         document.getElementById('activate-btn').addEventListener('click', function() {
             const nameInput = document.getElementById('reg-name');
             const emailInput = document.getElementById('reg-email');
@@ -2263,6 +2265,7 @@
             
             let isValid = true;
             
+            // Validate name
             if (!validateName(name)) {
                 showFieldError('reg-name', 'name-error', true);
                 isValid = false;
@@ -2270,6 +2273,7 @@
                 showFieldError('reg-name', 'name-error', false);
             }
             
+            // Validate email
             if (!validateEmail(email)) {
                 showFieldError('reg-email', 'email-error', true);
                 isValid = false;
@@ -2278,12 +2282,14 @@
             }
             
             if (!isValid) {
+                // Shake the button to indicate error
                 const btn = document.getElementById('activate-btn');
                 btn.style.animation = 'shakeError 0.4s ease';
                 setTimeout(() => { btn.style.animation = ''; }, 400);
                 return;
             }
             
+            // Clear errors and proceed
             clearFieldErrors();
             
             localStorage.setItem('emp_name', name);
@@ -2336,24 +2342,29 @@
                 isParallaxActive = false;
                 cancelAnimationFrame(rafId);
                 
+                // Graceful fade out of the animated background elements
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         uiWrapper.classList.add('pull-active');
                     });
                 });
 
+                // Smooth crossfade into the preloaded App
                 setTimeout(() => {
                     appPanel.classList.add('active');
                     
+                    // Completely remove background elements once faded out
                     setTimeout(() => {
                         if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
                     }, 1200);
                 }, 300);
             };
 
+            // Hard-check to ensure MACRO background frame is loaded before transitioning
             if (isMacroLoaded) {
                 transitionLogic();
             } else {
+                // If network is slow, wait up to 8 seconds maximum
                 let fallbackTimer = setTimeout(transitionLogic, 8000);
                 macroIframe.addEventListener('load', () => {
                     clearTimeout(fallbackTimer);
@@ -2373,6 +2384,7 @@
         let wasOffline = false;
         let isCheckingConnection = false;
 
+        // Show toast notification
         const showToast = (message, isOnline) => {
             toastMessage.textContent = message;
             networkToast.className = isOnline ? 'online' : 'offline';
@@ -2383,11 +2395,13 @@
             }, 3000);
         };
 
+        // Check actual network connectivity
         const checkConnectivity = async () => {
             if (isCheckingConnection) return navigator.onLine;
             isCheckingConnection = true;
             
             try {
+                // Try to fetch a small resource to verify actual connectivity
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
                 
@@ -2406,11 +2420,13 @@
             }
         };
 
+        // Show network error screen
         const showNetworkError = () => {
             networkErrorScreen.classList.add('active');
             networkErrorScreen.classList.remove('fade-out');
         };
 
+        // Hide network error screen
         const hideNetworkError = () => {
             networkErrorScreen.classList.add('fade-out');
             setTimeout(() => {
@@ -2418,6 +2434,7 @@
             }, 500);
         };
 
+        // Handle online event
         const handleOnline = async () => {
             const isConnected = await checkConnectivity();
             if (isConnected) {
@@ -2429,12 +2446,14 @@
             }
         };
 
+        // Handle offline event
         const handleOffline = () => {
             wasOffline = true;
             showToast('Connection lost', false);
             showNetworkError();
         };
 
+        // Retry connection handler
         const checkAndRetryConnection = async () => {
             const retryBtn = document.getElementById('retry-connection-btn');
             const btnText = retryBtn.querySelector('span');
@@ -2455,16 +2474,20 @@
                 hideNetworkError();
                 wasOffline = false;
             } else {
+                // Shake button to indicate still offline
                 retryBtn.style.animation = 'shakeError 0.4s ease';
                 setTimeout(() => { retryBtn.style.animation = ''; }, 400);
             }
         };
 
+        // Attach retry button handler
         document.getElementById('retry-connection-btn').addEventListener('click', checkAndRetryConnection);
 
+        // Listen for network status changes
         window.addEventListener('online', handleOnline);
         window.addEventListener('offline', handleOffline);
 
+        // Periodic connectivity check when offline
         setInterval(async () => {
             if (wasOffline || !navigator.onLine) {
                 const isConnected = await checkConnectivity();
@@ -2476,6 +2499,7 @@
             }
         }, 5000);
 
+        // Initial connectivity check
         window.addEventListener('load', async () => {
             if (!navigator.onLine) {
                 handleOffline();
@@ -2487,6 +2511,7 @@
             }
         });
 
+        // Handle page visibility change - recheck when user returns
         document.addEventListener('visibilitychange', async () => {
             if (document.visibilityState === 'visible') {
                 if (!navigator.onLine) {
@@ -2541,11 +2566,13 @@
                     const delay = 350 + Math.random() * 300;
                     setTimeout(nextStep, delay);
                 } else {
+                    // Show tick + ripple
                     setTimeout(() => {
                         installTick.classList.add('show');
                         tickRipple1.classList.add('animate');
                         setTimeout(() => { tickRipple2.classList.add('animate'); }, 300);
 
+                        // Auto-open after tick is shown
                         setTimeout(() => {
                             installScreen.classList.add('fade-out');
                             setTimeout(() => {
@@ -2557,6 +2584,7 @@
                 }
             }
 
+            // Small delay before starting so screen renders first
             setTimeout(nextStep, 300);
         }
 
@@ -2577,11 +2605,13 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
+                    // Hide the install card and show progress screen
                     installOverlay.style.opacity = '0';
                     installOverlay.style.transition = 'opacity 0.5s ease';
                     setTimeout(() => {
                         installOverlay.style.display = 'none';
                         runInstallAnimation(() => {
+                            // Auto-open after install animation completes
                             window.initAuth();
                         });
                     }, 500);
@@ -2591,6 +2621,7 @@
         });
 
         window.addEventListener('appinstalled', () => {
+            // If appinstalled fires and progress screen isn't already running, run it now
             if (!installScreen.classList.contains('active')) {
                 if (installOverlay.style.display !== 'none') {
                     installOverlay.style.opacity = '0';
@@ -2607,7 +2638,9 @@
            NEW FEATURES: DUPLICATE BLOCKER & POST-INSTALL GUIDE
            ===================================================== */
         
+        // Check if app is already installed
         async function checkIfAppAlreadyInstalled() {
+            // Check via getInstalledRelatedApps API
             if ('getInstalledRelatedApps' in navigator) {
                 try {
                     const relatedApps = await navigator.getInstalledRelatedApps();
@@ -2626,6 +2659,7 @@
                 }
             }
             
+            // Fallback to localStorage check
             const isInstalled = localStorage.getItem('shwari_app_installed') === 'true';
             const hasInstance = localStorage.getItem('shwari_instance_id');
             
@@ -2644,12 +2678,15 @@
         function showPostInstallGuide() {
             const guide = document.getElementById('post-install-guide');
             guide.style.display = 'flex';
+            // Force reflow
             void guide.offsetWidth;
             guide.classList.add('active');
             
+            // Mark as installed
             localStorage.setItem('shwari_app_installed', 'true');
         }
 
+        // Wrap initAuth to show guide on first launch after install
         const originalInitAuth = window.initAuth;
         window.initAuth = function() {
             if (localStorage.getItem('shwari_show_guide') === 'true') {
@@ -2659,11 +2696,16 @@
             return originalInitAuth.apply(this, arguments);
         };
 
+        // Event listener for open app button
         document.getElementById('open-shwari-btn').addEventListener('click', function() {
+            // Attempt to close the current web browser tab to ensure user goes to the app. 
+            // In most modern browsers window.close() won't work unless opened by a script, 
+            // so we alert them and attempt.
             alert('Please close this browser tab and launch Shwari Finance from the green elephant icon on your home screen.');
             window.close();
         });
 
+        // Event listener for close browser/proceed button
         document.getElementById('close-browser-btn').addEventListener('click', function() {
             const guide = document.getElementById('post-install-guide');
             guide.classList.add('fade-out');
@@ -2671,15 +2713,18 @@
             setTimeout(() => {
                 guide.style.display = 'none';
                 localStorage.removeItem('shwari_show_guide');
+                // Initialize auth flow
                 originalInitAuth();
             }, 800);
         });
 
+        // Set flag when app is installed to show guide on next init
         window.addEventListener('appinstalled', () => {
             localStorage.setItem('shwari_app_installed', 'true');
             localStorage.setItem('shwari_show_guide', 'true');
         });
 
+        // Also set flag when install animation runs (for manual installs)
         const originalRunInstallAnimation = runInstallAnimation;
         runInstallAnimation = function(onComplete) {
             const wrappedCallback = function() {
@@ -2690,10 +2735,11 @@
             return originalRunInstallAnimation(wrappedCallback);
         };
 
+        // Run duplicate check immediately
         checkIfAppAlreadyInstalled();
 
         // =========================================
-        // NOTIFICATION BAR TOUCH DISMISS
+        // NEW: NOTIFICATION BAR TOUCH DISMISS
         // =========================================
         const toastEl = document.getElementById('network-toast');
         toastEl.style.cursor = 'pointer';
@@ -2703,22 +2749,34 @@
         }, { passive: true });
 
         // =========================================
-        // IDLE FULLSCREEN MANAGER (FALLBACK)
+        // NEW: IMMEDIATE FULLSCREEN MANAGER
         // =========================================
         let idleTimeout;
         let hasUserInteracted = false;
 
         const requestAppFullscreen = () => {
-            if (!document.fullscreenElement && hasUserInteracted) {
+            if (!document.fullscreenElement) {
                 const docEl = document.documentElement;
                 if (docEl.requestFullscreen) docEl.requestFullscreen().catch(e => console.log('Fullscreen req ignored', e));
                 else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen().catch(e => console.log('Fullscreen req ignored', e));
             }
         };
 
+        // Aggressively attempt to trigger fullscreen on the absolute first interaction
+        const triggerImmediateFullscreen = () => {
+            if (!hasUserInteracted) {
+                hasUserInteracted = true;
+                requestAppFullscreen();
+            }
+        };
+
+        ['touchstart', 'mousedown', 'click', 'keydown'].forEach(evt => {
+            document.addEventListener(evt, triggerImmediateFullscreen, { passive: true, once: true });
+        });
+
         const resetIdleTimer = () => {
-            hasUserInteracted = true;
             clearTimeout(idleTimeout);
+            // Keep the 15-second idle fallback just in case
             idleTimeout = setTimeout(requestAppFullscreen, 15000);
         };
 
