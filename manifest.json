@@ -5,8 +5,8 @@
   "description": "Digital Payroll Certified by Shwari Finance Department",
   "start_url": "/index.html?source=pwa",
   "scope": "/",
-  "display": "fullscreen",
-  "display_override": ["fullscreen", "window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
   "background_color": "#001208",
   "theme_color": "#001208",
   "orientation": "portrait-primary",
@@ -16,25 +16,7 @@
   "prefer_related_applications": false,
   "related_applications": [],
   "handle_links": "preferred",
-  "capture_links": "existing-client-navigate",
-  "file_handlers": [],
-  "protocol_handlers": [],
-  "share_target": {
-    "action": "/index.html?tab=share",
-    "method": "GET",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url"
-    }
-  },
-  "permissions_policy": {
-    "notifications": ["self"],
-    "push": ["self"],
-    "background-sync": ["self"],
-    "camera": [],
-    "microphone": []
-  },
+
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png",
@@ -91,6 +73,7 @@
       "purpose": "any maskable"
     }
   ],
+
   "shortcuts": [
     {
       "name": "View Ledger",
@@ -107,6 +90,7 @@
       "icons": [{ "src": "https://cdn-icons-png.flaticon.com/128/1077/1077114.png", "sizes": "96x96", "type": "image/png" }]
     }
   ],
+
   "screenshots": [
     {
       "src": "https://cdn.prod.website-files.com/5e4d02fd9692e694f86e0e98/6462b9fc8b1022bf196f08e4_Payroll%20Run%402x.webp",
@@ -123,30 +107,18 @@
       "label": "Mobile Dashboard"
     }
   ],
+
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
   },
+
   "edge_side_panel": {
     "preferred_width": 400
   },
+
   "serviceworker": {
     "src": "/sw.js",
     "scope": "/",
     "use_cache": false
-  },
-  "iarc_rating_id": "",
-  "note_taking": {
-    "new_note_url": "/index.html?tab=notes&action=new"
-  },
-  "handle_links": "preferred",
-  "scope_extensions": [],
-  "lock_screen": {
-    "start_url": "/index.html?source=lock-screen"
-  },
-  "notification": {
-    "permission": "default"
-  },
-  "gcm_sender_id": "",
-  "background_color": "#001208",
-  "splash_pages": null
+  }
 }
