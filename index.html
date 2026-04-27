@@ -51,19 +51,20 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Fixed background layer — immune to keyboard resize */
+        /* Fixed background layer — intro only, black everywhere else */
         .bg-layer {
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
-            background-color: var(--bg-dark);
+            background: #000000;
             pointer-events: none;
             will-change: transform;
-            /* Superfast, slow-motion unified sync transition */
-            transition: transform 0.7s cubic-bezier(0.1, 1, 0.2, 1);
+            transition: transform 0s;
         }
-
+        body.intro-active .bg-layer {
+            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
+            background-color: #111827;
+        }
         /* Keyboard-open body adjustment */
         body.keyboard-open .bg-layer {
             transform: scale(1.08);
@@ -2291,6 +2292,7 @@
             document.addEventListener('touchmove', onPointerMove, { passive: true });
 
             uiWrapper.classList.add('pop-in');
+            document.body.classList.add('intro-active');
             tickParallax();
             
             window.initAuth();
@@ -2486,6 +2488,7 @@
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         uiWrapper.classList.add('pull-active');
+                        document.body.classList.remove('intro-active');
                     });
                 });
 
