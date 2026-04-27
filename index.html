@@ -273,11 +273,10 @@
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(17, 24, 39, 0.95); 
+            background: #000000;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            /* Superfast padding transition to glide content out of keyboard's way */
-            transition: opacity 0.6s ease, padding 0.7s cubic-bezier(0.1, 1, 0.2, 1);
+            transition: opacity 0.6s ease;
             will-change: padding;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
@@ -285,14 +284,9 @@
             align-items: flex-start;
             padding-top: 20px;
             padding-bottom: 20px;
-            background: rgba(0,0,0,0.98) !important;
-            transition: background 0s, padding 0s !important;
-        }
-        #auth-portal {
-            transition: opacity 0.6s ease, background 0s !important;
         }
         body.keyboard-open #auth-portal {
-            background: rgba(0,0,0,1) !important;
+            background: #000000 !important;
         }
 
         .auth-card {
@@ -452,7 +446,7 @@
                 background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%) !important;
             }
 
-            #auth-portal { background: rgba(17, 24, 39, 0.95) !important; }
+            #auth-portal { background: #000000 !important; }
             #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: var(--bg-dark) !important; }
             .error-card, .install-card, .network-error-card { 
                 background: var(--bg-card) !important; 
@@ -1964,10 +1958,8 @@
                         document.body.classList.toggle('keyboard-open', isKeyboardOpen);
                         authPortal.classList.toggle('keyboard-adjust', isKeyboardOpen);
 
-                        // Instantly fill gap with solid color
-                        authPortal.style.background = isKeyboardOpen
-                            ? 'rgba(0,0,0,1)'
-                            : 'rgba(17,24,39,0.95)';
+                        // Always black — no background shift ever
+                        authPortal.style.background = '#000000';
                     }, { passive: true });
                 }
             },
