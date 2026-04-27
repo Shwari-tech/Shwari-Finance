@@ -258,7 +258,7 @@
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: rgba(0, 20, 10, 0.7); transition: opacity 0.6s ease;
+            background: rgba(0, 20, 10, 0.95); transition: opacity 0.6s ease;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
 
@@ -412,7 +412,7 @@
                 background: linear-gradient(to top, rgba(0, 15, 8, 0.95) 0%, rgba(0, 15, 8, 0.8) 40%, rgba(0, 15, 8, 0) 100%) !important;
             }
 
-            #auth-portal { background: rgba(0, 20, 10, 0.7) !important; }
+            #auth-portal { background: rgba(0, 20, 10, 0.95) !important; }
             #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: #001208 !important; }
             .error-card, .install-card, .network-error-card { 
                 background: rgba(0, 30, 15, 0.9) !important; 
@@ -963,10 +963,21 @@
             font-weight: 600;
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
+            background: #1E293B;
+            border: 1px solid #334155;
+            color: #F1F5F9;
+        }
+
+        #network-toast.offline i {
+            color: #F87171;
+        }
+
+        #network-toast.online i {
+            color: #34D399;
         }
 
         #network-toast.show {
@@ -976,16 +987,6 @@
         
         #network-toast:active {
             transform: translateX(-50%) translateY(0) scale(0.95);
-        }
-
-        #network-toast.offline {
-            background: rgba(231, 76, 60, 0.95);
-            color: white;
-        }
-
-        #network-toast.online {
-            background: rgba(85, 208, 130, 0.95);
-            color: #001208;
         }
 
         #network-toast i {
@@ -1003,7 +1004,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: rgba(0, 20, 10, 0.9);
+            background: rgba(0, 20, 10, 0.95);
         }
 
         #storage-permission-modal.active { display: flex; }
@@ -2173,8 +2174,9 @@
                 bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
-                background: linear-gradient(135deg, #2c7a47, #1f6e3f);
-                color: white;
+                background: #1E293B;
+                border: 1px solid #334155;
+                color: #F1F5F9;
                 padding: 16px 24px;
                 border-radius: 16px;
                 font-family: 'Inter', sans-serif;
@@ -2184,15 +2186,15 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             `;
             toast.innerHTML = `
-                <i class="fas fa-rotate"></i>
+                <i class="fas fa-rotate" style="color: #3B82F6;"></i>
                 <span>Update available!</span>
                 <button style="
-                    background: white;
-                    color: #2c7a47;
-                    border: none;
+                    background: #334155;
+                    color: #F1F5F9;
+                    border: 1px solid #475569;
                     padding: 8px 16px;
                     border-radius: 8px;
                     font-weight: 700;
@@ -2715,7 +2717,7 @@
 
         /* =====================================================
            NEW FEATURES: DUPLICATE BLOCKER & POST-INSTALL GUIDE
-           ====================================================== */
+           ===================================================== */
         
         async function checkIfAppAlreadyInstalled() {
             if ('getInstalledRelatedApps' in navigator) {
