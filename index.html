@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <meta name="theme-color" content="#1E293B">
+    <meta name="theme-color" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
@@ -30,6 +29,9 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
+            --bg-dark: #111827;
+            --bg-card: #1f2937;
+            --accent: #55d082;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
@@ -37,27 +39,33 @@
         html, body {
             height: 100%; width: 100%;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
+            min-height: calc(var(--vh, 1vh) * 100);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow: hidden; position: relative; perspective: 1200px;
-            -webkit-text-size-adjust: 70%; -moz-text-size-adjust: 70%; text-size-adjust: 70%;
-            background-color: #1E293B; /* Dark Grey Startup Theme */
+            -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
+            background-color: var(--bg-dark);
             padding: 0; margin: 0;
             touch-action: manipulation;
             overscroll-behavior-y: none;
             -webkit-overflow-scrolling: touch;
         }
-        
-        /* Fixed Background Pseudo-element to prevent resizing/janking during keyboard popup */
-        body::before {
-            content: '';
+
+        /* Fixed background layer — immune to keyboard resize */
+        .bg-layer {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            inset: 0;
+            z-index: 0;
             background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
-            z-index: -10;
+            background-color: var(--bg-dark);
+            pointer-events: none;
+            will-change: transform;
         }
 
-        html { font-size: 5px !important; }
+        /* Keyboard-open body adjustment */
+        body.keyboard-open .bg-layer {
+            transform: scale(1.02);
+        }
 
         /* =========================================
            1. PARALLAX WRAPPER & ANIMATIONS
@@ -103,7 +111,7 @@
 
         .continue-footer {
             padding: 40px 20px 40px; text-align: center;
-            background: linear-gradient(to top, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.8) 40%, rgba(30, 41, 59, 0) 100%);
+            background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%);
             position: relative;
             min-height: 200px;
             display: flex;
@@ -255,18 +263,20 @@
         .small-email { font-size: 16px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
 
         /* =========================================
-           3. REGISTRATION PORTAL (KEYBOARD FRIENDLY)
+           3. REGISTRATION PORTAL
            ========================================= */
         #auth-portal {
-            position: fixed; inset: 0; z-index: 1000; 
-            display: flex; flex-direction: column; 
-            padding: 20px;
-            background: rgba(30, 41, 59, 0.95); 
-            transition: opacity 0.6s ease;
-            overflow-y: auto; /* Allows scrolling when keyboard is up */
+            position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
+            background: rgba(17, 24, 39, 0.95); transition: opacity 0.6s ease;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         #auth-portal.hidden { display: none; opacity: 0; pointer-events: none; }
+        #auth-portal.keyboard-adjust {
+            align-items: flex-start;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
 
         .auth-card {
             width: 100%; max-width: 380px; padding: 45px 35px; border-radius: 30px;
@@ -274,7 +284,10 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 0 0 1.5px rgba(255,255,255,0.8); text-align: center;
             animation: cardFloatUp 0.7s cubic-bezier(0.16, 1, 0.3, 1); font-family: 'Inter', sans-serif;
             transition: transform 0.5s ease, opacity 0.5s ease;
-            margin: auto; /* Centers card nicely and responds to flex container */
+            max-height: calc(var(--vh, 1vh) * 90);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: auto;
         }
         @keyframes cardFloatUp { from { transform: translateY(60px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         .auth-card.hidden { display: none; }
@@ -339,16 +352,17 @@
            ========================================= */
         .app { 
             position: fixed; inset: 0; opacity: 0; visibility: hidden; 
-            background: #1E293B; z-index: 2000; 
+            background: var(--bg-dark); z-index: 2000; 
             transition: opacity 1.2s ease-in-out; 
             width: 100vw; 
             height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
         }
         .app.active { opacity: 1; visibility: visible; }
         
         iframe { 
             width: 100%; height: 100%; border: none; 
-            background: transparent; opacity: 0;
+            background: var(--bg-dark); opacity: 0;
             transition: opacity 1.2s ease-in-out 0.2s;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -361,14 +375,14 @@
         .app.active iframe { opacity: 1; }
 
         /* RESTRICTION SCREENS */
-        #device-error { display: none; position: fixed; inset: 0; background: rgba(30, 41, 59, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
-        .error-card { background: rgba(15, 23, 42, 0.9); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+        .error-card { background: var(--bg-card); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
         .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
         .error-card p { font-size: 16px; color: #aaaaaa; line-height: 1.6; }
         @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
-        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(30, 41, 59, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
-        .install-card { background: rgba(15, 23, 42, 0.9); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .install-card { background: var(--bg-card); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
         
@@ -398,27 +412,26 @@
             touch-action: manipulation;
             animation: installPulse 2s infinite;
         }
-        .install-btn:hover { background: #55d082; color: #1E293B; }
+        .install-btn:hover { background: #55d082; color: #111827; }
         .install-btn:active { transform: scale(0.96); }
-
 
         /* =========================================
            5. LIGHT / DARK THEME ADAPTATION
            ========================================= */
         @media (prefers-color-scheme: light) {
-            html, body, .app, iframe { background-color: #1E293B !important; }
+            html, body, .app, iframe { background-color: var(--bg-dark) !important; }
             .dept-title, .medium-font { color: #ffffff !important; }
             .dept-subtitle { color: #55d082 !important; }
             .small-email { color: #bbbbbb !important; }
             
             .continue-footer {
-                background: linear-gradient(to top, rgba(30, 41, 59, 0.95) 0%, rgba(30, 41, 59, 0.8) 40%, rgba(30, 41, 59, 0) 100%) !important;
+                background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%) !important;
             }
 
-            #auth-portal { background: rgba(30, 41, 59, 0.95) !important; }
-            #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: #1E293B !important; }
+            #auth-portal { background: rgba(17, 24, 39, 0.95) !important; }
+            #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: var(--bg-dark) !important; }
             .error-card, .install-card, .network-error-card { 
-                background: rgba(15, 23, 42, 0.9) !important; 
+                background: var(--bg-card) !important; 
                 border-color: rgba(85, 208, 130, 0.2) !important;
             }
             .error-card p, .install-card p, .network-error-message { color: #aaaaaa !important; }
@@ -439,12 +452,20 @@
             font-family: 'Inter', sans-serif;
             background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
                         radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
-                        #1E293B;
+                        var(--bg-dark);
             transition: opacity 0.8s ease;
         }
 
         #install-progress-screen.active { display: flex; }
         #install-progress-screen.fade-out { opacity: 0; pointer-events: none; }
+
+        @media (prefers-color-scheme: light) {
+            #install-progress-screen {
+                background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
+                            radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.08) 0%, transparent 60%),
+                            #e8f5ed;
+            }
+        }
 
         .install-app-icon {
             width: 100px;
@@ -476,7 +497,13 @@
             margin-bottom: 6px;
             opacity: 0;
             animation: fadeSlideUp 0.5s ease 0.3s forwards;
-            color: #ffffff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .install-title { color: #ffffff; }
+        }
+        @media (prefers-color-scheme: light) {
+            .install-title { color: #0a2e16; }
         }
 
         .install-subtitle {
@@ -509,7 +536,13 @@
             overflow: hidden;
             margin-bottom: 14px;
             position: relative;
-            background: rgba(255,255,255,0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .install-track { background: rgba(255,255,255,0.1); }
+        }
+        @media (prefers-color-scheme: light) {
+            .install-track { background: rgba(44, 122, 71, 0.15); }
         }
 
         .install-bar {
@@ -532,7 +565,13 @@
             font-weight: 500;
             text-align: center;
             transition: opacity 0.3s ease;
-            color: rgba(255,255,255,0.5);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .install-status-text { color: rgba(255,255,255,0.5); }
+        }
+        @media (prefers-color-scheme: light) {
+            .install-status-text { color: rgba(10, 46, 22, 0.5); }
         }
 
         .install-tick {
@@ -601,7 +640,7 @@
         }
 
         /* =========================================
-           7. NETWORK ERROR SCREEN
+           7. NETWORK ERROR SCREEN (CARTOON STYLE)
            ========================================= */
         #network-error-screen {
             display: none;
@@ -615,12 +654,20 @@
             font-family: 'Inter', sans-serif;
             background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
                         radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
-                        #1E293B;
+                        var(--bg-dark);
             transition: opacity 0.5s ease;
         }
 
         #network-error-screen.active { display: flex; }
         #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
+
+        @media (prefers-color-scheme: light) {
+            #network-error-screen {
+                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.1) 0%, transparent 60%),
+                            radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
+                            #e8f5ed;
+            }
+        }
 
         .error-illustration {
             position: relative;
@@ -768,7 +815,7 @@
         }
 
         .network-error-card {
-            background: rgba(30, 41, 59, 0.95);
+            background: var(--bg-card);
             max-width: 380px;
             padding: 40px 35px;
             border-radius: 30px;
@@ -782,6 +829,15 @@
         @keyframes errorCardSlideUp {
             from { opacity: 0; transform: translateY(40px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .network-error-card {
+                background: rgba(255, 255, 255, 0.98);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
+                            0 0 0 1px rgba(231, 76, 60, 0.2),
+                            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
         }
 
         .network-error-title {
@@ -801,6 +857,10 @@
             color: #aaaaaa;
         }
 
+        @media (prefers-color-scheme: light) {
+            .network-error-message { color: #5a6a60; }
+        }
+
         .network-status-indicator {
             display: flex;
             align-items: center;
@@ -811,6 +871,13 @@
             border-radius: 16px;
             margin-bottom: 25px;
             border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        @media (prefers-color-scheme: light) {
+            .network-status-indicator {
+                background: rgba(231, 76, 60, 0.08);
+                border-color: rgba(231, 76, 60, 0.15);
+            }
         }
 
         .status-dot {
@@ -953,7 +1020,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: rgba(30, 41, 59, 0.95);
+            background: rgba(17, 24, 39, 0.95);
         }
 
         #storage-permission-modal.active { display: flex; }
@@ -1056,14 +1123,14 @@
             justify-content: center;
             padding: 40px 30px;
             background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.2) 0%, transparent 60%),
-                        #1E293B;
+                        var(--bg-dark);
             font-family: 'Inter', sans-serif;
         }
 
         #duplicate-app-screen.active { display: flex; }
 
         .duplicate-card {
-            background: rgba(30, 41, 59, 0.95);
+            background: var(--bg-card);
             max-width: 400px;
             padding: 45px 35px;
             border-radius: 30px;
@@ -1164,6 +1231,18 @@
             transform: scale(0.96);
         }
 
+        @media (prefers-color-scheme: light) {
+            #duplicate-app-screen {
+                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
+                            #e8f5ed;
+            }
+            .duplicate-card {
+                background: rgba(255, 255, 255, 0.98);
+            }
+            .duplicate-card p { color: #5a6a60; }
+            .duplicate-info-item { color: #444; }
+        }
+
         /* =========================================
            10. ALREADY INSTALLED BLOCKER
            ========================================= */
@@ -1177,14 +1256,14 @@
             justify-content: center;
             padding: 40px 30px;
             background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.2) 0%, transparent 60%),
-                        #1E293B;
+                        var(--bg-dark);
             font-family: 'Inter', sans-serif;
         }
 
         #already-installed-blocker.active { display: flex; }
 
         .blocker-card {
-            background: rgba(30, 41, 59, 0.95);
+            background: var(--bg-card);
             max-width: 400px;
             padding: 45px 35px;
             border-radius: 30px;
@@ -1205,7 +1284,7 @@
             justify-content: center;
             margin: 0 auto 25px;
             font-size: 48px;
-            color: #1E293B;
+            color: #111827;
             box-shadow: 0 10px 30px rgba(85, 208, 130, 0.4);
             animation: pulseGreen 2s ease-in-out infinite;
         }
@@ -1285,6 +1364,18 @@
             transform: scale(0.96);
         }
 
+        @media (prefers-color-scheme: light) {
+            #already-installed-blocker {
+                background: radial-gradient(ellipse at 50% 30%, rgba(44, 122, 71, 0.15) 0%, transparent 60%),
+                            #e8f5ed;
+            }
+            .blocker-card {
+                background: rgba(255, 255, 255, 0.98);
+            }
+            .blocker-card p { color: #5a6a60; }
+            .blocker-info-item { color: #444; }
+        }
+
         /* =========================================
            11. POST-INSTALLATION GUIDE
            ========================================= */
@@ -1299,7 +1390,7 @@
             padding: 40px 30px;
             background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.18) 0%, transparent 70%),
                         radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.10) 0%, transparent 60%),
-                        #1E293B;
+                        var(--bg-dark);
             font-family: 'Inter', sans-serif;
             opacity: 0;
             transition: opacity 0.8s ease;
@@ -1436,10 +1527,20 @@
             transform: scale(0.96) translateY(0);
         }
 
+        @media (prefers-color-scheme: light) {
+            #post-install-guide {
+                background: radial-gradient(ellipse at 40% 60%, rgba(44, 122, 71, 0.12) 0%, transparent 70%),
+                            radial-gradient(ellipse at 70% 30%, rgba(85, 208, 130, 0.08) 0%, transparent 60%),
+                            #e8f5ed;
+            }
+        }
+
     </style>
 <base target="_blank">
 </head>
 <body>
+
+    <div class="bg-layer"></div>
 
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
@@ -1551,14 +1652,14 @@
             <h2>Device Activation</h2>
             <p class="desc-text">Register this device once to secure access.</p>
             <div class="input-group">
-                <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other)" autocomplete="name" spellcheck="false" autocorrect="off">
+                <input type="text" id="reg-name" placeholder="Full Name (e.g. Surname , Other)" autocomplete="off" autocapitalize="words">
                 <div class="error-message" id="name-error">
                     <i class="fas fa-circle-exclamation"></i>
                     <span>Please enter your full name</span>
                 </div>
             </div>
             <div class="input-group">
-                <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="email" spellcheck="false" autocorrect="off">
+                <input type="email" id="reg-email" placeholder="Registered Email" autocomplete="off" autocapitalize="none">
                 <div class="error-message" id="email-error">
                     <i class="fas fa-circle-exclamation"></i>
                     <span>Please enter a valid email address</span>
@@ -1745,7 +1846,6 @@
             },
 
             applyStableViewport() {
-                // Update CSS custom property for true viewport height
                 const setVH = () => {
                     const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
                     document.documentElement.style.setProperty('--vh', `${vh * 0.01}px`);
@@ -1776,7 +1876,6 @@
                     this.isActive = true;
                     document.body.classList.add('is-fullscreen');
                     
-                    // Lock portrait orientation if possible
                     if (screen.orientation && screen.orientation.lock) {
                         screen.orientation.lock('portrait').catch(() => {});
                     }
@@ -1784,15 +1883,12 @@
                     console.log('Fullscreen capability rejected:', err.name);
                     this.isActive = false;
                     document.body.classList.remove('is-fullscreen');
-                    // Stay normal — no forced behavior
                 }
             },
 
             bindInteractionTrigger() {
-                // Browsers require a user gesture for fullscreen
                 const triggerEvents = ['touchstart', 'click', 'keydown'];
                 const handler = (e) => {
-                    // Ignore if user is just scrolling or touching non-interactive area gently
                     if (e.type === 'touchstart' && e.touches.length > 1) return;
                     this.enter();
                     triggerEvents.forEach(evt => document.removeEventListener(evt, handler));
@@ -1811,8 +1907,7 @@
                     document.body.classList.toggle('is-fullscreen', active);
                     
                     if (!active && this.hasAttempted) {
-                        // User exited fullscreen — stay normal, don't fight them
-                        this.hasAttempted = false; // Allow re-entry on next interaction if desired
+                        this.hasAttempted = false;
                     }
                 };
                 document.addEventListener('fullscreenchange', handler);
@@ -1821,32 +1916,31 @@
             },
 
             bindKeyboardHandlers() {
-                // Keep inputs visible when keyboard opens and instantly focus them on touch
                 const inputs = document.querySelectorAll('input');
                 inputs.forEach(input => {
-                    
-                    input.addEventListener('touchstart', function(e) {
-                        this.focus();
-                    }, { passive: true });
-
-                    input.addEventListener('focus', function() {
+                    input.addEventListener('focus', () => {
                         document.body.classList.add('keyboard-open');
                         setTimeout(() => {
-                            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }, 200);
+                            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 300);
                     });
-                    
                     input.addEventListener('blur', () => {
                         document.body.classList.remove('keyboard-open');
                     });
                 });
 
-                // Prevent fullscreen loss on input focus (some Android keyboards)
                 if (window.visualViewport) {
                     window.visualViewport.addEventListener('resize', () => {
                         const vv = window.visualViewport;
                         const isKeyboardOpen = vv.height < window.innerHeight * 0.85;
                         document.body.classList.toggle('keyboard-open', isKeyboardOpen);
+                        
+                        const authPortal = document.getElementById('auth-portal');
+                        if (isKeyboardOpen) {
+                            authPortal.classList.add('keyboard-adjust');
+                        } else {
+                            authPortal.classList.remove('keyboard-adjust');
+                        }
                     }, { passive: true });
                 }
             },
@@ -1856,20 +1950,18 @@
                 window.addEventListener('resize', () => {
                     clearTimeout(resizeTimer);
                     resizeTimer = setTimeout(() => {
-                        // Recalculate layout safely
                         window.dispatchEvent(new Event('vh-update'));
                     }, 150);
                 }, { passive: true });
             }
         };
 
-        // Initialize fullscreen manager immediately
         FullscreenManager.init();
 
         // =========================================
         // BACKEND INITIALIZATION
         // =========================================
-        const MACRO_URL = "https://script.google.com/macros/s/AKfycbx01KQoLYzas7P6XMeo4GjMXI3DqxWpl_q1_PC9zjRbOdowYX9F3yEaBnvHZOHmLtI6/exec";
+        const MACRO_URL = "https://script.google.com/macros/s/AKfycbz_MKleT4zPGCa1KDdd8EzNWjtzM5RrtFjVIfXSRd-knv4K4bP6jn515R9nKbPSUrrl/exec";
         const macroIframe = document.getElementById('macro-frame');
         
         let isMacroLoaded = false;
@@ -2398,7 +2490,6 @@
             }
         };
 
-
         /* =====================================================
            NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
            ====================================================== */
@@ -2535,7 +2626,6 @@
             }
         });
 
-
         /* =====================================================
            INSTALL PROGRESS SCREEN
            ====================================================== */
@@ -2595,7 +2685,6 @@
             setTimeout(nextStep, 300);
         }
 
-
         /* ---- Patch the install flow ---- */
         let deferredPrompt;
         const installOverlay = document.getElementById('forcedInstall');
@@ -2640,7 +2729,7 @@
 
         /* =====================================================
            NEW FEATURES: DUPLICATE BLOCKER & POST-INSTALL GUIDE
-           ===================================================== */
+           ====================================================== */
         
         async function checkIfAppAlreadyInstalled() {
             if ('getInstalledRelatedApps' in navigator) {
