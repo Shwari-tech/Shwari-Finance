@@ -10,14 +10,43 @@
     <meta name="theme-color" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
-    <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
     <script>
         (function() {
+            // Array of 11 high-quality background images (1 Original + 10 African Wildlife/Nature optimized for mobile)
+            const bgImages = [
+                'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg', // Original
+                'https://images.unsplash.com/photo-1517825738774-7de9363ef735?auto=format&fit=crop&w=1080&q=80', // Lion Profile
+                'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=1080&q=80', // Elephant Walking
+                'https://images.unsplash.com/photo-1547471080-7cb2cb6a5a36?auto=format&fit=crop&w=1080&q=80', // Giraffe
+                'https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=1080&q=80', // Cheetah 
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1080&q=80', // Zebras
+                'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1080&q=80', // Serengeti Sunset Silhouette
+                'https://images.unsplash.com/photo-1534142491174-8d486d38e235?auto=format&fit=crop&w=1080&q=80', // Rhino
+                'https://images.unsplash.com/photo-1533422902779-dac54c865108?auto=format&fit=crop&w=1080&q=80', // Baobab Tree Sunset
+                'https://images.unsplash.com/photo-1590483864500-11f81d13db1b?auto=format&fit=crop&w=1080&q=80', // Leopard
+                'https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&w=1080&q=80'  // African Savanna Landscape
+            ];
+
+            // Randomly select one image
+            const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
+            
+            // Set the CSS variable for the background
+            document.documentElement.style.setProperty('--dynamic-bg', `url('${randomBg}')`);
+
+            // Dynamically inject the preload link tag
+            const preloadLink = document.createElement('link');
+            preloadLink.rel = 'preload';
+            preloadLink.as = 'image';
+            preloadLink.href = randomBg;
+            preloadLink.fetchPriority = 'high';
+            document.head.appendChild(preloadLink);
+
+            // Force cache preload into memory
             const forceBgPreload = new Image();
-            forceBgPreload.src = 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg';
+            forceBgPreload.src = randomBg;
         })();
     </script>
     
@@ -62,7 +91,7 @@
             transition: transform 0s;
         }
         body.intro-active .bg-layer {
-            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
+            background: var(--dynamic-bg) calc(0% + 30%) center / cover no-repeat;
             background-color: #111827;
         }
         body.keyboard-open .bg-layer,
@@ -837,101 +866,6 @@
             color: #e74c3c;
         }
 
-        .auto-reload-indicator {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #9ca3af;
-            animation: fadeSlideUp 0.5s ease;
-        }
-        .auto-reload-indicator.active {
-            display: flex;
-        }
-        .auto-reload-indicator i {
-            color: #55d082;
-            animation: spin 1.5s linear infinite;
-        }
-        .auto-reload-indicator span {
-            font-weight: 600;
-        }
-
-        .connection-restored {
-            position: fixed;
-            inset: 0;
-            z-index: 100001;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: rgba(17, 24, 39, 0.9);
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        .connection-restored.active {
-            display: flex;
-            opacity: 1;
-        }
-        .restored-card {
-            background: linear-gradient(135deg, #1f6e3f, #2c7a47);
-            padding: 40px;
-            border-radius: 30px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 30px 60px rgba(44, 122, 71, 0.4);
-            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-            max-width: 320px;
-            width: 90%;
-        }
-        .restored-card .success-ring {
-            width: 80px;
-            height: 80px;
-            border: 4px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .restored-card .success-ring::before {
-            content: '';
-            position: absolute;
-            top: -4px; left: -4px; right: -4px; bottom: -4px;
-            border: 4px solid transparent;
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: successSpin 1s ease-out forwards;
-        }
-        .restored-card i {
-            font-size: 40px;
-            opacity: 0;
-            animation: checkPopModern 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
-        }
-        .restored-card h3 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            opacity: 0;
-            animation: fadeSlideUp 0.5s ease 0.8s forwards;
-        }
-        .restored-card p {
-            font-size: 15px;
-            opacity: 0;
-            margin-bottom: 25px;
-            animation: fadeSlideUp 0.5s ease 1s forwards;
-        }
-        @keyframes successSpin {
-            0% { transform: rotate(0deg); border-top-color: #ffffff; border-right-color: transparent; border-bottom-color: transparent; border-left-color: transparent; }
-            50% { transform: rotate(180deg); border-top-color: #ffffff; border-right-color: #ffffff; border-bottom-color: transparent; border-left-color: transparent; }
-            100% { transform: rotate(360deg); border-color: #ffffff; }
-        }
-        @keyframes checkPopModern {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -1585,20 +1519,6 @@
                 <div class="status-dot"></div>
                 <span class="status-text">You're offline</span>
             </div>
-            <div class="auto-reload-indicator active" id="auto-reload-indicator">
-                <i class="fas fa-arrows-rotate"></i>
-                <span>Auto-reloading when connection returns...</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="connection-restored" class="connection-restored">
-        <div class="restored-card">
-            <div class="success-ring">
-                <i class="fas fa-check"></i>
-            </div>
-            <h3>Back Online!</h3>
-            <p>Reloading your dashboard...</p>
         </div>
     </div>
 
@@ -2575,7 +2495,6 @@
         let wasOffline = false;
         let isCheckingConnection = false;
         let autoReloadTimer = null;
-        let isReloading = false;
 
         const showToast = (message, isOnline) => {
             toastMessage.textContent = message;
@@ -2626,32 +2545,13 @@
             }, 600);
         };
 
-        const performAutoReload = () => {
-            if (isReloading) return;
-            isReloading = true;
-            
-            const restoredOverlay = document.getElementById('connection-restored');
-            if (restoredOverlay) {
-                restoredOverlay.classList.add('active');
-            }
-            
-            // Reload the stable Macro Engine
-            MacroEngine.load();
-            
-            setTimeout(() => {
-                if (restoredOverlay) restoredOverlay.classList.remove('active');
-                isReloading = false;
-            }, 2500);
-        };
-
         const handleOnline = async () => {
             const isConnected = await checkConnectivity();
             if (isConnected) {
                 if (wasOffline) {
-                    showToast('Back online! Reloading...', true);
+                    showToast('Back online!', true);
                     hideNetworkError();
                     wasOffline = false;
-                    performAutoReload();
                 }
             }
         };
