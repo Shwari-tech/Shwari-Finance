@@ -80,18 +80,10 @@
             color: #6b7280; /* Dark grey theme text */
             letter-spacing: 8px;
             text-transform: uppercase;
-            border-right: 3px solid #6b7280; /* Blinking cursor */
-            padding-right: 5px;
-            animation: blinkCaret 0.8s step-end infinite;
             min-height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        @keyframes blinkCaret {
-            from, to { border-color: transparent; }
-            50% { border-color: #6b7280; }
         }
         
         @keyframes spinBgLoader {
@@ -2278,14 +2270,16 @@
             window.initAuth();
         }
 
-        // Execute Splash sequence which triggers initializeApp when typing is done
+        // Execute Splash sequence and warm up app immediately
         function startSplashSequence() {
             const textEl = document.getElementById('toast-loader-text');
             const textToType = "SHWARI";
             textEl.textContent = "";
             let charIndex = 0;
             
-            // Slow motion typing - changed from 250ms to 600ms per character
+            // WARM UP URL IMMEDIATELY
+            initializeApp();
+            
             const typingInterval = setInterval(() => {
                 if (charIndex < textToType.length) {
                     textEl.textContent += textToType.charAt(charIndex);
@@ -2293,23 +2287,20 @@
                 } else {
                     clearInterval(typingInterval);
                     
-                    // Stop blinking cursor immediately for a solid finish
-                    textEl.style.borderRight = 'none';
-
-                    // Coincide the finish perfectly with the app revealing
-                    setTimeout(() => {
-                        const bgLayer = document.querySelector('.bg-layer');
-                        bgLayer.classList.add('fade-out');
-                        
-                        // Fire the app initialization right as the fade begins
-                        initializeApp();
-                        
+                    // If the user isn't registered, we must drop the splash screen so they can see the activation form.
+                    // If they are registered, it STAYS in this state spinning until transitionLogic() opens the fully loaded URL.
+                    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
+                    if (!isRegistered) {
                         setTimeout(() => {
-                            bgLayer.style.display = 'none';
-                        }, 800); // Wait for the CSS fade out to finish before removing from DOM
-                    }, 400); // Just a tiny dramatic 400ms pause after the last letter 'I' drops
+                            const bgLayer = document.querySelector('.bg-layer');
+                            if(bgLayer) {
+                                bgLayer.classList.add('fade-out');
+                                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+                            }
+                        }, 400); 
+                    }
                 }
-            }, 600); // Slower typewriter speed (600ms per letter)
+            }, 600); // Slow motion typing
         }
 
         startSplashSequence();
@@ -2492,6 +2483,13 @@
             window.waitingForMacroTransition = false;
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
+            const bgLayer = document.querySelector('.bg-layer');
+            
+            // Fade out the splash layer now that URL is ready
+            if(bgLayer) {
+                bgLayer.classList.add('fade-out');
+                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+            }
             
             // Clean up parallax
             uiWrapper.classList.add('pull-active');
