@@ -391,14 +391,14 @@
            4. APP IFRAME - SMOOTH CROSSFADE REVEAL
            ========================================= */
         .app { 
-            position: fixed; inset: 0; opacity: 0; visibility: hidden; 
+            position: fixed; inset: 0; opacity: 0; pointer-events: none; 
             background: var(--bg-dark); z-index: 2000; 
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; 
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
         }
-        .app.active { opacity: 1; visibility: visible; }
+        .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
             width: 100%; height: 100%; border: none; 
@@ -2451,10 +2451,16 @@
             textEl.textContent = "";
             let charIndex = 0;
             
-            // WARM UP URL IMMEDIATELY
+            // WARM UP URL IMMEDIATELY IN BACKGROUND
             initializeApp();
             
             const typingInterval = setInterval(() => {
+                // SMART SYNC: If we reach the last letter ("I"), and the macro hasn't finished loading yet,
+                // pause the typing animation here. It will wait for the exact moment the app is stable.
+                if (charIndex === textToType.length - 1 && !MacroEngine.loaded) {
+                    return; 
+                }
+                
                 if (charIndex < textToType.length) {
                     textEl.textContent += textToType.charAt(charIndex);
                     charIndex++;
@@ -2473,11 +2479,12 @@
                             }
                         }, 400); 
                     } else {
-                        // Check if macro loaded to fire direct smooth transition
+                        // Because of the Smart Sync above, we KNOW the macro is 100% stable and loaded right now.
+                        // Fire the transition immediately!
                         window.checkAndRunTransition();
                     }
                 }
-            }, 600); // Slow motion typing
+            }, 500); // Set to 500ms for a perfect smooth rhythm 
         }
 
         startSplashSequence();
