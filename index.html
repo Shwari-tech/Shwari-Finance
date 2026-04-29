@@ -7,12 +7,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#111827">
+    <meta name="theme-color" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
+    <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <script>
+        (function() {
+            const forceBgPreload = new Image();
+            forceBgPreload.src = 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg';
+        })();
+    </script>
     
     <style>
         /* =========================================
@@ -48,53 +55,20 @@
         .bg-layer {
             position: fixed;
             inset: 0;
-            z-index: 999999; /* Brought to the very front for the opening splash sequence */
-            background: #111827;
-            pointer-events: all;
-            will-change: transform;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease-in-out;
-        }
-        
-        .bg-layer.fade-out {
-            opacity: 0;
+            z-index: 0;
+            background: #000000;
             pointer-events: none;
+            will-change: transform;
+            transition: transform 0s;
         }
-
-        .bg-circle-loader {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #1f2937; /* Dark background ring */
-            border-top: 4px solid #6b7280; /* Lighter grey spinning edge */
-            border-radius: 50%;
-            margin-bottom: 20px;
-            animation: spinBgLoader 1s linear infinite; /* Activates the loader */
+        body.intro-active .bg-layer {
+            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
+            background-color: #111827;
         }
-        
-        .bg-loader-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 26px;
-            font-weight: 900;
-            color: #6b7280; /* Dark grey theme text */
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            min-height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        @keyframes spinBgLoader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
             transform: none !important;
+            transition: none !important;
         }
 
         /* =========================================
@@ -135,8 +109,7 @@
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
-        /* Hidden in background as requested */
-        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); display: none !important; }
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); }
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
@@ -278,8 +251,7 @@
             75% { transform: translateY(-3px) rotate(3deg); }
         }
 
-        /* Hidden in background as requested */
-        .text-group { text-align: center; display: none !important; }
+        .text-group { text-align: center; }
         
         .employee-info.unlocked .text-group {
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
@@ -565,7 +537,6 @@
         }
 
         .install-track-wrap {
-            display: none !important; /* Hides the progress bar */
             width: 100%;
             max-width: 280px;
             opacity: 0;
@@ -683,7 +654,7 @@
         }
 
         /* =========================================
-           7. NETWORK ERROR SCREEN (NEW REALISTIC HIGH-TECH SVG)
+           7. NETWORK ERROR SCREEN (REALISTIC CARTOON SVG)
            ========================================= */
         #network-error-screen {
             display: none;
@@ -731,50 +702,44 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        /* Advanced SVG Animations for Robot */
-        .robot-svg {
-            animation: robotHover 4s ease-in-out infinite;
-        }
-        .robot-body {
-            transform-origin: center;
-        }
-        .thruster-flame {
-            animation: thrusterPulse 0.5s ease-in-out infinite alternate;
-            transform-origin: center 340px;
-        }
-        .antenna-light {
-            animation: alarmBlink 1s step-end infinite;
-        }
-        .wifi-waves path {
-            animation: wifiFade 2s infinite;
-        }
-        .wave-1 { animation-delay: 0s; }
-        .wave-2 { animation-delay: 0.2s; }
-        .wave-3 { animation-delay: 0.4s; }
-        .glitch-eyes {
-            animation: eyeGlitch 3s infinite;
-        }
+        /* Advanced SVG Animations */
+        .pulse-blob { animation: blobPulse 4s ease-in-out infinite; transform-origin: center; }
+        .breathe-sync { animation: breatheBody 3.5s ease-in-out infinite; transform-origin: center bottom; }
+        .breathe-sync-alt { animation: breatheBody 3.5s ease-in-out infinite 1.75s; transform-origin: center bottom; }
+        .arm-hover { animation: armScan 3s ease-in-out infinite alternate; transform-origin: 285px 90px; }
+        .pos-error-blink { animation: blinkError 1.5s ease-in-out infinite; }
+        .blink-eye { animation: eyeBlink 4s infinite linear; transform-origin: 128px 75px; }
+        .floating-alert { animation: alertFloat 2s ease-in-out infinite; transform-origin: center; }
+        .pos-shake { animation: posShake 4s ease-in-out infinite; }
 
-        @keyframes robotHover {
+        @keyframes blobPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes breatheBody {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.02); }
+        }
+        @keyframes armScan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-5deg); }
+        }
+        @keyframes blinkError {
+            0%, 40%, 100% { opacity: 1; fill: #ef4444; }
+            50%, 90% { opacity: 0.7; fill: #f87171; }
+        }
+        @keyframes eyeBlink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        @keyframes alertFloat {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-5px); }
         }
-        @keyframes thrusterPulse {
-            from { transform: scaleY(0.8); opacity: 0.6; }
-            to { transform: scaleY(1.2); opacity: 1; }
-        }
-        @keyframes alarmBlink {
-            0%, 50% { fill: #ef4444; filter: drop-shadow(0 0 10px #ef4444); }
-            51%, 100% { fill: #7f1d1d; filter: none; }
-        }
-        @keyframes wifiFade {
-            0%, 100% { opacity: 0.1; stroke: #7f1d1d; }
-            50% { opacity: 1; stroke: #ef4444; filter: drop-shadow(0 0 5px #ef4444); }
-        }
-        @keyframes eyeGlitch {
-            0%, 96%, 100% { transform: translate(0,0) scale(1); opacity: 1; fill: #ef4444; }
-            97% { transform: translate(-2px, 2px) scale(1.05); opacity: 0.8; fill: #f87171; }
-            98% { transform: translate(2px, -2px) scale(0.95); opacity: 1; fill: #b91c1c; }
+        @keyframes posShake {
+            0%, 90%, 100% { transform: translateX(0); }
+            92% { transform: translateX(-2px); }
+            96% { transform: translateX(2px); }
         }
 
         .network-error-card {
@@ -866,6 +831,101 @@
             color: #e74c3c;
         }
 
+        .auto-reload-indicator {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #9ca3af;
+            animation: fadeSlideUp 0.5s ease;
+        }
+        .auto-reload-indicator.active {
+            display: flex;
+        }
+        .auto-reload-indicator i {
+            color: #55d082;
+            animation: spin 1.5s linear infinite;
+        }
+        .auto-reload-indicator span {
+            font-weight: 600;
+        }
+
+        .connection-restored {
+            position: fixed;
+            inset: 0;
+            z-index: 100001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .connection-restored.active {
+            display: flex;
+            opacity: 1;
+        }
+        .restored-card {
+            background: linear-gradient(135deg, #1f6e3f, #2c7a47);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 30px 60px rgba(44, 122, 71, 0.4);
+            animation: cardFloatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            max-width: 320px;
+            width: 90%;
+        }
+        .restored-card .success-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .restored-card .success-ring::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            border: 4px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: successSpin 1s ease-out forwards;
+        }
+        .restored-card i {
+            font-size: 40px;
+            opacity: 0;
+            animation: checkPopModern 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+        }
+        .restored-card h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeSlideUp 0.5s ease 0.8s forwards;
+        }
+        .restored-card p {
+            font-size: 15px;
+            opacity: 0;
+            margin-bottom: 25px;
+            animation: fadeSlideUp 0.5s ease 1s forwards;
+        }
+        @keyframes successSpin {
+            0% { transform: rotate(0deg); border-top-color: #ffffff; border-right-color: transparent; border-bottom-color: transparent; border-left-color: transparent; }
+            50% { transform: rotate(180deg); border-top-color: #ffffff; border-right-color: #ffffff; border-bottom-color: transparent; border-left-color: transparent; }
+            100% { transform: rotate(360deg); border-color: #ffffff; }
+        }
+        @keyframes checkPopModern {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -1447,10 +1507,7 @@
 </head>
 <body>
 
-    <div class="bg-layer">
-        <div class="bg-circle-loader"></div>
-        <div class="bg-loader-text" id="toast-loader-text"></div>
-    </div>
+    <div class="bg-layer"></div>
 
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
@@ -1464,50 +1521,63 @@
         <div class="error-particle ep4"></div>
         
         <div class="error-illustration">
-            <svg viewBox="0 0 400 400" width="100%" height="auto" class="robot-svg" style="max-width: 380px; overflow: visible; filter: drop-shadow(0px 20px 30px rgba(0,0,0,0.5));">
-                <defs>
-                    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#f8fafc" />
-                        <stop offset="100%" stop-color="#94a3b8" />
-                    </linearGradient>
-                    <linearGradient id="visorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#0f172a" />
-                        <stop offset="100%" stop-color="#1e293b" />
-                    </linearGradient>
-                    <radialGradient id="thrusterGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
-                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
-                    </radialGradient>
-                </defs>
+            <svg viewBox="0 0 400 300" width="100%" height="auto" class="human-svg" style="max-width: 380px; overflow: visible;">
+                <path d="M 50 150 Q 20 80 120 40 T 320 50 Q 380 100 360 200 T 250 280 Q 80 280 50 150 Z" fill="#eef2ff" class="pulse-blob" />
                 
-                <g class="wifi-waves" stroke="#ef4444" stroke-width="8" stroke-linecap="round" fill="none">
-                    <path d="M150 80 Q200 40 250 80" class="wave-3" />
-                    <path d="M170 100 Q200 70 230 100" class="wave-2" />
-                    <path d="M190 120 Q200 100 210 120" class="wave-1" />
+                <g class="breathe-sync">
+                    <path d="M 90 200 L 100 120 Q 130 115 160 120 L 170 200 Z" fill="#facc15" />
+                    <rect x="140" y="140" width="16" height="6" fill="#ffffff" rx="2" />
+                    <rect x="120" y="100" width="16" height="20" fill="#fca5a5" />
+                    <circle cx="128" cy="80" r="22" fill="#fca5a5" />
+                    <path d="M 128 85 L 125 90 L 131 90 Z" fill="#ef4444" opacity="0.5"/> <circle cx="105" cy="70" r="18" fill="#b45309" />
+                    <circle cx="150" cy="70" r="18" fill="#b45309" />
+                    <circle cx="128" cy="50" r="24" fill="#b45309" />
+                    <circle cx="95" cy="95" r="15" fill="#b45309" />
+                    <circle cx="160" cy="95" r="15" fill="#b45309" />
+                    <circle cx="120" cy="75" r="2" fill="#1e293b" class="blink-eye" />
+                    <circle cx="136" cy="75" r="2" fill="#1e293b" class="blink-eye" />
+                    <path d="M 124 88 Q 128 85 132 88" stroke="#1e293b" stroke-width="1.5" fill="none" /> </g>
+
+                <rect x="20" y="180" width="260" height="120" fill="#a855f7" rx="4" />
+                <rect x="10" y="170" width="280" height="15" fill="#c084fc" rx="4" />
+                
+                <g transform="translate(140, 210)">
+                    <path d="M 0 0 L 0 60 M 0 0 L 60 0 M 0 60 L 60 60 M 60 0 Q 90 30 60 60" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+                    <rect x="20" y="10" width="40" height="40" fill="#ffffff" rx="4" />
+                    <rect x="28" y="26" width="24" height="8" fill="#a855f7" rx="4" />
                 </g>
-                
-                <ellipse cx="200" cy="340" rx="30" ry="60" fill="url(#thrusterGrad)" class="thruster-flame" />
 
-                <g class="robot-body">
-                    <rect x="120" y="160" width="160" height="150" rx="60" fill="url(#bodyGrad)" />
-                    <rect x="180" y="140" width="40" height="30" fill="#475569" />
-                    <rect x="130" y="70" width="140" height="90" rx="40" fill="url(#bodyGrad)" />
-                    
-                    <rect x="145" y="90" width="110" height="50" rx="20" fill="url(#visorGrad)" />
-                    <g class="glitch-eyes" fill="#ef4444">
-                        <path d="M165 110 L180 125 L165 125 Z" />
-                        <path d="M235 110 L220 125 L235 125 Z" />
-                    </g>
+                <rect x="40" y="110" width="70" height="60" fill="#64748b" rx="4" />
+                <rect x="45" y="120" width="60" height="30" fill="#0f172a" />
+                <text x="50" y="142" fill="#38bdf8" font-family="monospace" font-size="16" letter-spacing="2">ERROR</text>
+                <rect x="65" y="170" width="20" height="40" fill="#94a3b8" />
 
-                    <rect x="195" y="30" width="10" height="40" fill="#cbd5e1" />
-                    <circle cx="200" cy="25" r="10" fill="#ef4444" class="antenna-light" />
-                    
-                    <g class="arm-left">
-                        <rect x="80" y="180" width="30" height="70" rx="15" fill="url(#bodyGrad)" transform="rotate(15 95 215)" />
+                <g class="pos-shake">
+                    <path d="M 190 140 L 210 135 L 215 165 L 195 170 Z" fill="#38bdf8" rx="4" />
+                    <path d="M 194 142 L 206 139 L 210 152 L 198 155 Z" fill="#ef4444" class="pos-error-blink" />
+                    <rect x="200" y="165" width="8" height="25" fill="#475569" />
+                    <path d="M 190 185 L 210 185" stroke="#1e293b" stroke-width="4" stroke-linecap="round" />
+                </g>
+
+                <g class="breathe-sync-alt">
+                    <path d="M 300 170 L 300 300 L 335 300 L 350 170 Z" fill="#a21caf" /> <path d="M 285 170 L 300 80 Q 320 65 350 80 L 365 170 Z" fill="#38bdf8" /> <path d="M 300 80 Q 320 65 350 80 L 352 105 L 298 105 Z" fill="#1e3a8a" />
+                    <rect x="315" y="60" width="16" height="25" fill="#fca5a5" />
+                    <circle cx="323" cy="45" r="20" fill="#fca5a5" />
+                    <path d="M 305 40 Q 305 15 335 20 Q 345 25 342 45 Q 340 50 335 48 Z" fill="#0f172a" /> <g class="arm-hover">
+                        <path d="M 300 110 L 230 145 L 215 135" stroke="#38bdf8" stroke-width="18" stroke-linecap="round" fill="none" />
+                        <circle cx="210" cy="135" r="10" fill="#fca5a5" />
+                        <rect x="195" y="115" width="18" height="35" fill="#111827" rx="3" transform="rotate(-30 204 132)"/>
+                        <rect x="198" y="118" width="12" height="12" fill="#ffffff" transform="rotate(-30 204 132)" />
+                        <rect x="200" y="120" width="4" height="4" fill="#000" transform="rotate(-30 204 132)" />
+                        <rect x="204" y="124" width="4" height="4" fill="#000" transform="rotate(-30 204 132)" />
                     </g>
-                    <g class="arm-right">
-                        <rect x="290" y="180" width="30" height="70" rx="15" fill="url(#bodyGrad)" transform="rotate(-15 305 215)" />
-                    </g>
+                    <circle cx="315" cy="42" r="2" fill="#1e293b" />
+                    <path d="M 310 52 Q 315 56 318 52" stroke="#1e293b" stroke-width="1.5" fill="none" /> </g>
+
+                <g class="floating-alert">
+                    <circle cx="200" cy="80" r="30" fill="#ffffff" stroke="#ef4444" stroke-width="4" />
+                    <path d="M 185 70 Q 200 55 215 70 M 192 82 Q 200 75 208 82 M 200 95 L 200 95.1" stroke="#ef4444" stroke-width="4" stroke-linecap="round" fill="none" />
+                    <path d="M 180 60 L 220 100 M 220 60 L 180 100" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
                 </g>
             </svg>
         </div>
@@ -1522,6 +1592,20 @@
                 <div class="status-dot"></div>
                 <span class="status-text">You're offline</span>
             </div>
+            <div class="auto-reload-indicator active" id="auto-reload-indicator">
+                <i class="fas fa-arrows-rotate"></i>
+                <span>Auto-reloading when connection returns...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="connection-restored" class="connection-restored">
+        <div class="restored-card">
+            <div class="success-ring">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3>Back Online!</h3>
+            <p>Reloading your dashboard...</p>
         </div>
     </div>
 
@@ -1899,65 +1983,16 @@
         FullscreenManager.init();
 
         // =========================================
-        // BACKEND & ENHANCED MACRO INITIALIZATION
+        // BACKEND INITIALIZATION
         // =========================================
         const MACRO_URL = "https://script.google.com/macros/s/AKfycbxRrCXYM8sDxqEZqDERl28NYJWqTWr9QNQsR95i2VhLn3Ytpp3d0JL24zj-8OulD5Ws/exec";
+        const macroIframe = document.getElementById('macro-frame');
         
-        // Super Stable Macro Engine
-        const MacroEngine = {
-            url: MACRO_URL,
-            frame: document.getElementById('macro-frame'),
-            retries: 0,
-            maxRetries: 3,
-            loaded: false,
-            timeoutId: null,
-
-            load() {
-                this.loaded = false;
-                clearTimeout(this.timeoutId);
-                console.log(`Loading Macro... Attempt ${this.retries + 1}`);
-                
-                // Add robust cache buster to force fresh load
-                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
-                
-                // Set timeout for 15s
-                this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
-
-                this.frame.onload = () => {
-                    this.loaded = true;
-                    clearTimeout(this.timeoutId);
-                    console.log("Macro loaded successfully.");
-                    if (window.onMacroSuccess) window.onMacroSuccess();
-                };
-            },
-
-            handleTimeout() {
-                if (this.loaded) return;
-                console.warn("Macro load timeout. Retrying...");
-                this.retries++;
-                
-                if (this.retries <= this.maxRetries) {
-                    // Exponential backoff retry
-                    setTimeout(() => this.load(), 2000 * this.retries);
-                } else {
-                    console.error("Macro failed to load after maximum retries.");
-                    // Trigger network error UI specifically for script failure
-                    const errorScreen = document.getElementById('network-error-screen');
-                    const errorMsg = document.querySelector('.network-error-message');
-                    if (errorMsg) errorMsg.innerHTML = "Secure connection to Shwari Servers timed out.<br>Retrying connection...";
-                    errorScreen.classList.add('active');
-                    errorScreen.classList.remove('fade-out');
-                    
-                    // Continually attempt to reconnect every 10s
-                    setInterval(() => {
-                        if (navigator.onLine) {
-                            this.retries = 0;
-                            this.load();
-                        }
-                    }, 10000);
-                }
-            }
+        let isMacroLoaded = false;
+        macroIframe.onload = function() {
+            isMacroLoaded = true;
         };
+        macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
         const APP_VERSION = '5.0.0';
         const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
@@ -2221,8 +2256,6 @@
         // =========================================
         // MAIN INITIALIZATION
         // =========================================
-        window.waitingForMacroTransition = false;
-
         async function initializeApp() {
             initSuperResponsiveButtons();
             
@@ -2234,9 +2267,6 @@
             await requestStoragePermission();
             await registerServiceWorker();
             
-            // Kick off macro load early
-            MacroEngine.load();
-
             const uiWrapper = document.getElementById('ui');
             let isParallaxActive = true;
             let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
@@ -2272,40 +2302,7 @@
             window.initAuth();
         }
 
-        // Execute Splash sequence and warm up app immediately
-        function startSplashSequence() {
-            const textEl = document.getElementById('toast-loader-text');
-            const textToType = "SHWARI";
-            textEl.textContent = "";
-            let charIndex = 0;
-            
-            // WARM UP URL IMMEDIATELY
-            initializeApp();
-            
-            const typingInterval = setInterval(() => {
-                if (charIndex < textToType.length) {
-                    textEl.textContent += textToType.charAt(charIndex);
-                    charIndex++;
-                } else {
-                    clearInterval(typingInterval);
-                    
-                    // If the user isn't registered, we must drop the splash screen so they can see the activation form.
-                    // If they are registered, it STAYS in this state spinning until transitionLogic() opens the fully loaded URL.
-                    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
-                    if (!isRegistered) {
-                        setTimeout(() => {
-                            const bgLayer = document.querySelector('.bg-layer');
-                            if(bgLayer) {
-                                bgLayer.classList.add('fade-out');
-                                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
-                            }
-                        }, 400); 
-                    }
-                }
-            }, 600); // Slow motion typing
-        }
-
-        startSplashSequence();
+        initializeApp();
 
         // =========================================
         // EXISTING FUNCTIONS (ENHANCED)
@@ -2481,50 +2478,41 @@
             }, 600);
         };
 
-        const transitionLogic = () => {
-            window.waitingForMacroTransition = false;
-            const uiWrapper = document.getElementById('ui');
-            const appPanel = document.getElementById('app');
-            const bgLayer = document.querySelector('.bg-layer');
-            
-            // Fade out the splash layer now that URL is ready
-            if(bgLayer) {
-                bgLayer.classList.add('fade-out');
-                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
-            }
-            
-            // Clean up parallax
-            uiWrapper.classList.add('pull-active');
-            document.body.classList.remove('intro-active');
-
-            setTimeout(() => {
-                appPanel.classList.add('active');
-                
-                setTimeout(() => {
-                    if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                }, 1200);
-            }, 300);
-        };
-
         const executeTransition = () => {
-            // Check super stable engine state
-            if (MacroEngine.loaded) {
+            const transitionLogic = () => {
+                const uiWrapper = document.getElementById('ui');
+                const appPanel = document.getElementById('app');
+                let isParallaxActive = true;
+                let rafId;
+                
+                if (!isParallaxActive) return;
+                isParallaxActive = false;
+                cancelAnimationFrame(rafId);
+                
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        uiWrapper.classList.add('pull-active');
+                        document.body.classList.remove('intro-active');
+                    });
+                });
+
+                setTimeout(() => {
+                    appPanel.classList.add('active');
+                    
+                    setTimeout(() => {
+                        if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+                    }, 1200);
+                }, 300);
+            };
+
+            if (isMacroLoaded) {
                 transitionLogic();
             } else {
-                // Wait for it to load
-                window.waitingForMacroTransition = true;
-                showToast("Loading secure interface...", true);
-            }
-        };
-
-        // Hook for stable engine success
-        window.onMacroSuccess = () => {
-            if (window.waitingForMacroTransition) {
-                const networkScreen = document.getElementById('network-error-screen');
-                if (networkScreen.classList.contains('active')) {
-                    hideNetworkError();
-                }
-                transitionLogic();
+                let fallbackTimer = setTimeout(transitionLogic, 8000);
+                macroIframe.addEventListener('load', () => {
+                    clearTimeout(fallbackTimer);
+                    transitionLogic();
+                }, {once: true});
             }
         };
 
@@ -2538,6 +2526,7 @@
         let wasOffline = false;
         let isCheckingConnection = false;
         let autoReloadTimer = null;
+        let isReloading = false;
 
         const showToast = (message, isOnline) => {
             toastMessage.textContent = message;
@@ -2588,13 +2577,38 @@
             }, 600);
         };
 
+        const performAutoReload = () => {
+            if (isReloading) return;
+            isReloading = true;
+            
+            const restoredOverlay = document.getElementById('connection-restored');
+            if (restoredOverlay) {
+                restoredOverlay.classList.add('active');
+            }
+            
+            setTimeout(() => {
+                const iframe = document.getElementById('macro-frame');
+                if (iframe && iframe.src) {
+                    const url = new URL(iframe.src);
+                    url.searchParams.set('cb', new Date().getTime());
+                    iframe.src = url.toString();
+                }
+                
+                setTimeout(() => {
+                    if (restoredOverlay) restoredOverlay.classList.remove('active');
+                    isReloading = false;
+                }, 1500);
+            }, 1000);
+        };
+
         const handleOnline = async () => {
             const isConnected = await checkConnectivity();
             if (isConnected) {
                 if (wasOffline) {
-                    showToast('Back online!', true);
+                    showToast('Back online! Reloading...', true);
                     hideNetworkError();
                     wasOffline = false;
+                    performAutoReload();
                 }
             }
         };
