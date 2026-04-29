@@ -394,7 +394,7 @@
         .app { 
             position: fixed; inset: 0; opacity: 0; visibility: hidden; 
             background: var(--bg-dark); z-index: 2000; 
-            transition: opacity 1.2s ease-in-out; 
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
@@ -404,16 +404,16 @@
         iframe { 
             width: 100%; height: 100%; border: none; 
             background: var(--bg-dark); opacity: 0;
-            transition: opacity 1.2s ease-in-out 0.2s;
+            transform: scale(0.92) translateY(15px);
+            transform-origin: center center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
+                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            zoom: 0.9;
-            -moz-transform: scale(0.9);
-            -moz-transform-origin: top center;
             padding: 0 !important;
             margin: 0 !important;
         }
-        .app.active iframe { opacity: 1; }
+        .app.active iframe { opacity: 1; transform: scale(1) translateY(0); }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -2270,6 +2270,19 @@
             window.initAuth();
         }
 
+        window.splashTypingDone = false;
+        window.transitionStarted = false;
+
+        window.checkAndRunTransition = () => {
+            const isRegistered = localStorage.getItem('shwari_registered') === 'true';
+            if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
+                window.transitionStarted = true;
+                setTimeout(() => {
+                    transitionLogic();
+                }, 200); // Tiny buffer for perfect synchronization
+            }
+        };
+
         // Execute Splash sequence and warm up app immediately
         function startSplashSequence() {
             const textEl = document.getElementById('toast-loader-text');
@@ -2286,9 +2299,9 @@
                     charIndex++;
                 } else {
                     clearInterval(typingInterval);
+                    textEl.style.borderRight = 'none'; // hide cursor immediately
+                    window.splashTypingDone = true;
                     
-                    // If the user isn't registered, we must drop the splash screen so they can see the activation form.
-                    // If they are registered, it STAYS in this state spinning until transitionLogic() opens the fully loaded URL.
                     const isRegistered = localStorage.getItem('shwari_registered') === 'true';
                     if (!isRegistered) {
                         setTimeout(() => {
@@ -2298,13 +2311,15 @@
                                 setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
                             }
                         }, 400); 
+                    } else {
+                        // Check if macro loaded to fire direct smooth transition
+                        window.checkAndRunTransition();
                     }
                 }
             }, 600); // Slow motion typing
         }
 
         startSplashSequence();
-
         // =========================================
         // EXISTING FUNCTIONS (ENHANCED)
         // =========================================
@@ -2336,16 +2351,10 @@
 
             const isRegistered = localStorage.getItem('shwari_registered');
             if (isRegistered === 'true') {
-                document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
-                document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
-                document.getElementById('continue-overlay').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('elephant-gate').classList.add('unlocked');
-                    document.getElementById('employee-info').classList.add('unlocked');
-                }, 3000);
-                setTimeout(() => {
-                    handleContinue();
-                }, 6500);
+                // Bypassing the middle screens for a super smooth direct pop-out transition
+                if (window.checkAndRunTransition) {
+                    window.checkAndRunTransition();
+                }
             } else {
                 const authPortal = document.getElementById('auth-portal');
                 authPortal.classList.remove('hidden');
@@ -2445,9 +2454,15 @@
             localStorage.setItem('shwari_registered', 'true');
             const authPortal = document.getElementById('auth-portal');
             const regScreen = document.getElementById('reg-screen');
-            const continueOverlay = document.getElementById('continue-overlay');
-            document.getElementById('display-name').innerText = formatName(name);
-            document.getElementById('display-email').innerText = email;
+            
+            // Re-show the splash screen to serve as a bridge to the macro
+            const bgLayer = document.querySelector('.bg-layer');
+            if(bgLayer) {
+                bgLayer.style.display = 'flex';
+                void bgLayer.offsetWidth; // Trigger reflow
+                bgLayer.classList.remove('fade-out');
+            }
+
             regScreen.style.transform = 'scale(0.9)';
             regScreen.style.opacity = '0';
             setTimeout(() => {
@@ -2455,17 +2470,11 @@
                 setTimeout(() => {
                     authPortal.classList.add('hidden');
                     regScreen.classList.add('hidden');
-                    continueOverlay.classList.remove('hidden');
-                    continueOverlay.style.opacity = '0';
-                    void continueOverlay.offsetWidth;
-                    continueOverlay.style.opacity = '1';
-                    setTimeout(() => {
-                        document.getElementById('elephant-gate').classList.add('unlocked');
-                        document.getElementById('employee-info').classList.add('unlocked');
-                    }, 3000);
-                    setTimeout(() => {
-                        handleContinue();
-                    }, 6500);
+                    
+                    // App is now loading in background, transition smoothly
+                    window.splashTypingDone = true;
+                    if (window.checkAndRunTransition) window.checkAndRunTransition();
+                    
                 }, 500);
             }, 400);
         });
@@ -2480,49 +2489,39 @@
         };
 
         const transitionLogic = () => {
-            window.waitingForMacroTransition = false;
             const uiWrapper = document.getElementById('ui');
             const appPanel = document.getElementById('app');
             const bgLayer = document.querySelector('.bg-layer');
             
-            // Fade out the splash layer now that URL is ready
-            if(bgLayer) {
-                bgLayer.classList.add('fade-out');
-                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
-            }
-            
             // Clean up parallax
-            uiWrapper.classList.add('pull-active');
+            if(uiWrapper) uiWrapper.classList.add('pull-active');
             document.body.classList.remove('intro-active');
 
-            setTimeout(() => {
-                appPanel.classList.add('active');
-                
-                setTimeout(() => {
-                    if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                }, 1200);
-            }, 300);
-        };
-
-        const executeTransition = () => {
-            // Check super stable engine state
-            if (MacroEngine.loaded) {
-                transitionLogic();
-            } else {
-                // Wait for it to load
-                window.waitingForMacroTransition = true;
-                showToast("Loading secure interface...", true);
+            // Super smooth crossfade: Activate App iframe, simultaneously fade out Splash
+            appPanel.classList.add('active');
+            
+            if(bgLayer) {
+                bgLayer.classList.add('fade-out');
+                setTimeout(() => { bgLayer.style.display = 'none'; }, 1000);
             }
+            
+            setTimeout(() => {
+                if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+            }, 1200);
+        };
+        
+        const executeTransition = () => {
+            if (MacroEngine.loaded) transitionLogic();
         };
 
         // Hook for stable engine success
         window.onMacroSuccess = () => {
-            if (window.waitingForMacroTransition) {
-                const networkScreen = document.getElementById('network-error-screen');
-                if (networkScreen.classList.contains('active')) {
-                    hideNetworkError();
-                }
-                transitionLogic();
+            const networkScreen = document.getElementById('network-error-screen');
+            if (networkScreen && networkScreen.classList.contains('active')) {
+                hideNetworkError();
+            }
+            if (window.checkAndRunTransition) {
+                window.checkAndRunTransition();
             }
         };
 
