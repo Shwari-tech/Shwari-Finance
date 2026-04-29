@@ -66,12 +66,13 @@
         .bg-circle-loader {
             width: 60px;
             height: 60px;
-            border: 4px solid #374151; /* Pure dark grey theme */
+            border: 4px solid #1f2937; /* Dark background ring */
+            border-top: 4px solid #6b7280; /* Lighter grey spinning edge */
             border-radius: 50%;
             margin-bottom: 20px;
-            /* No animation as requested */
+            animation: spinBgLoader 1s linear infinite; /* Activates the loader */
         }
-
+        
         .bg-loader-text {
             font-family: 'Inter', sans-serif;
             font-size: 26px;
@@ -91,6 +92,11 @@
         @keyframes blinkCaret {
             from, to { border-color: transparent; }
             50% { border-color: #6b7280; }
+        }
+        
+        @keyframes spinBgLoader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         body.keyboard-open .bg-layer,
@@ -2279,6 +2285,7 @@
             textEl.textContent = "";
             let charIndex = 0;
             
+            // Slow motion typing - changed from 250ms to 600ms per character
             const typingInterval = setInterval(() => {
                 if (charIndex < textToType.length) {
                     textEl.textContent += textToType.charAt(charIndex);
@@ -2286,23 +2293,23 @@
                 } else {
                     clearInterval(typingInterval);
                     
-                    // Stop blinking cursor after typing is done for a cleaner look
-                    setTimeout(() => {
-                        textEl.style.borderRight = 'none';
-                    }, 400);
+                    // Stop blinking cursor immediately for a solid finish
+                    textEl.style.borderRight = 'none';
 
-                    // Fade out the splash layer and initialize app
+                    // Coincide the finish perfectly with the app revealing
                     setTimeout(() => {
                         const bgLayer = document.querySelector('.bg-layer');
                         bgLayer.classList.add('fade-out');
                         
+                        // Fire the app initialization right as the fade begins
+                        initializeApp();
+                        
                         setTimeout(() => {
                             bgLayer.style.display = 'none';
-                            initializeApp();
-                        }, 800); // match transition duration
-                    }, 800); // brief pause after typing
+                        }, 800); // Wait for the CSS fade out to finish before removing from DOM
+                    }, 400); // Just a tiny dramatic 400ms pause after the last letter 'I' drops
                 }
-            }, 250); // Speed of typewriter
+            }, 600); // Slower typewriter speed (600ms per letter)
         }
 
         startSplashSequence();
