@@ -15,19 +15,20 @@
     
     <script>
         (function() {
-            // Array of 11 high-quality background images (1 Original + 10 African Wildlife/Nature optimized for mobile)
+            // Array of 11 ultra-high quality 4K (3840px width, 100% quality) background images 
+            // optimized for a premium "magazine" look
             const bgImages = [
                 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg', // Original
-                'https://images.unsplash.com/photo-1517825738774-7de9363ef735?auto=format&fit=crop&w=1080&q=80', // Lion Profile
-                'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=1080&q=80', // Elephant Walking
-                'https://images.unsplash.com/photo-1547471080-7cb2cb6a5a36?auto=format&fit=crop&w=1080&q=80', // Giraffe
-                'https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=1080&q=80', // Cheetah 
-                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1080&q=80', // Zebras
-                'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1080&q=80', // Serengeti Sunset Silhouette
-                'https://images.unsplash.com/photo-1534142491174-8d486d38e235?auto=format&fit=crop&w=1080&q=80', // Rhino
-                'https://images.unsplash.com/photo-1533422902779-dac54c865108?auto=format&fit=crop&w=1080&q=80', // Baobab Tree Sunset
-                'https://images.unsplash.com/photo-1590483864500-11f81d13db1b?auto=format&fit=crop&w=1080&q=80', // Leopard
-                'https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&w=1080&q=80'  // African Savanna Landscape
+                'https://images.unsplash.com/photo-1517825738774-7de9363ef735?auto=format&fit=crop&w=3840&q=100', // Majestic Lion
+                'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=3840&q=100', // Epic Elephant
+                'https://images.unsplash.com/photo-1547471080-7cb2cb6a5a36?auto=format&fit=crop&w=3840&q=100', // Graceful Giraffe
+                'https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&w=3840&q=100', // Intense Cheetah
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=3840&q=100', // Zebras Crossing
+                'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=3840&q=100', // Serengeti Sunset Silhouette
+                'https://images.unsplash.com/photo-1534142491174-8d486d38e235?auto=format&fit=crop&w=3840&q=100', // Rhino
+                'https://images.unsplash.com/photo-1533422902779-dac54c865108?auto=format&fit=crop&w=3840&q=100', // Baobab Tree Sunset
+                'https://images.unsplash.com/photo-1590483864500-11f81d13db1b?auto=format&fit=crop&w=3840&q=100', // Leopard Resting
+                'https://images.unsplash.com/photo-1493962853295-0fd70327578a?auto=format&fit=crop&w=3840&q=100'  // Sweeping Savanna Landscape
             ];
 
             // Randomly select one image
@@ -36,7 +37,7 @@
             // Set the CSS variable for the background
             document.documentElement.style.setProperty('--dynamic-bg', `url('${randomBg}')`);
 
-            // Dynamically inject the preload link tag
+            // Dynamically inject the preload link tag for instant loading
             const preloadLink = document.createElement('link');
             preloadLink.rel = 'preload';
             preloadLink.as = 'image';
@@ -90,10 +91,13 @@
             will-change: transform;
             transition: transform 0s;
         }
+        
         body.intro-active .bg-layer {
-            background: var(--dynamic-bg) calc(0% + 30%) center / cover no-repeat;
+            /* Premium Magazine Dark Gradient Overlay mixed with 4K Image */
+            background: linear-gradient(to bottom, rgba(17,24,39,0.1) 0%, rgba(17,24,39,0.4) 40%, rgba(17,24,39,0.95) 100%), var(--dynamic-bg) center / cover no-repeat;
             background-color: #111827;
         }
+        
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
             transform: none !important;
@@ -144,7 +148,7 @@
 
         .continue-footer {
             padding: 40px 20px 40px; text-align: center;
-            background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%);
+            background: linear-gradient(to top, rgba(17,24,39,0.0) 0%, rgba(17,24,39,0.95) 40%, rgba(17,24,39,1) 100%);
             position: relative;
             min-height: 200px;
             display: flex;
@@ -300,7 +304,9 @@
            ========================================= */
         #auth-portal {
             position: fixed; inset: 0; z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;
-            background: #000000;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             transition: opacity 0.6s var(--anim-smooth);
@@ -468,10 +474,10 @@
             .small-email { color: #bbbbbb !important; }
             
             .continue-footer {
-                background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%) !important;
+                background: linear-gradient(to top, rgba(17,24,39,0.0) 0%, rgba(17,24,39,0.95) 40%, rgba(17,24,39,1) 100%) !important;
             }
 
-            #auth-portal { background: #000000 !important; }
+            #auth-portal { background: rgba(0,0,0,0.7) !important; }
             #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: var(--bg-dark) !important; }
             .error-card, .install-card, .network-error-card { 
                 background: var(--bg-card) !important; 
