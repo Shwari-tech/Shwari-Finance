@@ -11,11 +11,8 @@
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
-    <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    
-    <script>
         (function() {
             const forceBgPreload = new Image();
             forceBgPreload.src = 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg';
@@ -56,7 +53,7 @@
         .bg-layer {
             position: fixed;
             inset: 0;
-            z-index: 999999;
+            z-index: 90000; /* Lowered so the Network Error Screen (100000) can pop over it if a crash happens during load */
             background: #111827;
             pointer-events: all;
             will-change: transform;
@@ -2064,6 +2061,7 @@
             maxRetries: 3,
             loaded: false,
             timeoutId: null,
+            reconnectInterval: null,
 
             load() {
                 this.loaded = false;
@@ -2079,6 +2077,10 @@
                 this.frame.onload = () => {
                     this.loaded = true;
                     clearTimeout(this.timeoutId);
+                    if (this.reconnectInterval) {
+                        clearInterval(this.reconnectInterval);
+                        this.reconnectInterval = null;
+                    }
                     console.log("Macro loaded successfully.");
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
@@ -2098,16 +2100,20 @@
                     const errorScreen = document.getElementById('network-error-screen');
                     const errorMsg = document.querySelector('.network-error-message');
                     if (errorMsg) errorMsg.innerHTML = "Secure connection to Shwari Servers timed out.<br>Retrying connection...";
-                    errorScreen.classList.add('active');
-                    errorScreen.classList.remove('fade-out');
+                    if (errorScreen) {
+                        errorScreen.classList.add('active');
+                        errorScreen.classList.remove('fade-out');
+                    }
                     
-                    // Continually attempt to reconnect every 10s
-                    setInterval(() => {
-                        if (navigator.onLine) {
-                            this.retries = 0;
-                            this.load();
-                        }
-                    }, 10000);
+                    // Continually attempt to reconnect every 10s without leaking memory
+                    if (!this.reconnectInterval) {
+                        this.reconnectInterval = setInterval(() => {
+                            if (navigator.onLine && !this.loaded) {
+                                this.retries = 0;
+                                this.load();
+                            }
+                        }, 10000);
+                    }
                 }
             }
         };
