@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <meta name="theme-color" content="#121212">
+    <meta name="theme-color" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
@@ -21,8 +21,8 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
-            --bg-dark: #121212; /* Pure Dark Grey */
-            --bg-card: #1e1e1e;
+            --bg-dark: #111827;
+            --bg-card: #1f2937;
             --accent: #55d082;
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
         }
@@ -47,46 +47,55 @@
         .bg-layer {
             position: fixed;
             inset: 0;
-            z-index: 0;
-            background: #121212 !important; /* Pure Dark Grey */
-            pointer-events: none;
+            z-index: 999999; /* Brought to the very front for the opening splash sequence */
+            background: #111827;
+            pointer-events: all;
             will-change: transform;
-            transition: transform 0s;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            transition: opacity 0.8s ease-in-out;
+        }
+        
+        .bg-layer.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .bg-circle-loader {
             width: 60px;
             height: 60px;
-            border: 4px solid #2a2a2a; /* Pure dark grey matching border */
-            border-top: 4px solid #55d082; /* Accent green */
+            border: 4px solid #374151; /* Pure dark grey theme */
             border-radius: 50%;
-            animation: spinBgLoader 1s linear infinite;
-            margin-bottom: 15px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            margin-bottom: 20px;
+            /* No animation as requested */
         }
 
-        body.intro-active .bg-layer {
-            background-color: #121212 !important;
-        }
-        
-        body.intro-active .bg-circle-loader {
-            opacity: 1;
+        .bg-loader-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            color: #6b7280; /* Dark grey theme text */
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            border-right: 3px solid #6b7280; /* Blinking cursor */
+            padding-right: 5px;
+            animation: blinkCaret 0.8s step-end infinite;
+            min-height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @keyframes spinBgLoader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes blinkCaret {
+            from, to { border-color: transparent; }
+            50% { border-color: #6b7280; }
         }
 
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
             transform: none !important;
-            transition: none !important;
         }
 
         /* =========================================
@@ -127,13 +136,14 @@
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
-        .continue-header { 
-            display: none !important; /* Hidden as requested */
-        }
+        /* Hidden in background as requested */
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); display: none !important; }
+        .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
+        .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
         .continue-footer {
             padding: 40px 20px 40px; text-align: center;
-            background: linear-gradient(to top, rgba(18,18,18,0.95) 0%, rgba(18,18,18,0.8) 40%, rgba(18,18,18,0) 100%);
+            background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%);
             position: relative;
             min-height: 200px;
             display: flex;
@@ -269,7 +279,8 @@
             75% { transform: translateY(-3px) rotate(3deg); }
         }
 
-        .text-group { text-align: center; }
+        /* Hidden in background as requested */
+        .text-group { text-align: center; display: none !important; }
         
         .employee-info.unlocked .text-group {
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
@@ -407,13 +418,13 @@
         .app.active iframe { opacity: 1; }
 
         /* RESTRICTION SCREENS */
-        #device-error { display: none; position: fixed; inset: 0; background: rgba(18, 18, 18, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
+        #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
         .error-card { background: var(--bg-card); max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(85, 208, 130, 0.2); }
         .error-card h2 { font-size: 24px; color: #55d082; font-weight: 800; margin-bottom: 15px; }
         .error-card p { font-size: 16px; color: #aaaaaa; line-height: 1.6; }
         @media screen and (orientation: landscape), screen and (min-width: 600px) { body > *:not(#device-error) { display: none !important; } #device-error { display: flex !important; } }
 
-        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(18, 18, 18, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: var(--bg-card); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
         .install-card h2 { color: #55d082; margin-bottom: 12px; font-size: 24px; font-weight: 800;}
         .install-card p { color: #aaaaaa; font-size: 15px; margin-bottom: 30px;}
@@ -444,7 +455,7 @@
             touch-action: manipulation;
             animation: installPulse 2s infinite;
         }
-        .install-btn:hover { background: #55d082; color: #121212; }
+        .install-btn:hover { background: #55d082; color: #111827; }
         .install-btn:active { transform: scale(0.96); }
 
         /* =========================================
@@ -457,7 +468,7 @@
             .small-email { color: #bbbbbb !important; }
             
             .continue-footer {
-                background: linear-gradient(to top, rgba(18,18,18,0.95) 0%, rgba(18,18,18,0.8) 40%, rgba(18,18,18,0) 100%) !important;
+                background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%) !important;
             }
 
             #auth-portal { background: #000000 !important; }
@@ -916,7 +927,7 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: rgba(18, 18, 18, 0.95);
+            background: rgba(17, 24, 39, 0.95);
         }
 
         #storage-permission-modal.active { display: flex; }
@@ -1438,6 +1449,7 @@
 
     <div class="bg-layer">
         <div class="bg-circle-loader"></div>
+        <div class="bg-loader-text" id="toast-loader-text"></div>
     </div>
 
     <div id="network-toast">
@@ -2260,7 +2272,40 @@
             window.initAuth();
         }
 
-        initializeApp();
+        // Execute Splash sequence which triggers initializeApp when typing is done
+        function startSplashSequence() {
+            const textEl = document.getElementById('toast-loader-text');
+            const textToType = "SHWARI";
+            textEl.textContent = "";
+            let charIndex = 0;
+            
+            const typingInterval = setInterval(() => {
+                if (charIndex < textToType.length) {
+                    textEl.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingInterval);
+                    
+                    // Stop blinking cursor after typing is done for a cleaner look
+                    setTimeout(() => {
+                        textEl.style.borderRight = 'none';
+                    }, 400);
+
+                    // Fade out the splash layer and initialize app
+                    setTimeout(() => {
+                        const bgLayer = document.querySelector('.bg-layer');
+                        bgLayer.classList.add('fade-out');
+                        
+                        setTimeout(() => {
+                            bgLayer.style.display = 'none';
+                            initializeApp();
+                        }, 800); // match transition duration
+                    }, 800); // brief pause after typing
+                }
+            }, 250); // Speed of typewriter
+        }
+
+        startSplashSequence();
 
         // =========================================
         // EXISTING FUNCTIONS (ENHANCED)
