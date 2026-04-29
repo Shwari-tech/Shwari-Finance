@@ -13,11 +13,6 @@
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-        (function() {
-            const forceBgPreload = new Image();
-            forceBgPreload.src = 'https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg';
-        })();
-    </script>
     
     <style>
         /* =========================================
@@ -2440,9 +2435,12 @@
             const isRegistered = localStorage.getItem('shwari_registered') === 'true';
             if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
                 window.transitionStarted = true;
+                
+                // Add a guaranteed 3-second (3000ms) delay after the connection is established.
+                // This gives the heavy Google Macro UI plenty of time to fully render in the background.
                 setTimeout(() => {
                     transitionLogic();
-                }, 200); // Tiny buffer for perfect synchronization
+                }, 3000); 
             }
         };
 
