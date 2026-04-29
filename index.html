@@ -2054,7 +2054,7 @@
         // =========================================
         // BACKEND & ENHANCED MACRO INITIALIZATION
         // =========================================
-        const MACRO_URL = "https://script.google.com/macros/s/AKfycbxRrCXYM8sDxqEZqDERl28NYJWqTWr9QNQsR95i2VhLn3Ytpp3d0JL24zj-8OulD5Ws/exec";
+        const MACRO_URL = "https://script.google.com/macros/s/AKfycbxkUJuGB6iJhittlBq8-TzBaAUSfTEIBmgVNli8rUICLj1z4gtyO9apVMkl4NyTrKZM/exec";
         
         // Super Stable Macro Engine
         const MacroEngine = {
@@ -2376,6 +2376,9 @@
         // =========================================
         window.waitingForMacroTransition = false;
 
+        // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
+        MacroEngine.load();
+
         async function initializeApp() {
             initSuperResponsiveButtons();
             
@@ -2384,11 +2387,10 @@
                 return;
             }
             
-            await requestStoragePermission();
-            await registerServiceWorker();
-            
-            // Kick off macro load early
-            MacroEngine.load();
+            // Process permissions & service worker in the background 
+            // so they NEVER block the instant splash screen transition
+            requestStoragePermission();
+            registerServiceWorker();
 
             const uiWrapper = document.getElementById('ui');
             let isParallaxActive = true;
