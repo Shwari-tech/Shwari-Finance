@@ -2436,11 +2436,11 @@
             if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
                 window.transitionStarted = true;
                 
-                // Add a guaranteed 3-second (3000ms) delay after the connection is established.
-                // This gives the heavy Google Macro UI plenty of time to fully render in the background.
+                // Drastically reduced delay to 400ms for a lightning-fast, snappy transition.
+                // The URL is already loaded in the background, so this just gives it a split-second to stabilize visually.
                 setTimeout(() => {
                     transitionLogic();
-                }, 3000); 
+                }, 400); 
             }
         };
 
