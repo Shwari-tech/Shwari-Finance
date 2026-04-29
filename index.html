@@ -7,7 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
-    <meta name="theme-color" content="#111827">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="preload" as="image" href="https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg" fetchpriority="high">
@@ -55,20 +56,53 @@
         .bg-layer {
             position: fixed;
             inset: 0;
-            z-index: 0;
-            background: #000000;
-            pointer-events: none;
+            z-index: 999999;
+            background: #111827;
+            pointer-events: all;
             will-change: transform;
-            transition: transform 0s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease-in-out;
         }
-        body.intro-active .bg-layer {
-            background: url('https://images.stockcake.com/public/0/d/f/0df2eecc-f1d5-456c-9ea8-24464364f119/sunset-construction-silhouette-stockcake.jpg') calc(0% + 30%) center / cover no-repeat;
-            background-color: #111827;
+
+        .bg-layer.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
+
+        .bg-circle-loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #1f2937;
+            border-top: 4px solid #6b7280;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            animation: spinBgLoader 1s linear infinite;
+        }
+
+        .bg-loader-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            color: #6b7280;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            min-height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes spinBgLoader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
             transform: none !important;
-            transition: none !important;
         }
 
         /* =========================================
@@ -109,7 +143,7 @@
         }
         #continue-overlay.hidden { display: none; opacity: 0; }
 
-        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); }
+        .continue-header { padding: 60px 20px; text-align: center; text-shadow: 0 4px 15px rgba(0,0,0,0.8); padding-top: max(60px, var(--safe-top)); display: none !important; }
         .dept-title { font-size: 28px; font-weight: 900; color: #ffffff; text-transform: uppercase; letter-spacing: 2px; line-height: 1.3; font-family: 'Inter', sans-serif;}
         .dept-subtitle { font-size: 14px; color: #55d082; letter-spacing: 5px; text-transform: uppercase; margin-top: 10px; font-weight: 700; font-family: 'Inter', sans-serif;}
 
@@ -251,7 +285,7 @@
             75% { transform: translateY(-3px) rotate(3deg); }
         }
 
-        .text-group { text-align: center; }
+        .text-group { text-align: center; display: none !important; }
         
         .employee-info.unlocked .text-group {
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
@@ -367,7 +401,7 @@
         .app { 
             position: fixed; inset: 0; opacity: 0; visibility: hidden; 
             background: var(--bg-dark); z-index: 2000; 
-            transition: opacity 1.2s ease-in-out; 
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
@@ -377,16 +411,16 @@
         iframe { 
             width: 100%; height: 100%; border: none; 
             background: var(--bg-dark); opacity: 0;
-            transition: opacity 1.2s ease-in-out 0.2s;
+            transform: scale(0.92) translateY(15px);
+            transform-origin: center center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
+                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            zoom: 0.9;
-            -moz-transform: scale(0.9);
-            -moz-transform-origin: top center;
             padding: 0 !important;
             margin: 0 !important;
         }
-        .app.active iframe { opacity: 1; }
+        .app.active iframe { opacity: 1; transform: scale(1) translateY(0); }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -537,6 +571,7 @@
         }
 
         .install-track-wrap {
+            display: none !important; /* Hides the progress bar */
             width: 100%;
             max-width: 280px;
             opacity: 0;
@@ -1507,7 +1542,10 @@
 </head>
 <body>
 
-    <div class="bg-layer"></div>
+    <div class="bg-layer">
+        <div class="bg-circle-loader"></div>
+        <div class="bg-loader-text" id="toast-loader-text"></div>
+    </div>
 
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
@@ -1592,20 +1630,6 @@
                 <div class="status-dot"></div>
                 <span class="status-text">You're offline</span>
             </div>
-            <div class="auto-reload-indicator active" id="auto-reload-indicator">
-                <i class="fas fa-arrows-rotate"></i>
-                <span>Auto-reloading when connection returns...</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="connection-restored" class="connection-restored">
-        <div class="restored-card">
-            <div class="success-ring">
-                <i class="fas fa-check"></i>
-            </div>
-            <h3>Back Online!</h3>
-            <p>Reloading your dashboard...</p>
         </div>
     </div>
 
@@ -1983,16 +2007,65 @@
         FullscreenManager.init();
 
         // =========================================
-        // BACKEND INITIALIZATION
+        // BACKEND & ENHANCED MACRO INITIALIZATION
         // =========================================
-        const MACRO_URL = "https://script.google.com/macros/s/AKfycbxRrCXYM8sDxqEZqDERl28NYJWqTWr9QNQsR95i2VhLn3Ytpp3d0JL24zj-8OulD5Ws/exec";
-        const macroIframe = document.getElementById('macro-frame');
+        const MACRO_URL = "https://script.google.com/macros/s/AKfycbxkUJuGB6iJhittlBq8-TzBaAUSfTEIBmgVNli8rUICLj1z4gtyO9apVMkl4NyTrKZM/exec";
         
-        let isMacroLoaded = false;
-        macroIframe.onload = function() {
-            isMacroLoaded = true;
+        // Super Stable Macro Engine
+        const MacroEngine = {
+            url: MACRO_URL,
+            frame: document.getElementById('macro-frame'),
+            retries: 0,
+            maxRetries: 3,
+            loaded: false,
+            timeoutId: null,
+
+            load() {
+                this.loaded = false;
+                clearTimeout(this.timeoutId);
+                console.log(`Loading Macro... Attempt ${this.retries + 1}`);
+                
+                // Add robust cache buster to force fresh load
+                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+                
+                // Set timeout for 15s
+                this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
+
+                this.frame.onload = () => {
+                    this.loaded = true;
+                    clearTimeout(this.timeoutId);
+                    console.log("Macro loaded successfully.");
+                    if (window.onMacroSuccess) window.onMacroSuccess();
+                };
+            },
+
+            handleTimeout() {
+                if (this.loaded) return;
+                console.warn("Macro load timeout. Retrying...");
+                this.retries++;
+                
+                if (this.retries <= this.maxRetries) {
+                    // Exponential backoff retry
+                    setTimeout(() => this.load(), 2000 * this.retries);
+                } else {
+                    console.error("Macro failed to load after maximum retries.");
+                    // Trigger network error UI specifically for script failure
+                    const errorScreen = document.getElementById('network-error-screen');
+                    const errorMsg = document.querySelector('.network-error-message');
+                    if (errorMsg) errorMsg.innerHTML = "Secure connection to Shwari Servers timed out.<br>Retrying connection...";
+                    errorScreen.classList.add('active');
+                    errorScreen.classList.remove('fade-out');
+                    
+                    // Continually attempt to reconnect every 10s
+                    setInterval(() => {
+                        if (navigator.onLine) {
+                            this.retries = 0;
+                            this.load();
+                        }
+                    }, 10000);
+                }
+            }
         };
-        macroIframe.src = MACRO_URL + "?cb=" + new Date().getTime();
 
         const APP_VERSION = '5.0.0';
         const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
@@ -2256,6 +2329,8 @@
         // =========================================
         // MAIN INITIALIZATION
         // =========================================
+        window.waitingForMacroTransition = false;
+
         async function initializeApp() {
             initSuperResponsiveButtons();
             
@@ -2267,6 +2342,9 @@
             await requestStoragePermission();
             await registerServiceWorker();
             
+            // Kick off macro load early
+            MacroEngine.load();
+
             const uiWrapper = document.getElementById('ui');
             let isParallaxActive = true;
             let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
@@ -2302,7 +2380,56 @@
             window.initAuth();
         }
 
-        initializeApp();
+        window.splashTypingDone = false;
+        window.transitionStarted = false;
+
+        window.checkAndRunTransition = () => {
+            const isRegistered = localStorage.getItem('shwari_registered') === 'true';
+            if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
+                window.transitionStarted = true;
+                setTimeout(() => {
+                    transitionLogic();
+                }, 200); // Tiny buffer for perfect synchronization
+            }
+        };
+
+        // Execute Splash sequence and warm up app immediately
+        function startSplashSequence() {
+            const textEl = document.getElementById('toast-loader-text');
+            const textToType = "SHWARI";
+            textEl.textContent = "";
+            let charIndex = 0;
+            
+            // WARM UP URL IMMEDIATELY
+            initializeApp();
+            
+            const typingInterval = setInterval(() => {
+                if (charIndex < textToType.length) {
+                    textEl.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingInterval);
+                    textEl.style.borderRight = 'none'; // hide cursor immediately
+                    window.splashTypingDone = true;
+                    
+                    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
+                    if (!isRegistered) {
+                        setTimeout(() => {
+                            const bgLayer = document.querySelector('.bg-layer');
+                            if(bgLayer) {
+                                bgLayer.classList.add('fade-out');
+                                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+                            }
+                        }, 400); 
+                    } else {
+                        // Check if macro loaded to fire direct smooth transition
+                        window.checkAndRunTransition();
+                    }
+                }
+            }, 600); // Slow motion typing
+        }
+
+        startSplashSequence();
 
         // =========================================
         // EXISTING FUNCTIONS (ENHANCED)
@@ -2335,16 +2462,10 @@
 
             const isRegistered = localStorage.getItem('shwari_registered');
             if (isRegistered === 'true') {
-                document.getElementById('display-name').innerText = formatName(localStorage.getItem('emp_name'));
-                document.getElementById('display-email').innerText = localStorage.getItem('emp_email');
-                document.getElementById('continue-overlay').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('elephant-gate').classList.add('unlocked');
-                    document.getElementById('employee-info').classList.add('unlocked');
-                }, 3000);
-                setTimeout(() => {
-                    handleContinue();
-                }, 6500);
+                // Bypassing the middle screens for a super smooth direct pop-out transition
+                if (window.checkAndRunTransition) {
+                    window.checkAndRunTransition();
+                }
             } else {
                 const authPortal = document.getElementById('auth-portal');
                 authPortal.classList.remove('hidden');
@@ -2444,9 +2565,15 @@
             localStorage.setItem('shwari_registered', 'true');
             const authPortal = document.getElementById('auth-portal');
             const regScreen = document.getElementById('reg-screen');
-            const continueOverlay = document.getElementById('continue-overlay');
-            document.getElementById('display-name').innerText = formatName(name);
-            document.getElementById('display-email').innerText = email;
+            
+            // Re-show the splash screen to serve as a bridge to the macro
+            const bgLayer = document.querySelector('.bg-layer');
+            if(bgLayer) {
+                bgLayer.style.display = 'flex';
+                void bgLayer.offsetWidth; // Trigger reflow
+                bgLayer.classList.remove('fade-out');
+            }
+
             regScreen.style.transform = 'scale(0.9)';
             regScreen.style.opacity = '0';
             setTimeout(() => {
@@ -2454,17 +2581,11 @@
                 setTimeout(() => {
                     authPortal.classList.add('hidden');
                     regScreen.classList.add('hidden');
-                    continueOverlay.classList.remove('hidden');
-                    continueOverlay.style.opacity = '0';
-                    void continueOverlay.offsetWidth;
-                    continueOverlay.style.opacity = '1';
-                    setTimeout(() => {
-                        document.getElementById('elephant-gate').classList.add('unlocked');
-                        document.getElementById('employee-info').classList.add('unlocked');
-                    }, 3000);
-                    setTimeout(() => {
-                        handleContinue();
-                    }, 6500);
+                    
+                    // App is now loading in background, transition smoothly
+                    window.splashTypingDone = true;
+                    if (window.checkAndRunTransition) window.checkAndRunTransition();
+                    
                 }, 500);
             }, 400);
         });
@@ -2478,41 +2599,40 @@
             }, 600);
         };
 
+        const transitionLogic = () => {
+            const uiWrapper = document.getElementById('ui');
+            const appPanel = document.getElementById('app');
+            const bgLayer = document.querySelector('.bg-layer');
+            
+            // Clean up parallax
+            if(uiWrapper) uiWrapper.classList.add('pull-active');
+            document.body.classList.remove('intro-active');
+
+            // Super smooth crossfade: Activate App iframe, simultaneously fade out Splash
+            appPanel.classList.add('active');
+            
+            if(bgLayer) {
+                bgLayer.classList.add('fade-out');
+                setTimeout(() => { bgLayer.style.display = 'none'; }, 1000);
+            }
+            
+            setTimeout(() => {
+                if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+            }, 1200);
+        };
+        
         const executeTransition = () => {
-            const transitionLogic = () => {
-                const uiWrapper = document.getElementById('ui');
-                const appPanel = document.getElementById('app');
-                let isParallaxActive = true;
-                let rafId;
-                
-                if (!isParallaxActive) return;
-                isParallaxActive = false;
-                cancelAnimationFrame(rafId);
-                
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        uiWrapper.classList.add('pull-active');
-                        document.body.classList.remove('intro-active');
-                    });
-                });
+            if (MacroEngine.loaded) transitionLogic();
+        };
 
-                setTimeout(() => {
-                    appPanel.classList.add('active');
-                    
-                    setTimeout(() => {
-                        if (uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-                    }, 1200);
-                }, 300);
-            };
-
-            if (isMacroLoaded) {
-                transitionLogic();
-            } else {
-                let fallbackTimer = setTimeout(transitionLogic, 8000);
-                macroIframe.addEventListener('load', () => {
-                    clearTimeout(fallbackTimer);
-                    transitionLogic();
-                }, {once: true});
+        // Hook for stable engine success
+        window.onMacroSuccess = () => {
+            const networkScreen = document.getElementById('network-error-screen');
+            if (networkScreen && networkScreen.classList.contains('active')) {
+                hideNetworkError();
+            }
+            if (window.checkAndRunTransition) {
+                window.checkAndRunTransition();
             }
         };
 
@@ -2526,7 +2646,6 @@
         let wasOffline = false;
         let isCheckingConnection = false;
         let autoReloadTimer = null;
-        let isReloading = false;
 
         const showToast = (message, isOnline) => {
             toastMessage.textContent = message;
@@ -2577,38 +2696,13 @@
             }, 600);
         };
 
-        const performAutoReload = () => {
-            if (isReloading) return;
-            isReloading = true;
-            
-            const restoredOverlay = document.getElementById('connection-restored');
-            if (restoredOverlay) {
-                restoredOverlay.classList.add('active');
-            }
-            
-            setTimeout(() => {
-                const iframe = document.getElementById('macro-frame');
-                if (iframe && iframe.src) {
-                    const url = new URL(iframe.src);
-                    url.searchParams.set('cb', new Date().getTime());
-                    iframe.src = url.toString();
-                }
-                
-                setTimeout(() => {
-                    if (restoredOverlay) restoredOverlay.classList.remove('active');
-                    isReloading = false;
-                }, 1500);
-            }, 1000);
-        };
-
         const handleOnline = async () => {
             const isConnected = await checkConnectivity();
             if (isConnected) {
                 if (wasOffline) {
-                    showToast('Back online! Reloading...', true);
+                    showToast('Back online!', true);
                     hideNetworkError();
                     wasOffline = false;
-                    performAutoReload();
                 }
             }
         };
