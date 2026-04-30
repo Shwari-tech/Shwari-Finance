@@ -292,6 +292,7 @@
 
         .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
         .small-email { font-size: 13px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
+        
         /* =========================================
            3. REGISTRATION PORTAL
            ========================================= */
@@ -680,198 +681,6 @@
         @keyframes installFloat {
             0%,100% { opacity: 0.5; transform: translateY(0) scale(1);     }
             50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
-        }
-
-        /* =========================================
-           7. NETWORK ERROR SCREEN (REALISTIC CARTOON SVG)
-           ========================================= */
-        #network-error-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 100000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 30px;
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.15) 0%, transparent 60%),
-                        radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%),
-                        var(--bg-dark);
-            transition: opacity 0.6s var(--anim-smooth);
-        }
-
-        #network-error-screen.active { display: flex; }
-        #network-error-screen.fade-out { opacity: 0; pointer-events: none; }
-
-        @media (prefers-color-scheme: light) {
-            #network-error-screen {
-                background: radial-gradient(ellipse at 50% 30%, rgba(231, 76, 60, 0.1) 0%, transparent 60%),
-                            radial-gradient(ellipse at 30% 70%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
-                            #e8f5ed;
-            }
-        }
-
-        .error-illustration {
-            position: relative;
-            width: 100%;
-            max-width: 380px;
-            height: auto;
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: illustrationEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-            overflow: visible;
-        }
-
-        @keyframes illustrationEnter {
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* Advanced SVG Animations for Premium Modern White Robot */
-        .robot-body-hover { animation: bodyHover 4s ease-in-out infinite; transform-origin: center; }
-        .robot-head-hover { animation: headHover 4s ease-in-out infinite; transform-origin: center; }
-        .robot-shadow-anim { animation: shadowPulse 4s ease-in-out infinite; transform-origin: center; }
-        .error-pulse { animation: redAlert 1.5s ease-in-out infinite; }
-        .robot-arm-l { animation: armDangleL 4s ease-in-out infinite; transform-origin: 100px 170px; }
-        .robot-arm-r { animation: armDangleR 4s ease-in-out infinite; transform-origin: 300px 170px; }
-        .hologram-wifi { animation: holoFloat 3s ease-in-out infinite; transform-origin: center; }
-        .holo-spin { animation: holoSpin 10s linear infinite; transform-origin: center; }
-        .robot-sad-eyes { animation: glitchBlink 5s infinite; transform-origin: 200px 110px; }
-        .thruster-pulse { animation: exhaustPulse 0.3s ease-in-out infinite alternate; transform-origin: 200px 315px; }
-
-        @keyframes bodyHover {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        @keyframes headHover {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-18px) rotate(2deg); }
-        }
-        @keyframes shadowPulse {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(0.8); opacity: 0.2; }
-        }
-        @keyframes redAlert {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        @keyframes armDangleL {
-            0%, 100% { transform: rotate(10deg); }
-            50% { transform: rotate(25deg) translateY(-5px); }
-        }
-        @keyframes armDangleR {
-            0%, 100% { transform: rotate(-10deg); }
-            50% { transform: rotate(-25deg) translateY(-5px); }
-        }
-        @keyframes holoFloat {
-            0%, 100% { transform: translate(280px, 40px) scale(1); opacity: 0.8; }
-            50% { transform: translate(280px, 30px) scale(1.05); opacity: 1; }
-        }
-        @keyframes holoSpin {
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes exhaustPulse {
-            0% { transform: scaleY(0.8); opacity: 0.7; }
-            100% { transform: scaleY(1.3); opacity: 1; }
-        }
-        @keyframes glitchBlink {
-            0%, 92%, 96%, 100% { transform: scaleY(1) skewX(0deg); }
-            93% { transform: scaleY(0.1) skewX(20deg); }
-            94% { transform: scaleY(1.2) skewX(-10deg); }
-            95% { transform: scaleY(0.1) skewX(0deg); }
-        }
-
-        .network-error-card {
-            background: rgba(31, 41, 55, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            max-width: 380px;
-            padding: 40px 35px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
-                        0 0 0 1px rgba(231, 76, 60, 0.4),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            animation: errorCardSlideUp 0.8s var(--anim-smooth);
-        }
-
-        @keyframes errorCardSlideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-error-card {
-                background: rgba(255, 255, 255, 0.95);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15),
-                            0 0 0 1px rgba(231, 76, 60, 0.3),
-                            inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            }
-        }
-
-        .network-error-title {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .network-error-message {
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: #aaaaaa;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-error-message { color: #5a6a60; }
-        }
-
-        .network-status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px 20px;
-            background: rgba(231, 76, 60, 0.1);
-            border-radius: 16px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        @media (prefers-color-scheme: light) {
-            .network-status-indicator {
-                background: rgba(231, 76, 60, 0.08);
-                border-color: rgba(231, 76, 60, 0.15);
-            }
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background: #e74c3c;
-            border-radius: 50%;
-            animation: statusPulse 1.5s ease-in-out infinite;
-            box-shadow: 0 0 10px #e74c3c;
-        }
-
-        @keyframes statusPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.85); }
-        }
-
-        .status-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: #e74c3c;
         }
 
         #network-toast {
@@ -1460,118 +1269,6 @@
         <span id="toast-message">Checking connection...</span>
     </div>
 
-    <div id="network-error-screen">
-        <div class="error-particle ep1"></div>
-        <div class="error-particle ep2"></div>
-        <div class="error-particle ep3"></div>
-        <div class="error-particle ep4"></div>
-        
-        <div class="error-illustration">
-            <svg viewBox="0 0 400 400" width="100%" height="auto" style="max-width: 380px; overflow: visible; filter: drop-shadow(0 25px 35px rgba(0,0,0,0.5));">
-                <defs>
-                    <linearGradient id="robotWhite" x1="10%" y1="0%" x2="90%" y2="100%">
-                        <stop offset="0%" stop-color="#ffffff" />
-                        <stop offset="40%" stop-color="#f8fafc" />
-                        <stop offset="100%" stop-color="#94a3b8" />
-                    </linearGradient>
-                    <linearGradient id="robotDark" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#334155" />
-                        <stop offset="100%" stop-color="#0f172a" />
-                    </linearGradient>
-                    <linearGradient id="visorGlass" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="rgba(255,255,255,0.3)" />
-                        <stop offset="40%" stop-color="rgba(255,255,255,0.05)" />
-                        <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-                    </linearGradient>
-                    <linearGradient id="thrusterGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#38bdf8" />
-                        <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
-                    </linearGradient>
-                    <radialGradient id="floorShadow" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="rgba(0,0,0,0.6)" />
-                        <stop offset="100%" stop-color="rgba(0,0,0,0)" />
-                    </radialGradient>
-                    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-
-                <ellipse cx="200" cy="380" rx="80" ry="15" fill="url(#floorShadow)" class="robot-shadow-anim" />
-
-                <g class="hologram-wifi" transform="translate(280, 40)">
-                    <circle cx="40" cy="40" r="35" fill="rgba(239, 68, 68, 0.1)" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 6" class="holo-spin" />
-                    <path d="M 20 30 Q 40 10 60 30" fill="none" stroke="#ef4444" stroke-width="6" stroke-linecap="round" />
-                    <path d="M 30 45 Q 40 35 50 45" fill="none" stroke="#ef4444" stroke-width="6" stroke-linecap="round" />
-                    <circle cx="40" cy="60" r="4" fill="#ef4444" />
-                    <line x1="15" y1="15" x2="65" y2="65" stroke="#ef4444" stroke-width="5" stroke-linecap="round" />
-                </g>
-
-                <g class="robot-body-hover">
-                    <ellipse cx="200" cy="310" rx="25" ry="10" fill="#0f172a" />
-                    <path d="M 180 315 L 190 360 Q 200 380 210 360 L 220 315 Z" fill="url(#thrusterGlow)" class="thruster-pulse" />
-                    
-                    <g class="robot-arm-l">
-                        <path d="M 100 170 Q 50 180 60 250" fill="none" stroke="url(#robotWhite)" stroke-width="35" stroke-linecap="round" />
-                        <circle cx="60" cy="250" r="17.5" fill="url(#robotDark)" />
-                        <circle cx="60" cy="250" r="8" fill="#ef4444" class="error-pulse" />
-                    </g>
-                    
-                    <g class="robot-arm-r">
-                        <path d="M 300 170 Q 350 180 340 250" fill="none" stroke="url(#robotWhite)" stroke-width="35" stroke-linecap="round" />
-                        <circle cx="340" cy="250" r="17.5" fill="url(#robotDark)" />
-                        <circle cx="340" cy="250" r="8" fill="#ef4444" class="error-pulse" />
-                    </g>
-
-                    <path d="M 130 160 C 130 130, 270 130, 270 160 L 280 230 C 280 300, 240 320, 200 320 C 160 320, 120 300, 120 230 Z" fill="url(#robotWhite)" />
-                    
-                    <ellipse cx="200" cy="300" rx="30" ry="10" fill="url(#robotDark)" opacity="0.5" />
-                    <circle cx="200" cy="220" r="45" fill="url(#robotDark)" />
-                    <circle cx="200" cy="220" r="35" fill="#1e293b" />
-                    
-                    <g class="error-pulse" transform="translate(185, 205) scale(0.6)">
-                        <path d="M 25 45 L 25 10 A 15 15 0 0 0 -5 10 C -5 25, 25 45, 25 45 Z" fill="#ef4444" />
-                        <path d="M 25 45 L 25 10 A 15 15 0 0 1 55 10 C 55 25, 25 45, 25 45 Z" fill="#ef4444" transform="translate(5, 5)" />
-                    </g>
-
-                    <rect x="180" y="110" width="40" height="30" rx="10" fill="url(#robotDark)" />
-                    <line x1="185" y1="125" x2="215" y2="125" stroke="#475569" stroke-width="4" stroke-linecap="round" />
-                </g>
-
-                <g class="robot-head-hover">
-                    <path d="M 200 80 L 200 30" stroke="#94a3b8" stroke-width="8" stroke-linecap="round" />
-                    <circle cx="200" cy="25" r="12" fill="#ef4444" filter="url(#neonGlow)" class="error-pulse" />
-                    
-                    <rect x="115" y="60" width="170" height="100" rx="50" fill="url(#robotWhite)" />
-                    
-                    <rect x="125" y="75" width="150" height="70" rx="35" fill="url(#robotDark)" />
-                    
-                    <path d="M 135 110 Q 135 80 165 80 L 235 80 Q 265 80 265 110 A 150 40 0 0 0 135 110 Z" fill="url(#visorGlass)" />
-                    
-                    <g class="robot-sad-eyes" stroke="#ef4444" stroke-width="8" stroke-linecap="round" filter="url(#neonGlow)">
-                        <path d="M 155 95 L 180 120 M 180 95 L 155 120" />
-                        <path d="M 220 95 L 245 120 M 245 95 L 220 120" />
-                    </g>
-                </g>
-            </svg>
-        </div>
-        
-        <div class="network-error-card">
-            <h2 class="network-error-title">Connection Lost</h2>
-            <p class="network-error-message">
-                Oops! Looks like the network got unplugged.<br>
-                Please check your internet connection to continue.
-            </p>
-            <div class="network-status-indicator">
-                <div class="status-dot"></div>
-                <span class="status-text">You're offline</span>
-            </div>
-        </div>
-    </div>
-
     <div id="device-error">
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
@@ -1993,15 +1690,6 @@
                     setTimeout(() => this.load(), 2000 * this.retries);
                 } else {
                     console.error("Macro failed to load after maximum retries.");
-                    // Trigger network error UI specifically for script failure
-                    const errorScreen = document.getElementById('network-error-screen');
-                    const errorMsg = document.querySelector('.network-error-message');
-                    if (errorMsg) errorMsg.innerHTML = "Secure connection to Shwari Servers timed out.<br>Retrying connection...";
-                    if (errorScreen) {
-                        errorScreen.classList.add('active');
-                        errorScreen.classList.remove('fade-out');
-                    }
-                    
                     // Continually attempt to reconnect every 10s without leaking memory
                     if (!this.reconnectInterval) {
                         this.reconnectInterval = setInterval(() => {
@@ -2587,10 +2275,6 @@
 
         // Hook for stable engine success
         window.onMacroSuccess = () => {
-            const networkScreen = document.getElementById('network-error-screen');
-            if (networkScreen && networkScreen.classList.contains('active')) {
-                hideNetworkError();
-            }
             if (window.checkAndRunTransition) {
                 window.checkAndRunTransition();
             }
@@ -2600,7 +2284,6 @@
            NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
            ====================================================== */
         
-        const networkErrorScreen = document.getElementById('network-error-screen');
         const networkToast = document.getElementById('network-toast');
         const toastMessage = document.getElementById('toast-message');
         let wasOffline = false;
@@ -2640,28 +2323,11 @@
             }
         };
 
-        const showNetworkError = () => {
-            networkErrorScreen.classList.add('active');
-            networkErrorScreen.classList.remove('fade-out');
-            if (autoReloadTimer) {
-                clearInterval(autoReloadTimer);
-                autoReloadTimer = null;
-            }
-        };
-
-        const hideNetworkError = () => {
-            networkErrorScreen.classList.add('fade-out');
-            setTimeout(() => {
-                networkErrorScreen.classList.remove('active');
-            }, 600);
-        };
-
         const handleOnline = async () => {
             const isConnected = await checkConnectivity();
             if (isConnected) {
                 if (wasOffline) {
                     showToast('Back online!', true);
-                    hideNetworkError();
                     wasOffline = false;
                 }
             }
@@ -2670,7 +2336,6 @@
         const handleOffline = () => {
             wasOffline = true;
             showToast('Connection lost', false);
-            showNetworkError();
             
             if (!autoReloadTimer) {
                 autoReloadTimer = setInterval(async () => {
