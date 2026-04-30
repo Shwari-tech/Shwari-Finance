@@ -292,7 +292,6 @@
 
         .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
         .small-email { font-size: 13px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
-        
         /* =========================================
            3. REGISTRATION PORTAL
            ========================================= */
@@ -472,12 +471,12 @@
             }
 
             #auth-portal { background: #000000 !important; }
-            #device-error, #forcedInstall, #install-progress-screen, #network-error-screen { background: var(--bg-dark) !important; }
-            .error-card, .install-card, .network-error-card { 
+            #device-error, #forcedInstall, #install-progress-screen { background: var(--bg-dark) !important; }
+            .error-card, .install-card { 
                 background: var(--bg-card) !important; 
                 border-color: rgba(85, 208, 130, 0.2) !important;
             }
-            .error-card p, .install-card p, .network-error-message { color: #aaaaaa !important; }
+            .error-card p, .install-card p { color: #aaaaaa !important; }
         }
 
         /* =========================================
@@ -682,6 +681,10 @@
             0%,100% { opacity: 0.5; transform: translateY(0) scale(1);     }
             50%      { opacity: 0.9; transform: translateY(-18px) scale(1.2); }
         }
+
+        /* =========================================
+           7. OFFLINE TOAST / NOTIFICATION STYLES
+           ========================================= */
 
         #network-toast {
             position: fixed;
@@ -2343,6 +2346,8 @@
                         const isConnected = await checkConnectivity();
                         if (isConnected) {
                             handleOnline();
+                            clearInterval(autoReloadTimer);
+                            autoReloadTimer = null;
                         }
                     }
                 }, 3000);
