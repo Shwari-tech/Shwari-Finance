@@ -6,7 +6,7 @@
  *  - HTML pages        → Network First  (freshness > speed)
  *  - Images            → Cache First    (stale-while-revalidate in BG)
  *  - CSS / JS / Fonts  → Stale-While-Revalidate
- *  - API / GAS calls   → Network Only   (never cached)
+ *  - Macro / GAS calls → Network First  (with strict offline HTML fallback)
  *  - Everything else   → Network with Cache Fallback
  */
 
@@ -118,8 +118,6 @@ function fetchWithTimeout(request, ms = NETWORK_TIMEOUT_MS) {
  */
 function isNeverCache(url) {
   return (
-    url.href.includes('script.google.com') ||
-    url.href.includes('googleusercontent.com') ||
     url.href.includes('accounts.google.com') ||
     url.pathname.startsWith('/api/')
   );
@@ -231,6 +229,12 @@ self.addEventListener('fetch', (event) => {
     return; // Malformed URL — ignore
   }
 
+  // ── STRATEGY 0: Google Macro URLs Offline Fallback ──────────────────────────
+  if (url.hostname.includes('script.google.com') || url.hostname.includes('script.googleusercontent.com')) {
+    event.respondWith(networkFirstMacro(request));
+    return;
+  }
+
   // Never cache live API endpoints
   if (isNeverCache(url)) return;
 
@@ -259,6 +263,70 @@ self.addEventListener('fetch', (event) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // STRATEGY IMPLEMENTATIONS
 // ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Special interceptor for the Google Scripts Macro.
+ * Caches the iframe source when online. If offline, serves the cached 
+ * dashboard or a native, offline-styled HTML fallback ensuring the app
+ * fully launches without breaking the main UI.
+ */
+async function networkFirstMacro(request) {
+  const urlObj = new URL(request.url);
+  const cleanUrl = urlObj.origin + urlObj.pathname; // Strips cachebusters for a stable key
+
+  try {
+    const networkRes = await fetchWithTimeout(request, 15000); // Generous 15s timeout
+    if (networkRes && (networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302)) {
+      const cache = await caches.open(CACHE_DYNAMIC);
+      cache.put(cleanUrl, networkRes.clone());
+    }
+    return networkRes;
+  } catch (e) {
+    log('Macro network failed, serving offline cache/fallback');
+    
+    // 1. Try to serve cached macro page first
+    const cache = await caches.open(CACHE_DYNAMIC);
+    const cachedRes = await cache.match(cleanUrl);
+    if (cachedRes) {
+      return cachedRes;
+    }
+
+    // 2. Ultimate Offline Fallback HTML for Macro Iframe
+    const offlineHtml = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Offline Dashboard</title>
+        <style>
+            body { background: #111827; color: #ffffff; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; padding: 30px; box-sizing: border-box; }
+            .icon { width: 90px; height: 90px; background: linear-gradient(135deg, #1f6e3f, #55d082); border-radius: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 15px 35px rgba(85,208,130,0.3); }
+            .icon svg { width: 44px; height: 44px; stroke: white; }
+            h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; color: #55d082; letter-spacing: -0.5px; }
+            p { font-size: 15px; color: #94a3b8; line-height: 1.6; max-width: 320px; }
+            .loader { margin-top: 30px; width: 40px; height: 40px; border: 3px solid rgba(85,208,130,0.2); border-top: 3px solid #55d082; border-radius: 50%; animation: spin 1s linear infinite; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+    </head>
+    <body>
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.61 2.61a2 2 0 0 1 2.78 0l6.5 6.5a2 2 0 0 1 0 2.78l-6.5 6.5a2 2 0 0 1-2.78 0l-6.5-6.5a2 2 0 0 1 0-2.78z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        </div>
+        <h2>Offline Mode</h2>
+        <p>You are disconnected. The Shwari Finance dashboard will automatically load when your connection is restored.</p>
+        <div class="loader"></div>
+        <script>
+            // Auto-refresh the iframe when device goes back online
+            window.addEventListener('online', () => { window.location.reload(); });
+            setInterval(() => { if (navigator.onLine) window.location.reload(); }, 5000);
+        </script>
+    </body>
+    </html>`;
+    
+    return new Response(offlineHtml, { headers: { 'Content-Type': 'text/html' } });
+  }
+}
 
 /**
  * Network First — try network with timeout, fall back to cache.
