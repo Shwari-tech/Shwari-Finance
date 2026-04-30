@@ -401,10 +401,11 @@
         .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
-            width: 100%; height: 100%; border: none; 
+            /* To achieve a 90% zoom, we make the iframe larger and then scale it down */
+            width: 111.11%; height: 111.11%; border: none; 
             background: var(--bg-dark); opacity: 0;
-            transform: scale(0.92) translateY(15px);
-            transform-origin: center center;
+            transform: scale(0.8) translateY(15px);
+            transform-origin: top left;
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
                         transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
             position: absolute;
@@ -412,7 +413,8 @@
             padding: 0 !important;
             margin: 0 !important;
         }
-        .app.active iframe { opacity: 1; transform: scale(1) translateY(0); }
+        /* The final active state scales it exactly to 0.9 (90%) */
+        .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
