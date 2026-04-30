@@ -1256,6 +1256,55 @@
                             #e8f5ed;
             }
         }
+        
+        /* =========================================
+           12. SYNC BADGE & STALE DATA WARNING 
+           ========================================= */
+        #sync-status-badge {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(44, 122, 71, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2500;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.4s var(--anim-smooth);
+            pointer-events: none;
+            opacity: 0;
+        }
+        #sync-status-badge.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        #stale-warning {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
 
     </style>
 <base target="_blank">
@@ -1271,7 +1320,12 @@
         <i class="fas fa-wifi"></i>
         <span id="toast-message">Checking connection...</span>
     </div>
-
+    
+    <!-- New Sync and Stale Indicators -->
+    <div id="sync-status-badge">
+        <i class="fas fa-check-circle"></i> Last synced: Just now
+    </div>
+    
     <div id="device-error">
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
@@ -1388,6 +1442,9 @@
     </div>
 
     <div class="app" id="app">
+        <div id="stale-warning">
+            <i class="fas fa-triangle-exclamation"></i> Data may be outdated (>24h old)
+        </div>
         <iframe id="macro-frame"></iframe>
     </div>
 
@@ -1490,6 +1547,44 @@
     <script>
     (function () {
         "use strict";
+
+        // =========================================
+        // OFFLINE SYNC - INDEXEDDB WRAPPER
+        // =========================================
+        const ShwariDB = {
+            dbName: 'ShwariDB',
+            storeName: 'macro_cache',
+            init() {
+                return new Promise((resolve, reject) => {
+                    const req = indexedDB.open(this.dbName, 1);
+                    req.onupgradeneeded = (e) => {
+                        e.target.result.createObjectStore(this.storeName, { keyPath: 'id' });
+                    };
+                    req.onsuccess = (e) => resolve(e.target.result);
+                    req.onerror = (e) => reject(e.error);
+                });
+            },
+            async save(html) {
+                const db = await this.init();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(this.storeName, 'readwrite');
+                    const store = tx.objectStore(this.storeName);
+                    store.put({ id: 'macro_html', html: html, timestamp: Date.now() });
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = (e) => reject(e.error);
+                });
+            },
+            async get() {
+                const db = await this.init();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(this.storeName, 'readonly');
+                    const store = tx.objectStore(this.storeName);
+                    const req = store.get('macro_html');
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = (e) => reject(e.error);
+                });
+            }
+        };
 
         // =========================================
         // CAPABILITY-AWARE FULLSCREEN MANAGER
@@ -1650,7 +1745,7 @@
         // =========================================
         const MACRO_URL = "https://script.google.com/macros/s/AKfycby8ZskGXoKrwOUMu1WK4NuGmxm0gI7UVl0_89A-4NsU36ooNuizn28KYt5U55Mh5x5j/exec";
         
-        // Super Stable Macro Engine
+        // Super Stable Macro Engine with Blob Offline Injection
         const MacroEngine = {
             url: MACRO_URL,
             frame: document.getElementById('macro-frame'),
@@ -1660,12 +1755,74 @@
             timeoutId: null,
             reconnectInterval: null,
 
-            load() {
+            async loadOfflineBlob() {
+                try {
+                    const data = await ShwariDB.get();
+                    if (data && data.html) {
+                        const age = Date.now() - data.timestamp;
+                        // Warning if older than 24 hours
+                        if (age > 24 * 60 * 60 * 1000) {
+                            document.getElementById('stale-warning').style.display = 'flex';
+                        }
+                        
+                        const blob = new Blob([data.html], { type: 'text/html' });
+                        const objUrl = URL.createObjectURL(blob);
+                        this.frame.src = objUrl;
+                        this.loaded = true;
+                        if (window.onMacroSuccess) window.onMacroSuccess();
+                        this.updateSyncBadge(data.timestamp, true);
+                    } else {
+                        throw new Error("No offline data available");
+                    }
+                } catch(e) {
+                    console.log("Blob inject failed, using fallback...");
+                    this.frame.src = `${this.url}?cb=offline&client=shwari_app`;
+                }
+            },
+
+            async silentSync() {
+                try {
+                    // Try to silently fetch the raw HTML to store in IndexedDB
+                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`);
+                    if(res.ok) {
+                        const html = await res.text();
+                        await ShwariDB.save(html);
+                        this.updateSyncBadge(Date.now(), false);
+                    }
+                } catch (e) {
+                    console.log("Silent sync fetch skipped or failed.");
+                }
+            },
+
+            updateSyncBadge(timestamp, isOffline = false) {
+                const badge = document.getElementById('sync-status-badge');
+                if(!badge) return;
+                const mins = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+                
+                if (isOffline) {
+                    badge.innerHTML = `<i class="fas fa-cloud-arrow-down"></i> Offline Mode - Data from ${mins} mins ago`;
+                    badge.style.background = 'rgba(231, 76, 60, 0.9)';
+                } else {
+                    badge.innerHTML = `<i class="fas fa-check-circle"></i> Last synced: ${mins} mins ago`;
+                    badge.style.background = 'rgba(44, 122, 71, 0.9)';
+                }
+                
+                badge.classList.add('show');
+                setTimeout(() => {
+                    badge.classList.remove('show');
+                }, 5000);
+            },
+
+            async load() {
                 this.loaded = false;
                 clearTimeout(this.timeoutId);
                 console.log(`Loading Macro... Attempt ${this.retries + 1}`);
+
+                if (!navigator.onLine) {
+                    await this.loadOfflineBlob();
+                    return;
+                }
                 
-                // Add robust cache buster to force fresh load
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
                 
                 // Set timeout for 15s
@@ -1679,6 +1836,10 @@
                         this.reconnectInterval = null;
                     }
                     console.log("Macro loaded successfully.");
+                    
+                    // Trigger the background sync once loaded
+                    if (navigator.onLine) this.silentSync();
+                    
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
             },
@@ -1706,7 +1867,7 @@
             }
         };
 
-        const APP_VERSION = '5.0.0';
+        const APP_VERSION = '7.0.0';
         const APP_INSTANCE_ID = 'shwari-finance-' + Date.now();
 
         // =========================================
@@ -2332,6 +2493,7 @@
                 if (wasOffline) {
                     showToast('Back online!', true);
                     wasOffline = false;
+                    MacroEngine.silentSync(); // Background sync data on reconnect!
                 }
             }
         };
