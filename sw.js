@@ -1,5 +1,5 @@
 /**
- * Shwari Finance — Service Worker v6
+ * Shwari Finance — Service Worker v7
  * Production-grade caching, offline support, and background sync
  *
  * Strategies used:
@@ -16,8 +16,8 @@
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const APP_VERSION      = '6.0.0';
-const CACHE_VERSION    = 'v6';
+const APP_VERSION      = '7.0.0';
+const CACHE_VERSION    = 'v7';
 
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
@@ -71,6 +71,34 @@ const warn = (...args) => console.warn(`[SW ${APP_VERSION}]`, ...args);
 const err  = (...args) => console.error(`[SW ${APP_VERSION}]`, ...args);
 
 /**
+ * IndexedDB Helper for SW to read ShwariDB offline payloads directly
+ */
+const SW_IDB = {
+    open() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open('ShwariDB', 1);
+            req.onupgradeneeded = e => e.target.result.createObjectStore('macro_cache', { keyPath: 'id' });
+            req.onsuccess = e => resolve(e.target.result);
+            req.onerror = e => reject(e);
+        });
+    },
+    async get(id) {
+        try {
+            const db = await this.open();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('macro_cache', 'readonly');
+                const store = tx.objectStore('macro_cache');
+                const req = store.get(id);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        } catch (e) {
+            return null;
+        }
+    }
+};
+
+/**
  * Opens a cache and safely caches all URLs, skipping any that fail.
  * Using addAll would abort the entire batch if one URL fails.
  */
@@ -102,8 +130,13 @@ async function trimCache(cacheName, maxItems) {
 
 /**
  * Race a fetch against a timeout. Rejects with a TimeoutError on expiry.
+ * Fast fails if offline to avoid hanging on Lie-Fi.
  */
 function fetchWithTimeout(request, ms = NETWORK_TIMEOUT_MS) {
+  if (!navigator.onLine) {
+    return Promise.reject(new Error('Offline: Fast-failing network request to use cache.'));
+  }
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
 
@@ -266,13 +299,25 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * Special interceptor for the Google Scripts Macro.
- * Caches the iframe source when online. If offline, serves the cached 
- * dashboard or a native, offline-styled HTML fallback ensuring the app
- * fully launches without breaking the main UI.
+ * 1. Checks ShwariDB (IndexedDB) and CACHE_DYNAMIC for immediate offline resolution.
+ * 2. Fetches network, updates CACHE_DYNAMIC.
+ * 3. Returns Synthetic response from IndexedDB if all network fails.
  */
 async function networkFirstMacro(request) {
   const urlObj = new URL(request.url);
   const cleanUrl = urlObj.origin + urlObj.pathname; // Strips cachebusters for a stable key
+
+  // FAST OFFLINE BAILOUT: Prevent hang if user has no bundles
+  if (!navigator.onLine) {
+    log('Offline state detected, attempting to load ShwariDB macro data.');
+    const idbData = await SW_IDB.get('macro_html');
+    if (idbData && idbData.html) {
+        return new Response(idbData.html, { headers: { 'Content-Type': 'text/html' } });
+    }
+    const cache = await caches.open(CACHE_DYNAMIC);
+    const cachedRes = await cache.match(cleanUrl);
+    if (cachedRes) return cachedRes;
+  }
 
   try {
     const networkRes = await fetchWithTimeout(request, 15000); // Generous 15s timeout
@@ -284,14 +329,20 @@ async function networkFirstMacro(request) {
   } catch (e) {
     log('Macro network failed, serving offline cache/fallback');
     
-    // 1. Try to serve cached macro page first
+    // 1. Try ShwariDB first (Highest Quality HTML snapshot)
+    const idbData = await SW_IDB.get('macro_html');
+    if (idbData && idbData.html) {
+        return new Response(idbData.html, { headers: { 'Content-Type': 'text/html' } });
+    }
+
+    // 2. Try to serve cached macro page 
     const cache = await caches.open(CACHE_DYNAMIC);
     const cachedRes = await cache.match(cleanUrl);
     if (cachedRes) {
       return cachedRes;
     }
 
-    // 2. Ultimate Offline Fallback HTML for Macro Iframe
+    // 3. Ultimate Offline Fallback HTML for Macro Iframe
     const offlineHtml = `
     <!DOCTYPE html>
     <html lang="en">
