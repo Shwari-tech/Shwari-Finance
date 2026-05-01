@@ -292,6 +292,7 @@
 
         .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
         .small-email { font-size: 13px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
+        
         /* =========================================
            3. REGISTRATION PORTAL
            ========================================= */
@@ -1306,6 +1307,53 @@
             pointer-events: none;
         }
 
+        /* =========================================
+           13. NEW: OFFLINE MACRO BANNER
+           ========================================= */
+        #offline-macro-banner {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-30px) scale(0.95);
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 2500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        #offline-macro-banner.show {
+            transform: translateX(-50%) translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .offline-pulse {
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            animation: offlinePulseAnim 1.5s infinite;
+        }
+
+        @keyframes offlinePulseAnim {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
     </style>
 <base target="_blank">
 </head>
@@ -1445,6 +1493,13 @@
         <div id="stale-warning">
             <i class="fas fa-triangle-exclamation"></i> Data may be outdated (>24h old)
         </div>
+        
+        <!-- NEW INSTANT OFFLINE BANNER -->
+        <div id="offline-macro-banner">
+            <div class="offline-pulse"></div>
+            <span>Offline Mode</span>
+        </div>
+
         <iframe id="macro-frame"></iframe>
     </div>
 
@@ -1754,13 +1809,13 @@
             loaded: false,
             timeoutId: null,
             reconnectInterval: null,
+            isOfflineView: false,
 
             async loadOfflineBlob() {
                 try {
                     const data = await ShwariDB.get();
                     if (data && data.html) {
                         const age = Date.now() - data.timestamp;
-                        // Warning if older than 24 hours
                         if (age > 24 * 60 * 60 * 1000) {
                             document.getElementById('stale-warning').style.display = 'flex';
                         }
@@ -1769,6 +1824,17 @@
                         const objUrl = URL.createObjectURL(blob);
                         this.frame.src = objUrl;
                         this.loaded = true;
+                        this.isOfflineView = true;
+                        
+                        // Show the enhanced animated offline banner
+                        const offlineBanner = document.getElementById('offline-macro-banner');
+                        if (offlineBanner) {
+                            offlineBanner.innerHTML = '<div class="offline-pulse"></div><span>Offline Mode</span>';
+                            offlineBanner.style.background = 'rgba(231, 76, 60, 0.95)';
+                            offlineBanner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
+                            offlineBanner.classList.add('show');
+                        }
+
                         if (window.onMacroSuccess) window.onMacroSuccess();
                         this.updateSyncBadge(data.timestamp, true);
                     } else {
@@ -1782,7 +1848,6 @@
 
             async silentSync() {
                 try {
-                    // Try to silently fetch the raw HTML to store in IndexedDB
                     const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`);
                     if(res.ok) {
                         const html = await res.text();
@@ -1815,8 +1880,15 @@
 
             async load() {
                 this.loaded = false;
+                this.isOfflineView = false;
                 clearTimeout(this.timeoutId);
                 console.log(`Loading Macro... Attempt ${this.retries + 1}`);
+
+                // Reset and hide the banner unless it's currently showing the reload animation
+                const offlineBanner = document.getElementById('offline-macro-banner');
+                if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spinner')) {
+                    offlineBanner.classList.remove('show');
+                }
 
                 if (!navigator.onLine) {
                     await this.loadOfflineBlob();
@@ -1825,19 +1897,22 @@
                 
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
                 
-                // Set timeout for 15s
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
                 this.frame.onload = () => {
                     this.loaded = true;
+                    this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
+                    
+                    // Final confirmation removal of banner when successfully loaded live
+                    if (offlineBanner) offlineBanner.classList.remove('show');
+
                     if (this.reconnectInterval) {
                         clearInterval(this.reconnectInterval);
                         this.reconnectInterval = null;
                     }
                     console.log("Macro loaded successfully.");
                     
-                    // Trigger the background sync once loaded
                     if (navigator.onLine) this.silentSync();
                     
                     if (window.onMacroSuccess) window.onMacroSuccess();
@@ -1850,11 +1925,11 @@
                 this.retries++;
                 
                 if (this.retries <= this.maxRetries) {
-                    // Exponential backoff retry
                     setTimeout(() => this.load(), 2000 * this.retries);
                 } else {
                     console.error("Macro failed to load after maximum retries.");
-                    // Continually attempt to reconnect every 10s without leaking memory
+                    this.loadOfflineBlob(); // Display offline fallback on max failures
+                    
                     if (!this.reconnectInterval) {
                         this.reconnectInterval = setInterval(() => {
                             if (navigator.onLine && !this.loaded) {
@@ -2493,7 +2568,27 @@
                 if (wasOffline) {
                     showToast('Back online!', true);
                     wasOffline = false;
-                    MacroEngine.silentSync(); // Background sync data on reconnect!
+                    
+                    // ============================================
+                    // INSTANT AUTO-RELOAD THE MACRO ON RECONNECT
+                    // ============================================
+                    if (MacroEngine.isOfflineView) {
+                        console.log("Network restored: Animating and instantly reloading live macro...");
+                        const banner = document.getElementById('offline-macro-banner');
+                        if (banner) {
+                            // Turn the banner green and show a spinner to acknowledge network detection immediately
+                            banner.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Reconnecting...</span>';
+                            banner.style.background = 'rgba(44, 122, 71, 0.95)';
+                            banner.style.boxShadow = '0 8px 25px rgba(44, 122, 71, 0.4)';
+                        }
+                        
+                        setTimeout(() => {
+                            MacroEngine.retries = 0; // Reset retries before jumping back
+                            MacroEngine.load(); // This will trigger the fetch and natively dismiss the banner on load
+                        }, 800); // 800ms gives the user time to visually register that it is fetching
+                    } else {
+                        MacroEngine.silentSync(); // Background sync data on reconnect!
+                    }
                 }
             }
         };
