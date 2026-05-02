@@ -22,9 +22,10 @@ const CACHE_VERSION    = 'v7';
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
 const CACHE_IMAGES     = `shwari-images-${CACHE_VERSION}`;
+const CACHE_MACRO      = `shwari-macro-${CACHE_VERSION}`;   // ← dedicated macro cache
 
 // All known cache names this SW manages — used for safe cleanup
-const KNOWN_CACHES     = new Set([CACHE_STATIC, CACHE_DYNAMIC, CACHE_IMAGES]);
+const KNOWN_CACHES     = new Set([CACHE_STATIC, CACHE_DYNAMIC, CACHE_IMAGES, CACHE_MACRO]);
 
 // Maximum items in each dynamic cache to prevent unbounded growth
 const MAX_DYNAMIC_ITEMS = 80;
@@ -32,6 +33,9 @@ const MAX_IMAGE_ITEMS   = 60;
 
 // Network request timeout (ms) before falling back to cache
 const NETWORK_TIMEOUT_MS = 5000;
+
+// Stable key used to store the macro snapshot in the dedicated cache
+const MACRO_CACHE_KEY = 'shwari-macro-snapshot';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATIC ASSETS — Pre-cached on install
@@ -71,7 +75,7 @@ const warn = (...args) => console.warn(`[SW ${APP_VERSION}]`, ...args);
 const err  = (...args) => console.error(`[SW ${APP_VERSION}]`, ...args);
 
 /**
- * IndexedDB Helper for SW to read ShwariDB offline payloads directly
+ * IndexedDB Helper for SW to read AND WRITE ShwariDB offline payloads
  */
 const SW_IDB = {
     open() {
@@ -82,6 +86,7 @@ const SW_IDB = {
             req.onerror = e => reject(e);
         });
     },
+
     async get(id) {
         try {
             const db = await this.open();
@@ -94,6 +99,29 @@ const SW_IDB = {
             });
         } catch (e) {
             return null;
+        }
+    },
+
+    /**
+     * Saves the macro HTML snapshot to IndexedDB.
+     * Called from the SW after every successful macro network fetch.
+     * @param {string} html - The full HTML string of the macro page
+     */
+    async save(html) {
+        try {
+            const db = await this.open();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('macro_cache', 'readwrite');
+                const store = tx.objectStore('macro_cache');
+                store.put({ id: 'macro_html', html, timestamp: Date.now() });
+                tx.oncomplete = () => {
+                    log('Macro HTML saved to IDB from SW (', Math.round(html.length / 1024), 'KB)');
+                    resolve();
+                };
+                tx.onerror = e => reject(e.error);
+            });
+        } catch (e) {
+            warn('SW_IDB.save failed silently:', e.message || e);
         }
     }
 };
@@ -205,7 +233,6 @@ self.addEventListener('install', (event) => {
     ])
     .then(() => {
       log('Install complete — activating immediately');
-      // Take control without waiting for old SW to release clients
       return self.skipWaiting();
     })
     .catch(e => err('Install failed:', e))
@@ -232,7 +259,6 @@ self.addEventListener('activate', (event) => {
       })
       .then(() => {
         log('Activation complete — claiming all clients');
-        // Notify open tabs that a new SW version is active
         return self.clients.matchAll({ includeUncontrolled: true, type: 'window' })
           .then(clients => {
             clients.forEach(client =>
@@ -262,7 +288,7 @@ self.addEventListener('fetch', (event) => {
     return; // Malformed URL — ignore
   }
 
-  // ── STRATEGY 0: Google Macro URLs Offline Fallback ──────────────────────────
+  // ── STRATEGY 0: Google Macro URLs — always intercepted for offline support ─
   if (url.hostname.includes('script.google.com') || url.hostname.includes('script.googleusercontent.com')) {
     event.respondWith(networkFirstMacro(request));
     return;
@@ -298,85 +324,158 @@ self.addEventListener('fetch', (event) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
+ * Reads the offline macro snapshot from all available sources in priority order:
+ *   1. IndexedDB   (full HTML string, saved by both SW and main thread)
+ *   2. CACHE_MACRO (dedicated Response cache with stable key)
+ *   3. CACHE_DYNAMIC (general dynamic cache, older snapshot may live here)
+ *   4. Built-in offline HTML fallback
+ *
+ * @returns {Promise<Response>}
+ */
+async function serveOfflineMacro() {
+    // 1. IndexedDB — highest quality, written by SW after every live fetch
+    try {
+        const idbData = await SW_IDB.get('macro_html');
+        if (idbData && idbData.html) {
+            log('Serving macro from IndexedDB snapshot');
+            return new Response(idbData.html, {
+                status: 200,
+                headers: { 'Content-Type': 'text/html; charset=utf-8' }
+            });
+        }
+    } catch (e) {
+        warn('IDB read failed, trying Cache API…');
+    }
+
+    // 2. Dedicated macro cache (stable key, written by SW)
+    try {
+        const macroCache = await caches.open(CACHE_MACRO);
+        const cached = await macroCache.match(MACRO_CACHE_KEY);
+        if (cached) {
+            log('Serving macro from CACHE_MACRO');
+            return cached;
+        }
+    } catch (e) {
+        warn('CACHE_MACRO read failed, trying CACHE_DYNAMIC…');
+    }
+
+    // 3. General dynamic cache (older path — still valid)
+    try {
+        const dynCache = await caches.open(CACHE_DYNAMIC);
+        // Search without query string variations
+        const keys = await dynCache.keys();
+        const macroKey = keys.find(k =>
+            k.url.includes('script.google.com') || k.url.includes('script.googleusercontent.com')
+        );
+        if (macroKey) {
+            const cached = await dynCache.match(macroKey);
+            if (cached) {
+                log('Serving macro from CACHE_DYNAMIC');
+                return cached;
+            }
+        }
+    } catch (e) {
+        warn('CACHE_DYNAMIC read failed, serving built-in fallback.');
+    }
+
+    // 4. Ultimate offline HTML fallback
+    log('No cached macro found — serving built-in offline shell');
+    return buildOfflineFallbackResponse();
+}
+
+/**
  * Special interceptor for the Google Scripts Macro.
- * 1. Checks ShwariDB (IndexedDB) and CACHE_DYNAMIC for immediate offline resolution.
- * 2. Fetches network, updates CACHE_DYNAMIC.
- * 3. Returns Synthetic response from IndexedDB if all network fails.
+ *
+ * Online  → Fetch live, save to IDB + CACHE_MACRO, return live response.
+ * Offline → serveOfflineMacro() with 3-tier fallback chain.
  */
 async function networkFirstMacro(request) {
-  const urlObj = new URL(request.url);
-  const cleanUrl = urlObj.origin + urlObj.pathname; // Strips cachebusters for a stable key
+    const urlObj   = new URL(request.url);
+    const cleanUrl = urlObj.origin + urlObj.pathname; // Strip cache-busters for stable key
 
-  // FAST OFFLINE BAILOUT: Prevent hang if user has no bundles
-  if (!navigator.onLine) {
-    log('Offline state detected, attempting to load ShwariDB macro data.');
-    const idbData = await SW_IDB.get('macro_html');
-    if (idbData && idbData.html) {
-        return new Response(idbData.html, { headers: { 'Content-Type': 'text/html' } });
-    }
-    const cache = await caches.open(CACHE_DYNAMIC);
-    const cachedRes = await cache.match(cleanUrl);
-    if (cachedRes) return cachedRes;
-  }
-
-  try {
-    const networkRes = await fetchWithTimeout(request, 15000); // Generous 15s timeout
-    if (networkRes && (networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302)) {
-      const cache = await caches.open(CACHE_DYNAMIC);
-      cache.put(cleanUrl, networkRes.clone());
-    }
-    return networkRes;
-  } catch (e) {
-    log('Macro network failed, serving offline cache/fallback');
-    
-    // 1. Try ShwariDB first (Highest Quality HTML snapshot)
-    const idbData = await SW_IDB.get('macro_html');
-    if (idbData && idbData.html) {
-        return new Response(idbData.html, { headers: { 'Content-Type': 'text/html' } });
+    // FAST OFFLINE BAILOUT — skip the network entirely if we know we're offline
+    if (!navigator.onLine) {
+        log('Device offline — serving macro from cache/IDB immediately');
+        return serveOfflineMacro();
     }
 
-    // 2. Try to serve cached macro page 
-    const cache = await caches.open(CACHE_DYNAMIC);
-    const cachedRes = await cache.match(cleanUrl);
-    if (cachedRes) {
-      return cachedRes;
-    }
+    try {
+        const networkRes = await fetchWithTimeout(request, 15000);
 
-    // 3. Ultimate Offline Fallback HTML for Macro Iframe
-    const offlineHtml = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>Offline Dashboard</title>
-        <style>
-            body { background: #111827; color: #ffffff; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; padding: 30px; box-sizing: border-box; }
-            .icon { width: 90px; height: 90px; background: linear-gradient(135deg, #1f6e3f, #55d082); border-radius: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 15px 35px rgba(85,208,130,0.3); }
-            .icon svg { width: 44px; height: 44px; stroke: white; }
-            h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; color: #55d082; letter-spacing: -0.5px; }
-            p { font-size: 15px; color: #94a3b8; line-height: 1.6; max-width: 320px; }
-            .loader { margin-top: 30px; width: 40px; height: 40px; border: 3px solid rgba(85,208,130,0.2); border-top: 3px solid #55d082; border-radius: 50%; animation: spin 1s linear infinite; }
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        </style>
-    </head>
-    <body>
-        <div class="icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.61 2.61a2 2 0 0 1 2.78 0l6.5 6.5a2 2 0 0 1 0 2.78l-6.5 6.5a2 2 0 0 1-2.78 0l-6.5-6.5a2 2 0 0 1 0-2.78z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        </div>
-        <h2>Offline Mode</h2>
-        <p>You are disconnected. The Shwari Finance dashboard will automatically load when your connection is restored.</p>
-        <div class="loader"></div>
-        <script>
-            // Auto-refresh the iframe when device goes back online
-            window.addEventListener('online', () => { window.location.reload(); });
-            setInterval(() => { if (navigator.onLine) window.location.reload(); }, 5000);
-        </script>
-    </body>
-    </html>`;
-    
-    return new Response(offlineHtml, { headers: { 'Content-Type': 'text/html' } });
-  }
+        // Only cache genuine HTML responses (ok or opaque redirects)
+        const cacheable = networkRes && (networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302);
+
+        if (cacheable) {
+            // ── Save to CACHE_DYNAMIC with path-based stable key ──────────
+            caches.open(CACHE_DYNAMIC).then(cache => cache.put(cleanUrl, networkRes.clone())).catch(() => {});
+
+            // ── Save to dedicated CACHE_MACRO with a fixed string key ─────
+            // This makes lookup O(1) and version-stable
+            caches.open(CACHE_MACRO).then(cache => cache.put(MACRO_CACHE_KEY, networkRes.clone())).catch(() => {});
+
+            // ── Also extract HTML text and persist to IndexedDB from the SW ─
+            // This is the most reliable offline source because it survives
+            // cache eviction and HTTP cache header conflicts.
+            networkRes.clone().text().then(html => {
+                if (html && html.length > 500) { // sanity check — not an empty/error page
+                    SW_IDB.save(html);
+                }
+            }).catch(() => {});
+        }
+
+        return networkRes;
+
+    } catch (e) {
+        log('Macro network fetch failed:', e.message, '— falling back to offline sources');
+        return serveOfflineMacro();
+    }
+}
+
+/**
+ * Builds the built-in offline fallback HTML Response.
+ * Auto-reloads when connectivity is restored.
+ */
+function buildOfflineFallbackResponse() {
+    const offlineHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Offline Dashboard</title>
+    <style>
+        body { background: #111827; color: #fff; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; padding: 30px; box-sizing: border-box; }
+        .icon { width: 90px; height: 90px; background: linear-gradient(135deg, #1f6e3f, #55d082); border-radius: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 15px 35px rgba(85,208,130,0.3); font-size: 44px; }
+        h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; color: #55d082; letter-spacing: -0.5px; }
+        p { font-size: 15px; color: #94a3b8; line-height: 1.6; max-width: 320px; margin-bottom: 30px; }
+        .loader { width: 40px; height: 40px; border: 3px solid rgba(85,208,130,0.2); border-top: 3px solid #55d082; border-radius: 50%; animation: spin 1s linear infinite; }
+        .status { margin-top: 16px; font-size: 12px; color: #4b5563; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="icon">🐘</div>
+    <h2>Offline Mode</h2>
+    <p>No connection detected. Shwari Finance will automatically reload your dashboard the moment you're back online.</p>
+    <div class="loader"></div>
+    <p class="status" id="status-text">Waiting for connection…</p>
+    <script>
+        let attempts = 0;
+        function tryReload() {
+            attempts++;
+            document.getElementById('status-text').textContent = 'Attempt ' + attempts + '… checking connection';
+            if (navigator.onLine) { window.location.reload(); return; }
+            document.getElementById('status-text').textContent = 'Still offline. Retrying in 5s…';
+        }
+        window.addEventListener('online', () => window.location.reload());
+        setInterval(tryReload, 5000);
+    </script>
+</body>
+</html>`;
+
+    return new Response(offlineHtml, {
+        status: 200,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    });
 }
 
 /**
@@ -428,7 +527,6 @@ async function fetchAndCacheImage(cache, request) {
     warn('Image fetch failed:', request.url);
     // Return a transparent 1×1 PNG as placeholder (no broken-image icon)
     return new Response(
-      // Minimal valid PNG
       Uint8Array.from(atob(
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
       ), c => c.charCodeAt(0)),
@@ -507,11 +605,10 @@ self.addEventListener('sync', (event) => {
 
 async function syncPayrollData() {
   try {
-    // Retrieve queued requests from IndexedDB here if implemented
     log('Syncing queued payroll data…');
   } catch (e) {
     err('Background sync failed:', e);
-    throw e; // Re-throw so the browser retries
+    throw e;
   }
 }
 
@@ -524,7 +621,7 @@ self.addEventListener('push', (event) => {
 
   if (event.data) {
     try {
-      payload = event.data.json(); // Prefer structured JSON payloads
+      payload = event.data.json();
     } catch {
       payload.body = event.data.text();
     }
@@ -535,7 +632,7 @@ self.addEventListener('push', (event) => {
     icon:    'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
     badge:   'https://cdn-icons-png.flaticon.com/128/1077/1077114.png',
     vibrate: [100, 50, 100],
-    tag:     payload.tag || 'shwari-notification', // Deduplicate same-type notifications
+    tag:     payload.tag || 'shwari-notification',
     renotify: !!payload.tag,
     data:    { url: payload.url || '/' },
   };
@@ -552,7 +649,6 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(clients => {
-        // Focus an existing tab if open, otherwise open a new one
         const existing = clients.find(c => c.url.includes(targetUrl));
         if (existing) return existing.focus();
         return self.clients.openWindow(targetUrl);
@@ -585,7 +681,6 @@ self.addEventListener('message', (event) => {
   const { data } = event;
   if (!data) return;
 
-  // Accept string or object form
   const type = typeof data === 'string' ? data : data.type;
 
   switch (type) {
@@ -631,6 +726,13 @@ self.addEventListener('message', (event) => {
             activeVersion: APP_VERSION,
           });
         });
+      break;
+
+    // ── NEW: Force macro re-cache from main thread ────────────────────────
+    case 'FORCE_MACRO_CACHE':
+      if (data.html && data.html.length > 500) {
+        event.waitUntil(SW_IDB.save(data.html));
+      }
       break;
 
     default:
