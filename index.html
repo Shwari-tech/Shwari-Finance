@@ -1841,9 +1841,13 @@
                         throw new Error("No offline data available");
                     }
                 } catch(e) {
-                    console.log("Blob inject failed, using fallback...");
-                    this.frame.src = `${this.url}?cb=offline&client=shwari_app`;
-                }
+    console.log("No offline snapshot found, injecting fallback shell...");
+    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#94a3b8;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
+    const blob = new Blob([fallbackHtml], { type: 'text/html' });
+    this.frame.src = URL.createObjectURL(blob);
+    this.loaded = true;
+    if (window.onMacroSuccess) window.onMacroSuccess();
+}
             },
 
             async silentSync() {
