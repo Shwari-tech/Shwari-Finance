@@ -400,25 +400,42 @@ async function networkFirstMacro(request) {
     }
 
     try {
-        const networkRes = await fetchWithTimeout(request, 15000);
+        const networkRes = await fetchWithTimeout(request, 20000); // 20 s — GAS can be slow
 
-        // Only cache genuine HTML responses (ok or opaque redirects)
-        const cacheable = networkRes && (networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302);
+        if (!networkRes) throw new Error('Empty response from macro endpoint');
 
-        if (cacheable) {
-            // ── Save to CACHE_DYNAMIC with path-based stable key ──────────
-            caches.open(CACHE_DYNAMIC).then(cache => cache.put(cleanUrl, networkRes.clone())).catch(() => {});
+        // Cache only genuine content — not error pages or empty responses
+        const isGenuine = (networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302);
 
-            // ── Save to dedicated CACHE_MACRO with a fixed string key ─────
-            // This makes lookup O(1) and version-stable
-            caches.open(CACHE_MACRO).then(cache => cache.put(MACRO_CACHE_KEY, networkRes.clone())).catch(() => {});
+        if (isGenuine) {
+            const htmlClone = networkRes.clone();
 
-            // ── Also extract HTML text and persist to IndexedDB from the SW ─
-            // This is the most reliable offline source because it survives
-            // cache eviction and HTTP cache header conflicts.
-            networkRes.clone().text().then(html => {
-                if (html && html.length > 500) { // sanity check — not an empty/error page
+            // ── Write to CACHE_DYNAMIC (path-based stable key) ────────────
+            caches.open(CACHE_DYNAMIC)
+                .then(cache => cache.put(cleanUrl, networkRes.clone()))
+                .catch(() => {});
+
+            // ── Write to CACHE_MACRO (fixed string key — fastest lookup) ──
+            caches.open(CACHE_MACRO)
+                .then(cache => cache.put(MACRO_CACHE_KEY, networkRes.clone()))
+                .catch(() => {});
+
+            // ── Persist full HTML to IndexedDB ────────────────────────────
+            // IDB survives cache eviction and HTTP header conflicts.
+            // Guard: only save if the page looks like real dashboard HTML
+            // (not a Google login redirect or error stub).
+            htmlClone.text().then(html => {
+                const isRealDashboard = (
+                    html.length > 1000 &&
+                    !html.toLowerCase().includes('accounts.google.com') &&
+                    !html.toLowerCase().includes('signin') &&
+                    !html.toLowerCase().includes('error 404')
+                );
+                if (isRealDashboard) {
                     SW_IDB.save(html);
+                    log('Macro HTML snapshot saved to IDB —', Math.round(html.length / 1024), 'KB');
+                } else {
+                    warn('Macro response looks like a login/error page — NOT caching');
                 }
             }).catch(() => {});
         }
