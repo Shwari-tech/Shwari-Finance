@@ -2141,16 +2141,36 @@
                 try {
                     const registration = await navigator.serviceWorker.register('sw.js');
                     console.log('SW registered:', registration.scope);
-                    
+
+                    // Show force-update modal when a new worker installs
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
+                        if (!newWorker) return;
+
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New version is cached and ready — prompt the user immediately
                                 showUpdateNotification();
                             }
                         });
                     });
-                    
+
+                    // After the user clicks "Update Now", the SW sends SKIP_WAITING.
+                    // controllerchange fires once the new SW takes control — reload instantly.
+                    let refreshing = false;
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (!refreshing) {
+                            refreshing = true;
+                            window.location.reload(true);
+                        }
+                    });
+
+                    // Also check if there is already a waiting worker on page load
+                    // (e.g. user had the page open when update was cached)
+                    if (registration.waiting) {
+                        showUpdateNotification();
+                    }
+
                     return registration;
                 } catch (error) {
                     console.error('SW registration failed:', error);
@@ -2159,50 +2179,228 @@
         }
 
         function showUpdateNotification() {
-            const toast = document.createElement('div');
-            toast.style.cssText = `
+            // Remove any existing update modal
+            const existing = document.getElementById('force-update-modal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'force-update-modal';
+            modal.style.cssText = `
                 position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #1E293B;
-                border: 1px solid #334155;
-                color: #F1F5F9;
-                padding: 16px 24px;
-                border-radius: 16px;
-                font-family: 'Inter', sans-serif;
-                font-size: 14px;
-                font-weight: 600;
-                z-index: 100004;
+                inset: 0;
+                z-index: 999999;
+                background: rgba(10, 16, 28, 0.97);
                 display: flex;
                 align-items: center;
-                gap: 12px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                justify-content: center;
+                padding: 24px;
+                font-family: 'Inter', system-ui, sans-serif;
+                animation: fuModalFadeIn 0.4s ease forwards;
             `;
-            toast.innerHTML = `
-                <i class="fas fa-rotate" style="color: #3B82F6;"></i>
-                <span>Update available!</span>
-                <button style="
-                    background: #334155;
-                    color: #F1F5F9;
-                    border: 1px solid #475569;
-                    padding: 8px 16px;
-                    border-radius: 8px;
-                    font-weight: 700;
-                    cursor: pointer;
-                    margin-left: 8px;
-                ">Update</button>
+
+            modal.innerHTML = `
+                <style>
+                    @keyframes fuModalFadeIn {
+                        from { opacity: 0; }
+                        to   { opacity: 1; }
+                    }
+                    @keyframes fuCardSlideUp {
+                        from { opacity: 0; transform: translateY(40px) scale(0.95); }
+                        to   { opacity: 1; transform: translateY(0)   scale(1);    }
+                    }
+                    @keyframes fuSpin {
+                        to { transform: rotate(360deg); }
+                    }
+                    @keyframes fuPulseGreen {
+                        0%, 100% { box-shadow: 0 0 0 0 rgba(85,208,130,0.5); }
+                        50%      { box-shadow: 0 0 0 14px rgba(85,208,130,0); }
+                    }
+                    @keyframes fuBarShimmer {
+                        from { background-position: 200% center; }
+                        to   { background-position: -200% center; }
+                    }
+                    #fu-card {
+                        background: linear-gradient(160deg, #1a2635 0%, #111827 100%);
+                        border: 1px solid rgba(85,208,130,0.25);
+                        border-radius: 28px;
+                        max-width: 360px;
+                        width: 100%;
+                        padding: 36px 28px 32px;
+                        text-align: center;
+                        box-shadow: 0 40px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+                        animation: fuCardSlideUp 0.5s cubic-bezier(0.2,0.8,0.2,1) forwards;
+                    }
+                    #fu-icon-wrap {
+                        width: 82px; height: 82px;
+                        background: linear-gradient(135deg, #1f6e3f, #55d082);
+                        border-radius: 26px;
+                        display: flex; align-items: center; justify-content: center;
+                        margin: 0 auto 24px;
+                        font-size: 38px; color: #fff;
+                        box-shadow: 0 12px 35px rgba(85,208,130,0.4);
+                        animation: fuPulseGreen 2.4s ease-in-out infinite;
+                    }
+                    #fu-title {
+                        font-size: 22px; font-weight: 900;
+                        color: #ffffff; letter-spacing: -0.5px;
+                        margin-bottom: 8px;
+                    }
+                    #fu-badge {
+                        display: inline-flex; align-items: center; gap: 6px;
+                        background: rgba(85,208,130,0.12);
+                        border: 1px solid rgba(85,208,130,0.3);
+                        color: #55d082;
+                        font-size: 11px; font-weight: 700;
+                        letter-spacing: 1.5px; text-transform: uppercase;
+                        padding: 5px 12px; border-radius: 20px;
+                        margin-bottom: 18px;
+                    }
+                    #fu-desc {
+                        font-size: 14px; color: #94a3b8;
+                        line-height: 1.65; margin-bottom: 28px;
+                    }
+                    #fu-features {
+                        background: rgba(255,255,255,0.04);
+                        border: 1px solid rgba(255,255,255,0.07);
+                        border-radius: 16px;
+                        padding: 16px 18px;
+                        margin-bottom: 28px;
+                        text-align: left;
+                    }
+                    .fu-feature {
+                        display: flex; align-items: center; gap: 10px;
+                        font-size: 13px; color: #cbd5e1;
+                        padding: 6px 0;
+                        border-bottom: 1px solid rgba(255,255,255,0.05);
+                    }
+                    .fu-feature:last-child { border-bottom: none; padding-bottom: 0; }
+                    .fu-feature i { color: #55d082; font-size: 13px; width: 16px; text-align: center; }
+                    #fu-progress-wrap {
+                        display: none;
+                        flex-direction: column; align-items: center; gap: 10px;
+                        margin-bottom: 20px;
+                    }
+                    #fu-progress-track {
+                        width: 100%; height: 6px;
+                        background: rgba(255,255,255,0.08);
+                        border-radius: 10px; overflow: hidden;
+                    }
+                    #fu-progress-bar {
+                        height: 100%; width: 0%; border-radius: 10px;
+                        background: linear-gradient(90deg, #2c7a47, #55d082, #2c7a47);
+                        background-size: 200% auto;
+                        animation: fuBarShimmer 1.6s linear infinite;
+                        transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+                    }
+                    #fu-progress-label {
+                        font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 500;
+                    }
+                    #fu-update-btn {
+                        width: 100%; padding: 16px;
+                        background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
+                        background-size: 400% 400%;
+                        color: #fff; border: none; border-radius: 18px;
+                        font-size: 16px; font-weight: 800; cursor: pointer;
+                        display: flex; align-items: center; justify-content: center; gap: 10px;
+                        box-shadow: 0 10px 28px rgba(44,122,71,0.4);
+                        transition: transform 0.2s ease, box-shadow 0.2s ease;
+                        touch-action: manipulation;
+                        animation: colorShift 5s ease infinite;
+                    }
+                    #fu-update-btn:active { transform: scale(0.96); }
+                    #fu-update-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+                    #fu-footer-note {
+                        margin-top: 14px;
+                        font-size: 11px; color: rgba(255,255,255,0.2);
+                    }
+                </style>
+
+                <div id="fu-card">
+                    <div id="fu-icon-wrap">
+                        <i class="fas fa-rotate"></i>
+                    </div>
+
+                    <div id="fu-badge">
+                        <i class="fas fa-circle" style="font-size:7px;"></i>
+                        Update Available
+                    </div>
+
+                    <h2 id="fu-title">New Version Ready</h2>
+
+                    <p id="fu-desc">
+                        A critical update for <strong style="color:#e2e8f0;">Shwari Finance</strong> has been downloaded and is ready to install. Please update now to continue.
+                    </p>
+
+                    <div id="fu-features">
+                        <div class="fu-feature">
+                            <i class="fas fa-shield-halved"></i>
+                            <span>Security patches applied</span>
+                        </div>
+                        <div class="fu-feature">
+                            <i class="fas fa-bolt"></i>
+                            <span>Performance improvements</span>
+                        </div>
+                        <div class="fu-feature">
+                            <i class="fas fa-bug-slash"></i>
+                            <span>Bug fixes &amp; stability updates</span>
+                        </div>
+                    </div>
+
+                    <div id="fu-progress-wrap">
+                        <div id="fu-progress-track">
+                            <div id="fu-progress-bar"></div>
+                        </div>
+                        <span id="fu-progress-label">Applying update…</span>
+                    </div>
+
+                    <button id="fu-update-btn">
+                        <i class="fas fa-rotate"></i>
+                        <span>Update Now</span>
+                    </button>
+
+                    <p id="fu-footer-note">Your data and settings will not be affected</p>
+                </div>
             `;
-            
-            toast.querySelector('button').addEventListener('click', () => {
-                window.location.reload();
+
+            document.body.appendChild(modal);
+
+            const btn       = modal.querySelector('#fu-update-btn');
+            const progWrap  = modal.querySelector('#fu-progress-wrap');
+            const progBar   = modal.querySelector('#fu-progress-bar');
+            const progLabel = modal.querySelector('#fu-progress-label');
+
+            const steps = [
+                { pct: 20, label: 'Downloading update…'  },
+                { pct: 45, label: 'Verifying files…'      },
+                { pct: 70, label: 'Applying changes…'     },
+                { pct: 90, label: 'Almost done…'          },
+                { pct: 100, label: 'Complete!'            },
+            ];
+
+            btn.addEventListener('click', async () => {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Updating…</span>';
+                progWrap.style.display = 'flex';
+
+                // Animate progress bar through steps
+                let i = 0;
+                const runStep = () => {
+                    if (i >= steps.length) {
+                        setTimeout(() => window.location.reload(true), 400);
+                        return;
+                    }
+                    const s = steps[i++];
+                    progBar.style.width = s.pct + '%';
+                    progLabel.textContent = s.label;
+                    setTimeout(runStep, 350 + Math.random() * 250);
+                };
+                setTimeout(runStep, 200);
+
+                // Tell the waiting SW to take over immediately
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                }
             });
-            
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 10000);
         }
 
         // =========================================
