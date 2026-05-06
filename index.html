@@ -2174,6 +2174,15 @@
                         showUpdateNotification();
                     }
 
+                    // Poll every 10 s so a new worker that arrives after page load
+                    // is caught and surfaced to the user without requiring a reload.
+                    setInterval(() => {
+                        registration.update().then(() => {
+                            if (registration.waiting && !document.getElementById('force-update-modal')) {
+                                showUpdateNotification();
+                            }
+                        }).catch(() => {});
+                    }, 10000);
                     return registration;
                 } catch (error) {
                     console.error('SW registration failed:', error);
@@ -2380,7 +2389,22 @@
                 { pct: 100, label: 'Complete!'            },
             ];
 
+            // Block ESC key — user must update
+            const _escBlock = (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); } };
+            document.addEventListener('keydown', _escBlock, true);
+            // Block backdrop click — clicking outside card does nothing
+            modal.addEventListener('click', (e) => { if (e.target === modal) e.stopPropagation(); });
+            // Hard-reload fallback: if user ignores the modal for 60 s, force the update silently
+            const _forceTimer = setTimeout(() => {
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                }
+                setTimeout(() => window.location.reload(true), 500);
+            }, 60000);
+
             btn.addEventListener('click', async () => {
+                clearTimeout(_forceTimer);
+                document.removeEventListener('keydown', _escBlock, true);
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Updating…</span>';
                 progWrap.style.display = 'flex';
