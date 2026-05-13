@@ -4065,198 +4065,88 @@
         window.applyTheme();
     </script>
 
-    <!-- =====================================================
-         PAYMENT NOTIFICATION AD (UPDATED)
-         ===================================================== -->
-    <style>
-        #payment-ad-overlay {
-            position: fixed; inset: 0;
-            z-index: 99999;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            padding: 20px;
-        }
-        #payment-ad-overlay.pay-ad-visible { display: flex; }
-        #payment-ad-overlay.pay-ad-show { opacity: 1; }
+    <!-- =========================================
+         PAYMENT NOTIFICATION AD (FULL SCREEN)
+         Set PAYMENT_DATE to your target date.
+         The ad auto-hides after that date passes.
+         ========================================= -->
+    <div id="payment-ad-overlay" style="display:none;position:fixed;inset:0;z-index:200000;background:#ffffff;justify-content:flex-start;align-items:center;flex-direction:column;opacity:0;transition:opacity 0.4s ease;font-family:'Inter',system-ui,sans-serif;">
+        
+        <!-- Close Button -->
+        <button onclick="dismissAd()" style="position:absolute;top:max(20px, env(safe-area-inset-top));right:20px;z-index:10;width:40px;height:40px;background:rgba(255,255,255,0.9);border:none;border-radius:50%;cursor:pointer;font-size:18px;color:#111;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:transform 0.2s;">✕</button>
 
-        .pay-ad-window {
-            background: #ffffff;
-            width: 100%;
-            max-width: 380px;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            transform: scale(0.95) translateY(20px);
-            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            position: relative;
-        }
-        #payment-ad-overlay.pay-ad-show .pay-ad-window {
-            transform: scale(1) translateY(0);
-        }
+        <!-- Full Width Image Section -->
+        <div style="width:100%;flex:0 0 45%;max-height:45vh;overflow:hidden;position:relative;background:#f8fafc;">
+            <img src="https://img.freepik.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80" alt="Payment notification" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
+            <!-- Fade gradient to blend image into the white bottom half -->
+            <div style="position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);"></div>
+        </div>
 
-        .pay-ad-image-container {
-            width: 100%;
-            height: 200px;
-            background: url('https://img.freepik.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80') center / cover no-repeat;
-            background-color: #ffffff;
-            position: relative;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .pay-ad-close-top {
-            position: absolute;
-            top: 15px; right: 15px;
-            width: 36px; height: 36px;
-            background: rgba(255, 255, 255, 0.9);
-            border: none; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #111827; font-size: 16px;
-            cursor: pointer; z-index: 10;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .pay-ad-body {
-            padding: 25px 20px 30px;
-            text-align: center;
-            background: #ffffff;
-        }
-
-        .pay-ad-title {
-            font-size: 22px;
-            font-weight: 900;
-            color: #111827;
-            line-height: 1.3;
-            margin-bottom: 8px;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.5px;
-        }
-
-        .pay-ad-subtitle {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 22px;
-            line-height: 1.5;
-            padding: 0 10px;
-        }
-
-        .pay-ad-date-display {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-        }
-
-        #pay-ad-dynamic-date {
-            display: block;
-            font-size: 22px;
-            font-weight: 900;
-            color: #55d082;
-            letter-spacing: -0.5px;
-        }
-
-        .pay-ad-btn {
-            width: 100%;
-            padding: 16px;
-            background: #55d082;
-            color: #111827;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s ease;
-        }
-        .pay-ad-btn:active { transform: scale(0.97); }
-    </style>
-
-    <div id="payment-ad-overlay">
-        <div class="pay-ad-window">
-            <button class="pay-ad-close-top" id="payment-ad-close-x"><i class="fas fa-times"></i></button>
-            <div class="pay-ad-image-container"></div>
-            <div class="pay-ad-body">
-                <h2 class="pay-ad-title">You Will Receive Your Payment This Date</h2>
-                <p class="pay-ad-subtitle">Your salary is scheduled to be credited to your account securely. No further action is required.</p>
-                <div class="pay-ad-date-display">
-                    <span id="pay-ad-dynamic-date">MAY 13, 2026</span>
-                </div>
-                <button class="pay-ad-btn" id="payment-ad-got-it">Got It, Thanks!</button>
+        <!-- White Content Section -->
+        <div style="background:#ffffff;width:100%;flex:1;padding:30px 24px max(40px, env(safe-area-inset-bottom));text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            
+            <div style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:16px;">
+                <span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;"></span>
+                Payment Scheduled
             </div>
+            
+            <p style="font-size:15px;color:#6b7280;font-weight:600;margin:0 0 8px;letter-spacing:0.3px;">You will receive your payment on</p>
+            
+            <div style="font-size:32px;font-weight:900;color:#111827;letter-spacing:-0.5px;margin-bottom:4px;" id="pay-ad-date">—</div>
+            <div style="font-size:14px;color:#9ca3af;margin-bottom:24px;font-weight:500;" id="pay-ad-day"></div>
+
+            <div style="width:50px;height:4px;background:#10b981;border-radius:2px;margin:0 auto 24px;"></div>
+
+            <p style="font-size:16px;color:#374151;line-height:1.6;margin:0;max-width:340px;">Your salary has been processed and will be <strong style="color:#111827;">credited to your account</strong> on the above date. Please ensure your bank details are up to date.</p>
+
+            <button onclick="dismissAd()" style="margin-top:auto;width:100%;max-width:340px;padding:18px;background:#10b981;color:#fff;border:none;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 8px 25px rgba(16,185,129,0.35);">Got It, Thanks!</button>
         </div>
     </div>
 
     <script>
-    (function () {
-        "use strict";
+    function dismissAd() {
+        var overlay = document.getElementById('payment-ad-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(function() { overlay.style.display = 'none'; }, 400);
+    }
 
-        // ══════════════════════════════════════════════
-        //  PAYMENT AD CONFIG — Edit these two lines only
-        // ══════════════════════════════════════════════
-        var AD_CUTOFF_DATE    = new Date('2026-05-13'); // Ad stops showing AFTER this date
-        var AD_DATE_DISPLAY   = 'MAY 13, 2026';        // Text shown in the ad card
-        // ══════════════════════════════════════════════
+    (function(){
+        // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
+        var PAYMENT_DATE = new Date('2026-05-13T23:59:59'); // Automatically stops at midnight on this date
+        // ─────────────────────────────────────────────────────────────
 
-        var today = new Date();
-        today.setHours(0, 0, 0, 0);
-        AD_CUTOFF_DATE.setHours(0, 0, 0, 0);
+        var now = new Date();
+        if (now > PAYMENT_DATE) return; // Past the date — do nothing
 
-        // Stop showing if today is past the payment date
-        if (today > AD_CUTOFF_DATE) return;
+        // Format date label dynamically based on PAYMENT_DATE
+        var days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var d      = PAYMENT_DATE;
+        var day    = d.getDate();
+        var suffix = (day === 1 || day === 21 || day === 31) ? 'st' : (day === 2 || day === 22) ? 'nd' : (day === 3 || day === 23) ? 'rd' : 'th';
+        
+        var dateEl = document.getElementById('pay-ad-date');
+        var dayEl  = document.getElementById('pay-ad-day');
+        if (dateEl) dateEl.textContent = day + suffix + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+        if (dayEl)  dayEl.textContent  = days[d.getDay()] + ' · End of Month';
 
-        // NOTE: The localStorage "Show only once per calendar day" limit 
-        // has been intentionally removed so it shows every time the user logs in.
-
-        var overlay  = document.getElementById('payment-ad-overlay');
-        var dateEl   = document.getElementById('pay-ad-dynamic-date');
-        var gotItBtn = document.getElementById('payment-ad-got-it');
-        var closeBtn = document.getElementById('payment-ad-close-x');
-
-        if (!overlay) return;
-
-        // Inject the configured display date
-        if (dateEl) dateEl.textContent = AD_DATE_DISPLAY;
-
-        function dismissAd() {
-            overlay.classList.remove('pay-ad-show');
-            setTimeout(function () {
-                overlay.classList.remove('pay-ad-visible');
-            }, 400);
-        }
-
-        if (gotItBtn) gotItBtn.addEventListener('click', dismissAd);
-        if (closeBtn) closeBtn.addEventListener('click', dismissAd);
+        var overlay = document.getElementById('payment-ad-overlay');
 
         function showAd() {
-            overlay.classList.add('pay-ad-visible');
-            requestAnimationFrame(function () {
-                requestAnimationFrame(function () {
-                    overlay.classList.add('pay-ad-show');
+            overlay.style.display = 'flex';
+            requestAnimationFrame(function(){
+                requestAnimationFrame(function(){
+                    overlay.style.opacity = '1';
                 });
             });
         }
 
-        // Wait for the app iframe to become active, then show the ad
-        var appPanel = document.getElementById('app');
-        if (appPanel) {
-            var observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (m) {
-                    if (m.attributeName === 'class' && appPanel.classList.contains('active')) {
-                        observer.disconnect();
-                        setTimeout(showAd, 1800); // Pops up 1.8s after dashboard appears
-                    }
-                });
-            });
-            observer.observe(appPanel, { attributes: true });
-        } else {
-            setTimeout(showAd, 4000);
-        }
+        // Show EVERY TIME the user logs in / app becomes active.
+        var _orig = window.onMacroSuccess;
+        window.onMacroSuccess = function(){
+            if (_orig) _orig.apply(this, arguments);
+            setTimeout(showAd, 1500); // Wait 1.5s after dashboard loads, then pop up full screen
+        };
     })();
     </script>
 
