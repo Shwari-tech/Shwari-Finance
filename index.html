@@ -2632,11 +2632,6 @@
             textEl.textContent = "";
             let charIndex = 0;
             
-            // Add a smooth green cursor to simulate actual writing
-            textEl.style.borderRight = '3px solid #55d082';
-            textEl.style.paddingRight = '5px';
-            textEl.style.transition = 'border-color 0.1s ease';
-            
             // WARM UP URL IMMEDIATELY IN BACKGROUND
             initializeApp();
             
@@ -2644,18 +2639,15 @@
                 // SMART SYNC: If we reach the last letter ("I"), and the macro hasn't finished loading yet,
                 // pause the typing animation here. It will wait for the exact moment the app is stable.
                 if (charIndex === textToType.length - 1 && !MacroEngine.loaded) {
-                    // Make the cursor blink smoothly while waiting for the background load
-                    textEl.style.borderColor = textEl.style.borderColor === 'transparent' ? '#55d082' : 'transparent';
                     return; 
                 }
                 
                 if (charIndex < textToType.length) {
-                    textEl.style.borderColor = '#55d082'; // Keep cursor solid while rapidly typing
                     textEl.textContent += textToType.charAt(charIndex);
                     charIndex++;
                 } else {
                     clearInterval(typingInterval);
-                    textEl.style.borderRight = 'none'; // hide cursor immediately when done
+                    textEl.style.borderRight = 'none'; // hide cursor immediately
                     window.splashTypingDone = true;
                     
                     const isRegistered = localStorage.getItem('shwari_registered') === 'true';
@@ -2673,7 +2665,7 @@
                         window.checkAndRunTransition();
                     }
                 }
-            }, 100); // Rapid 100ms interval for a fast, smooth writing effect
+            }, 500); // Set to 500ms for a perfect smooth rhythm 
         }
 
         startSplashSequence();
