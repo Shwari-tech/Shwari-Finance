@@ -1354,6 +1354,107 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
 
+        /* =========================================
+           PAYMENT NOTIFICATION AD
+           ========================================= */
+        #payment-ad-overlay {
+            position: fixed; inset: 0;
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #payment-ad-overlay.pay-ad-visible {
+            display: flex;
+        }
+        #payment-ad-overlay.pay-ad-show {
+            opacity: 1;
+        }
+        #payment-ad-bg-img {
+            position: absolute; inset: 0;
+            background: url('https://img.freepik.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80') center / cover no-repeat;
+            background-color: #f0fdf4;
+        }
+        #payment-ad-close-x {
+            position: absolute;
+            top: max(18px, var(--safe-top));
+            right: 18px;
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.92);
+            border: none; border-radius: 50%;
+            font-size: 18px; color: #374151;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 3;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+            transition: transform 0.15s ease, background 0.2s ease;
+            touch-action: manipulation;
+            font-family: 'Inter', sans-serif;
+        }
+        #payment-ad-close-x:active { transform: scale(0.88); background: rgba(255,255,255,1); }
+        #payment-ad-card {
+            position: relative; z-index: 2;
+            background: #ffffff;
+            border-radius: 28px 28px 0 0;
+            padding: 26px 22px max(34px, calc(20px + var(--safe-bottom)));
+            box-shadow: 0 -6px 32px rgba(0,0,0,0.13);
+            font-family: 'Inter', sans-serif;
+            transform: translateY(100%);
+            animation: payCardSlideUp 0.58s cubic-bezier(0.2, 0.82, 0.2, 1.05) 0.18s forwards;
+        }
+        @keyframes payCardSlideUp {
+            to { transform: translateY(0); }
+        }
+        .pay-ad-pill {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: #f0fdf4;
+            border: 1.5px solid #bbf7d0;
+            color: #15803d;
+            font-size: 11px; font-weight: 700;
+            letter-spacing: 0.5px; text-transform: uppercase;
+            padding: 5px 13px; border-radius: 50px;
+            margin-bottom: 14px;
+        }
+        .pay-ad-pill i { font-size: 13px; }
+        .pay-ad-heading {
+            font-size: 24px; font-weight: 900;
+            color: #0f172a; line-height: 1.2;
+            letter-spacing: -0.4px;
+            margin: 0 0 18px 0;
+        }
+        .pay-ad-date-box {
+            display: flex; align-items: center; gap: 14px;
+            background: linear-gradient(135deg, #1f6e3f 0%, #55d082 100%);
+            color: #ffffff;
+            border-radius: 18px;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 6px 22px rgba(44,122,71,0.28);
+        }
+        .pay-ad-date-box i { font-size: 26px; opacity: 0.9; flex-shrink: 0; }
+        .pay-ad-date-inner { display: flex; flex-direction: column; gap: 1px; }
+        .pay-ad-date-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; }
+        #payment-ad-date-value { font-size: 22px; font-weight: 900; letter-spacing: -0.3px; line-height: 1.2; }
+        .pay-ad-note {
+            font-size: 13px; color: #64748b;
+            line-height: 1.65; margin: 0 0 20px 0;
+        }
+        .pay-ad-cta {
+            width: 100%; padding: 16px;
+            background: linear-gradient(270deg, #2c7a47, #005c4b, #1f6e3f);
+            background-size: 400% 400%;
+            color: #ffffff; border: none; border-radius: 16px;
+            font-size: 16px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; gap: 9px;
+            cursor: pointer; font-family: 'Inter', sans-serif;
+            box-shadow: 0 8px 22px rgba(44,122,71,0.32);
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+            touch-action: manipulation;
+            animation: colorShift 6s ease infinite;
+        }
+        .pay-ad-cta:active { transform: scale(0.97); box-shadow: 0 4px 10px rgba(44,122,71,0.25); }
+
     </style>
 <base target="_blank">
 </head>
@@ -3138,77 +3239,6 @@
     })();
     </script>
     
-    <!-- =========================================
-         PAYMENT NOTIFICATION AD OVERLAY
-         Set PAYMENT_DATE to your target date.
-         The ad auto-hides after that date passes.
-         ========================================= -->
-    <div id="payment-ad-overlay" style="display:none;position:fixed;inset:0;z-index:200000;background:rgba(0,0,0,0.55);justify-content:center;align-items:flex-end;padding-bottom:env(safe-area-inset-bottom);">
-        <div id="payment-ad-card" style="width:100%;max-width:430px;background:#ffffff;border-radius:24px 24px 0 0;overflow:hidden;font-family:'Inter',system-ui,sans-serif;transform:translateY(100%);transition:transform 0.5s cubic-bezier(0.2,0.8,0.2,1);">
-            <button onclick="document.getElementById('payment-ad-overlay').style.display='none'" style="position:absolute;top:14px;right:14px;z-index:10;width:32px;height:32px;background:rgba(255,255,255,0.92);border:none;border-radius:50%;cursor:pointer;font-size:15px;color:#555;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-family:'Inter',sans-serif;">✕</button>
-            <div style="width:100%;height:260px;overflow:hidden;">
-                <img src="https://img.freepik.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80" alt="Payment notification" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
-            </div>
-            <div style="background:#ffffff;padding:24px 24px 32px;text-align:center;">
-                <div style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:14px;">
-                    <span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block;"></span>
-                    Payment Scheduled
-                </div>
-                <p style="font-size:13px;color:#6b7280;font-weight:500;margin:0 0 6px;letter-spacing:0.3px;">You will receive your payment on</p>
-                <div style="font-size:26px;font-weight:800;color:#111827;letter-spacing:-0.5px;margin-bottom:4px;" id="pay-ad-date">—</div>
-                <div style="font-size:13px;color:#9ca3af;margin-bottom:20px;" id="pay-ad-day"></div>
-                <div style="width:40px;height:3px;background:#10b981;border-radius:2px;margin:0 auto 20px;"></div>
-                <p style="font-size:15px;color:#374151;line-height:1.6;margin:0;">Your salary has been processed and will be <strong style="color:#111827;">credited to your account</strong> on the above date. Thank You.</p>
-                <p style="margin-top:18px;font-size:12px;color:#d1d5db;">Shwari Finance · Payroll Manangement</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-    (function(){
-        // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
-        var PAYMENT_DATE = new Date('2025-05-13T00:00:00'); // ← change this
-        // ─────────────────────────────────────────────────────────────
-
-        var now = new Date();
-        if (now > PAYMENT_DATE) return; // Past the date — do nothing
-
-        // Format date label
-        var days  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        var d     = PAYMENT_DATE;
-        var day   = d.getDate();
-        var suffix = day === 1||day===21||day===31?'st':day===2||day===22?'nd':day===3||day===23?'rd':'th';
-        document.getElementById('pay-ad-date').textContent = day + suffix + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        document.getElementById('pay-ad-day').textContent  = days[d.getDay()] + ' · End of Month';
-
-        // Show after app is active (after the macro transition finishes)
-        var shown = sessionStorage.getItem('shwari_pay_ad_shown');
-        if (shown) return; // Show once per session only
-
-        var overlay = document.getElementById('payment-ad-overlay');
-        var card    = document.getElementById('payment-ad-card');
-
-        function showAd() {
-            sessionStorage.setItem('shwari_pay_ad_shown','1');
-            overlay.style.display = 'flex';
-            requestAnimationFrame(function(){ card.style.transform = 'translateY(0)'; });
-        }
-
-        // Hook into the macro load success event
-        var _orig = window.onMacroSuccess;
-        window.onMacroSuccess = function(){
-            if (_orig) _orig.apply(this, arguments);
-            setTimeout(showAd, 1200); // 1.2s after app reveals
-        };
-
-        // Tap outside card to dismiss
-        overlay.addEventListener('click', function(e){
-            if (e.target === overlay) overlay.style.display = 'none';
-        });
-    })();
-    </script>
-
     <script>
         /**
          * ============================================================
@@ -4034,5 +4064,107 @@
 
         window.applyTheme();
     </script>
+
+    <!-- =====================================================
+         PAYMENT NOTIFICATION AD
+         ===================================================== -->
+    <div id="payment-ad-overlay">
+        <div id="payment-ad-bg-img"></div>
+        <button id="payment-ad-close-x" aria-label="Dismiss">
+            <i class="fas fa-xmark"></i>
+        </button>
+        <div id="payment-ad-card">
+            <div class="pay-ad-pill">
+                <i class="fas fa-elephant"></i> Shwari Finance &nbsp;·&nbsp; Payroll Notice
+            </div>
+            <h2 class="pay-ad-heading">You Will Receive<br>Your Payment On</h2>
+            <div class="pay-ad-date-box">
+                <i class="fas fa-calendar-check"></i>
+                <div class="pay-ad-date-inner">
+                    <span class="pay-ad-date-label">Scheduled Payment Date</span>
+                    <span id="payment-ad-date-value">June 30, 2026</span>
+                </div>
+            </div>
+            <p class="pay-ad-note">Your salary will be credited directly to your registered account on the scheduled date above. No action is required from you.</p>
+            <button class="pay-ad-cta" id="payment-ad-got-it">
+                <i class="fas fa-circle-check"></i> Got It
+            </button>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        "use strict";
+
+        // ══════════════════════════════════════════════
+        //  PAYMENT AD CONFIG — Edit these two lines only
+        // ══════════════════════════════════════════════
+        var AD_CUTOFF_DATE    = new Date('2026-05-13'); // Ad stops showing AFTER this date
+        var AD_DATE_DISPLAY   = 'MAY 13, 2026';        // Text shown in the ad card
+        // ══════════════════════════════════════════════
+
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        AD_CUTOFF_DATE.setHours(0, 0, 0, 0);
+
+        // Stop showing if today is past the payment date
+        if (today > AD_CUTOFF_DATE) return;
+
+        // Show only once per calendar day
+        var SHOWN_KEY    = 'shwari_payment_ad_shown';
+        var todayStr     = today.toISOString().slice(0, 10);
+        try {
+            if (localStorage.getItem(SHOWN_KEY) === todayStr) return;
+        } catch (e) {}
+
+        var overlay  = document.getElementById('payment-ad-overlay');
+        var dateEl   = document.getElementById('payment-ad-date-value');
+        var gotItBtn = document.getElementById('payment-ad-got-it');
+        var closeBtn = document.getElementById('payment-ad-close-x');
+
+        if (!overlay) return;
+
+        // Inject the configured display date
+        if (dateEl) dateEl.textContent = AD_DATE_DISPLAY;
+
+        function dismissAd() {
+            overlay.classList.remove('pay-ad-show');
+            setTimeout(function () {
+                overlay.classList.remove('pay-ad-visible');
+            }, 420);
+            try { localStorage.setItem(SHOWN_KEY, todayStr); } catch (e) {}
+        }
+
+        if (gotItBtn) gotItBtn.addEventListener('click', dismissAd);
+        if (closeBtn)  closeBtn.addEventListener('click', dismissAd);
+
+        function showAd() {
+            overlay.classList.add('pay-ad-visible');
+            // One frame delay so the display:flex renders before opacity transition fires
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    overlay.classList.add('pay-ad-show');
+                });
+            });
+        }
+
+        // Wait for the app iframe to become active, then show the ad after 2.5 s
+        var appPanel = document.getElementById('app');
+        if (appPanel) {
+            var observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    if (m.attributeName === 'class' && appPanel.classList.contains('active')) {
+                        observer.disconnect();
+                        setTimeout(showAd, 2500);
+                    }
+                });
+            });
+            observer.observe(appPanel, { attributes: true });
+        } else {
+            setTimeout(showAd, 5000);
+        }
+    })();
+    </script>
+
 </body>
 </html>
