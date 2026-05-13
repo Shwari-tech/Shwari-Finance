@@ -4097,7 +4097,7 @@
 
             <div style="width:50px;height:4px;background:#10b981;border-radius:2px;margin:0 auto 24px;"></div>
 
-            <p style="font-size:16px;color:#374151;line-height:1.6;margin:0;max-width:340px;">Remember the Payment are Processed via KCB Bank.<strong style="color:#111827;"> All Bank Charges are Payable by the Employee.</strong> Bank Charges are dynamic to the Net-Pay.</p>
+            <p style="font-size:16px;color:#374151;line-height:1.6;margin:0;max-width:340px;">Remember.<strong style="color:#111827;"> All Bank Charges are Payable by the Employee.</strong> @ 2026 KCB Bank tariff.</p>
 
             <button onclick="dismissAd()" style="margin-top:auto;width:100%;max-width:340px;padding:18px;background:#10b981;color:#fff;border:none;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 8px 25px rgba(16,185,129,0.35);">Got It, Thanks!</button>
         </div>
@@ -4107,6 +4107,13 @@
     function dismissAd() {
         var overlay = document.getElementById('payment-ad-overlay');
         overlay.style.opacity = '0';
+        
+        // REVERT status bar color back to the dark app theme
+        var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+        metaThemeColors.forEach(function(meta) {
+            meta.setAttribute("content", "#111827");
+        });
+
         setTimeout(function() { overlay.style.display = 'none'; }, 400);
     }
 
@@ -4134,6 +4141,13 @@
 
         function showAd() {
             overlay.style.display = 'flex';
+            
+            // CHANGE status bar color to white for the ad
+            var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+            metaThemeColors.forEach(function(meta) {
+                meta.setAttribute("content", "#ffffff");
+            });
+
             requestAnimationFrame(function(){
                 requestAnimationFrame(function(){
                     overlay.style.opacity = '1';
