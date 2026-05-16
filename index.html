@@ -66,6 +66,36 @@
             pointer-events: none;
         }
 
+        /* --- PULL CENTER ANIMATION --- */
+        .bg-layer.pull-center .orbit-wrapper {
+            /* Takes over and spins them wildly into the middle */
+            animation: pullCenterAnim 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
+
+        .bg-layer.pull-center .orbit-icon::after {
+            content: '';
+            position: absolute;
+            width: 6px; height: 6px;
+            background: #FF8C00;
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            /* Creates trailing spark dots right behind the icon */
+            box-shadow: 15px 15px 0 -1px #FF8C00, 30px 30px 0 -2px #FF8C00, 45px 45px 0 -3px #FF8C00;
+            animation: sparkTrailPulse 0.4s infinite alternate;
+        }
+
+        @keyframes pullCenterAnim {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0) rotate(540deg); opacity: 0; }
+        }
+        
+        @keyframes sparkTrailPulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
         /* --- BOUNCE & ORBIT ANIMATIONS --- */
         .splash-center-img {
             width: 90%; 
@@ -100,8 +130,8 @@
             justify-content: center; 
             align-items: center;
             font-size: 32px;
-            color: #ff9800; /* Vivid orange */
-            filter: drop-shadow(0 0 8px rgba(255, 152, 0, 0.6)); /* Glowing effect */
+            color: #FF8C00; /* Dark orange */
+            filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.7)); /* Dark orange glow */
             animation: counterSpinTrack 14s linear infinite;
         }
 
@@ -112,12 +142,12 @@
         .oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
         .oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
 
-        /* ORANGE SPARKS / BUBBLES SHOOTING LEFT */
+        /* DARK ORANGE SPARKS / BUBBLES SHOOTING LEFT */
         .spark {
             position: absolute;
-            background: #ff9800;
+            background: #FF8C00;
             border-radius: 50%;
-            box-shadow: 0 0 10px #ff9800, 0 0 20px #ff9800;
+            box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
             opacity: 0;
             z-index: 5;
         }
@@ -2912,24 +2942,30 @@
             if(uiWrapper) uiWrapper.classList.add('pull-active');
             document.body.classList.remove('intro-active');
 
-            // Super smooth crossfade: Activate App iframe, simultaneously fade out Splash
+            // Activate App iframe beneath the splash layer
             appPanel.classList.add('active');
             
             if(bgLayer) {
-                bgLayer.classList.add('fade-out');
+                // STEP 1: Ignite sparks and pull the icons to the center
+                bgLayer.classList.add('pull-center');
                 
+                // STEP 2: After the icons are pulled in (700ms), boom out the whole splash screen
                 setTimeout(() => {
+                    bgLayer.classList.add('fade-out');
+                    
+                    // Revert notification status bar background color rule to normal UI base color
                     document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
                         meta.setAttribute("content", "#111827");
                     });
-                }, 500); // Buried inside the fade — completely invisible
 
-                setTimeout(() => { bgLayer.style.display = 'none'; }, 700);
+                    // Completely hide after fade out finishes
+                    setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+                }, 700); 
             }
             
             setTimeout(() => {
                 if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-            }, 1200);
+            }, 1800);
         };
         
         const executeTransition = () => {
