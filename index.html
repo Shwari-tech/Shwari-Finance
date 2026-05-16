@@ -56,7 +56,7 @@
             align-items: center;
             justify-content: center;
             opacity: 1;
-            transition: opacity 0.8s ease-in-out;
+            transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .bg-layer.fade-out {
@@ -2624,15 +2624,16 @@
                 if (bgLayer) {
                     bgLayer.classList.add('fade-out');
                     
-                    // Revert notification status bar background color rule to normal UI base color
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                        meta.setAttribute("content", "#111827");
-                    });
+                    setTimeout(() => {
+                        document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+                            meta.setAttribute("content", "#111827");
+                        });
+                    }, 400); // Change mid-fade so it's invisible to the user
                     
-                    setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+                    setTimeout(() => { bgLayer.style.display = 'none'; }, 600);
                 }
                 if (window.checkAndRunTransition) window.checkAndRunTransition();
-            }, 3000); // Delay changed to 3 seconds while app loads in background
+            }, 900); // Fast smooth splash
         }
 
         startSplashSequence();
@@ -2823,12 +2824,13 @@
             if(bgLayer) {
                 bgLayer.classList.add('fade-out');
                 
-                // Revert notification status bar background color rule to normal UI base color
-                document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                    meta.setAttribute("content", "#111827");
-                });
+                setTimeout(() => {
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+                        meta.setAttribute("content", "#111827");
+                    });
+                }, 500); // Buried inside the fade — completely invisible
 
-                setTimeout(() => { bgLayer.style.display = 'none'; }, 1000);
+                setTimeout(() => { bgLayer.style.display = 'none'; }, 700);
             }
             
             setTimeout(() => {
