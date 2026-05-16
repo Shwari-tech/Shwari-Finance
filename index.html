@@ -2615,25 +2615,15 @@
             }
         };
 
-        // Execute Splash sequence and warm up app immediately
+        // Execute Splash sequence and wait for macro to load
         function startSplashSequence() {
             initializeApp();
             window.splashTypingDone = true;
-            setTimeout(() => {
-                const bgLayer = document.querySelector('.bg-layer');
-                if (bgLayer) {
-                    bgLayer.classList.add('fade-out');
-                    
-                    setTimeout(() => {
-                        document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                            meta.setAttribute("content", "#111827");
-                        });
-                    }, 400); // Change mid-fade so it's invisible to the user
-                    
-                    setTimeout(() => { bgLayer.style.display = 'none'; }, 600);
-                }
-                if (window.checkAndRunTransition) window.checkAndRunTransition();
-            }, 900); // Fast smooth splash
+            
+            // The 3-second timer has been removed. 
+            // The splash screen will now wait infinitely and trigger the smooth fade/pop 
+            // the exact millisecond the iframe is ready, preventing any blank flashes.
+            if (window.checkAndRunTransition) window.checkAndRunTransition();
         }
 
         startSplashSequence();
