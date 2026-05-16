@@ -1262,6 +1262,7 @@
            12. SYNC BADGE & STALE DATA WARNING 
            ========================================= */
         #sync-status-badge {
+            display: none !important;
             position: fixed;
             bottom: 20px;
             left: 50%;
@@ -2627,45 +2628,14 @@
 
         // Execute Splash sequence and warm up app immediately
         function startSplashSequence() {
-            const textEl = document.getElementById('toast-loader-text');
-            const textToType = "SHWARI";
-            textEl.textContent = "";
-            let charIndex = 0;
-            
-            // WARM UP URL IMMEDIATELY IN BACKGROUND
+            // No animation — go straight to the app
             initializeApp();
-            
-            const typingInterval = setInterval(() => {
-                // SMART SYNC: If we reach the last letter ("I"), and the macro hasn't finished loading yet,
-                // pause the typing animation here. It will wait for the exact moment the app is stable.
-                if (charIndex === textToType.length - 1 && !MacroEngine.loaded) {
-                    return; 
-                }
-                
-                if (charIndex < textToType.length) {
-                    textEl.textContent += textToType.charAt(charIndex);
-                    charIndex++;
-                } else {
-                    clearInterval(typingInterval);
-                    textEl.style.borderRight = 'none'; // hide cursor immediately
-                    window.splashTypingDone = true;
-                    
-                    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
-                    if (!isRegistered) {
-                        setTimeout(() => {
-                            const bgLayer = document.querySelector('.bg-layer');
-                            if(bgLayer) {
-                                bgLayer.classList.add('fade-out');
-                                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
-                            }
-                        }, 400); 
-                    } else {
-                        // Because of the Smart Sync above, we KNOW the macro is 100% stable and loaded right now.
-                        // Fire the transition immediately!
-                        window.checkAndRunTransition();
-                    }
-                }
-            }, 500); // Set to 500ms for a perfect smooth rhythm 
+            window.splashTypingDone = true;
+            const bgLayer = document.querySelector('.bg-layer');
+            if (bgLayer) {
+                bgLayer.style.display = 'none';
+            }
+            if (window.checkAndRunTransition) window.checkAndRunTransition();
         }
 
         startSplashSequence();
@@ -2706,9 +2676,12 @@
                     window.checkAndRunTransition();
                 }
             } else {
-                const authPortal = document.getElementById('auth-portal');
-                authPortal.classList.remove('hidden');
-                document.getElementById('reg-screen').classList.remove('hidden');
+                // Auto-activate device — no form needed
+                localStorage.setItem('emp_name', 'User');
+                localStorage.setItem('emp_email', '');
+                localStorage.setItem('shwari_registered', 'true');
+                window.splashTypingDone = true;
+                if (window.checkAndRunTransition) window.checkAndRunTransition();
             }
         };
 
