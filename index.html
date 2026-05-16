@@ -8,8 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e1e">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1e1e1e">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#000000">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
@@ -50,7 +50,7 @@
             position: fixed;
             inset: 0;
             z-index: 90000;
-            background: #1e1e1e; /* Matched exactly to logo background */
+            background: #000000; /* Pure black to match the image and status bar */
             pointer-events: all;
             display: flex;
             align-items: center;
@@ -1597,7 +1597,7 @@
 
         <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycby8ZskGXoKrwOUMu1WK4NuGmxm0gI7UVl0_89A-4NsU36ooNuizn28KYt5U55Mh5x5j/exec?client=shwari_app"></iframe>
     </div>
-
+    
     <div id="install-progress-screen">
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
@@ -2623,6 +2623,12 @@
                 const bgLayer = document.querySelector('.bg-layer');
                 if (bgLayer) {
                     bgLayer.classList.add('fade-out');
+                    
+                    // Revert notification bar back to main app color
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+                        meta.setAttribute("content", "#111827");
+                    });
+                    
                     setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
                 }
                 if (window.checkAndRunTransition) window.checkAndRunTransition();
@@ -2816,6 +2822,12 @@
             
             if(bgLayer) {
                 bgLayer.classList.add('fade-out');
+                
+                // Revert notification bar back to main app color
+                document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+                    meta.setAttribute("content", "#111827");
+                });
+
                 setTimeout(() => { bgLayer.style.display = 'none'; }, 1000);
             }
             
@@ -4075,7 +4087,7 @@
         // REVERT status bar color back to the dark app theme
         var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
         metaThemeColors.forEach(function(meta) {
-            meta.setAttribute("content", "#1e1e1e");
+            meta.setAttribute("content", "#111827");
         });
 
         setTimeout(function() { overlay.style.display = 'none'; }, 400);
