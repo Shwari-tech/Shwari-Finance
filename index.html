@@ -50,21 +50,109 @@
             position: fixed;
             inset: 0;
             z-index: 90000;
-            background: #1e1e1e; /* Matched exactly to logo background */
+            background: #1e1e1e;
             pointer-events: all;
             display: flex;
             align-items: center;
             justify-content: center;
             opacity: 1;
             transform: scale(1);
-            transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.05);
+            transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.05);
         }
 
         .bg-layer.fade-out {
             opacity: 0;
-            transform: scale(1.15); /* Adds the smooth pop-out zoom effect */
+            transform: scale(1.35); /* Boom out effect */
             pointer-events: none;
         }
+
+        /* --- BOUNCE & ORBIT ANIMATIONS --- */
+        .splash-center-img {
+            width: 90%; 
+            aspect-ratio: 4/3; 
+            object-fit: contain; 
+            z-index: 1;
+            animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .orbit-wrapper {
+            position: absolute;
+            width: min(85vw, 420px);
+            height: min(85vw, 420px);
+            z-index: 10; /* Above the image */
+            pointer-events: none;
+            /* Sync the bounce in with the image */
+            animation: boomInBounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .orbit-track {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: spinTrack 14s linear infinite;
+        }
+        
+        .orbit-icon {
+            position: absolute;
+            width: 40px; 
+            height: 40px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            font-size: 32px;
+            color: #ff9800; /* Vivid orange */
+            filter: drop-shadow(0 0 8px rgba(255, 152, 0, 0.6)); /* Glowing effect */
+            animation: counterSpinTrack 14s linear infinite;
+        }
+
+        .oi-1 { top: 0%; left: 50%; margin-left: -20px; margin-top: -20px; }
+        .oi-2 { top: 25%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
+        .oi-3 { top: 75%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
+        .oi-4 { top: 100%; left: 50%; margin-left: -20px; margin-top: -20px; }
+        .oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
+        .oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
+
+        /* ORANGE SPARKS / BUBBLES SHOOTING LEFT */
+        .spark {
+            position: absolute;
+            background: #ff9800;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff9800, 0 0 20px #ff9800;
+            opacity: 0;
+            z-index: 5;
+        }
+        
+        .spark-1 { width: 12px; height: 12px; animation: shootLeft1 1.2s ease-out forwards 0.1s; }
+        .spark-2 { width: 8px; height: 8px; animation: shootLeft2 1.4s ease-out forwards 0.2s; }
+        .spark-3 { width: 15px; height: 15px; animation: shootLeft3 1.1s ease-out forwards 0.15s; }
+        .spark-4 { width: 6px; height: 6px; animation: shootLeft4 1.3s ease-out forwards 0.3s; }
+
+        @keyframes boomInBounce {
+            0% { transform: scale(0.1); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shootLeft1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-180px, -90px) scale(0); opacity: 0; }
+        }
+        @keyframes shootLeft2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-140px, 80px) scale(0); opacity: 0; }
+        }
+        @keyframes shootLeft3 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-220px, 20px) scale(0); opacity: 0; }
+        }
+        @keyframes shootLeft4 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-100px, -120px) scale(0); opacity: 0; }
+        }
+
+        @keyframes spinTrack { 100% { transform: rotate(360deg); } }
+        @keyframes counterSpinTrack { 100% { transform: rotate(-360deg); } }
 
         .bg-circle-loader {
             width: 60px;
@@ -1458,8 +1546,19 @@
 <body>
 
     <div class="bg-layer" id="splash-layer">
+        <div class="orbit-wrapper">
+            <div class="orbit-track">
+                <i class="fab fa-facebook orbit-icon oi-1"></i>
+                <i class="fab fa-x-twitter orbit-icon oi-2"></i>
+                <i class="fab fa-instagram orbit-icon oi-3"></i>
+                <i class="fab fa-linkedin-in orbit-icon oi-4"></i>
+                <i class="fab fa-whatsapp orbit-icon oi-5"></i>
+                <i class="fab fa-tiktok orbit-icon oi-6"></i>
+            </div>
+        </div>
+        
         <img src="https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU" 
-             style="width:90%; aspect-ratio:4/3; object-fit:contain;" />
+             style="width:90%; aspect-ratio:4/3; object-fit:contain; z-index: 1;" />
     </div>
 
     <div id="network-toast">
