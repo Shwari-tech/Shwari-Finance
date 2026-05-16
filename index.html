@@ -47,17 +47,7 @@
         }
 
         .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: 90000; 
-            background: #111827;
-            pointer-events: all;
-            will-change: transform;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease-in-out;
+            display: none !important;
         }
 
         .bg-layer.fade-out {
@@ -392,9 +382,8 @@
            4. APP IFRAME - SMOOTH CROSSFADE REVEAL
            ========================================= */
         .app { 
-            position: fixed; inset: 0; opacity: 0; pointer-events: none; 
+            position: fixed; inset: 0; opacity: 1; pointer-events: auto; 
             background: var(--bg-dark); z-index: 2000; 
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
@@ -402,20 +391,15 @@
         .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
-            /* To achieve a 90% zoom, we make the iframe larger and then scale it down */
-            width: 111.11%; height: 111.11%; border: none; 
-            background: var(--bg-dark); opacity: 0;
-            transform: scale(0.8) translateY(15px);
-            transform-origin: top left;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
-                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
+            width: 100%; height: 100%; border: none; 
+            background: var(--bg-dark); opacity: 1;
+            transform: none;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             padding: 0 !important;
             margin: 0 !important;
         }
-        /* The final active state scales it exactly to 0.9 (90%) */
-        .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
+        .app.active iframe { opacity: 1; transform: none; }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -2618,11 +2602,7 @@
             if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
                 window.transitionStarted = true;
                 
-                // Drastically reduced delay to 400ms for a lightning-fast, snappy transition.
-                // The URL is already loaded in the background, so this just gives it a split-second to stabilize visually.
-                setTimeout(() => {
-                    transitionLogic();
-                }, 400); 
+                transitionLogic(); 
             }
         };
 
