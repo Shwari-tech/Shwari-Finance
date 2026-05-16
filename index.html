@@ -23,7 +23,7 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
-            --bg-dark: #111827;
+            --bg-dark: #1e1e1e; /* Matched to logo background */
             --bg-card: #1f2937;
             --accent: #55d082;
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
@@ -50,7 +50,7 @@
             position: fixed;
             inset: 0;
             z-index: 90000;
-            background: #000000; /* Changed to black */
+            background: #1e1e1e; /* Matched exactly to logo background */
             pointer-events: all;
             display: flex;
             align-items: center;
@@ -1590,15 +1590,14 @@
             <i class="fas fa-triangle-exclamation"></i> Data may be outdated (>24h old)
         </div>
         
-        <!-- NEW INSTANT OFFLINE BANNER -->
         <div id="offline-macro-banner">
             <div class="offline-pulse"></div>
             <span>Offline Mode</span>
         </div>
 
-        <iframe id="macro-frame"></iframe>
+        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycby8ZskGXoKrwOUMu1WK4NuGmxm0gI7UVl0_89A-4NsU36ooNuizn28KYt5U55Mh5x5j/exec?client=shwari_app"></iframe>
     </div>
-
+    
     <div id="install-progress-screen">
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
