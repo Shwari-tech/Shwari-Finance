@@ -2716,18 +2716,18 @@
             }
         };
 
-        // Execute Splash sequence with a guaranteed 2-second minimum delay
+        // Execute Splash sequence with a guaranteed 3-second minimum delay
         function startSplashSequence() {
             initializeApp();
             window.splashTypingDone = false; // Hold the transition back initially
             
-            // Wait exactly 2 seconds before permitting the app to show.
-            // If the URL is already loaded, it will pop out immediately after 2 seconds.
+            // Wait exactly 3 seconds before permitting the app to show.
+            // If the URL is already loaded, it will pop out immediately after 3 seconds.
             // If the URL is still loading, it holds the image until the URL is 100% ready (no blank screens).
             setTimeout(() => {
                 window.splashTypingDone = true;
                 if (window.checkAndRunTransition) window.checkAndRunTransition();
-            }, 2000); 
+            }, 3000); 
         }
 
         startSplashSequence();
