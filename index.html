@@ -66,44 +66,40 @@
             pointer-events: none;
         }
 
-        /* --- PULL CENTER ANIMATION --- */
-        .bg-layer.pull-center .orbit-wrapper {
-            /* Takes over and spins them wildly into the middle */
-            animation: pullCenterAnim 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
-        }
+        const transitionLogic = () => {
+            const uiWrapper = document.getElementById('ui');
+            const appPanel = document.getElementById('app');
+            const bgLayer = document.querySelector('.bg-layer');
+            
+            // Clean up parallax
+            if(uiWrapper) uiWrapper.classList.add('pull-active');
+            document.body.classList.remove('intro-active');
 
-        .bg-layer.pull-center .orbit-icon::after {
-            content: '';
-            position: absolute;
-            width: 6px; height: 6px;
-            background: #FF8C00;
-            border-radius: 50%;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            /* Creates trailing spark dots right behind the icon */
-            box-shadow: 15px 15px 0 -1px #FF8C00, 30px 30px 0 -2px #FF8C00, 45px 45px 0 -3px #FF8C00;
-            animation: sparkTrailPulse 0.4s infinite alternate;
-        }
+            // Activate App iframe beneath the splash layer
+            appPanel.classList.add('active');
+            
+            if(bgLayer) {
+                // STEP 1: Ignite sparks, pull icons AND image into the center
+                bgLayer.classList.add('pull-center');
+                
+                // STEP 2: After everything vanishes into the center (600ms), boom out the background
+                setTimeout(() => {
+                    bgLayer.classList.add('fade-out');
+                    
+                    // Revert notification status bar background color rule to normal UI base color
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+                        meta.setAttribute("content", "#111827");
+                    });
 
-        @keyframes pullCenterAnim {
-            0% { transform: scale(1) rotate(0deg); opacity: 1; }
-            100% { transform: scale(0) rotate(540deg); opacity: 0; }
-        }
-        
-        @keyframes sparkTrailPulse {
-            0% { opacity: 0.5; }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-        }
-
-        /* --- BOUNCE & ORBIT ANIMATIONS --- */
-        .splash-center-img {
-            width: 90%; 
-            aspect-ratio: 4/3; 
-            object-fit: contain; 
-            z-index: 1;
-            animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+                    // Completely hide after fade out finishes
+                    setTimeout(() => { bgLayer.style.display = 'none'; }, 700);
+                }, 600); 
+            }
+            
+            setTimeout(() => {
+                if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
+            }, 1800);
+        };
 
         .orbit-wrapper {
             position: absolute;
@@ -2737,26 +2733,29 @@
         window.splashTypingDone = false;
         window.transitionStarted = false;
 
-        window.checkAndRunTransition = () => {
+        window.checkAndRunTransition = (forceOpen = false) => {
             const isRegistered = localStorage.getItem('shwari_registered') === 'true';
-            if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
-                window.transitionStarted = true;
-                
-                transitionLogic(); 
+            
+            if (isRegistered && !window.transitionStarted) {
+                // Open if forced by the timer OR if loaded naturally
+                if (forceOpen || (window.splashTypingDone && MacroEngine.loaded)) {
+                    window.transitionStarted = true;
+                    transitionLogic(); 
+                }
             }
         };
 
-        // Execute Splash sequence with a guaranteed 3-second minimum delay
+        // Execute Splash sequence
         function startSplashSequence() {
             initializeApp();
-            window.splashTypingDone = false; // Hold the transition back initially
+            window.splashTypingDone = false; 
             
-            // Wait exactly 3 seconds before permitting the app to show.
-            // If the URL is already loaded, it will pop out immediately after 3 seconds.
-            // If the URL is still loading, it holds the image until the URL is 100% ready (no blank screens).
+            // Wait exactly 3 seconds for the full animation sequence to play out,
+            // then ALWAYS force the transition to open the URL, 
+            // guaranteeing it never gets stuck on the splash screen.
             setTimeout(() => {
                 window.splashTypingDone = true;
-                if (window.checkAndRunTransition) window.checkAndRunTransition();
+                if (window.checkAndRunTransition) window.checkAndRunTransition(true); // "true" forces it open
             }, 3000); 
         }
 
