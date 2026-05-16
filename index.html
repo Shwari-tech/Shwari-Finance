@@ -50,7 +50,7 @@
             position: fixed;
             inset: 0;
             z-index: 90000;
-            background: #ffffff;
+            background: #000000; /* Changed to black */
             pointer-events: all;
             display: flex;
             align-items: center;
@@ -2627,7 +2627,7 @@
                     setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
                 }
                 if (window.checkAndRunTransition) window.checkAndRunTransition();
-            }, 1000);
+            }, 3000); // Delay changed to 3 seconds while app loads in background
         }
 
         startSplashSequence();
