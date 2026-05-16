@@ -8,8 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#000000">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e1e">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1e1e1e">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
@@ -50,7 +50,7 @@
             position: fixed;
             inset: 0;
             z-index: 90000;
-            background: #000000; /* Pure black to match the image and status bar */
+            background: #1e1e1e; /* Matched exactly to logo background */
             pointer-events: all;
             display: flex;
             align-items: center;
@@ -2624,7 +2624,7 @@
                 if (bgLayer) {
                     bgLayer.classList.add('fade-out');
                     
-                    // Revert notification bar back to main app color
+                    // Revert notification status bar background color rule to normal UI base color
                     document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
                         meta.setAttribute("content", "#111827");
                     });
@@ -2823,7 +2823,7 @@
             if(bgLayer) {
                 bgLayer.classList.add('fade-out');
                 
-                // Revert notification bar back to main app color
+                // Revert notification status bar background color rule to normal UI base color
                 document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
                     meta.setAttribute("content", "#111827");
                 });
