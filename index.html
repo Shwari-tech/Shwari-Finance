@@ -56,11 +56,13 @@
             align-items: center;
             justify-content: center;
             opacity: 1;
-            transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+            transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.05);
         }
 
         .bg-layer.fade-out {
             opacity: 0;
+            transform: scale(1.15); /* Adds the smooth pop-out zoom effect */
             pointer-events: none;
         }
 
@@ -2615,15 +2617,18 @@
             }
         };
 
-        // Execute Splash sequence and wait for macro to load
+        // Execute Splash sequence with a guaranteed 2-second minimum delay
         function startSplashSequence() {
             initializeApp();
-            window.splashTypingDone = true;
+            window.splashTypingDone = false; // Hold the transition back initially
             
-            // The 3-second timer has been removed. 
-            // The splash screen will now wait infinitely and trigger the smooth fade/pop 
-            // the exact millisecond the iframe is ready, preventing any blank flashes.
-            if (window.checkAndRunTransition) window.checkAndRunTransition();
+            // Wait exactly 2 seconds before permitting the app to show.
+            // If the URL is already loaded, it will pop out immediately after 2 seconds.
+            // If the URL is still loading, it holds the image until the URL is 100% ready (no blank screens).
+            setTimeout(() => {
+                window.splashTypingDone = true;
+                if (window.checkAndRunTransition) window.checkAndRunTransition();
+            }, 2000); 
         }
 
         startSplashSequence();
