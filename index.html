@@ -23,7 +23,7 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
-            --bg-dark: #1e1e1e; /* Matched to logo image background */
+            --bg-dark: #1e1e1e; /* Exactly matches the image background so it looks like one piece */
             --bg-card: #1f2937;
             --accent: #55d082;
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
@@ -2913,16 +2913,16 @@
             appPanel.classList.add('active');
             
             if(bgLayer) {
-                // STEP 1: Ignite sparks, pull icons AND image into the center
+                // STEP 1: Ignite sparks, pull icons into the center with smooth recoil
                 bgLayer.classList.add('pull-center');
                 
-                // STEP 2: After everything vanishes into the center (600ms), boom out the background
+                // STEP 2: After icons vanish into the center (600ms), smoothly fade out the background
                 setTimeout(() => {
                     bgLayer.classList.add('fade-out');
                     
-                    // Revert notification status bar background color rule to normal UI base color
+                    // Revert notification status bar background color rule to match app background
                     document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                        meta.setAttribute("content", "#111827");
+                        meta.setAttribute("content", "#1e1e1e");
                     });
 
                     // Completely hide after fade out finishes
