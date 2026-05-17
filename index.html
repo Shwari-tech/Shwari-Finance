@@ -23,7 +23,7 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
-            --bg-dark: #1e1e1e; /* Exactly matches the image background so it looks like one piece */
+            --bg-dark: #1e1e1e; /* Matches image & status bar for seamless look */
             --bg-card: #1f2937;
             --accent: #55d082;
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
@@ -66,23 +66,20 @@
     pointer-events: none;
 }
 
+/* Smooth recoil before pulling into the center */
 .bg-layer.pull-center .orbit-wrapper {
-    animation: pullCenterAnim 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+    animation: pullCenterAnim 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-.bg-layer.pull-center .splash-center-img {
-    animation: suckImageIn 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+/* Make sure the image fades out smoothly when bg-layer fades */
+.bg-layer.fade-out .splash-center-img {
+    opacity: 0;
 }
 
 @keyframes pullCenterAnim {
     0% { transform: scale(1) rotate(0deg); opacity: 1; }
+    40% { transform: scale(1.15) rotate(-15deg); opacity: 1; }
     100% { transform: scale(0) rotate(540deg); opacity: 0; filter: blur(4px); }
-}
-
-@keyframes suckImageIn {
-    0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-    30% { transform: scale(1.05); filter: brightness(1.3); }
-    100% { transform: scale(0) rotate(-10deg); opacity: 0; filter: blur(8px); }
 }
 
 .splash-center-img {
@@ -91,6 +88,7 @@
     object-fit: contain;
     z-index: 1;
     animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: opacity 0.4s ease-out; /* Smooth vanish */
 }
 
 .orbit-wrapper {
@@ -121,7 +119,7 @@
     font-size: 36px;
     color: rgba(255, 140, 0, 0.6); /* Transparent dark orange */
     opacity: 1 !important;
-    filter: none; /* Removes the orange patch fade behind the icons */
+    filter: none; /* No patch */
     animation: counterSpinTrack 14s linear infinite;
     background: transparent;
 }
@@ -133,20 +131,21 @@
 .oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
 .oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
 
-/* DARK ORANGE SPARKS / BUBBLES SHOOTING LEFT */
-        .spark {
-            position: absolute;
-            background: #FF8C00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
-            opacity: 0;
-            z-index: 5;
-        }
-        
-        .spark-1 { width: 12px; height: 12px; animation: shootLeft1 1.2s ease-out forwards 0.1s; }
-        .spark-2 { width: 8px; height: 8px; animation: shootLeft2 1.4s ease-out forwards 0.2s; }
-        .spark-3 { width: 15px; height: 15px; animation: shootLeft3 1.1s ease-out forwards 0.15s; }
-        .spark-4 { width: 6px; height: 6px; animation: shootLeft4 1.3s ease-out forwards 0.3s; }
+/* SPARKS EXPLOSION EFFECT ON PULL */
+.spark {
+    position: absolute;
+    background: #FF8C00;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
+    opacity: 0;
+    z-index: 5;
+    top: 50%; left: 50%;
+}
+
+.bg-layer.pull-center .spark-1 { width: 12px; height: 12px; animation: shootLeft1 0.6s ease-out forwards; }
+.bg-layer.pull-center .spark-2 { width: 8px; height: 8px; animation: shootLeft2 0.7s ease-out forwards 0.1s; }
+.bg-layer.pull-center .spark-3 { width: 15px; height: 15px; animation: shootLeft3 0.5s ease-out forwards; }
+.bg-layer.pull-center .spark-4 { width: 6px; height: 6px; animation: shootLeft4 0.6s ease-out forwards 0.15s; }
 
 @keyframes boomInBounce {
     0% { transform: scale(0.1); opacity: 0; }
