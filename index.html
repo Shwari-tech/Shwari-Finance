@@ -207,23 +207,24 @@
     }
 }
 
-/* --- SPARKS / BUBBLES --- */
+/* --- SPARKS OUTWARD BOOM EXPLOSION --- */
 .spark {
     position: absolute;
     background: #FF8C00;
     border-radius: 50%;
-    box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
+    /* Bright high-fidelity neon orange aura */
+    box-shadow: 0 0 12px #FF8C00, 0 0 24px #FF8C00, 0 0 40px #FF8C00;
     opacity: 0;
-    z-index: 5;
+    z-index: 1000; /* Pin above everything else */
     top: 50%; left: 50%;
-    margin-top: -6px; margin-left: -6px;
+    transform: translate(-50%, -50%) scale(0);
 }
 
-/* Fire sparks aggressively when the pull center animation triggers */
-.bg-layer.pull-center .spark-1 { width: 14px; height: 14px; animation: shootLeft1 0.7s ease-out forwards; }
-.bg-layer.pull-center .spark-2 { width: 8px; height: 8px; animation: shootLeft2 0.8s ease-out forwards 0.1s; }
-.bg-layer.pull-center .spark-3 { width: 16px; height: 16px; animation: shootLeft3 0.6s ease-out forwards 0.05s; }
-.bg-layer.pull-center .spark-4 { width: 10px; height: 10px; animation: shootLeft4 0.7s ease-out forwards 0.15s; }
+/* Triggers 4 completely distinct radial blast angles with deep pop-out tension */
+.bg-layer.pull-center .spark-1 { width: 16px; height: 16px; animation: blastTopLeft 0.7s cubic-bezier(0.1, 0.8, 0.1, 1) forwards; }
+.bg-layer.pull-center .spark-2 { width: 12px; height: 12px; animation: blastTopRight 0.7s cubic-bezier(0.1, 0.8, 0.1, 1) forwards; }
+.bg-layer.pull-center .spark-3 { width: 18px; height: 18px; animation: blastBottomLeft 0.7s cubic-bezier(0.1, 0.8, 0.1, 1) forwards; }
+.bg-layer.pull-center .spark-4 { width: 14px; height: 14px; animation: blastBottomRight 0.7s cubic-bezier(0.1, 0.8, 0.1, 1) forwards; }
 
 @keyframes boomInBounce {
     0% { transform: scale(0.1); opacity: 0; }
@@ -232,21 +233,26 @@
     100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes shootLeft1 {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-280px, -140px) scale(0); opacity: 0; filter: blur(3px); }
+/* Sparks wait compressed until 45% (implosion complete), then pop out instantly */
+@keyframes blastTopLeft {
+    0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    55% { opacity: 1; }
+    100% { transform: translate(-240px, -180px) scale(2.2); opacity: 0; }
 }
-@keyframes shootLeft2 {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-200px, 120px) scale(0); opacity: 0; filter: blur(2px); }
+@keyframes blastTopRight {
+    0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    55% { opacity: 1; }
+    100% { transform: translate(240px, -180px) scale(1.8); opacity: 0; }
 }
-@keyframes shootLeft3 {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-320px, 40px) scale(0); opacity: 0; filter: blur(4px); }
+@keyframes blastBottomLeft {
+    0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    55% { opacity: 1; }
+    100% { transform: translate(-200px, 220px) scale(2.6); opacity: 0; }
 }
-@keyframes shootLeft4 {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-160px, -180px) scale(0); opacity: 0; filter: blur(2px); }
+@keyframes blastBottomRight {
+    0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    55% { opacity: 1; }
+    100% { transform: translate(200px, 220px) scale(2.0); opacity: 0; }
 }
 
 @keyframes spinTrack { 100% { transform: rotate(360deg); } }
