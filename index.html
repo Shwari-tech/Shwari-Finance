@@ -84,9 +84,23 @@
 }
 
 @keyframes smoothSuckInside {
-    0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-    35% { transform: scale(1.05); opacity: 1; filter: brightness(1.2); } /* Slight recoil, subtly brightens */
-    100% { transform: scale(0.4); opacity: 0; filter: brightness(0); } /* Shrinks and cleanly fades to black without blurring */
+    0% { 
+        transform: scale(1); 
+        opacity: 1; 
+        filter: brightness(1) contrast(1); 
+    }
+    /* THE BOOM CHARGE: Expands rapidly, flashes brighter with high contrast */
+    25% { 
+        transform: scale(1.25); 
+        opacity: 1; 
+        filter: brightness(1.6) contrast(1.2); 
+    } 
+    /* THE IMPLOSION SNAP: Sucks into a dead-center singularity point and vanishes cleanly */
+    100% { 
+        transform: scale(0); 
+        opacity: 0; 
+        filter: brightness(0) contrast(0); 
+    } 
 }
 
 .splash-center-img {
