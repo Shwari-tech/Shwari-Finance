@@ -47,51 +47,132 @@
         }
 
         .bg-layer {
-            position: fixed;
-            inset: 0;
-            z-index: 90000; 
-            background: #111827;
-            pointer-events: all;
-            will-change: transform;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease-in-out;
-        }
+    position: fixed;
+    inset: 0;
+    z-index: 90000;
+    background: #111827;
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.05);
+}
 
-        .bg-layer.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
+.bg-layer.fade-out {
+    opacity: 0;
+    transform: scale(1.35);
+    pointer-events: none;
+}
 
-        .bg-circle-loader {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #1f2937;
-            border-top: 4px solid #6b7280;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            animation: spinBgLoader 1s linear infinite;
-        }
+.bg-layer.pull-center .orbit-wrapper {
+    animation: pullCenterAnim 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
 
-        .bg-loader-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 18px;
-            font-weight: 900;
-            color: #6b7280;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            min-height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.bg-layer.pull-center .splash-center-img {
+    animation: suckImageIn 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
 
-        @keyframes spinBgLoader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+@keyframes pullCenterAnim {
+    0% { transform: scale(1) rotate(0deg); opacity: 1; }
+    100% { transform: scale(0) rotate(540deg); opacity: 0; filter: blur(4px); }
+}
+
+@keyframes suckImageIn {
+    0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+    30% { transform: scale(1.05); filter: brightness(1.3); }
+    100% { transform: scale(0) rotate(-10deg); opacity: 0; filter: blur(8px); }
+}
+
+.splash-center-img {
+    width: 90%;
+    aspect-ratio: 4/3;
+    object-fit: contain;
+    z-index: 1;
+    animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.orbit-wrapper {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: min(65vw, 260px);
+    height: min(65vw, 260px);
+    z-index: 999;
+    pointer-events: none;
+    animation: boomInBounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.orbit-track {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: spinTrack 14s linear infinite;
+}
+
+.orbit-icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    color: rgba(255, 140, 0, 0.75);
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 12px rgba(255, 140, 0, 0.9));
+    animation: counterSpinTrack 14s linear infinite;
+    background: transparent;
+}
+
+.oi-1 { top: 0%; left: 50%; margin-left: -20px; margin-top: -20px; }
+.oi-2 { top: 25%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
+.oi-3 { top: 75%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
+.oi-4 { top: 100%; left: 50%; margin-left: -20px; margin-top: -20px; }
+.oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
+.oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
+
+.spark {
+    position: absolute;
+    background: #FF8C00;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
+    opacity: 0;
+    z-index: 5;
+}
+
+.spark-1 { width: 12px; height: 12px; animation: shootLeft1 1.2s ease-out forwards 0.1s; }
+.spark-2 { width: 8px;  height: 8px;  animation: shootLeft2 1.4s ease-out forwards 0.2s; }
+.spark-3 { width: 15px; height: 15px; animation: shootLeft3 1.1s ease-out forwards 0.15s; }
+.spark-4 { width: 6px;  height: 6px;  animation: shootLeft4 1.3s ease-out forwards 0.3s; }
+
+@keyframes boomInBounce {
+    0% { transform: scale(0.1); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shootLeft1 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-180px, -90px) scale(0); opacity: 0; }
+}
+@keyframes shootLeft2 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-140px, 80px) scale(0); opacity: 0; }
+}
+@keyframes shootLeft3 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-220px, 20px) scale(0); opacity: 0; }
+}
+@keyframes shootLeft4 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-100px, -120px) scale(0); opacity: 0; }
+}
+
+@keyframes spinTrack { 100% { transform: rotate(360deg); } }
+@keyframes counterSpinTrack { 100% { transform: rotate(-360deg); } }
 
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
@@ -1460,10 +1541,25 @@
 </head>
 <body>
 
-    <div class="bg-layer">
-        <div class="bg-circle-loader"></div>
-        <div class="bg-loader-text" id="toast-loader-text"></div>
+    <div class="bg-layer" id="splash-layer">
+    <div class="spark spark-1"></div>
+    <div class="spark spark-2"></div>
+    <div class="spark spark-3"></div>
+    <div class="spark spark-4"></div>
+
+    <div class="orbit-wrapper">
+        <div class="orbit-track">
+            <i class="fab fa-facebook orbit-icon oi-1"></i>
+            <i class="fab fa-x-twitter orbit-icon oi-2"></i>
+            <i class="fab fa-instagram orbit-icon oi-3"></i>
+            <i class="fab fa-linkedin-in orbit-icon oi-4"></i>
+            <i class="fab fa-whatsapp orbit-icon oi-5"></i>
+            <i class="fab fa-tiktok orbit-icon oi-6"></i>
+        </div>
     </div>
+
+    <img class="splash-center-img" src="https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU" />
+</div>
 
     <div id="network-toast">
         <i class="fas fa-wifi"></i>
@@ -2627,46 +2723,25 @@
 
         // Execute Splash sequence and warm up app immediately
         function startSplashSequence() {
-            const textEl = document.getElementById('toast-loader-text');
-            const textToType = "SHWARI";
-            textEl.textContent = "";
-            let charIndex = 0;
-            
-            // WARM UP URL IMMEDIATELY IN BACKGROUND
-            initializeApp();
-            
-            const typingInterval = setInterval(() => {
-                // SMART SYNC: If we reach the last letter ("I"), and the macro hasn't finished loading yet,
-                // pause the typing animation here. It will wait for the exact moment the app is stable.
-                if (charIndex === textToType.length - 1 && !MacroEngine.loaded) {
-                    return; 
-                }
-                
-                if (charIndex < textToType.length) {
-                    textEl.textContent += textToType.charAt(charIndex);
-                    charIndex++;
-                } else {
-                    clearInterval(typingInterval);
-                    textEl.style.borderRight = 'none'; // hide cursor immediately
-                    window.splashTypingDone = true;
-                    
-                    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
-                    if (!isRegistered) {
-                        setTimeout(() => {
-                            const bgLayer = document.querySelector('.bg-layer');
-                            if(bgLayer) {
-                                bgLayer.classList.add('fade-out');
-                                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
-                            }
-                        }, 400); 
-                    } else {
-                        // Because of the Smart Sync above, we KNOW the macro is 100% stable and loaded right now.
-                        // Fire the transition immediately!
-                        window.checkAndRunTransition();
-                    }
-                }
-            }, 500); // Set to 500ms for a perfect smooth rhythm 
-        }
+    // Splash is now visual-only (image + orbit); mark typing done immediately
+    window.splashTypingDone = true;
+
+    // WARM UP URL IMMEDIATELY IN BACKGROUND
+    initializeApp();
+
+    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
+    if (!isRegistered) {
+        // New user — fade splash after a short visual beat so they see the animation
+        setTimeout(() => {
+            const bgLayer = document.querySelector('.bg-layer');
+            if (bgLayer) {
+                bgLayer.classList.add('fade-out');
+                setTimeout(() => { bgLayer.style.display = 'none'; }, 600);
+            }
+        }, 1400);
+    }
+    // For returning users, checkAndRunTransition fires via onMacroSuccess
+}
 
         startSplashSequence();
 
