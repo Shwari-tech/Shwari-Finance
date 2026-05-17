@@ -73,8 +73,8 @@
 }
 
 .bg-layer.pull-center .splash-center-img {
-    /* Image stays perfectly still and just fades away so it doesn't distort */
-    animation: imageFadeVanish 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    /* Smoothly sucks the image into the background, aggressively blurring the edges as it vanishes */
+    animation: smoothSuckInside 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
 }
 
 @keyframes pullCenterAnim {
@@ -83,9 +83,10 @@
     100% { transform: scale(0) rotate(600deg); opacity: 0; filter: blur(5px); }
 }
 
-@keyframes imageFadeVanish {
-    0%, 35% { opacity: 1; filter: brightness(1); transform: scale(1); }
-    100% { opacity: 0; filter: brightness(0); transform: scale(0.9); }
+@keyframes smoothSuckInside {
+    0% { transform: scale(1); opacity: 1; filter: blur(0px); }
+    35% { transform: scale(1.05); opacity: 1; filter: blur(1px); } /* Slight recoil outward to match icons */
+    100% { transform: scale(0); opacity: 0; filter: blur(20px); } /* Extreme blur as it implodes into the center */
 }
 
 .splash-center-img {
