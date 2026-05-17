@@ -66,32 +66,21 @@
     pointer-events: none;
 }
 
-/* --- ANIMATIONS: RECOIL & VANISH (LOCKSTEP ENGINE) --- */
+/* --- ANIMATIONS: RECOIL & VANISH --- */
 .bg-layer.pull-center .orbit-wrapper {
-    /* Tied to the exact same 0.7s duration and crisp cubic-bezier curve as the image */
-    animation: pullCenterAnim 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    /* Extreme Recoil: Pulls back, gets larger, then violently spins into the center */
+    animation: pullCenterAnim 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
 .bg-layer.pull-center .splash-center-img {
-    /* Tied to the exact same 0.7s duration and crisp cubic-bezier curve as the icons */
-    animation: smoothSuckInside 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    /* Smoothly sucks the image into the background, aggressively blurring the edges as it vanishes */
+    animation: smoothSuckInside 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
 }
 
 @keyframes pullCenterAnim {
-    0% { 
-        transform: scale(1) rotate(0deg); 
-        opacity: 1; 
-    }
-    /* Expands to 1.25 matching the image precisely on the recoil beat */
-    25% { 
-        transform: scale(1.25) rotate(-15deg); 
-        opacity: 1; 
-    }
-    /* Snaps out of existence simultaneously at center point */
-    100% { 
-        transform: scale(0) rotate(360deg); 
-        opacity: 0; 
-    }
+    0% { transform: scale(1) rotate(0deg); opacity: 1; }
+    35% { transform: scale(1.18) rotate(-20deg); opacity: 1; filter: brightness(1.3); }
+    100% { transform: scale(0) rotate(600deg); opacity: 0; filter: blur(5px); }
 }
 
 @keyframes smoothSuckInside {
@@ -99,21 +88,21 @@
         transform: scale(1); 
         opacity: 1; 
         filter: none;
-        clip-path: circle(50% at 50% 50%);
+        clip-path: circle(50% at 50% 50%); /* Sets initial clean circular boundary */
     }
-    /* Expands to 1.25 matching the icons precisely on the recoil beat */
+    /* THE CIRCULAR BOOM CHARGE: Expands into a high-energy shockwave retaining 100% original clarity and colors */
     25% { 
         transform: scale(1.25); 
         opacity: 1; 
-        filter: none; 
-        clip-path: circle(50% at 50% 50%);
+        filter: none; /* No blinding flash, keeping the image perfectly clear */
+        clip-path: circle(50% at 50% 50%); /* Cuts square edges sharply on expansion */
     } 
-    /* Snaps out of existence simultaneously at center point */
+    /* THE IMPLOSION SNAP: Snaps directly down to an absolute central point and cleanly vanishes */
     100% { 
         transform: scale(0); 
         opacity: 0; 
         filter: none;
-        clip-path: circle(0% at 50% 50%);
+        clip-path: circle(0% at 50% 50%); /* Collapses into a perfect microscopic singularity */
     } 
 }
 
@@ -207,31 +196,23 @@
     }
 }
 
-/* --- SPARKS OMNIDIRECTIONAL BLAST ENGINE --- */
+/* --- SPARKS / BUBBLES --- */
 .spark {
     position: absolute;
     background: #FF8C00;
     border-radius: 50%;
-    box-shadow: 0 0 10px #FF8C00, 0 0 25px #FF8C00, 0 0 45px #FF8C00;
+    box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
     opacity: 0;
-    z-index: 1000;
+    z-index: 5;
     top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0);
+    margin-top: -6px; margin-left: -6px;
 }
 
-/* Mapping 12 precision trajectories with hyper-snappy tracking curves */
-.bg-layer.pull-center .spark-1  { width: 14px; height: 14px; animation: bN    0.65s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-2  { width: 10px; height: 10px; animation: bNNE  0.60s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-3  { width: 16px; height: 16px; animation: bENE  0.70s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-4  { width: 12px; height: 12px; animation: bE    0.65s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-5  { width: 15px; height: 15px; animation: bESE  0.60s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-6  { width: 9px;  height: 9px;  animation: bSSE  0.75s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-7  { width: 18px; height: 18px; animation: bS    0.65s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-8  { width: 11px; height: 11px; animation: bSSW  0.70s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-9  { width: 13px; height: 13px; animation: bWSW  0.60s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-10 { width: 17px; height: 17px; animation: bW    0.65s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-11 { width: 10px; height: 10px; animation: bWNW  0.75s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
-.bg-layer.pull-center .spark-12 { width: 14px; height: 14px; animation: bNNW  0.60s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+/* Fire sparks aggressively when the pull center animation triggers */
+.bg-layer.pull-center .spark-1 { width: 14px; height: 14px; animation: shootLeft1 0.7s ease-out forwards; }
+.bg-layer.pull-center .spark-2 { width: 8px; height: 8px; animation: shootLeft2 0.8s ease-out forwards 0.1s; }
+.bg-layer.pull-center .spark-3 { width: 16px; height: 16px; animation: shootLeft3 0.6s ease-out forwards 0.05s; }
+.bg-layer.pull-center .spark-4 { width: 10px; height: 10px; animation: shootLeft4 0.7s ease-out forwards 0.15s; }
 
 @keyframes boomInBounce {
     0% { transform: scale(0.1); opacity: 0; }
@@ -240,19 +221,22 @@
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* 360° COORDINATE BLAST MATH (Sleeps until collapse point, then detonates outward) */
-@keyframes bN {   0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-50%, -280px) scale(2); opacity: 0; } }
-@keyframes bNNE { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(110px, -240px) scale(1.6); opacity: 0; } }
-@keyframes bENE { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(240px, -130px) scale(2.2); opacity: 0; } }
-@keyframes bE {   0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(280px, -50%) scale(1.8); opacity: 0; } }
-@keyframes bESE { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(240px, 110px) scale(2.4); opacity: 0; } }
-@keyframes bSSE { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(130px, 240px) scale(1.5); opacity: 0; } }
-@keyframes bS {   0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-50%, 280px) scale(2.5); opacity: 0; } }
-@keyframes bSSW { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-130px, 240px) scale(1.7); opacity: 0; } }
-@keyframes bWSW { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-240px, 130px) scale(2.1); opacity: 0; } }
-@keyframes bW {   0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-280px, -50%) scale(2.3); opacity: 0; } }
-@keyframes bWNW { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-240px, -110px) scale(1.6); opacity: 0; } }
-@keyframes bNNW { 0%, 45% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translate(-110px, -240px) scale(2); opacity: 0; } }
+@keyframes shootLeft1 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-280px, -140px) scale(0); opacity: 0; filter: blur(3px); }
+}
+@keyframes shootLeft2 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-200px, 120px) scale(0); opacity: 0; filter: blur(2px); }
+}
+@keyframes shootLeft3 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-320px, 40px) scale(0); opacity: 0; filter: blur(4px); }
+}
+@keyframes shootLeft4 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-160px, -180px) scale(0); opacity: 0; filter: blur(2px); }
+}
 
 @keyframes spinTrack { 100% { transform: rotate(360deg); } }
 @keyframes counterSpinTrack { 100% { transform: rotate(-360deg); } }
@@ -1625,20 +1609,10 @@
 <body>
 
     <div class="bg-layer" id="splash-layer">
-        <div class="spark spark-1"></div>
-        <div class="spark spark-2"></div>
-        <div class="spark spark-3"></div>
-        <div class="spark spark-4"></div>
-        <div class="spark spark-5"></div>
-        <div class="spark spark-6"></div>
-        <div class="spark spark-7"></div>
-        <div class="spark spark-8"></div>
-        <div class="spark spark-9"></div>
-        <div class="spark spark-10"></div>
-        <div class="spark spark-11"></div>
-        <div class="spark spark-12"></div>
-
-        <div class="orbit-wrapper">
+    <div class="spark spark-1"></div>
+    <div class="spark spark-2"></div>
+    <div class="spark spark-3"></div>
+    <div class="spark spark-4"></div>
 
     <div class="orbit-wrapper">
         <div class="orbit-track">
