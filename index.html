@@ -2096,7 +2096,7 @@
                             const age = Date.now() - (data.timestamp || 0);
                             const mins = Math.max(0, Math.floor(age / 60000));
                             const timeLabel = mins < 1 ? 'just now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
-                            offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>Offline · Cached ${timeLabel}</span>`;
+                            offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>Network · Lost ${timeLabel}</span>`;
                             offlineBanner.style.background = 'rgba(231, 76, 60, 0.95)';
                             offlineBanner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
                             offlineBanner.classList.add('show');
