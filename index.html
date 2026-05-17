@@ -8,8 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Shwari Finance">
     
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e1e">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1e1e1e">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#111827">
     <title>Shwari Finance · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
@@ -23,7 +23,7 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
-            --bg-dark: #1e1e1e; /* Matched to logo background */
+            --bg-dark: #111827;
             --bg-card: #1f2937;
             --accent: #55d082;
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
@@ -50,7 +50,7 @@
             position: fixed;
             inset: 0;
             z-index: 90000;
-            background: #1e1e1e;
+            background: #111827;
             pointer-events: all;
             display: flex;
             align-items: center;
@@ -66,48 +66,62 @@
             pointer-events: none;
         }
 
-        const transitionLogic = () => {
-            const uiWrapper = document.getElementById('ui');
-            const appPanel = document.getElementById('app');
-            const bgLayer = document.querySelector('.bg-layer');
-            
-            // Clean up parallax
-            if(uiWrapper) uiWrapper.classList.add('pull-active');
-            document.body.classList.remove('intro-active');
+        /* --- PULL CENTER & VANISH ANIMATION --- */
+        .bg-layer.pull-center .orbit-wrapper {
+            animation: pullCenterAnim 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
 
-            // Activate App iframe beneath the splash layer
-            appPanel.classList.add('active');
-            
-            if(bgLayer) {
-                // STEP 1: Ignite sparks, pull icons AND image into the center
-                bgLayer.classList.add('pull-center');
-                
-                // STEP 2: After everything vanishes into the center (600ms), boom out the background
-                setTimeout(() => {
-                    bgLayer.classList.add('fade-out');
-                    
-                    // Revert notification status bar background color rule to normal UI base color
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                        meta.setAttribute("content", "#111827");
-                    });
+        /* Sucks the main image into the middle together with the icons */
+        .bg-layer.pull-center .splash-center-img {
+            animation: suckImageIn 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
 
-                    // Completely hide after fade out finishes
-                    setTimeout(() => { bgLayer.style.display = 'none'; }, 700);
-                }, 600); 
-            }
-            
-            setTimeout(() => {
-                if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-            }, 1800);
-        };
+        .bg-layer.pull-center .orbit-icon::after {
+            content: '';
+            position: absolute;
+            width: 6px; height: 6px;
+            background: #FF8C00;
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            box-shadow: 15px 15px 0 -1px #FF8C00, 30px 30px 0 -2px #FF8C00, 45px 45px 0 -3px #FF8C00;
+            animation: sparkTrailPulse 0.3s infinite alternate;
+        }
+
+        @keyframes pullCenterAnim {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0) rotate(540deg); opacity: 0; filter: blur(4px); }
+        }
+
+        @keyframes suckImageIn {
+            0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+            30% { transform: scale(1.05); filter: brightness(1.3); }
+            100% { transform: scale(0) rotate(-10deg); opacity: 0; filter: blur(8px); }
+        }
+        
+        @keyframes sparkTrailPulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* --- BOUNCE & ORBIT ANIMATIONS --- */
+        .splash-center-img {
+            width: 90%; 
+            aspect-ratio: 4/3; 
+            object-fit: contain; 
+            z-index: 1;
+            animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
 
         .orbit-wrapper {
             position: absolute;
-            width: min(85vw, 420px);
-            height: min(85vw, 420px);
-            z-index: 10; /* Above the image */
+            inset: 0; 
+            margin: auto; 
+            width: min(65vw, 260px); 
+            height: min(65vw, 260px);
+            z-index: 999; /* Always above image */
             pointer-events: none;
-            /* Sync the bounce in with the image */
             animation: boomInBounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         
@@ -125,9 +139,10 @@
             display: flex; 
             justify-content: center; 
             align-items: center;
-            font-size: 32px;
+            font-size: 36px;
             color: #FF8C00; /* Dark orange */
-            filter: drop-shadow(0 0 8px rgba(255, 140, 0, 0.7)); /* Dark orange glow */
+            opacity: 1 !important;
+            filter: drop-shadow(0 0 12px rgba(255, 140, 0, 1));
             animation: counterSpinTrack 14s linear infinite;
         }
 
@@ -179,34 +194,6 @@
 
         @keyframes spinTrack { 100% { transform: rotate(360deg); } }
         @keyframes counterSpinTrack { 100% { transform: rotate(-360deg); } }
-
-        .bg-circle-loader {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #1f2937;
-            border-top: 4px solid #6b7280;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            animation: spinBgLoader 1s linear infinite;
-        }
-
-        .bg-loader-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 18px;
-            font-weight: 900;
-            color: #6b7280;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            min-height: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @keyframes spinBgLoader {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
 
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
@@ -508,8 +495,8 @@
            ========================================= */
         .app { 
             position: fixed; inset: 0; opacity: 0; pointer-events: none; 
-            background: var(--bg-dark); z-index: 2000;
-            transition: opacity 0.6s ease;
+            background: var(--bg-dark); z-index: 2000; 
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
@@ -517,15 +504,20 @@
         .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
-            width: 100%; height: 100%; border: none; 
-            background: var(--bg-dark); opacity: 1;
-            transform: none;
+            /* To achieve a 90% zoom, we make the iframe larger and then scale it down */
+            width: 111.11%; height: 111.11%; border: none; 
+            background: var(--bg-dark); opacity: 0;
+            transform: scale(0.8) translateY(15px);
+            transform-origin: top left;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
+                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             padding: 0 !important;
             margin: 0 !important;
         }
-        .app.active iframe { opacity: 1; transform: none; }
+        /* The final active state scales it exactly to 0.9 (90%) */
+        .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -1372,7 +1364,6 @@
            12. SYNC BADGE & STALE DATA WARNING 
            ========================================= */
         #sync-status-badge {
-            display: none !important;
             position: fixed;
             bottom: 20px;
             left: 50%;
@@ -1485,7 +1476,7 @@
         }
         #payment-ad-bg-img {
             position: absolute; inset: 0;
-            background: url('https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU') center / cover no-repeat;
+            background: url('https://img.freepik.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80') center / cover no-repeat;
             background-color: #f0fdf4;
         }
         #payment-ad-close-x {
@@ -1572,6 +1563,11 @@
 <body>
 
     <div class="bg-layer" id="splash-layer">
+        <div class="spark spark-1"></div>
+        <div class="spark spark-2"></div>
+        <div class="spark spark-3"></div>
+        <div class="spark spark-4"></div>
+
         <div class="orbit-wrapper">
             <div class="orbit-track">
                 <i class="fab fa-facebook orbit-icon oi-1"></i>
@@ -1583,8 +1579,7 @@
             </div>
         </div>
         
-        <img src="https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU" 
-             style="width:90%; aspect-ratio:4/3; object-fit:contain; z-index: 1;" />
+        <img class="splash-center-img" src="https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU" />
     </div>
 
     <div id="network-toast">
@@ -1717,14 +1712,15 @@
             <i class="fas fa-triangle-exclamation"></i> Data may be outdated (>24h old)
         </div>
         
+        <!-- NEW INSTANT OFFLINE BANNER -->
         <div id="offline-macro-banner">
             <div class="offline-pulse"></div>
             <span>Offline Mode</span>
         </div>
 
-        <iframe id="macro-frame" src="https://script.google.com/macros/s/AKfycby8ZskGXoKrwOUMu1WK4NuGmxm0gI7UVl0_89A-4NsU36ooNuizn28KYt5U55Mh5x5j/exec?client=shwari_app"></iframe>
+        <iframe id="macro-frame"></iframe>
     </div>
-    
+
     <div id="install-progress-screen">
         <div class="install-particle ip1"></div>
         <div class="install-particle ip2"></div>
@@ -2733,30 +2729,60 @@
         window.splashTypingDone = false;
         window.transitionStarted = false;
 
-        window.checkAndRunTransition = (forceOpen = false) => {
+        window.checkAndRunTransition = () => {
             const isRegistered = localStorage.getItem('shwari_registered') === 'true';
-            
-            if (isRegistered && !window.transitionStarted) {
-                // Open if forced by the timer OR if loaded naturally
-                if (forceOpen || (window.splashTypingDone && MacroEngine.loaded)) {
-                    window.transitionStarted = true;
-                    transitionLogic(); 
-                }
+            if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
+                window.transitionStarted = true;
+                
+                // Drastically reduced delay to 400ms for a lightning-fast, snappy transition.
+                // The URL is already loaded in the background, so this just gives it a split-second to stabilize visually.
+                setTimeout(() => {
+                    transitionLogic();
+                }, 400); 
             }
         };
 
-        // Execute Splash sequence
+        // Execute Splash sequence and warm up app immediately
         function startSplashSequence() {
-            initializeApp();
-            window.splashTypingDone = false; 
+            const textEl = document.getElementById('toast-loader-text');
+            const textToType = "SHWARI";
+            textEl.textContent = "";
+            let charIndex = 0;
             
-            // Wait exactly 3 seconds for the full animation sequence to play out,
-            // then ALWAYS force the transition to open the URL, 
-            // guaranteeing it never gets stuck on the splash screen.
-            setTimeout(() => {
-                window.splashTypingDone = true;
-                if (window.checkAndRunTransition) window.checkAndRunTransition(true); // "true" forces it open
-            }, 3000); 
+            // WARM UP URL IMMEDIATELY IN BACKGROUND
+            initializeApp();
+            
+            const typingInterval = setInterval(() => {
+                // SMART SYNC: If we reach the last letter ("I"), and the macro hasn't finished loading yet,
+                // pause the typing animation here. It will wait for the exact moment the app is stable.
+                if (charIndex === textToType.length - 1 && !MacroEngine.loaded) {
+                    return; 
+                }
+                
+                if (charIndex < textToType.length) {
+                    textEl.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingInterval);
+                    textEl.style.borderRight = 'none'; // hide cursor immediately
+                    window.splashTypingDone = true;
+                    
+                    const isRegistered = localStorage.getItem('shwari_registered') === 'true';
+                    if (!isRegistered) {
+                        setTimeout(() => {
+                            const bgLayer = document.querySelector('.bg-layer');
+                            if(bgLayer) {
+                                bgLayer.classList.add('fade-out');
+                                setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+                            }
+                        }, 400); 
+                    } else {
+                        // Because of the Smart Sync above, we KNOW the macro is 100% stable and loaded right now.
+                        // Fire the transition immediately!
+                        window.checkAndRunTransition();
+                    }
+                }
+            }, 500); // Set to 500ms for a perfect smooth rhythm 
         }
 
         startSplashSequence();
@@ -2797,12 +2823,9 @@
                     window.checkAndRunTransition();
                 }
             } else {
-                // Auto-activate device — no form needed
-                localStorage.setItem('emp_name', 'User');
-                localStorage.setItem('emp_email', '');
-                localStorage.setItem('shwari_registered', 'true');
-                window.splashTypingDone = true;
-                if (window.checkAndRunTransition) window.checkAndRunTransition();
+                const authPortal = document.getElementById('auth-portal');
+                authPortal.classList.remove('hidden');
+                document.getElementById('reg-screen').classList.remove('hidden');
             }
         };
 
@@ -2941,30 +2964,17 @@
             if(uiWrapper) uiWrapper.classList.add('pull-active');
             document.body.classList.remove('intro-active');
 
-            // Activate App iframe beneath the splash layer
+            // Super smooth crossfade: Activate App iframe, simultaneously fade out Splash
             appPanel.classList.add('active');
             
             if(bgLayer) {
-                // STEP 1: Ignite sparks and pull the icons to the center
-                bgLayer.classList.add('pull-center');
-                
-                // STEP 2: After the icons are pulled in (700ms), boom out the whole splash screen
-                setTimeout(() => {
-                    bgLayer.classList.add('fade-out');
-                    
-                    // Revert notification status bar background color rule to normal UI base color
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                        meta.setAttribute("content", "#111827");
-                    });
-
-                    // Completely hide after fade out finishes
-                    setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
-                }, 700); 
+                bgLayer.classList.add('fade-out');
+                setTimeout(() => { bgLayer.style.display = 'none'; }, 1000);
             }
             
             setTimeout(() => {
                 if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-            }, 1800);
+            }, 1200);
         };
         
         const executeTransition = () => {
