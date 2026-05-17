@@ -49,151 +49,49 @@
         .bg-layer {
             position: fixed;
             inset: 0;
-            z-index: 90000;
+            z-index: 90000; 
             background: #111827;
             pointer-events: all;
+            will-change: transform;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1.05);
+            transition: opacity 0.8s ease-in-out;
         }
 
         .bg-layer.fade-out {
             opacity: 0;
-            transform: scale(1.35); /* Boom out effect */
             pointer-events: none;
         }
 
-        /* --- PULL CENTER & VANISH ANIMATION --- */
-        .bg-layer.pull-center .orbit-wrapper {
-            animation: pullCenterAnim 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
-        }
-
-        /* Sucks the main image into the middle together with the icons */
-        .bg-layer.pull-center .splash-center-img {
-            animation: suckImageIn 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
-        }
-
-        .bg-layer.pull-center .orbit-icon::after {
-            content: '';
-            position: absolute;
-            width: 6px; height: 6px;
-            background: #FF8C00;
+        .bg-circle-loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #1f2937;
+            border-top: 4px solid #6b7280;
             border-radius: 50%;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: -1;
-            box-shadow: 15px 15px 0 -1px #FF8C00, 30px 30px 0 -2px #FF8C00, 45px 45px 0 -3px #FF8C00;
-            animation: sparkTrailPulse 0.3s infinite alternate;
+            margin-bottom: 20px;
+            animation: spinBgLoader 1s linear infinite;
         }
 
-        @keyframes pullCenterAnim {
-            0% { transform: scale(1) rotate(0deg); opacity: 1; }
-            100% { transform: scale(0) rotate(540deg); opacity: 0; filter: blur(4px); }
-        }
-
-        @keyframes suckImageIn {
-            0% { transform: scale(1); opacity: 1; filter: brightness(1); }
-            30% { transform: scale(1.05); filter: brightness(1.3); }
-            100% { transform: scale(0) rotate(-10deg); opacity: 0; filter: blur(8px); }
-        }
-        
-        @keyframes sparkTrailPulse {
-            0% { opacity: 0.5; }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-        }
-
-        /* --- BOUNCE & ORBIT ANIMATIONS --- */
-        .splash-center-img {
-            width: 90%; 
-            aspect-ratio: 4/3; 
-            object-fit: contain; 
-            z-index: 1;
-            animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        .orbit-wrapper {
-            position: absolute;
-            inset: 0; 
-            margin: auto; 
-            width: min(65vw, 260px); 
-            height: min(65vw, 260px);
-            z-index: 999; /* Always above image */
-            pointer-events: none;
-            animation: boomInBounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        
-        .orbit-track {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            animation: spinTrack 14s linear infinite;
-        }
-        
-        .orbit-icon {
-            position: absolute;
-            width: 40px; 
-            height: 40px;
-            display: flex; 
-            justify-content: center; 
+        .bg-loader-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: #6b7280;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            min-height: 35px;
+            display: flex;
             align-items: center;
-            font-size: 36px;
-            color: #FF8C00; /* Dark orange */
-            opacity: 1 !important;
-            filter: drop-shadow(0 0 12px rgba(255, 140, 0, 1));
-            animation: counterSpinTrack 14s linear infinite;
+            justify-content: center;
         }
 
-        .oi-1 { top: 0%; left: 50%; margin-left: -20px; margin-top: -20px; }
-        .oi-2 { top: 25%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
-        .oi-3 { top: 75%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
-        .oi-4 { top: 100%; left: 50%; margin-left: -20px; margin-top: -20px; }
-        .oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
-        .oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
-
-        /* DARK ORANGE SPARKS / BUBBLES SHOOTING LEFT */
-        .spark {
-            position: absolute;
-            background: #FF8C00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
-            opacity: 0;
-            z-index: 5;
+        @keyframes spinBgLoader {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        
-        .spark-1 { width: 12px; height: 12px; animation: shootLeft1 1.2s ease-out forwards 0.1s; }
-        .spark-2 { width: 8px; height: 8px; animation: shootLeft2 1.4s ease-out forwards 0.2s; }
-        .spark-3 { width: 15px; height: 15px; animation: shootLeft3 1.1s ease-out forwards 0.15s; }
-        .spark-4 { width: 6px; height: 6px; animation: shootLeft4 1.3s ease-out forwards 0.3s; }
-
-        @keyframes boomInBounce {
-            0% { transform: scale(0.1); opacity: 0; }
-            50% { transform: scale(1.1); opacity: 1; }
-            70% { transform: scale(0.95); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes shootLeft1 {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(-180px, -90px) scale(0); opacity: 0; }
-        }
-        @keyframes shootLeft2 {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(-140px, 80px) scale(0); opacity: 0; }
-        }
-        @keyframes shootLeft3 {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(-220px, 20px) scale(0); opacity: 0; }
-        }
-        @keyframes shootLeft4 {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(-100px, -120px) scale(0); opacity: 0; }
-        }
-
-        @keyframes spinTrack { 100% { transform: rotate(360deg); } }
-        @keyframes counterSpinTrack { 100% { transform: rotate(-360deg); } }
 
         body.keyboard-open .bg-layer,
         body:not(.keyboard-open) .bg-layer {
@@ -1562,24 +1460,9 @@
 </head>
 <body>
 
-    <div class="bg-layer" id="splash-layer">
-        <div class="spark spark-1"></div>
-        <div class="spark spark-2"></div>
-        <div class="spark spark-3"></div>
-        <div class="spark spark-4"></div>
-
-        <div class="orbit-wrapper">
-            <div class="orbit-track">
-                <i class="fab fa-facebook orbit-icon oi-1"></i>
-                <i class="fab fa-x-twitter orbit-icon oi-2"></i>
-                <i class="fab fa-instagram orbit-icon oi-3"></i>
-                <i class="fab fa-linkedin-in orbit-icon oi-4"></i>
-                <i class="fab fa-whatsapp orbit-icon oi-5"></i>
-                <i class="fab fa-tiktok orbit-icon oi-6"></i>
-            </div>
-        </div>
-        
-        <img class="splash-center-img" src="https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU" />
+    <div class="bg-layer">
+        <div class="bg-circle-loader"></div>
+        <div class="bg-loader-text" id="toast-loader-text"></div>
     </div>
 
     <div id="network-toast">
