@@ -88,18 +88,21 @@
         transform: scale(1); 
         opacity: 1; 
         filter: brightness(1) contrast(1); 
+        clip-path: circle(50% at 50% 50%); /* Sets initial circular boundary */
     }
-    /* THE BOOM CHARGE: Expands rapidly, flashes brighter with high contrast */
+    /* THE CIRCULAR BOOM CHARGE: Expands rapidly into a flawless glowing circle shockwave */
     25% { 
         transform: scale(1.25); 
         opacity: 1; 
-        filter: brightness(1.6) contrast(1.2); 
+        filter: brightness(1.7) contrast(1.35); /* Amplified flash output */
+        clip-path: circle(50% at 50% 50%); /* Forces the flash to stay perfectly round, cutting square edges */
     } 
-    /* THE IMPLOSION SNAP: Sucks into a dead-center singularity point and vanishes cleanly */
+    /* THE IMPLOSION SNAP: Sucks completely inside a single central point and disappears */
     100% { 
         transform: scale(0); 
         opacity: 0; 
         filter: brightness(0) contrast(0); 
+        clip-path: circle(0% at 50% 50%); /* Pinches down to an absolute singularity */
     } 
 }
 
