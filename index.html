@@ -66,20 +66,26 @@
     pointer-events: none;
 }
 
-/* Smooth recoil before pulling into the center */
+/* --- ANIMATIONS: RECOIL & VANISH --- */
 .bg-layer.pull-center .orbit-wrapper {
-    animation: pullCenterAnim 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    /* Extreme Recoil: Pulls back, gets larger, then violently spins into the center */
+    animation: pullCenterAnim 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-/* Make sure the image fades out smoothly when bg-layer fades */
-.bg-layer.fade-out .splash-center-img {
-    opacity: 0;
+.bg-layer.pull-center .splash-center-img {
+    /* Image stays perfectly still and just fades away so it doesn't distort */
+    animation: imageFadeVanish 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes pullCenterAnim {
     0% { transform: scale(1) rotate(0deg); opacity: 1; }
-    40% { transform: scale(1.15) rotate(-15deg); opacity: 1; }
-    100% { transform: scale(0) rotate(540deg); opacity: 0; filter: blur(4px); }
+    35% { transform: scale(1.18) rotate(-20deg); opacity: 1; filter: brightness(1.3); }
+    100% { transform: scale(0) rotate(600deg); opacity: 0; filter: blur(5px); }
+}
+
+@keyframes imageFadeVanish {
+    0%, 35% { opacity: 1; filter: brightness(1); transform: scale(1); }
+    100% { opacity: 0; filter: brightness(0); transform: scale(0.9); }
 }
 
 .splash-center-img {
@@ -88,7 +94,6 @@
     object-fit: contain;
     z-index: 1;
     animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    transition: opacity 0.4s ease-out; /* Smooth vanish */
 }
 
 .orbit-wrapper {
@@ -109,6 +114,7 @@
     animation: spinTrack 14s linear infinite;
 }
 
+/* --- SUPER COOL BOUNCING / VIBRATING ICONS --- */
 .orbit-icon {
     position: absolute;
     width: 40px;
@@ -117,21 +123,39 @@
     justify-content: center;
     align-items: center;
     font-size: 36px;
-    color: rgba(255, 140, 0, 0.6); /* Transparent dark orange */
+    color: rgba(255, 140, 0, 0.4); /* Transparent glass orange */
     opacity: 1 !important;
-    filter: none; /* No patch */
-    animation: counterSpinTrack 14s linear infinite;
-    background: transparent;
+    filter: drop-shadow(0 0 4px rgba(255, 140, 0, 0.3));
+    /* Double animation: Keeps them facing upright while vibrating intensely */
+    animation: 
+        counterSpinTrack 14s linear infinite,
+        iconVibrateBounce 0.4s cubic-bezier(0.25, 1, 0.5, 1) infinite alternate;
 }
 
-.oi-1 { top: 0%; left: 50%; margin-left: -20px; margin-top: -20px; }
-.oi-2 { top: 25%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
-.oi-3 { top: 75%; left: 93.3%; margin-left: -20px; margin-top: -20px; }
-.oi-4 { top: 100%; left: 50%; margin-left: -20px; margin-top: -20px; }
-.oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
-.oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
+/* Staggered delays so the icons vibrate randomly instead of all at once */
+.oi-1 { top: 0%; left: 50%; margin-left: -20px; margin-top: -20px; animation-delay: 0s, 0.0s; }
+.oi-2 { top: 25%; left: 93.3%; margin-left: -20px; margin-top: -20px; animation-delay: 0s, 0.1s; }
+.oi-3 { top: 75%; left: 93.3%; margin-left: -20px; margin-top: -20px; animation-delay: 0s, 0.2s; }
+.oi-4 { top: 100%; left: 50%; margin-left: -20px; margin-top: -20px; animation-delay: 0s, 0.3s; }
+.oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; animation-delay: 0s, 0.4s; }
+.oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; animation-delay: 0s, 0.5s; }
 
-/* SPARKS EXPLOSION EFFECT ON PULL */
+@keyframes iconVibrateBounce {
+    0% { 
+        font-size: 32px; 
+        color: rgba(255, 140, 0, 0.4); 
+        padding-bottom: 0px; 
+        filter: drop-shadow(0 0 2px rgba(255, 140, 0, 0.2)); 
+    }
+    100% { 
+        font-size: 40px; 
+        color: rgba(255, 140, 0, 0.9); 
+        padding-bottom: 12px; /* Bounces the icon outward inside its box */
+        filter: drop-shadow(0 0 15px rgba(255, 140, 0, 1)); 
+    }
+}
+
+/* --- SPARKS / BUBBLES --- */
 .spark {
     position: absolute;
     background: #FF8C00;
@@ -140,12 +164,14 @@
     opacity: 0;
     z-index: 5;
     top: 50%; left: 50%;
+    margin-top: -6px; margin-left: -6px;
 }
 
-.bg-layer.pull-center .spark-1 { width: 12px; height: 12px; animation: shootLeft1 0.6s ease-out forwards; }
-.bg-layer.pull-center .spark-2 { width: 8px; height: 8px; animation: shootLeft2 0.7s ease-out forwards 0.1s; }
-.bg-layer.pull-center .spark-3 { width: 15px; height: 15px; animation: shootLeft3 0.5s ease-out forwards; }
-.bg-layer.pull-center .spark-4 { width: 6px; height: 6px; animation: shootLeft4 0.6s ease-out forwards 0.15s; }
+/* Fire sparks aggressively when the pull center animation triggers */
+.bg-layer.pull-center .spark-1 { width: 14px; height: 14px; animation: shootLeft1 0.7s ease-out forwards; }
+.bg-layer.pull-center .spark-2 { width: 8px; height: 8px; animation: shootLeft2 0.8s ease-out forwards 0.1s; }
+.bg-layer.pull-center .spark-3 { width: 16px; height: 16px; animation: shootLeft3 0.6s ease-out forwards 0.05s; }
+.bg-layer.pull-center .spark-4 { width: 10px; height: 10px; animation: shootLeft4 0.7s ease-out forwards 0.15s; }
 
 @keyframes boomInBounce {
     0% { transform: scale(0.1); opacity: 0; }
@@ -156,19 +182,19 @@
 
 @keyframes shootLeft1 {
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-180px, -90px) scale(0); opacity: 0; }
+    100% { transform: translate(-280px, -140px) scale(0); opacity: 0; filter: blur(3px); }
 }
 @keyframes shootLeft2 {
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-140px, 80px) scale(0); opacity: 0; }
+    100% { transform: translate(-200px, 120px) scale(0); opacity: 0; filter: blur(2px); }
 }
 @keyframes shootLeft3 {
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-220px, 20px) scale(0); opacity: 0; }
+    100% { transform: translate(-320px, 40px) scale(0); opacity: 0; filter: blur(4px); }
 }
 @keyframes shootLeft4 {
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-100px, -120px) scale(0); opacity: 0; }
+    100% { transform: translate(-160px, -180px) scale(0); opacity: 0; filter: blur(2px); }
 }
 
 @keyframes spinTrack { 100% { transform: rotate(360deg); } }
@@ -2912,21 +2938,22 @@
             appPanel.classList.add('active');
             
             if(bgLayer) {
-                // STEP 1: Ignite sparks, pull icons into the center with smooth recoil
+                // STEP 1: Activate Recoil and Sparks
                 bgLayer.classList.add('pull-center');
                 
-                // STEP 2: After icons vanish into the center (600ms), smoothly fade out the background
+                // STEP 2: After the recoil into the center finishes (700ms), smoothly vanish the background
                 setTimeout(() => {
                     bgLayer.classList.add('fade-out');
                     
-                    // Revert notification status bar background color rule to match app background
-                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-                        meta.setAttribute("content", "#1e1e1e");
+                    // STEP 3: Smoothly revert the phone's notification status bar back to the App's true background color
+                    let themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+                    themeMetas.forEach(meta => {
+                        meta.setAttribute("content", "#111827");
                     });
 
-                    // Completely hide after fade out finishes
-                    setTimeout(() => { bgLayer.style.display = 'none'; }, 700);
-                }, 600); 
+                    // Completely destroy the splash element to free memory
+                    setTimeout(() => { bgLayer.style.display = 'none'; }, 800);
+                }, 700); 
             }
             
             setTimeout(() => {
