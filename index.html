@@ -93,7 +93,30 @@
     aspect-ratio: 4/3;
     object-fit: contain;
     z-index: 1;
-    animation: boomInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    /* Drops in and bounces twice with declining speed */
+    animation: dropAndBounce 1.4s forwards;
+    transition: opacity 0.4s ease-out; 
+}
+
+/* Ensures the image vanishes smoothly when the splash screen leaves */
+.bg-layer.fade-out .splash-center-img {
+    opacity: 0;
+}
+
+@keyframes dropAndBounce {
+    /* Falling down (accelerating) */
+    0% { transform: translateY(-100vh); opacity: 0; animation-timing-function: ease-in; }
+    15% { opacity: 1; }
+    /* First impact, bouncing back up (decelerating) */
+    40% { transform: translateY(0); animation-timing-function: ease-out; }
+    /* First peak, falling back down */
+    65% { transform: translateY(-16vh); animation-timing-function: ease-in; }
+    /* Second impact, smaller bounce up */
+    82% { transform: translateY(0); animation-timing-function: ease-out; }
+    /* Second peak, final fall */
+    92% { transform: translateY(-5vh); animation-timing-function: ease-in; }
+    /* Settled perfectly in the center */
+    100% { transform: translateY(0); opacity: 1; }
 }
 
 .orbit-wrapper {
