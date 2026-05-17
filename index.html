@@ -133,8 +133,20 @@
 .oi-5 { top: 75%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
 .oi-6 { top: 25%; left: 6.7%; margin-left: -20px; margin-top: -20px; }
 
-.spark { display: none; }
-.spark-1, .spark-2, .spark-3, .spark-4 { display: none; }
+/* DARK ORANGE SPARKS / BUBBLES SHOOTING LEFT */
+        .spark {
+            position: absolute;
+            background: #FF8C00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #FF8C00, 0 0 20px #FF8C00;
+            opacity: 0;
+            z-index: 5;
+        }
+        
+        .spark-1 { width: 12px; height: 12px; animation: shootLeft1 1.2s ease-out forwards 0.1s; }
+        .spark-2 { width: 8px; height: 8px; animation: shootLeft2 1.4s ease-out forwards 0.2s; }
+        .spark-3 { width: 15px; height: 15px; animation: shootLeft3 1.1s ease-out forwards 0.15s; }
+        .spark-4 { width: 6px; height: 6px; animation: shootLeft4 1.3s ease-out forwards 0.3s; }
 
 @keyframes boomInBounce {
     0% { transform: scale(0.1); opacity: 0; }
@@ -2053,22 +2065,8 @@
             },
 
             updateSyncBadge(timestamp, isOffline = false) {
-                const badge = document.getElementById('sync-status-badge');
-                if(!badge) return;
-                const mins = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
-                
-                if (isOffline) {
-                    badge.innerHTML = `<i class="fas fa-cloud-arrow-down"></i> Offline Mode - Data from ${mins} mins ago`;
-                    badge.style.background = 'rgba(231, 76, 60, 0.9)';
-                } else {
-                    badge.innerHTML = `<i class="fas fa-check-circle"></i> Last synced: ${mins} mins ago`;
-                    badge.style.background = 'rgba(44, 122, 71, 0.9)';
-                }
-                
-                badge.classList.add('show');
-                setTimeout(() => {
-                    badge.classList.remove('show');
-                }, 5000);
+                // Sync notification hidden
+                return;
             },
 
             async load() {
@@ -2911,17 +2909,30 @@
             if(uiWrapper) uiWrapper.classList.add('pull-active');
             document.body.classList.remove('intro-active');
 
-            // Super smooth crossfade: Activate App iframe, simultaneously fade out Splash
+            // Activate App iframe beneath the splash layer
             appPanel.classList.add('active');
             
             if(bgLayer) {
-                bgLayer.classList.add('fade-out');
-                setTimeout(() => { bgLayer.style.display = 'none'; }, 1000);
+                // STEP 1: Ignite sparks, pull icons AND image into the center
+                bgLayer.classList.add('pull-center');
+                
+                // STEP 2: After everything vanishes into the center (600ms), boom out the background
+                setTimeout(() => {
+                    bgLayer.classList.add('fade-out');
+                    
+                    // Revert notification status bar background color rule to normal UI base color
+                    document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
+                        meta.setAttribute("content", "#111827");
+                    });
+
+                    // Completely hide after fade out finishes
+                    setTimeout(() => { bgLayer.style.display = 'none'; }, 700);
+                }, 600); 
             }
             
             setTimeout(() => {
                 if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
-            }, 1200);
+            }, 1800);
         };
         
         const executeTransition = () => {
@@ -4230,4 +4241,3 @@
 
 </body>
 </html>
-                
