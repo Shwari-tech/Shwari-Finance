@@ -372,9 +372,11 @@
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            justify-content: center; 
-            gap: 15px;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
             position: relative;
+            width: 100%;
         }
 
         .employee-info.unlocked {
@@ -426,7 +428,7 @@
             75% { transform: translateY(-3px) rotate(3deg); }
         }
 
-        .text-group { text-align: center; display: none !important; }
+        .text-group { text-align: center; display: block; }
         
         .employee-info.unlocked .text-group {
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
@@ -438,8 +440,10 @@
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
-        .small-email { font-size: 13px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
+        .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 6px 0; line-height: 1.2; font-family: 'Inter', sans-serif; animation: namePop 0.8s cubic-bezier(0.2,1,0.3,1) forwards; opacity: 0; }
+        .small-email { font-size: 13px; color: #55d082; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 1px; margin: 0; animation: emailSlide 0.9s cubic-bezier(0.2,1,0.3,1) 0.2s forwards; opacity: 0; }
+        @keyframes namePop { 0%{opacity:0;transform:scale(0.8) translateY(10px);} 60%{transform:scale(1.05) translateY(-2px);} 100%{opacity:1;transform:scale(1) translateY(0);} }
+        @keyframes emailSlide { 0%{opacity:0;transform:translateY(8px);} 100%{opacity:1;transform:translateY(0);} }
         
         /* =========================================
            3. REGISTRATION PORTAL
