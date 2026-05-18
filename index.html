@@ -83,27 +83,76 @@
     100% { transform: scale(0) rotate(600deg); opacity: 0; filter: blur(5px); }
 }
 
-@keyframes smoothSuckInside {
-    0% { 
-        transform: scale(1); 
-        opacity: 1; 
-        filter: none;
-        clip-path: circle(50% at 50% 50%); /* Sets initial clean circular boundary */
-    }
-    /* THE CIRCULAR BOOM CHARGE: Expands into a high-energy shockwave retaining 100% original clarity and colors */
-    25% { 
-        transform: scale(1.25); 
-        opacity: 1; 
-        filter: none; /* No blinding flash, keeping the image perfectly clear */
-        clip-path: circle(50% at 50% 50%); /* Cuts square edges sharply on expansion */
-    } 
-    /* THE IMPLOSION SNAP: Snaps directly down to an absolute central point and cleanly vanishes */
-    100% { 
-        transform: scale(0); 
-        opacity: 0; 
-        filter: none;
-        clip-path: circle(0% at 50% 50%); /* Collapses into a perfect microscopic singularity */
-    } 
+.bg-layer.pull-center .splash-center-img {
+    animation: imgBlastCollapse 0.55s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+}
+
+@keyframes imgBlastCollapse {
+    0%   { transform: scale(1);    opacity: 1; filter: brightness(1); }
+    25%  { transform: scale(1.06); opacity: 1; filter: brightness(3) saturate(2); }
+    100% { transform: scale(0);    opacity: 0; filter: brightness(10) blur(12px); }
+}
+
+/* IRIS RING 1 — large outer glowing ring frame, fully transparent inside */
+.bg-layer.pull-center::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    border-radius: 50%;
+    background: transparent;
+    border: 10px solid rgba(255, 200, 60, 0.95);
+    box-shadow:
+        0 0 0 2px rgba(255,140,0,0.4),
+        0 0 25px 4px rgba(255,160,0,0.9),
+        0 0 60px 8px rgba(255,100,0,0.6),
+        inset 0 0 20px 4px rgba(255,220,80,0.3);
+    transform: translate(-50%, -50%);
+    animation: irisContractOuter 0.72s cubic-bezier(0.4, 0, 0.9, 0.6) forwards;
+    z-index: 1002;
+    pointer-events: none;
+}
+
+/* IRIS RING 2 — tighter inner ring, slightly delayed */
+.bg-layer.pull-center::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    border-radius: 50%;
+    background: transparent;
+    border: 5px solid rgba(255, 120, 0, 0.8);
+    box-shadow:
+        0 0 15px 3px rgba(255,80,0,0.8),
+        0 0 40px 6px rgba(255,50,0,0.5),
+        inset 0 0 10px 2px rgba(255,160,0,0.2);
+    transform: translate(-50%, -50%);
+    animation: irisContractInner 0.78s cubic-bezier(0.4, 0, 0.9, 0.5) 0.04s forwards;
+    z-index: 1003;
+    pointer-events: none;
+}
+
+@keyframes irisContractOuter {
+    /* RING EXPANDS OUTWARD first — like an energy pulse releasing */
+    0%   { width: 40px;              height: 40px;              opacity: 0;   border-width: 6px;  }
+    12%  { width: min(80vw, 360px);  height: min(80vw, 360px);  opacity: 1;   border-width: 10px; }
+    /* HOLDS briefly at full size */
+    28%  { width: min(80vw, 360px);  height: min(80vw, 360px);  opacity: 1;   border-width: 12px;
+            box-shadow: 0 0 35px 8px rgba(255,160,0,1), 0 0 80px 12px rgba(255,100,0,0.7), inset 0 0 30px 6px rgba(255,220,80,0.4); }
+    /* CONTRACTS inward — border thickens as diameter shrinks, stays visible longer */
+    70%  { width: min(30vw, 130px);  height: min(30vw, 130px);  opacity: 1;   border-width: 20px;
+            box-shadow: 0 0 50px 10px rgba(255,200,0,1), 0 0 100px 16px rgba(255,100,0,0.8); }
+    88%  { width: 20px;              height: 20px;               opacity: 0.9; border-width: 28px; }
+    /* PINCHES to a point and vanishes */
+    100% { width: 0;                 height: 0;                  opacity: 0;   border-width: 40px; }
+}
+
+@keyframes irisContractInner {
+    0%   { width: 20px;              height: 20px;              opacity: 0;   border-width: 4px;  }
+    15%  { width: min(60vw, 270px);  height: min(60vw, 270px);  opacity: 0.8; border-width: 5px;  }
+    30%  { width: min(60vw, 270px);  height: min(60vw, 270px);  opacity: 0.8; border-width: 7px;  }
+    72%  { width: min(22vw, 100px);  height: min(22vw, 100px);  opacity: 0.9; border-width: 18px;
+            box-shadow: 0 0 40px 8px rgba(255,80,0,1), 0 0 80px 14px rgba(255,50,0,0.7); }
+    90%  { width: 12px;              height: 12px;               opacity: 0.7; border-width: 24px; }
+    100% { width: 0;                 height: 0;                  opacity: 0;   border-width: 36px; }
 }
 
 .splash-center-img {
