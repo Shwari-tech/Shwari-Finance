@@ -237,6 +237,23 @@
     0% { transform: translate(0, 0) scale(1); opacity: 1; }
     100% { transform: translate(-160px, -180px) scale(0); opacity: 0; filter: blur(2px); }
 }
+@keyframes shoot5  { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(300px,-100px) scale(0);opacity:0;filter:blur(3px);} }
+@keyframes shoot6  { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(240px,200px) scale(0);opacity:0;filter:blur(2px);} }
+@keyframes shoot7  { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(0px,-280px) scale(0);opacity:0;filter:blur(4px);} }
+@keyframes shoot8  { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(0px,280px) scale(0);opacity:0;filter:blur(3px);} }
+@keyframes shoot9  { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(-240px,200px) scale(0);opacity:0;filter:blur(2px);} }
+@keyframes shoot10 { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(180px,-220px) scale(0);opacity:0;filter:blur(3px);} }
+@keyframes shoot11 { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(-120px,260px) scale(0);opacity:0;filter:blur(2px);} }
+@keyframes shoot12 { 0%{transform:translate(0,0) scale(1);opacity:1;} 100%{transform:translate(350px,60px) scale(0);opacity:0;filter:blur(4px);} }
+
+.bg-layer.pull-center .spark-5  { width:18px;height:18px;background:#FFD700;box-shadow:0 0 12px #FFD700,0 0 30px #FFD700;animation:shoot5  0.65s ease-out forwards 0.05s; }
+.bg-layer.pull-center .spark-6  { width:10px;height:10px;background:#FF4500;box-shadow:0 0 10px #FF4500,0 0 25px #FF4500;animation:shoot6  0.75s ease-out forwards 0.1s;  }
+.bg-layer.pull-center .spark-7  { width:14px;height:14px;background:#FF7500;box-shadow:0 0 10px #FF7500,0 0 25px #FF7500;animation:shoot7  0.6s  ease-out forwards 0.0s;  }
+.bg-layer.pull-center .spark-8  { width:12px;height:12px;background:#FFD700;box-shadow:0 0 12px #FFD700,0 0 30px #FFD700;animation:shoot8  0.7s  ease-out forwards 0.12s; }
+.bg-layer.pull-center .spark-9  { width:8px; height:8px; background:#FF7500;box-shadow:0 0 10px #FF7500,0 0 20px #FF7500;animation:shoot9  0.8s  ease-out forwards 0.08s; }
+.bg-layer.pull-center .spark-10 { width:16px;height:16px;background:#FF4500;box-shadow:0 0 14px #FF4500,0 0 35px #FF4500;animation:shoot10 0.65s ease-out forwards 0.15s; }
+.bg-layer.pull-center .spark-11 { width:9px; height:9px; background:#FFD700;box-shadow:0 0 10px #FFD700,0 0 22px #FFD700;animation:shoot11 0.72s ease-out forwards 0.03s; }
+.bg-layer.pull-center .spark-12 { width:13px;height:13px;background:#FF7500;box-shadow:0 0 12px #FF7500,0 0 28px #FF7500;animation:shoot12 0.68s ease-out forwards 0.18s; }
 
 @keyframes spinTrack { 100% { transform: rotate(360deg); } }
 @keyframes counterSpinTrack { 100% { transform: rotate(-360deg); } }
@@ -372,11 +389,9 @@
             display: flex; 
             flex-direction: column;
             align-items: center; 
-            justify-content: center;
-            text-align: center;
-            gap: 10px;
+            justify-content: center; 
+            gap: 15px;
             position: relative;
-            width: 100%;
         }
 
         .employee-info.unlocked {
@@ -428,7 +443,7 @@
             75% { transform: translateY(-3px) rotate(3deg); }
         }
 
-        .text-group { text-align: center; display: block; }
+        .text-group { text-align: center; display: none !important; }
         
         .employee-info.unlocked .text-group {
             animation: slowMotionPop 2.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
@@ -440,10 +455,8 @@
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 6px 0; line-height: 1.2; font-family: 'Inter', sans-serif; animation: namePop 0.8s cubic-bezier(0.2,1,0.3,1) forwards; opacity: 0; }
-        .small-email { font-size: 13px; color: #55d082; font-weight: 600; font-family: 'Inter', sans-serif; letter-spacing: 1px; margin: 0; animation: emailSlide 0.9s cubic-bezier(0.2,1,0.3,1) 0.2s forwards; opacity: 0; }
-        @keyframes namePop { 0%{opacity:0;transform:scale(0.8) translateY(10px);} 60%{transform:scale(1.05) translateY(-2px);} 100%{opacity:1;transform:scale(1) translateY(0);} }
-        @keyframes emailSlide { 0%{opacity:0;transform:translateY(8px);} 100%{opacity:1;transform:translateY(0);} }
+        .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
+        .small-email { font-size: 13px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
         
         /* =========================================
            3. REGISTRATION PORTAL
@@ -1617,6 +1630,14 @@
     <div class="spark spark-2"></div>
     <div class="spark spark-3"></div>
     <div class="spark spark-4"></div>
+    <div class="spark spark-5"></div>
+    <div class="spark spark-6"></div>
+    <div class="spark spark-7"></div>
+    <div class="spark spark-8"></div>
+    <div class="spark spark-9"></div>
+    <div class="spark spark-10"></div>
+    <div class="spark spark-11"></div>
+    <div class="spark spark-12"></div>
 
     <div class="orbit-wrapper" style="display:none;">
         <div class="orbit-track">
