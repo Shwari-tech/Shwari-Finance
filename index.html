@@ -84,26 +84,17 @@
 }
 
 @keyframes smoothSuckInside {
-    0% { 
-        transform: scale(1); 
-        opacity: 1; 
-        filter: none;
-        clip-path: circle(50% at 50% 50%); /* Sets initial clean circular boundary */
-    }
-    /* THE CIRCULAR BOOM CHARGE: Expands into a high-energy shockwave retaining 100% original clarity and colors */
-    25% { 
-        transform: scale(1.25); 
-        opacity: 1; 
-        filter: none; /* No blinding flash, keeping the image perfectly clear */
-        clip-path: circle(50% at 50% 50%); /* Cuts square edges sharply on expansion */
-    } 
-    /* THE IMPLOSION SNAP: Snaps directly down to an absolute central point and cleanly vanishes */
-    100% { 
-        transform: scale(0); 
-        opacity: 0; 
-        filter: none;
-        clip-path: circle(0% at 50% 50%); /* Collapses into a perfect microscopic singularity */
-    } 
+    0%   { transform: scale(1)    rotate(0deg);   opacity: 1; filter: brightness(1)    blur(0px);   clip-path: circle(50% at 50% 50%); }
+    /* SQUEEZE — outer force compresses the image inward */
+    18%  { transform: scale(0.82) rotate(-3deg);  opacity: 1; filter: brightness(1.6)  blur(0px);   clip-path: circle(44% at 50% 50%); }
+    /* CHARGE — energy builds, image bulges outward */
+    38%  { transform: scale(1.18) rotate(4deg);   opacity: 1; filter: brightness(2.2)  blur(0px);   clip-path: circle(52% at 50% 50%); }
+    /* BLAST PEAK — white-hot flash at detonation point */
+    52%  { transform: scale(1.35) rotate(-2deg);  opacity: 1; filter: brightness(3.5)  blur(1px);   clip-path: circle(55% at 50% 50%); }
+    /* SHATTER — image violently tears apart from center */
+    68%  { transform: scale(0.55) rotate(8deg);   opacity: 0.7; filter: brightness(4) blur(3px);  clip-path: circle(30% at 50% 50%); }
+    /* COLLAPSE — sucked into singularity */
+    100% { transform: scale(0)    rotate(20deg);  opacity: 0; filter: brightness(6)    blur(12px);  clip-path: circle(0% at 50% 50%); }
 }
 
 .splash-center-img {
@@ -199,20 +190,63 @@
 /* --- SPARKS OMNIDIRECTIONAL BLAST ENGINE --- */
 .spark {
     position: absolute;
-    background: #FF7500; /* Exact match to the truck logo */
     border-radius: 50%;
-    box-shadow: 0 0 10px #FF7500, 0 0 25px #FF7500, 0 0 45px #FF7500;
     opacity: 0;
     z-index: 1000;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
 }
 
-/* Fire sparks aggressively when the pull center animation triggers */
-.bg-layer.pull-center .spark-1 { width: 14px; height: 14px; animation: shootLeft1 0.7s ease-out forwards; }
-.bg-layer.pull-center .spark-2 { width: 8px; height: 8px; animation: shootLeft2 0.8s ease-out forwards 0.1s; }
-.bg-layer.pull-center .spark-3 { width: 16px; height: 16px; animation: shootLeft3 0.6s ease-out forwards 0.05s; }
-.bg-layer.pull-center .spark-4 { width: 10px; height: 10px; animation: shootLeft4 0.7s ease-out forwards 0.15s; }
+/* Shockwave ring that expands outward from blast center */
+.bg-layer.pull-center::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 6px solid rgba(255, 200, 80, 0.95);
+    box-shadow: 0 0 30px rgba(255,160,0,0.9), 0 0 80px rgba(255,100,0,0.6), inset 0 0 20px rgba(255,200,0,0.4);
+    transform: translate(-50%, -50%) scale(0);
+    animation: blastRing1 0.75s cubic-bezier(0.1, 0.7, 0.3, 1) 0.1s forwards;
+    z-index: 1001;
+}
+.bg-layer.pull-center::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 120, 0, 0.7);
+    box-shadow: 0 0 20px rgba(255,80,0,0.8), 0 0 60px rgba(255,50,0,0.4);
+    transform: translate(-50%, -50%) scale(0);
+    animation: blastRing2 0.9s cubic-bezier(0.1, 0.6, 0.2, 1) 0.2s forwards;
+    z-index: 1001;
+}
+
+@keyframes blastRing1 {
+    0%   { transform: translate(-50%,-50%) scale(0);   opacity: 1;   border-width: 8px; }
+    40%  { transform: translate(-50%,-50%) scale(6);   opacity: 0.9; border-width: 5px; }
+    100% { transform: translate(-50%,-50%) scale(18);  opacity: 0;   border-width: 1px; }
+}
+@keyframes blastRing2 {
+    0%   { transform: translate(-50%,-50%) scale(0);   opacity: 0.8; border-width: 5px; }
+    50%  { transform: translate(-50%,-50%) scale(8);   opacity: 0.6; border-width: 3px; }
+    100% { transform: translate(-50%,-50%) scale(28);  opacity: 0;   border-width: 0px; }
+}
+
+/* BLAST SPARKS — all fire from center outward with force */
+.bg-layer.pull-center .spark-1  { width:16px; height:16px; background:#FFD700; box-shadow:0 0 14px #FFD700,0 0 35px #FFD700,0 0 60px rgba(255,215,0,0.5); animation: shootLeft1 0.75s cubic-bezier(0.05,0.7,0.1,1) forwards 0.12s; }
+.bg-layer.pull-center .spark-2  { width:10px; height:10px; background:#FF6000; box-shadow:0 0 10px #FF6000,0 0 28px #FF6000,0 0 50px rgba(255,96,0,0.4);  animation: shootLeft2 0.85s cubic-bezier(0.05,0.7,0.1,1) forwards 0.18s; }
+.bg-layer.pull-center .spark-3  { width:18px; height:18px; background:#FF3A00; box-shadow:0 0 16px #FF3A00,0 0 40px #FF3A00,0 0 70px rgba(255,58,0,0.5);  animation: shootLeft3 0.65s cubic-bezier(0.05,0.7,0.1,1) forwards 0.08s; }
+.bg-layer.pull-center .spark-4  { width:12px; height:12px; background:#FFB800; box-shadow:0 0 12px #FFB800,0 0 30px #FFB800,0 0 55px rgba(255,184,0,0.4); animation: shootLeft4 0.78s cubic-bezier(0.05,0.7,0.1,1) forwards 0.22s; }
+.bg-layer.pull-center .spark-5  { width:20px; height:20px; background:#FFD700; box-shadow:0 0 18px #FFD700,0 0 45px #FFD700,0 0 80px rgba(255,215,0,0.6); animation: shoot5  0.7s  cubic-bezier(0.05,0.7,0.1,1) forwards 0.06s; }
+.bg-layer.pull-center .spark-6  { width:11px; height:11px; background:#FF4500; box-shadow:0 0 12px #FF4500,0 0 32px #FF4500,0 0 58px rgba(255,69,0,0.5);  animation: shoot6  0.8s  cubic-bezier(0.05,0.7,0.1,1) forwards 0.14s; }
+.bg-layer.pull-center .spark-7  { width:15px; height:15px; background:#FF8C00; box-shadow:0 0 14px #FF8C00,0 0 36px #FF8C00,0 0 65px rgba(255,140,0,0.5); animation: shoot7  0.62s cubic-bezier(0.05,0.7,0.1,1) forwards 0.04s; }
+.bg-layer.pull-center .spark-8  { width:13px; height:13px; background:#FFD700; box-shadow:0 0 12px #FFD700,0 0 30px #FFD700,0 0 55px rgba(255,215,0,0.4); animation: shoot8  0.72s cubic-bezier(0.05,0.7,0.1,1) forwards 0.16s; }
+.bg-layer.pull-center .spark-9  { width:9px;  height:9px;  background:#FF6000; box-shadow:0 0 10px #FF6000,0 0 26px #FF6000,0 0 48px rgba(255,96,0,0.4);  animation: shoot9  0.88s cubic-bezier(0.05,0.7,0.1,1) forwards 0.1s;  }
+.bg-layer.pull-center .spark-10 { width:17px; height:17px; background:#FF3A00; box-shadow:0 0 16px #FF3A00,0 0 42px #FF3A00,0 0 72px rgba(255,58,0,0.6);  animation: shoot10 0.68s cubic-bezier(0.05,0.7,0.1,1) forwards 0.2s;  }
+.bg-layer.pull-center .spark-11 { width:10px; height:10px; background:#FFB800; box-shadow:0 0 10px #FFB800,0 0 28px #FFB800,0 0 50px rgba(255,184,0,0.4); animation: shoot11 0.76s cubic-bezier(0.05,0.7,0.1,1) forwards 0.03s; }
+.bg-layer.pull-center .spark-12 { width:14px; height:14px; background:#FF8C00; box-shadow:0 0 14px #FF8C00,0 0 38px #FF8C00,0 0 68px rgba(255,140,0,0.5); animation: shoot12 0.72s cubic-bezier(0.05,0.7,0.1,1) forwards 0.25s; }
 
 @keyframes boomInBounce {
     0% { transform: scale(0.1); opacity: 0; }
