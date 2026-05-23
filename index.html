@@ -2155,6 +2155,25 @@
                 }
             },
 
+            async silentSyncAndReload() {
+                // Fetches fresh macro in background, updates IDB, then hot-swaps the iframe
+                try {
+                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_bg`);
+                    if (!res.ok) return;
+                    const html = await res.text();
+                    const isReal = html.length > 1000 &&
+                        !html.toLowerCase().includes('accounts.google.com') &&
+                        !html.toLowerCase().includes('signin');
+                    if (!isReal) return;
+                    await ShwariDB.save(html);
+                    // Hot-swap the iframe with fresh content silently
+                    const blob = new Blob([html], { type: 'text/html' });
+                    const newUrl = URL.createObjectURL(blob);
+                    this.frame.src = newUrl;
+                    console.log('[BgRefresh] IDB updated & iframe hot-swapped —', Math.round(html.length / 1024), 'KB');
+                } catch(e) { console.log('[BgRefresh] Skipped —', e.message); }
+            },
+
             updateSyncBadge(timestamp, isOffline = false) {
                 // Sync notification hidden
                 return;
@@ -2166,37 +2185,43 @@
                 clearTimeout(this.timeoutId);
                 console.log(`Loading Macro... Attempt ${this.retries + 1}`);
 
-                // Reset and hide the banner unless it's currently showing the reload animation
                 const offlineBanner = document.getElementById('offline-macro-banner');
                 if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spinner')) {
                     offlineBanner.classList.remove('show');
                 }
 
+                // ── CACHE-FIRST: Serve from IDB instantly, refresh network in background ──
+                try {
+                    const cached = await ShwariDB.get();
+                    if (cached && cached.html && cached.html.length > 1000) {
+                        const blob = new Blob([cached.html], { type: 'text/html' });
+                        this.frame.src = URL.createObjectURL(blob);
+                        this.loaded = true;
+                        this.isOfflineView = false;
+                        console.log('[CacheFirst] Instant serve from IDB —', Math.round(cached.html.length / 1024), 'KB');
+                        if (window.onMacroSuccess) window.onMacroSuccess();
+                        // Silently fetch fresh content in background without blocking
+                        if (navigator.onLine) setTimeout(() => this.silentSyncAndReload(), 800);
+                        return;
+                    }
+                } catch(e) { console.log('[CacheFirst] No IDB cache yet, going to network'); }
+
                 if (!navigator.onLine) {
                     await this.loadOfflineBlob();
                     return;
                 }
-                
+
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
-                
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
                 this.frame.onload = () => {
                     this.loaded = true;
                     this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
-                    
-                    // Final confirmation removal of banner when successfully loaded live
                     if (offlineBanner) offlineBanner.classList.remove('show');
-
-                    if (this.reconnectInterval) {
-                        clearInterval(this.reconnectInterval);
-                        this.reconnectInterval = null;
-                    }
+                    if (this.reconnectInterval) { clearInterval(this.reconnectInterval); this.reconnectInterval = null; }
                     console.log("Macro loaded successfully.");
-                    
                     if (navigator.onLine) this.silentSync();
-                    
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
             },
@@ -2732,7 +2757,7 @@
                 } catch(e) {
                     console.log('[PreWarm] Skipped —', e.message);
                 }
-            }, 3000); // 3 s delay — let the visible iframe load finish first
+            }, 0); // No delay — populate IDB immediately on first ever load
         }
 
         async function initializeApp() {
