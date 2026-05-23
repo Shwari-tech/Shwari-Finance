@@ -559,7 +559,7 @@
         .app { 
             position: fixed; inset: 0; opacity: 0; pointer-events: none; 
             background: var(--bg-dark); z-index: 2000; 
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: none; 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
@@ -567,20 +567,17 @@
         .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
-            /* To achieve a 90% zoom, we make the iframe larger and then scale it down */
             width: 111.11%; height: 111.11%; border: none; 
-            background: var(--bg-dark); opacity: 0;
-            transform: scale(0.8) translateY(15px);
+            background: var(--bg-dark); opacity: 1;
+            transform: scale(0.9);
             transform-origin: top left;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
-                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
+            transition: none;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             padding: 0 !important;
             margin: 0 !important;
         }
-        /* The final active state scales it exactly to 0.9 (90%) */
-        .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
+        .app.active iframe { opacity: 1; transform: scale(0.9); }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -2156,7 +2153,7 @@
             },
 
             async silentSyncAndReload() {
-                // Fetches fresh macro in background, updates IDB, then hot-swaps the iframe
+                // Fetches fresh macro and saves to IDB only — no iframe disruption
                 try {
                     const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_bg`);
                     if (!res.ok) return;
@@ -2166,11 +2163,7 @@
                         !html.toLowerCase().includes('signin');
                     if (!isReal) return;
                     await ShwariDB.save(html);
-                    // Hot-swap the iframe with fresh content silently
-                    const blob = new Blob([html], { type: 'text/html' });
-                    const newUrl = URL.createObjectURL(blob);
-                    this.frame.src = newUrl;
-                    console.log('[BgRefresh] IDB updated & iframe hot-swapped —', Math.round(html.length / 1024), 'KB');
+                    console.log('[BgRefresh] IDB cache refreshed silently —', Math.round(html.length / 1024), 'KB');
                 } catch(e) { console.log('[BgRefresh] Skipped —', e.message); }
             },
 
@@ -3080,28 +3073,25 @@
         };
 
         const checkConnectivity = async () => {
-            if (isCheckingConnection) return navigator.onLine;
+            // Primary: trust the OS network flag — accurate on modern mobile
+            if (!navigator.onLine) return false;
+            if (isCheckingConnection) return true; // Already probing — assume online
             isCheckingConnection = true;
-
-            const probes = [
-                'https://www.google.com/favicon.ico',
-                'https://www.cloudflare.com/cdn-cgi/trace',
-                'https://httpbin.org/get',
-            ];
-
-            for (const url of probes) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 4000);
-                    await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    isCheckingConnection = false;
-                    return true;
-                } catch (_) { /* try next probe */ }
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                await fetch('https://www.google.com/favicon.ico', {
+                    method: 'HEAD', mode: 'no-cors',
+                    signal: controller.signal, cache: 'no-store'
+                });
+                clearTimeout(timeoutId);
+                isCheckingConnection = false;
+                return true;
+            } catch (_) {
+                isCheckingConnection = false;
+                // Probe failed (blocked, CORS, firewall) but OS says online — stay online
+                return navigator.onLine;
             }
-
-            isCheckingConnection = false;
-            return false;
         };
 
         const handleOnline = async () => {
