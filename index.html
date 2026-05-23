@@ -559,7 +559,7 @@
         .app { 
             position: fixed; inset: 0; opacity: 0; pointer-events: none; 
             background: var(--bg-dark); z-index: 2000; 
-            transition: none; 
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
@@ -567,17 +567,20 @@
         .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
+            /* To achieve a 90% zoom, we make the iframe larger and then scale it down */
             width: 111.11%; height: 111.11%; border: none; 
-            background: var(--bg-dark); opacity: 1;
-            transform: scale(0.9);
+            background: var(--bg-dark); opacity: 0;
+            transform: scale(0.8) translateY(15px);
             transform-origin: top left;
-            transition: none;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
+                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             padding: 0 !important;
             margin: 0 !important;
         }
-        .app.active iframe { opacity: 1; transform: scale(0.9); }
+        /* The final active state scales it exactly to 0.9 (90%) */
+        .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -2152,21 +2155,6 @@
                 }
             },
 
-            async silentSyncAndReload() {
-                // Fetches fresh macro and saves to IDB only — no iframe disruption
-                try {
-                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_bg`);
-                    if (!res.ok) return;
-                    const html = await res.text();
-                    const isReal = html.length > 1000 &&
-                        !html.toLowerCase().includes('accounts.google.com') &&
-                        !html.toLowerCase().includes('signin');
-                    if (!isReal) return;
-                    await ShwariDB.save(html);
-                    console.log('[BgRefresh] IDB cache refreshed silently —', Math.round(html.length / 1024), 'KB');
-                } catch(e) { console.log('[BgRefresh] Skipped —', e.message); }
-            },
-
             updateSyncBadge(timestamp, isOffline = false) {
                 // Sync notification hidden
                 return;
@@ -2178,43 +2166,37 @@
                 clearTimeout(this.timeoutId);
                 console.log(`Loading Macro... Attempt ${this.retries + 1}`);
 
+                // Reset and hide the banner unless it's currently showing the reload animation
                 const offlineBanner = document.getElementById('offline-macro-banner');
                 if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spinner')) {
                     offlineBanner.classList.remove('show');
                 }
 
-                // ── CACHE-FIRST: Serve from IDB instantly, refresh network in background ──
-                try {
-                    const cached = await ShwariDB.get();
-                    if (cached && cached.html && cached.html.length > 1000) {
-                        const blob = new Blob([cached.html], { type: 'text/html' });
-                        this.frame.src = URL.createObjectURL(blob);
-                        this.loaded = true;
-                        this.isOfflineView = false;
-                        console.log('[CacheFirst] Instant serve from IDB —', Math.round(cached.html.length / 1024), 'KB');
-                        if (window.onMacroSuccess) window.onMacroSuccess();
-                        // Silently fetch fresh content in background without blocking
-                        if (navigator.onLine) setTimeout(() => this.silentSyncAndReload(), 800);
-                        return;
-                    }
-                } catch(e) { console.log('[CacheFirst] No IDB cache yet, going to network'); }
-
                 if (!navigator.onLine) {
                     await this.loadOfflineBlob();
                     return;
                 }
-
+                
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+                
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
                 this.frame.onload = () => {
                     this.loaded = true;
                     this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
+                    
+                    // Final confirmation removal of banner when successfully loaded live
                     if (offlineBanner) offlineBanner.classList.remove('show');
-                    if (this.reconnectInterval) { clearInterval(this.reconnectInterval); this.reconnectInterval = null; }
+
+                    if (this.reconnectInterval) {
+                        clearInterval(this.reconnectInterval);
+                        this.reconnectInterval = null;
+                    }
                     console.log("Macro loaded successfully.");
+                    
                     if (navigator.onLine) this.silentSync();
+                    
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
             },
@@ -2750,7 +2732,7 @@
                 } catch(e) {
                     console.log('[PreWarm] Skipped —', e.message);
                 }
-            }, 0); // No delay — populate IDB immediately on first ever load
+            }, 3000); // 3 s delay — let the visible iframe load finish first
         }
 
         async function initializeApp() {
@@ -3073,25 +3055,28 @@
         };
 
         const checkConnectivity = async () => {
-            // Primary: trust the OS network flag — accurate on modern mobile
-            if (!navigator.onLine) return false;
-            if (isCheckingConnection) return true; // Already probing — assume online
+            if (isCheckingConnection) return navigator.onLine;
             isCheckingConnection = true;
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                await fetch('https://www.google.com/favicon.ico', {
-                    method: 'HEAD', mode: 'no-cors',
-                    signal: controller.signal, cache: 'no-store'
-                });
-                clearTimeout(timeoutId);
-                isCheckingConnection = false;
-                return true;
-            } catch (_) {
-                isCheckingConnection = false;
-                // Probe failed (blocked, CORS, firewall) but OS says online — stay online
-                return navigator.onLine;
+
+            const probes = [
+                'https://www.google.com/favicon.ico',
+                'https://www.cloudflare.com/cdn-cgi/trace',
+                'https://httpbin.org/get',
+            ];
+
+            for (const url of probes) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 4000);
+                    await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    isCheckingConnection = false;
+                    return true;
+                } catch (_) { /* try next probe */ }
             }
+
+            isCheckingConnection = false;
+            return false;
         };
 
         const handleOnline = async () => {
