@@ -1625,7 +1625,7 @@
 </head>
 <body>
 
-    <div class="bg-layer" id="splash-layer">
+    <div class="bg-layer" id="splash-layer" style="display:none!important;">
     <div class="spark spark-1"></div>
     <div class="spark spark-2"></div>
     <div class="spark spark-3"></div>
@@ -2791,11 +2791,7 @@
             if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
                 window.transitionStarted = true;
                 
-                // Drastically reduced delay to 400ms for a lightning-fast, snappy transition.
-                // The URL is already loaded in the background, so this just gives it a split-second to stabilize visually.
-                setTimeout(() => {
-                    transitionLogic();
-                }, 400); 
+                transitionLogic(); 
             }
         };
 
