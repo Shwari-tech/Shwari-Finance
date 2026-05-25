@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -2125,6 +2125,62 @@
         };
 
         FullscreenManager.init();
+
+        // =========================================
+        // ANTI-ZOOM: Block pinch, double-tap, text zoom
+        // =========================================
+        document.addEventListener('gesturestart',  (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gesturechange', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('gestureend',    (e) => e.preventDefault(), { passive: false });
+
+        let lastTap = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTap < 300) e.preventDefault();
+            lastTap = now;
+        }, { passive: false });
+
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('wheel', (e) => {
+            if (e.ctrlKey) e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) e.preventDefault();
+        });
+
+        // =========================================
+        // SCREENSHOT DETERRENT
+        // Blurs sensitive content on visibility loss (screen record / switcher)
+        // =========================================
+        const _ssShield = document.createElement('div');
+        _ssShield.id = 'ss-shield';
+        _ssShield.style.cssText = `
+            position: fixed; inset: 0; z-index: 999998;
+            background: #1e1e1e;
+            display: none; pointer-events: none;
+            align-items: center; justify-content: center;
+            flex-direction: column; gap: 16px;
+        `;
+        _ssShield.innerHTML = `
+            <i class="fas fa-elephant" style="font-size:56px;color:#55d082;filter:drop-shadow(0 0 20px rgba(85,208,130,0.6));"></i>
+            <p style="font-family:'Inter',sans-serif;font-size:14px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;">Shwari Finance</p>
+        `;
+        document.body.appendChild(_ssShield);
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                _ssShield.style.display = 'flex';
+            } else {
+                setTimeout(() => { _ssShield.style.display = 'none'; }, 200);
+            }
+        });
+
+        window.addEventListener('blur', () => { _ssShield.style.display = 'flex'; });
+        window.addEventListener('focus', () => { setTimeout(() => { _ssShield.style.display = 'none'; }, 200); });
 
         // =========================================
         // BACKEND & ENHANCED MACRO INITIALIZATION
@@ -4347,3 +4403,4 @@
 
 </body>
 </html>
+    
