@@ -29,7 +29,7 @@
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; touch-action: pan-x pan-y; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
 
         html, body {
             height: 100%; width: 100%;
@@ -603,37 +603,6 @@
         }
         #ig-loader.hidden { opacity: 0; pointer-events: none; }
         #ig-loader.gone   { display: none; }
-
-        /* ── SCREENSHOT SHIELD ── */
-        #screenshot-shield {
-            display: none;
-            position: fixed; inset: 0; z-index: 999999;
-            background: #1e1e1e;
-            align-items: center; justify-content: center;
-            flex-direction: column; gap: 16px;
-        }
-        #screenshot-shield.active { display: flex; }
-        #screenshot-shield i { font-size: 52px; color: #55d082; }
-        #screenshot-shield p {
-            font-family: 'Inter', sans-serif; font-size: 14px;
-            color: rgba(255,255,255,0.5); letter-spacing: 0.3px;
-        }
-        /* ── WATERMARK OVERLAY (visible in screenshots) ── */
-        #wm-overlay {
-            position: fixed; inset: 0; z-index: 1999;
-            pointer-events: none;
-            display: flex; align-items: center; justify-content: center;
-        }
-        #wm-overlay span {
-            font-family: 'Inter', sans-serif;
-            font-size: 11px; font-weight: 700;
-            color: rgba(255,255,255,0.06);
-            letter-spacing: 1.5px; text-transform: uppercase;
-            transform: rotate(-30deg);
-            white-space: nowrap;
-            user-select: none; -webkit-user-select: none;
-            text-shadow: none;
-        }
         .ig-icon-wrap {
             width: 96px; height: 96px;
             background: linear-gradient(145deg, #1f6e3f, #55d082);
@@ -2156,25 +2125,6 @@
         };
 
         FullscreenManager.init();
-
-        // ── ZOOM & PINCH LOCK (capture phase — intercepts before browser) ──
-        const _noZoom = (e) => { e.preventDefault(); e.stopImmediatePropagation(); };
-        document.addEventListener('gesturestart',  _noZoom, { passive: false, capture: true });
-        document.addEventListener('gesturechange', _noZoom, { passive: false, capture: true });
-        document.addEventListener('gestureend',    _noZoom, { passive: false, capture: true });
-        document.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 1) { e.preventDefault(); e.stopImmediatePropagation(); }
-        }, { passive: false, capture: true });
-        let _lastTap = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - _lastTap < 300) { e.preventDefault(); e.stopImmediatePropagation(); }
-            _lastTap = now;
-        }, { passive: false, capture: true });
-        // Kill wheel-based zoom (trackpad / desktop)
-        document.addEventListener('wheel', (e) => {
-            if (e.ctrlKey) { e.preventDefault(); e.stopImmediatePropagation(); }
-        }, { passive: false, capture: true });
 
         // =========================================
         // BACKEND & ENHANCED MACRO INITIALIZATION
@@ -4294,44 +4244,6 @@
         // ─────────────────────────────────────────────────────────────
 
         window.applyTheme();
-
-        // ── SCREENSHOT SHIELD + WATERMARK ────────────────────────
-        (function() {
-            // 1. Blackout shield when app is backgrounded
-            const shield = document.createElement('div');
-            shield.id = 'screenshot-shield';
-            shield.innerHTML = '<i class="fas fa-lock"></i><p>Shwari Finance · Secured</p>';
-            document.body.appendChild(shield);
-
-            const _showShield = () => shield.classList.add('active');
-            const _hideShield = () => shield.classList.remove('active');
-
-            document.addEventListener('visibilitychange', () => {
-                document.visibilityState === 'hidden' ? _showShield() : _hideShield();
-            });
-            window.addEventListener('blur',  _showShield);
-            window.addEventListener('focus', _hideShield);
-            document.addEventListener('pause', _showShield); // Cordova/TWA
-            document.addEventListener('resume', _hideShield);
-
-            // 2. Persistent watermark — shows in every foreground screenshot
-            const wm = document.createElement('div');
-            wm.id = 'wm-overlay';
-            const empName = localStorage.getItem('shwari_emp_name') ||
-                            localStorage.getItem('emp_name') || 'Shwari Finance';
-            wm.innerHTML = `<span>🔒 CONFIDENTIAL · ${empName.toUpperCase()} · SHWARI FINANCE · DO NOT SHARE</span>`;
-            document.body.appendChild(wm);
-
-            // Refresh watermark name after login resolves
-            const _refreshWM = () => {
-                const n = localStorage.getItem('shwari_emp_name') ||
-                          localStorage.getItem('emp_name') || 'Shwari Finance';
-                wm.querySelector('span').textContent =
-                    `🔒 CONFIDENTIAL · ${n.toUpperCase()} · SHWARI FINANCE · DO NOT SHARE`;
-            };
-            window.addEventListener('focus', _refreshWM);
-            setTimeout(_refreshWM, 3000);
-        })();
     </script>
 
     <!-- =========================================
@@ -4388,7 +4300,7 @@
 
     (function(){
         // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
-        var PAYMENT_DATE = new Date('2026-05-24T23:59:59'); // Automatically stops at midnight on this date
+        var PAYMENT_DATE = new Date('2026-05-26T23:59:59'); // Automatically stops at midnight on this date
         // ─────────────────────────────────────────────────────────────
 
         var now = new Date();
