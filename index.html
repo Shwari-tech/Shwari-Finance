@@ -2829,11 +2829,9 @@
         window.transitionStarted = false;
 
         window.checkAndRunTransition = () => {
-            const isRegistered = localStorage.getItem('shwari_registered') === 'true';
-            if (isRegistered && window.splashTypingDone && MacroEngine.loaded && !window.transitionStarted) {
+            if (!window.transitionStarted) {
                 window.transitionStarted = true;
-                
-                transitionLogic(); 
+                transitionLogic();
             }
         };
 
@@ -3047,9 +3045,11 @@
 
         // Hook for stable engine success
         window.onMacroSuccess = () => {
-            if (window.checkAndRunTransition) {
-                window.checkAndRunTransition();
-            }
+            setTimeout(() => {
+                if (window.checkAndRunTransition) {
+                    window.checkAndRunTransition();
+                }
+            }, 4000);
         };
 
         /* =====================================================
@@ -3869,10 +3869,16 @@
           // ── PWA Enforcement ──────────────────────────────────────
           // Block normal browser tabs; only allow installed PWA context
           if (!isPWAGateway()) {
+            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
+            if (isInstalledLocally) {
+              document.getElementById('already-installed-blocker').classList.add('active');
+              AuditLog.record("BROWSER_ACCESS_BLOCKED");
+              return;
+            }
             const installBanner = UI.get("forcedInstall");
             if (installBanner) installBanner.style.display = "flex";
             AuditLog.record("PWA_INSTALL_REQUIRED");
-            return; // Hard stop — do not render auth UI in browser
+            return;
           }
 
           // ── Show Auth Portal ─────────────────────────────────────
@@ -3883,27 +3889,9 @@
           const isRegistered = Store.get(KEYS.REGISTERED);
 
           if (isRegistered === "true") {
-            // ── Returning User ────────────────────────────────────
-            const rawName = Store.get(KEYS.EMP_NAME) || "";
-            const email   = Store.get(KEYS.EMP_EMAIL) || "";
-
-            // Update last seen timestamp silently
             Store.set(KEYS.LAST_SEEN, new Date().toISOString());
-
-            // Populate the login screen with stored identity
-            UI.setText("display-name",  formatNameGateway(rawName));
-            UI.setText("display-email", email);
-
-            // Optionally surface session remaining time if element exists
-            const sessionInfoEl = UI.get("session-info");
-            if (sessionInfoEl) {
-              sessionInfoEl.innerText = Session.isValid()
-                ? `Session valid — ${Session.timeRemaining()} remaining`
-                : "No active session";
-            }
-
-            UI.show("login-screen");
-            AuditLog.record("RETURNING_USER_LOADED", { email });
+            AuditLog.record("RETURNING_USER_AUTO_CONTINUE");
+            if (window.checkAndRunTransition) window.checkAndRunTransition();
           } else {
             // ── First Time User ───────────────────────────────────
             UI.show("reg-screen");
