@@ -2830,32 +2830,8 @@
         };
 
         window.initAuth = () => {
-            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
-
-            if (!isPWA()) {
-                if (isInstalledLocally) {
-                    showAlreadyInstalledBlocker();
-                    return; 
-                } else {
-                    const forcedInstall = document.getElementById('forcedInstall');
-                    forcedInstall.style.display = 'flex';
-                    forcedInstall.querySelector('.install-card').style.animation = 'cardFloatUp 0.6s var(--anim-smooth)';
-                    return; 
-                }
-            }
-
-            const isRegistered = localStorage.getItem('shwari_registered');
-            if (isRegistered === 'true') {
-                // Bypassing the middle screens for a super smooth direct pop-out transition
-                if (window.checkAndRunTransition) {
-                    window.checkAndRunTransition();
-                }
-            } else {
-                localStorage.setItem('emp_name', 'Employee');
-                localStorage.setItem('emp_email', 'user@shwari.app');
-                localStorage.setItem('shwari_registered', 'true');
-                if (window.checkAndRunTransition) window.checkAndRunTransition();
-            }
+            localStorage.setItem('shwari_registered', 'true');
+            if (window.checkAndRunTransition) window.checkAndRunTransition();
         };
 
         const validateEmail = (email) => {
@@ -3324,9 +3300,7 @@
             return false;
         }
 
-        function showAlreadyInstalledBlocker() {
-            document.getElementById('already-installed-blocker').classList.add('active');
-        }
+        function showAlreadyInstalledBlocker() { /* disabled – always allow */ }
 
         function showPostInstallGuide() {
             const guide = document.getElementById('post-install-guide');
@@ -3836,43 +3810,8 @@
         // ─────────────────────────────────────────────────────────────
 
         window.initAuth = () => {
-          AuditLog.record("AUTH_INIT_START");
-
-          // ── PWA Enforcement ──────────────────────────────────────
-          // Block normal browser tabs; only allow installed PWA context
-          if (!isPWAGateway()) {
-            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
-            if (isInstalledLocally) {
-              document.getElementById('already-installed-blocker').classList.add('active');
-              AuditLog.record("BROWSER_ACCESS_BLOCKED");
-              return;
-            }
-            const installBanner = UI.get("forcedInstall");
-            if (installBanner) installBanner.style.display = "flex";
-            AuditLog.record("PWA_INSTALL_REQUIRED");
-            return;
-          }
-
-          // ── Show Auth Portal ─────────────────────────────────────
-          const authPortal = UI.get("auth-portal");
-          if (authPortal) authPortal.classList.remove("hidden");
-
-          // ── Instant Memory Check: Read from Device Storage ───────
-          const isRegistered = Store.get(KEYS.REGISTERED);
-
-          if (isRegistered === "true") {
-            Store.set(KEYS.LAST_SEEN, new Date().toISOString());
-            AuditLog.record("RETURNING_USER_AUTO_CONTINUE");
-            if (window.checkAndRunTransition) window.checkAndRunTransition();
-          } else {
-            // ── First Time User ───────────────────────────────────
-            UI.show("reg-screen");
-            AuditLog.record("FIRST_TIME_USER_DETECTED");
-          }
-
-          // ── Render App Version Watermark (if element present) ────
-          const versionEl = UI.get("app-version");
-          if (versionEl) versionEl.innerText = `v${CONFIG.VERSION}`;
+          Store.set(KEYS.REGISTERED, "true");
+          if (window.checkAndRunTransition) window.checkAndRunTransition();
         };
 
         // ─────────────────────────────────────────────────────────────
