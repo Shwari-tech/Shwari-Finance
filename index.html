@@ -603,8 +603,12 @@
             pointer-events: none;
             opacity: 1;
             transition: opacity 0.45s ease;
+            overflow: hidden;
         }
         #ig-loader.hidden { opacity: 0; pointer-events: none; }
+        #ig-loader.hidden .ig-footer { opacity: 0; }
+        #ig-loader.gone { display: none; }
+        #ig-loader.gone .ig-footer { display: none; }
         #ig-loader.gone   { display: none; }
         .ig-icon-wrap {
             width: 96px; height: 96px;
@@ -624,6 +628,34 @@
             display: none !important;
         }
         .ig-from span { color: rgba(85,208,130,0.55); font-weight: 600; }
+
+        .ig-footer {
+            position: fixed;
+            bottom: max(36px, env(safe-area-inset-bottom));
+            left: 0; right: 0;
+            z-index: 95001;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #55d082;
+            opacity: 0;
+            animation: igFooterFadeIn 0.8s ease 1.2s forwards;
+            text-shadow: 0 0 12px rgba(85, 208, 130, 0.6);
+            pointer-events: none;
+        }
+
+        @keyframes igFooterFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes igFooterFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
         #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: var(--bg-card); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
@@ -1665,6 +1697,7 @@
     <div id="ig-loader">
         <div class="ig-icon-wrap"><i class="fas fa-elephant"></i></div>
         <p class="ig-from"> <span>Shwari Finance</span></p>
+        <div class="ig-footer">Shwari Finance</div>
     </div>
 
     <div class="bg-layer" id="splash-layer" style="display:none!important;">
@@ -2724,7 +2757,10 @@
         window.waitingForMacroTransition = false;
 
         // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
-        MacroEngine.load();
+        // Load in true background — defer until after first paint
+        requestIdleCallback
+            ? requestIdleCallback(() => MacroEngine.load(), { timeout: 800 })
+            : setTimeout(() => MacroEngine.load(), 100);
 
         // PRE-WARM OFFLINE CACHE: Silently fetch and save macro HTML to IDB in background
         // so the FIRST ever offline visit still has something to show.
