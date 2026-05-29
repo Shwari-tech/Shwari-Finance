@@ -564,11 +564,12 @@
             width: 100vw; 
             height: 100vh;
             height: calc(var(--vh, 1vh) * 100);
+            visibility: hidden;
         }
+        .app.active { visibility: visible; }
         .app.active { opacity: 1; pointer-events: auto; }
         
         iframe { 
-            /* To achieve a 90% zoom, we make the iframe larger and then scale it down */
             width: 111.11%; height: 111.11%; border: none; 
             background: var(--bg-dark); opacity: 0;
             transform: scale(0.8) translateY(15px);
@@ -579,6 +580,7 @@
             top: 0; left: 0; right: 0; bottom: 0;
             padding: 0 !important;
             margin: 0 !important;
+            content-visibility: auto;
         }
         /* The final active state scales it exactly to 0.9 (90%) */
         .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
