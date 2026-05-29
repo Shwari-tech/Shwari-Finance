@@ -2831,7 +2831,6 @@
 
         window.initAuth = () => {
             localStorage.setItem('shwari_registered', 'true');
-            if (window.checkAndRunTransition) window.checkAndRunTransition();
         };
 
         const validateEmail = (email) => {
@@ -3811,7 +3810,6 @@
 
         window.initAuth = () => {
           Store.set(KEYS.REGISTERED, "true");
-          if (window.checkAndRunTransition) window.checkAndRunTransition();
         };
 
         // ─────────────────────────────────────────────────────────────
