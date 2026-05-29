@@ -621,18 +621,17 @@
             50%      { transform: scale(1.07); box-shadow: 0 0 0 18px rgba(85,208,130,0);   }
         }
         .ig-from {
-            margin-top: 22px;
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 3px;
+            position: fixed;
+            bottom: max(28px, env(safe-area-inset-bottom));
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            color: #ffffff;
+            color: rgba(255,255,255,0.4);
             font-family: 'Inter', sans-serif;
         }
         .ig-from span {
-            background: linear-gradient(135deg, #55d082, #2c7a47);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: rgba(85, 208, 130, 0.7);
         }
         .ig-from span { color: rgba(85,208,130,0.55); font-weight: 600; }
 
@@ -3007,7 +3006,7 @@
                 if (window.checkAndRunTransition) {
                     window.checkAndRunTransition();
                 }
-            }, 5500);
+            }, 4000);
         };
 
         /* =====================================================
