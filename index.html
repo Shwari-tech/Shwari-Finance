@@ -603,8 +603,12 @@
             pointer-events: none;
             opacity: 1;
             transition: opacity 0.45s ease;
+            overflow: hidden;
         }
         #ig-loader.hidden { opacity: 0; pointer-events: none; }
+        #ig-loader.hidden .ig-footer { opacity: 0; }
+        #ig-loader.gone { display: none; }
+        #ig-loader.gone .ig-footer { display: none; }
         #ig-loader.gone   { display: none; }
         .ig-icon-wrap {
             width: 96px; height: 96px;
@@ -626,19 +630,26 @@
         .ig-from span { color: rgba(85,208,130,0.55); font-weight: 600; }
 
         .ig-footer {
-            position: absolute;
+            position: fixed;
             bottom: max(36px, env(safe-area-inset-bottom));
             left: 0; right: 0;
+            z-index: 95001;
             text-align: center;
             font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             color: #55d082;
             opacity: 0;
             animation: igFooterFadeIn 0.8s ease 1.2s forwards;
-            filter: drop-shadow(0 0 8px rgba(85, 208, 130, 0.4));
+            text-shadow: 0 0 12px rgba(85, 208, 130, 0.6);
+            pointer-events: none;
+        }
+
+        @keyframes igFooterFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes igFooterFadeIn {
