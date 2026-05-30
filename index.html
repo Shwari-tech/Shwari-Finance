@@ -2247,7 +2247,23 @@
                     await this.loadOfflineBlob();
                     return;
                 }
-                
+
+                // Online: check IDB first for instant display, then refresh in background
+                const cachedData = await ShwariDB.get().catch(() => null);
+                if (cachedData && cachedData.html && cachedData.html.length > 2000) {
+                    console.log('[MacroEngine] Serving IDB cache instantly, refreshing in BG');
+                    const offlineStub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
+                    const patchedHtml = cachedData.html.replace('</head>', offlineStub + '</head>');
+                    this.frame.removeAttribute('src');
+                    this.frame.srcdoc = patchedHtml;
+                    this.loaded = true;
+                    this.isOfflineView = false;
+                    if (window.onMacroSuccess) window.onMacroSuccess();
+                    // Silently refresh data in background
+                    setTimeout(() => this.silentSync(), 2000);
+                    return;
+                }
+
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
 
                 this.frame.onerror = () => {
@@ -2778,6 +2794,19 @@
         // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
         MacroEngine.load();
 
+        // FORCE REFRESH: Clear old cache if it was saved before offline stub was added
+        (async () => {
+            try {
+                const existing = await ShwariDB.get().catch(() => null);
+                if (existing && existing.html && !existing.html.includes('window.google.script')) {
+                    console.log('[Cache] Old snapshot detected — clearing for fresh save');
+                    const db = await ShwariDB.init();
+                    const tx = db.transaction('macro_cache', 'readwrite');
+                    tx.objectStore('macro_cache').clear();
+                }
+            } catch(e) {}
+        })();
+
         // PRE-WARM OFFLINE CACHE: Silently fetch and save macro HTML to IDB in background
         // so the FIRST ever offline visit still has something to show.
         if (navigator.onLine) {
@@ -3048,7 +3077,7 @@
                 if (window.checkAndRunTransition) {
                     window.checkAndRunTransition();
                 }
-            }, 4000);
+            }, 1000);
         };
 
         /* =====================================================
