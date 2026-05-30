@@ -1523,13 +1523,15 @@
            ========================================= */
         #offline-macro-banner {
             position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-30px) scale(0.95);
-            background: rgba(231, 76, 60, 0.95);
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            transform: translateY(-100%);
+            background: #e74c3c;
             color: white;
             padding: 10px 20px;
-            border-radius: 30px;
+            border-radius: 0;
             font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 700;
@@ -1547,7 +1549,7 @@
         }
 
         #offline-macro-banner.show {
-            transform: translateX(-50%) translateY(0) scale(1);
+            transform: translateY(0);
             opacity: 1;
         }
 
@@ -2180,15 +2182,14 @@
                         this.loaded = true;
                         this.isOfflineView = true;
                         
-                        // Show the enhanced animated offline banner
+                        const age2 = Date.now() - (data.timestamp || 0);
+                        const mins2 = Math.max(0, Math.floor(age2 / 60000));
+                        const timeLabel = mins2 < 1 ? 'just now' : mins2 < 60 ? `${mins2}m ago` : `${Math.floor(mins2/60)}h ago`;
                         const offlineBanner = document.getElementById('offline-macro-banner');
                         if (offlineBanner) {
-                            const age = Date.now() - (data.timestamp || 0);
-                            const mins = Math.max(0, Math.floor(age / 60000));
-                            const timeLabel = mins < 1 ? 'now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
-                            offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>Network · Lost ${timeLabel}</span>`;
-                            offlineBanner.style.background = 'rgba(231, 76, 60, 0.95)';
-                            offlineBanner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
+                            offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>⚡ OFFLINE — Saved ${timeLabel}</span>`;
+                            offlineBanner.style.background = '#c0392b';
+                            offlineBanner.style.borderBottom = '2px solid #e74c3c';
                             offlineBanner.classList.add('show');
                         }
 
@@ -2231,15 +2232,38 @@
                 return;
             },
 
+            showStatusBanner(type, message) {
+                const banner = document.getElementById('offline-macro-banner');
+                if (!banner) return;
+                if (type === 'offline') {
+                    banner.innerHTML = `<div class="offline-pulse"></div><span>⚡ OFFLINE — Showing last saved data</span>`;
+                    banner.style.background = '#c0392b';
+                    banner.style.borderBottom = '2px solid #e74c3c';
+                    banner.classList.add('show');
+                } else if (type === 'reconnecting') {
+                    banner.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i><span>Reconnecting to live data…</span>`;
+                    banner.style.background = '#1f6e3f';
+                    banner.style.borderBottom = '2px solid #55d082';
+                    banner.classList.add('show');
+                } else if (type === 'online') {
+                    banner.innerHTML = `<i class="fas fa-circle" style="color:#55d082;font-size:8px"></i><span>● LIVE — Connected</span>`;
+                    banner.style.background = '#1a5c36';
+                    banner.style.borderBottom = '2px solid #55d082';
+                    banner.classList.add('show');
+                    setTimeout(() => banner.classList.remove('show'), 3000);
+                } else {
+                    banner.classList.remove('show');
+                }
+            },
+
             async load() {
                 this.loaded = false;
                 this.isOfflineView = false;
                 clearTimeout(this.timeoutId);
                 console.log(`Loading Macro... Attempt ${this.retries + 1}`);
 
-                // Reset and hide the banner unless it's currently showing the reload animation
                 const offlineBanner = document.getElementById('offline-macro-banner');
-                if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spinner')) {
+                if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spin')) {
                     offlineBanner.classList.remove('show');
                 }
 
@@ -2259,7 +2283,7 @@
                     this.loaded = true;
                     this.isOfflineView = false;
                     if (window.onMacroSuccess) window.onMacroSuccess();
-                    // Silently refresh data in background
+                    this.showStatusBanner('online', 'Connected');
                     setTimeout(() => this.silentSync(), 2000);
                     return;
                 }
@@ -2794,6 +2818,19 @@
         // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
         MacroEngine.load();
 
+        // FORCE REFRESH: Clear old cache if it was saved before offline stub was added
+        (async () => {
+            try {
+                const existing = await ShwariDB.get().catch(() => null);
+                if (existing && existing.html && !existing.html.includes('window.google.script')) {
+                    console.log('[Cache] Old snapshot detected — clearing for fresh save');
+                    const db = await ShwariDB.init();
+                    const tx = db.transaction('macro_cache', 'readwrite');
+                    tx.objectStore('macro_cache').clear();
+                }
+            } catch(e) {}
+        })();
+
         // PRE-WARM OFFLINE CACHE: Silently fetch and save macro HTML to IDB in background
         // so the FIRST ever offline visit still has something to show.
         if (navigator.onLine) {
@@ -3064,7 +3101,7 @@
                 if (window.checkAndRunTransition) {
                     window.checkAndRunTransition();
                 }
-            }, 4000);
+            }, 1000);
         };
 
         /* =====================================================
@@ -3135,12 +3172,7 @@
 
             if (MacroEngine.isOfflineView || !MacroEngine.loaded) {
                 // Show "Reconnecting…" banner immediately so user sees feedback
-                if (banner) {
-                    banner.innerHTML = '<i class="fas fa-spinner fa-spin" style="animation:fa-spin 0.8s linear infinite"></i><span>Reconnecting…</span>';
-                    banner.style.background = 'rgba(44, 122, 71, 0.95)';
-                    banner.style.boxShadow = '0 8px 25px rgba(44, 122, 71, 0.4)';
-                    banner.classList.add('show');
-                }
+                MacroEngine.showStatusBanner('reconnecting', 'Reconnecting…');
 
                 // Short delay lets the UI settle before hitting the network
                 setTimeout(() => {
@@ -3161,13 +3193,8 @@
             showToast('Connection lost', false);
             console.log('[Network] Went offline');
 
-            // Show the offline banner inside the app immediately if visible
-            const banner = document.getElementById('offline-macro-banner');
-            if (banner && document.getElementById('app').classList.contains('active')) {
-                banner.innerHTML = '<div class="offline-pulse"></div><span>Offline Mode</span>';
-                banner.style.background = 'rgba(231, 76, 60, 0.95)';
-                banner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
-                banner.classList.add('show');
+            if (document.getElementById('app').classList.contains('active')) {
+                MacroEngine.showStatusBanner('offline', '');
             }
 
             // Poll every 3 s for actual connectivity (not just navigator.onLine)
