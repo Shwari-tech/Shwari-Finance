@@ -2160,8 +2160,21 @@
                         if (age > 24 * 60 * 60 * 1000) {
                             document.getElementById('stale-warning').style.display = 'flex';
                         }
-                        const offlineStub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
+
+                        // Inject google.script stub so cached page works offline
+                        const offlineStub = `<script>
+                        window.google=window.google||{};
+                        window.google.script={
+                            run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),
+                            history:{push:function(){},replace:function(){}},
+                            url:{getActive:function(){return location.href;}},
+                            host:{close:function(){},setHeight:function(){},setWidth:function(){}}
+                        };
+                        window.addEventListener('online',function(){window.location.reload();});
+                        <\/script>`;
                         const patchedHtml = data.html.replace('</head>', offlineStub + '</head>');
+
+                        // Use srcdoc — bypasses SW, network, and blob URL issues entirely
                         this.frame.removeAttribute('src');
                         this.frame.srcdoc = patchedHtml;
                         this.loaded = true;
@@ -2196,9 +2209,15 @@
 
             async silentSync() {
                 try {
-                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`);
+                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`, {
+                        redirect: 'follow', credentials: 'omit'
+                    });
                     if(res.ok) {
-                        const html = await res.text();
+                        let html = await res.text();
+                        const isReal = html.length > 2000 &&
+                            !html.toLowerCase().includes('accounts.google.com') &&
+                            !html.toLowerCase().includes('signin');
+                        if (!isReal) return;
                         await ShwariDB.save(html);
                         this.updateSyncBadge(Date.now(), false);
                     }
@@ -2229,15 +2248,18 @@
                     return;
                 }
 
-                // Serve cache instantly, refresh in background
+                // Online: check IDB first for instant display, then refresh in background
                 const cachedData = await ShwariDB.get().catch(() => null);
                 if (cachedData && cachedData.html && cachedData.html.length > 2000) {
-                    const stub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
+                    console.log('[MacroEngine] Serving IDB cache instantly, refreshing in BG');
+                    const offlineStub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
+                    const patchedHtml = cachedData.html.replace('</head>', offlineStub + '</head>');
                     this.frame.removeAttribute('src');
-                    this.frame.srcdoc = cachedData.html.replace('</head>', stub + '</head>');
+                    this.frame.srcdoc = patchedHtml;
                     this.loaded = true;
                     this.isOfflineView = false;
                     if (window.onMacroSuccess) window.onMacroSuccess();
+                    // Silently refresh data in background
                     setTimeout(() => this.silentSync(), 2000);
                     return;
                 }
@@ -2266,8 +2288,8 @@
                     }
 
                     if (isErrorPage) {
-                        console.warn("Iframe loaded an error page — serving IDB cache.");
-                        await this.loadOfflineBlob();
+                        console.warn("Iframe loaded an error page — falling back to offline blob.");
+                        this.loadOfflineBlob();
                         return;
                     }
 
