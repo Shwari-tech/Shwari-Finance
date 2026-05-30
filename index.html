@@ -2230,15 +2230,38 @@
                 }
                 
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+
+                this.frame.onerror = () => {
+                    console.warn("Iframe onerror fired — loading offline blob.");
+                    clearTimeout(this.timeoutId);
+                    this.loadOfflineBlob();
+                };
                 
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
                 this.frame.onload = () => {
+                    // Detect browser error pages (net::ERR_* shown inside iframe)
+                    let isErrorPage = false;
+                    try {
+                        const loc = this.frame.contentWindow && this.frame.contentWindow.location;
+                        if (loc && (loc.href === 'about:blank' || loc.href.startsWith('chrome-error://') || loc.href.startsWith('data:text/html'))) {
+                            isErrorPage = true;
+                        }
+                    } catch(e) {
+                        // cross-origin frames throw on access — that means real content loaded
+                        isErrorPage = false;
+                    }
+
+                    if (isErrorPage) {
+                        console.warn("Iframe loaded an error page — falling back to offline blob.");
+                        this.loadOfflineBlob();
+                        return;
+                    }
+
                     this.loaded = true;
                     this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
                     
-                    // Final confirmation removal of banner when successfully loaded live
                     if (offlineBanner) offlineBanner.classList.remove('show');
 
                     if (this.reconnectInterval) {
