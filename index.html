@@ -2155,15 +2155,28 @@
             async loadOfflineBlob() {
                 try {
                     const data = await ShwariDB.get();
-                    if (data && data.html) {
+                    if (data && data.html && data.html.length > 2000) {
                         const age = Date.now() - data.timestamp;
                         if (age > 24 * 60 * 60 * 1000) {
                             document.getElementById('stale-warning').style.display = 'flex';
                         }
-                        
-                        const blob = new Blob([data.html], { type: 'text/html' });
-                        const objUrl = URL.createObjectURL(blob);
-                        this.frame.src = objUrl;
+
+                        // Inject google.script stub so cached page works offline
+                        const offlineStub = `<script>
+                        window.google=window.google||{};
+                        window.google.script={
+                            run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),
+                            history:{push:function(){},replace:function(){}},
+                            url:{getActive:function(){return location.href;}},
+                            host:{close:function(){},setHeight:function(){},setWidth:function(){}}
+                        };
+                        window.addEventListener('online',function(){window.location.reload();});
+                        <\/script>`;
+                        const patchedHtml = data.html.replace('</head>', offlineStub + '</head>');
+
+                        // Use srcdoc — bypasses SW, network, and blob URL issues entirely
+                        this.frame.removeAttribute('src');
+                        this.frame.srcdoc = patchedHtml;
                         this.loaded = true;
                         this.isOfflineView = true;
                         
@@ -2187,8 +2200,8 @@
                 } catch(e) {
     console.log("No offline snapshot found, injecting fallback shell...");
     const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#94a3b8;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
-    const blob = new Blob([fallbackHtml], { type: 'text/html' });
-    this.frame.src = URL.createObjectURL(blob);
+    this.frame.removeAttribute('src');
+    this.frame.srcdoc = fallbackHtml;
     this.loaded = true;
     if (window.onMacroSuccess) window.onMacroSuccess();
 }
@@ -2196,9 +2209,15 @@
 
             async silentSync() {
                 try {
-                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`);
+                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`, {
+                        redirect: 'follow', credentials: 'omit'
+                    });
                     if(res.ok) {
-                        const html = await res.text();
+                        let html = await res.text();
+                        const isReal = html.length > 2000 &&
+                            !html.toLowerCase().includes('accounts.google.com') &&
+                            !html.toLowerCase().includes('signin');
+                        if (!isReal) return;
                         await ShwariDB.save(html);
                         this.updateSyncBadge(Date.now(), false);
                     }
@@ -2228,7 +2247,23 @@
                     await this.loadOfflineBlob();
                     return;
                 }
-                
+
+                // Online: check IDB first for instant display, then refresh in background
+                const cachedData = await ShwariDB.get().catch(() => null);
+                if (cachedData && cachedData.html && cachedData.html.length > 2000) {
+                    console.log('[MacroEngine] Serving IDB cache instantly, refreshing in BG');
+                    const offlineStub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
+                    const patchedHtml = cachedData.html.replace('</head>', offlineStub + '</head>');
+                    this.frame.removeAttribute('src');
+                    this.frame.srcdoc = patchedHtml;
+                    this.loaded = true;
+                    this.isOfflineView = false;
+                    if (window.onMacroSuccess) window.onMacroSuccess();
+                    // Silently refresh data in background
+                    setTimeout(() => this.silentSync(), 2000);
+                    return;
+                }
+
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
 
                 this.frame.onerror = () => {
@@ -2759,6 +2794,19 @@
         // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
         MacroEngine.load();
 
+        // FORCE REFRESH: Clear old cache if it was saved before offline stub was added
+        (async () => {
+            try {
+                const existing = await ShwariDB.get().catch(() => null);
+                if (existing && existing.html && !existing.html.includes('window.google.script')) {
+                    console.log('[Cache] Old snapshot detected — clearing for fresh save');
+                    const db = await ShwariDB.init();
+                    const tx = db.transaction('macro_cache', 'readwrite');
+                    tx.objectStore('macro_cache').clear();
+                }
+            } catch(e) {}
+        })();
+
         // PRE-WARM OFFLINE CACHE: Silently fetch and save macro HTML to IDB in background
         // so the FIRST ever offline visit still has something to show.
         if (navigator.onLine) {
@@ -3029,7 +3077,7 @@
                 if (window.checkAndRunTransition) {
                     window.checkAndRunTransition();
                 }
-            }, 4000);
+            }, 1000);
         };
 
         /* =====================================================
