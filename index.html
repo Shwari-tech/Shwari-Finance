@@ -2140,6 +2140,68 @@
         // BACKEND & ENHANCED MACRO INITIALIZATION
         // =========================================
         const MACRO_URL = "https://script.google.com/macros/s/AKfycby8ZskGXoKrwOUMu1WK4NuGmxm0gI7UVl0_89A-4NsU36ooNuizn28KYt5U55Mh5x5j/exec";
+
+        const ShwariOfflinePatch = {
+            inject(html) {
+                const patch = `<script>
+(function(){
+    var chain = {
+        withSuccessHandler: function(fn){ chain._sh = fn; return chain; },
+        withFailureHandler: function(fn){ chain._fh = fn; return chain; },
+        withUserObject:     function(fn){ return chain; }
+    };
+    var runProxy = new Proxy(chain, {
+        get: function(t, p) {
+            if (p in t) return t[p];
+            return function() {
+                console.warn('[Offline] google.script.run.' + p + ' silenced');
+                if (chain._fh) chain._fh(new Error('Offline'));
+                return chain;
+            };
+        }
+    });
+    var noop = function(){};
+    window.google = window.google || {};
+    window.google.script = {
+        run: runProxy,
+        history: { push: noop, replace: noop },
+        url: {
+            getLocation: function(cb){
+                cb && cb({
+                    hash:'', parameter:{}, parameters:{},
+                    pathname:'/', port:'443', protocol:'https:',
+                    toString: function(){ return ''; }
+                });
+            }
+        },
+        host: { close: noop, setHeight: noop, setWidth: noop, editor:{ focus: noop } }
+    };
+    document.addEventListener('DOMContentLoaded', function(){
+        var banner = document.createElement('div');
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(231,76,60,0.93);color:#fff;text-align:center;padding:8px 16px;font-size:12px;font-weight:700;font-family:system-ui,sans-serif;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(8px)';
+        var dot = document.createElement('span');
+        dot.style.cssText = 'width:7px;height:7px;background:#fff;border-radius:50%;display:inline-block;animation:op 1.2s infinite';
+        var style = document.createElement('style');
+        style.textContent = '@keyframes op{0%,100%{opacity:1}50%{opacity:0.3}}';
+        document.head.appendChild(style);
+        banner.appendChild(dot);
+        banner.appendChild(document.createTextNode('OFFLINE MODE — Showing last saved data'));
+        document.body.insertBefore(banner, document.body.firstChild);
+        window.addEventListener('online', function(){
+            banner.style.background = 'rgba(44,122,71,0.93)';
+            banner.lastChild.textContent = ' Back online — tap to refresh';
+            banner.style.cursor = 'pointer';
+            banner.onclick = function(){ window.location.reload(); };
+        });
+    });
+    console.log('[Shwari] Offline engine active — full UI running from cache');
+})();
+<\/script>`;
+                if (html.includes('<head>')) return html.replace('<head>', '<head>' + patch);
+                if (html.includes('<body>')) return html.replace('<body>', '<body>' + patch);
+                return patch + html;
+            }
+        };
         
         // Super Stable Macro Engine with Blob Offline Injection
         const MacroEngine = {
@@ -2179,6 +2241,7 @@
                             offlineBanner.classList.add('show');
                         }
 
+                        window._offlineBlob = true;
                         if (window.onMacroSuccess) window.onMacroSuccess();
                         this.updateSyncBadge(data.timestamp, true);
                     } else {
@@ -2186,24 +2249,35 @@
                     }
                 } catch(e) {
     console.log("No offline snapshot found, injecting fallback shell...");
-    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#94a3b8;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
+    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Shwari Finance · Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:-apple-system,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:30px}.icon{width:88px;height:88px;background:linear-gradient(145deg,#1f6e3f,#55d082);border-radius:26px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:44px;box-shadow:0 12px 40px rgba(85,208,130,0.35);animation:beat 2s ease-in-out infinite}@keyframes beat{0%,100%{transform:scale(1);box-shadow:0 12px 40px rgba(85,208,130,0.3)}50%{transform:scale(1.06);box-shadow:0 20px 55px rgba(85,208,130,0.55)}}.brand{font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:rgba(85,208,130,0.7);margin-bottom:10px}.title{font-size:26px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-0.5px}.divider{width:40px;height:3px;background:linear-gradient(90deg,#2c7a47,#55d082);border-radius:2px;margin:14px auto 18px}.msg{font-size:14px;color:#94a3b8;line-height:1.7;max-width:280px;margin-bottom:28px}.badge{display:inline-flex;align-items:center;gap:9px;background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.25);padding:11px 20px;border-radius:30px;font-size:13px;font-weight:700;color:#f87171;margin-bottom:28px}.dot{width:8px;height:8px;background:#f87171;border-radius:50%;animation:pulse 1.5s infinite}@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(248,113,113,0.7)}70%{box-shadow:0 0 0 7px rgba(248,113,113,0)}100%{box-shadow:0 0 0 0 rgba(248,113,113,0)}}.dots{display:flex;gap:7px}.dots span{width:9px;height:9px;background:#55d082;border-radius:50%;animation:d 1.4s ease-in-out infinite}.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}@keyframes d{0%,80%,100%{transform:scale(0.5);opacity:0.3}40%{transform:scale(1);opacity:1}}.foot{position:fixed;bottom:26px;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.18)}.foot span{color:rgba(85,208,130,0.5)}</style></head><body><div class="icon">🐘</div><p class="brand">Shwari Finance</p><h1 class="title">You're Offline</h1><div class="divider"></div><p class="msg">Open the app once while connected to the internet — it will save a full copy for offline use automatically.</p><div class="badge"><div class="dot"></div>Waiting for connection…</div><div class="dots"><span></span><span></span><span></span></div><p class="foot"><span>Shwari Finance</span></p><script>function check(){if(navigator.onLine){document.querySelector('.badge').innerHTML='<div style="width:8px;height:8px;background:#55d082;border-radius:50%"></div><span style="color:#55d082">Back online — reloading…</span>';setTimeout(()=>window.location.reload(),500);}}window.addEventListener('online',check);setInterval(check,2500);<\/script></body></html>`;
     const blob = new Blob([fallbackHtml], { type: 'text/html' });
     this.frame.src = URL.createObjectURL(blob);
     this.loaded = true;
+    window._offlineBlob = true;
     if (window.onMacroSuccess) window.onMacroSuccess();
 }
             },
 
             async silentSync() {
-                try {
-                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`);
-                    if(res.ok) {
-                        const html = await res.text();
-                        await ShwariDB.save(html);
-                        this.updateSyncBadge(Date.now(), false);
+                for (let attempt = 1; attempt <= 3; attempt++) {
+                    try {
+                        const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_sync&offline=1`);
+                        if (res.ok) {
+                            const html = await res.text();
+                            const isReal = html.length > 1000 &&
+                                !html.toLowerCase().includes('accounts.google.com') &&
+                                !html.toLowerCase().includes('signin');
+                            if (isReal) {
+                                const patched = ShwariOfflinePatch.inject(html);
+                                await ShwariDB.save(patched);
+                                this.updateSyncBadge(Date.now(), false);
+                                console.log('[Sync] Cached & patched', Math.round(patched.length/1024), 'KB — full offline run enabled');
+                            }
+                        }
+                        break;
+                    } catch (e) {
+                        if (attempt < 3) await new Promise(r => setTimeout(r, 1200 * attempt));
                     }
-                } catch (e) {
-                    console.log("Silent sync fetch skipped or failed.");
                 }
             },
 
@@ -2771,14 +2845,15 @@
                             !html.toLowerCase().includes('accounts.google.com') &&
                             !html.toLowerCase().includes('signin');
                         if (isReal) {
-                            await ShwariDB.save(html);
-                            console.log('[PreWarm] Macro saved to IDB on first load —', Math.round(html.length/1024), 'KB');
+                            const patched = ShwariOfflinePatch.inject(html);
+                            await ShwariDB.save(patched);
+                            console.log('[PreWarm] Cached & patched', Math.round(patched.length/1024), 'KB — offline-ready');
                         }
                     }
                 } catch(e) {
                     console.log('[PreWarm] Skipped —', e.message);
                 }
-            }, 3000); // 3 s delay — let the visible iframe load finish first
+            }, 800); // 0.8 s — cache quickly for offline use
         }
 
         async function initializeApp() {
@@ -3025,11 +3100,13 @@
 
         // Hook for stable engine success
         window.onMacroSuccess = () => {
+            const delay = window._offlineBlob ? 2000 : 4000;
+            window._offlineBlob = false;
             setTimeout(() => {
                 if (window.checkAndRunTransition) {
                     window.checkAndRunTransition();
                 }
-            }, 4000);
+            }, delay);
         };
 
         /* =====================================================
