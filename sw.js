@@ -281,6 +281,9 @@ self.addEventListener('fetch', (event) => {
   // Ignore non-GET
   if (request.method !== 'GET') return;
 
+  // CRITICAL: Never intercept blob: or data: URLs — these are our offline injections
+  if (request.url.startsWith('blob:') || request.url.startsWith('data:')) return;
+
   let url;
   try {
     url = new URL(request.url);
