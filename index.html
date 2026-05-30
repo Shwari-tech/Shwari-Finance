@@ -2261,12 +2261,12 @@
             async silentSync() {
                 for (let attempt = 1; attempt <= 3; attempt++) {
                     try {
-                        const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_sync&offline=1`);
+                        const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_sync&offline=1`, { credentials: 'include', redirect: 'follow' });
                         if (res.ok) {
                             const html = await res.text();
-                            const isReal = html.length > 1000 &&
-                                !html.toLowerCase().includes('accounts.google.com') &&
-                                !html.toLowerCase().includes('signin');
+                            const isReal = html.length > 2000 &&
+                                !html.toLowerCase().includes('servicelogin') &&
+                                !html.toLowerCase().includes('accounts.google.com/o/oauth');
                             if (isReal) {
                                 const patched = ShwariOfflinePatch.inject(html);
                                 await ShwariDB.save(patched);
@@ -2343,8 +2343,11 @@
                         this.reconnectInterval = null;
                     }
                     console.log("Macro loaded successfully.");
-                    
-                    if (navigator.onLine) this.silentSync();
+
+                    // Save via fetch immediately when iframe loads live
+                    if (navigator.onLine) {
+                        setTimeout(() => this.silentSync(), 500);
+                    }
                     
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
@@ -2838,7 +2841,7 @@
         if (navigator.onLine) {
             setTimeout(async () => {
                 try {
-                    const res = await fetch(`${MACRO_URL}?cb=${Date.now()}&client=shwari_prewarm`);
+                    const res = await fetch(`${MACRO_URL}?cb=${Date.now()}&client=shwari_prewarm`, { credentials: 'include', redirect: 'follow' });
                     if (res.ok) {
                         const html = await res.text();
                         const isReal = html.length > 1000 &&
