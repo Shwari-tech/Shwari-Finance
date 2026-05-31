@@ -1,13 +1,13 @@
 /**
- * Shwari Finance — Service Worker v7
+ * Shwari Finance — Service Worker v7.4.0
  * Production-grade caching, offline support, and background sync
  *
  * Strategies used:
- *  - HTML pages        → Network First  (freshness > speed)
- *  - Images            → Cache First    (stale-while-revalidate in BG)
- *  - CSS / JS / Fonts  → Stale-While-Revalidate
- *  - Macro / GAS calls → Network First  (with strict offline HTML fallback)
- *  - Everything else   → Network with Cache Fallback
+ * - HTML pages        → Network First  (freshness > speed)
+ * - Images            → Cache First    (stale-while-revalidate in BG)
+ * - CSS / JS / Fonts  → Stale-While-Revalidate
+ * - Macro / GAS calls → Network First  (with strict offline HTML fallback)
+ * - Everything else   → Network with Cache Fallback
  */
 
 'use strict';
@@ -16,8 +16,8 @@
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const APP_VERSION      = '7.1.0';   // ← increment this for every release
-const CACHE_VERSION    = 'v8';      // ← increment this for every release
+const APP_VERSION      = '7.4.0';
+const CACHE_VERSION    = 'v11';
 
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
@@ -31,8 +31,8 @@ const KNOWN_CACHES     = new Set([CACHE_STATIC, CACHE_DYNAMIC, CACHE_IMAGES, CAC
 const MAX_DYNAMIC_ITEMS = 80;
 const MAX_IMAGE_ITEMS   = 60;
 
-// Network request timeout (ms) before falling back to cache
-const NETWORK_TIMEOUT_MS = 5000;
+// M-PESA STYLE FAST FAIL: Drop to cache in 4 seconds to bypass Lie-Fi
+const NETWORK_TIMEOUT_MS = 4000;
 
 // Stable key used to store the macro snapshot in the dedicated cache
 const MACRO_CACHE_KEY = 'shwari-macro-snapshot';
@@ -102,11 +102,6 @@ const SW_IDB = {
         }
     },
 
-    /**
-     * Saves the macro HTML snapshot to IndexedDB.
-     * Called from the SW after every successful macro network fetch.
-     * @param {string} html - The full HTML string of the macro page
-     */
     async save(html) {
         try {
             const db = await this.open();
@@ -128,7 +123,6 @@ const SW_IDB = {
 
 /**
  * Opens a cache and safely caches all URLs, skipping any that fail.
- * Using addAll would abort the entire batch if one URL fails.
  */
 async function cacheAllSafe(cacheName, urls) {
   const cache = await caches.open(cacheName);
@@ -158,7 +152,6 @@ async function trimCache(cacheName, maxItems) {
 
 /**
  * Race a fetch against a timeout. Rejects with a TimeoutError on expiry.
- * Fast fails if offline to avoid hanging on Lie-Fi.
  */
 function fetchWithTimeout(request, ms = NETWORK_TIMEOUT_MS) {
   if (!navigator.onLine) {
@@ -168,15 +161,11 @@ function fetchWithTimeout(request, ms = NETWORK_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
 
-  // Clone the request to attach the abort signal safely
   const req = new Request(request, { signal: controller.signal });
 
   return fetch(req).finally(() => clearTimeout(timer));
 }
 
-/**
- * Returns true for URLs that should never be cached (live APIs).
- */
 function isNeverCache(url) {
   return (
     url.href.includes('accounts.google.com') ||
@@ -184,9 +173,6 @@ function isNeverCache(url) {
   );
 }
 
-/**
- * Returns true for requests that are navigations or expect HTML.
- */
 function isHtmlRequest(request) {
   return (
     request.mode === 'navigate' ||
@@ -194,9 +180,6 @@ function isHtmlRequest(request) {
   );
 }
 
-/**
- * Returns true for image requests.
- */
 function isImageRequest(request, url) {
   return (
     request.destination === 'image' ||
@@ -205,9 +188,6 @@ function isImageRequest(request, url) {
   );
 }
 
-/**
- * Returns true for static asset requests (CSS, JS, fonts, CDN).
- */
 function isStaticAsset(request, url) {
   return (
     request.destination === 'style' ||
@@ -278,14 +258,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Ignore non-GET
   if (request.method !== 'GET') return;
+  if (request.url.startsWith('blob:') || request.url.startsWith('data:')) return;
 
   let url;
   try {
     url = new URL(request.url);
   } catch {
-    return; // Malformed URL — ignore
+    return; 
   }
 
   // ── STRATEGY 0: Google Macro URLs — always intercepted for offline support ─
@@ -294,28 +274,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Never cache live API endpoints
   if (isNeverCache(url)) return;
 
-  // ── Strategy 1: Network First (HTML pages) ────────────────────────────────
   if (isHtmlRequest(request)) {
     event.respondWith(networkFirstHTML(request));
     return;
   }
 
-  // ── Strategy 2: Cache First + BG Revalidate (Images) ─────────────────────
   if (isImageRequest(request, url)) {
     event.respondWith(cacheFirstImage(request));
     return;
   }
 
-  // ── Strategy 3: Stale-While-Revalidate (CSS / JS / Fonts) ────────────────
   if (isStaticAsset(request, url)) {
     event.respondWith(staleWhileRevalidate(request, CACHE_STATIC));
     return;
   }
 
-  // ── Strategy 4: Network with Cache Fallback (everything else) ─────────────
   event.respondWith(networkWithCacheFallback(request));
 });
 
@@ -323,17 +298,7 @@ self.addEventListener('fetch', (event) => {
 // STRATEGY IMPLEMENTATIONS
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Reads the offline macro snapshot from all available sources in priority order:
- *   1. IndexedDB   (full HTML string, saved by both SW and main thread)
- *   2. CACHE_MACRO (dedicated Response cache with stable key)
- *   3. CACHE_DYNAMIC (general dynamic cache, older snapshot may live here)
- *   4. Built-in offline HTML fallback
- *
- * @returns {Promise<Response>}
- */
 async function serveOfflineMacro() {
-    // 1. IndexedDB — highest quality, written by SW after every live fetch
     try {
         const idbData = await SW_IDB.get('macro_html');
         if (idbData && idbData.html) {
@@ -347,7 +312,6 @@ async function serveOfflineMacro() {
         warn('IDB read failed, trying Cache API…');
     }
 
-    // 2. Dedicated macro cache (stable key, written by SW)
     try {
         const macroCache = await caches.open(CACHE_MACRO);
         const cached = await macroCache.match(MACRO_CACHE_KEY);
@@ -359,10 +323,8 @@ async function serveOfflineMacro() {
         warn('CACHE_MACRO read failed, trying CACHE_DYNAMIC…');
     }
 
-    // 3. General dynamic cache (older path — still valid)
     try {
         const dynCache = await caches.open(CACHE_DYNAMIC);
-        // Search without query string variations
         const keys = await dynCache.keys();
         const macroKey = keys.find(k =>
             k.url.includes('script.google.com') || k.url.includes('script.googleusercontent.com')
@@ -378,62 +340,50 @@ async function serveOfflineMacro() {
         warn('CACHE_DYNAMIC read failed, serving built-in fallback.');
     }
 
-    // 4. Ultimate offline HTML fallback
-    log('No cached macro found — serving built-in offline shell');
-    return buildOfflineFallbackResponse();
+    log('No cached macro found — forcing network routing recovery');
+    return fetch(request).catch(() => buildOfflineFallbackResponse());
 }
 
-/**
- * Special interceptor for the Google Scripts Macro.
- *
- * Online  → Fetch live, save to IDB + CACHE_MACRO, return live response.
- * Offline → serveOfflineMacro() with 3-tier fallback chain.
- */
 async function networkFirstMacro(request) {
     const urlObj   = new URL(request.url);
-    const cleanUrl = urlObj.origin + urlObj.pathname; // Strip cache-busters for stable key
+    const cleanUrl = urlObj.origin + urlObj.pathname; 
 
-    // FAST OFFLINE BAILOUT — skip the network entirely if we know we're offline
     if (!navigator.onLine) {
         log('Device offline — serving macro from cache/IDB immediately');
         return serveOfflineMacro();
     }
 
     try {
-        const networkRes = await fetchWithTimeout(request, 20000); // 20 s — GAS can be slow
+        // M-PESA STYLE FAST FAIL: Instantly drop to cache within 4 seconds
+        const networkRes = await fetchWithTimeout(request, 4000); 
 
         if (!networkRes) throw new Error('Empty response from macro endpoint');
 
-        // Cache only genuine content — not error pages or empty responses
         const isGenuine = (networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302);
 
         if (isGenuine) {
             const htmlClone = networkRes.clone();
 
-            // ── Write to CACHE_DYNAMIC (path-based stable key) ────────────
             caches.open(CACHE_DYNAMIC)
                 .then(cache => cache.put(cleanUrl, networkRes.clone()))
                 .catch(() => {});
 
-            // ── Write to CACHE_MACRO (fixed string key — fastest lookup) ──
             caches.open(CACHE_MACRO)
                 .then(cache => cache.put(MACRO_CACHE_KEY, networkRes.clone()))
                 .catch(() => {});
 
-            // ── Persist full HTML to IndexedDB ────────────────────────────
-            // IDB survives cache eviction and HTTP header conflicts.
-            // Guard: only save if the page looks like real dashboard HTML
-            // (not a Google login redirect or error stub).
             htmlClone.text().then(html => {
                 const isRealDashboard = (
-                    html.length > 1000 &&
-                    !html.toLowerCase().includes('accounts.google.com') &&
-                    !html.toLowerCase().includes('signin') &&
-                    !html.toLowerCase().includes('error 404')
+                    html.length > 500 &&
+                    !html.toLowerCase().includes('servicelogin') &&
+                    !html.toLowerCase().includes('accounts.google.com/o/oauth')
                 );
                 if (isRealDashboard) {
-                    SW_IDB.save(html);
-                    log('Macro HTML snapshot saved to IDB —', Math.round(html.length / 1024), 'KB');
+                    // M-PESA STYLE FIX: Removed jarring window.location.reload()
+                    const patch = `<script>(function(){var chain={withSuccessHandler:function(fn){chain._sh=fn;return chain;},withFailureHandler:function(fn){chain._fh=fn;return chain;},withUserObject:function(){return chain;}};var rp=new Proxy(chain,{get:function(t,p){if(p in t)return t[p];return function(){if(chain._fh)chain._fh(new Error('Offline'));return chain;};}});var n=function(){};window.google=window.google||{};window.google.script={run:rp,history:{push:n,replace:n},url:{getLocation:function(cb){cb&&cb({hash:'',parameter:{},parameters:{},pathname:'/',port:'443',protocol:'https:',toString:function(){return '';}});}},host:{close:n,setHeight:n,setWidth:n,editor:{focus:n}}};})();<\/script>`;
+                    const patched = html.includes('<head>') ? html.replace('<head>', '<head>' + patch) : patch + html;
+                    SW_IDB.save(patched);
+                    log('Macro HTML patched & saved to IDB —', Math.round(patched.length / 1024), 'KB');
                 } else {
                     warn('Macro response looks like a login/error page — NOT caching');
                 }
@@ -443,15 +393,11 @@ async function networkFirstMacro(request) {
         return networkRes;
 
     } catch (e) {
-        log('Macro network fetch failed:', e.message, '— falling back to offline sources');
+        log('Macro network fetch failed/timed out:', e.message, '— instantly dropping to offline sources');
         return serveOfflineMacro();
     }
 }
 
-/**
- * Builds the built-in offline fallback HTML Response.
- * Auto-reloads when connectivity is restored.
- */
 function buildOfflineFallbackResponse() {
     const offlineHtml = `<!DOCTYPE html>
 <html lang="en">
@@ -495,13 +441,9 @@ function buildOfflineFallbackResponse() {
     });
 }
 
-/**
- * Network First — try network with timeout, fall back to cache.
- * Updates cache on successful network response.
- */
 async function networkFirstHTML(request) {
   try {
-    const networkRes = await fetchWithTimeout(request);
+    const networkRes = await fetchWithTimeout(request, NETWORK_TIMEOUT_MS);
     if (networkRes.ok) {
       const cache = await caches.open(CACHE_STATIC);
       cache.put(request, networkRes.clone());
@@ -510,25 +452,19 @@ async function networkFirstHTML(request) {
   } catch (e) {
     log('Network failed for HTML, serving from cache:', request.url);
     const cached = await caches.match(request, { ignoreSearch: true });
-    return cached || caches.match('/index.html'); // Ultimate fallback
+    return cached || caches.match('/index.html');
   }
 }
 
-/**
- * Cache First — return cached image immediately, update cache silently.
- * Trims cache when it gets too large.
- */
 async function cacheFirstImage(request) {
   const cache    = await caches.open(CACHE_IMAGES);
   const cached   = await cache.match(request);
 
   if (cached) {
-    // Background revalidation — fire and forget
     fetchAndCacheImage(cache, request);
     return cached;
   }
 
-  // Not in cache — fetch, store, return
   return fetchAndCacheImage(cache, request);
 }
 
@@ -542,7 +478,6 @@ async function fetchAndCacheImage(cache, request) {
     return networkRes;
   } catch (e) {
     warn('Image fetch failed:', request.url);
-    // Return a transparent 1×1 PNG as placeholder (no broken-image icon)
     return new Response(
       Uint8Array.from(atob(
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
@@ -552,15 +487,10 @@ async function fetchAndCacheImage(cache, request) {
   }
 }
 
-/**
- * Stale-While-Revalidate — return cache immediately, update in background.
- * Falls back to network if not cached yet.
- */
 async function staleWhileRevalidate(request, cacheName) {
   const cache    = await caches.open(cacheName);
   const cached   = await cache.match(request);
 
-  // Always kick off a background refresh
   const networkPromise = fetch(request).then(res => {
     if (res.ok) cache.put(request, res.clone());
     return res;
@@ -569,15 +499,11 @@ async function staleWhileRevalidate(request, cacheName) {
   return cached || networkPromise;
 }
 
-/**
- * Network with Cache Fallback — try network, serve cache if offline.
- * Caches successful responses from trusted origins.
- */
 async function networkWithCacheFallback(request) {
   const url = new URL(request.url);
 
   try {
-    const networkRes = await fetchWithTimeout(request);
+    const networkRes = await fetchWithTimeout(request, NETWORK_TIMEOUT_MS);
     if (networkRes && networkRes.status === 200) {
       const isTrusted =
         url.origin === self.location.origin ||
@@ -598,7 +524,6 @@ async function networkWithCacheFallback(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
 
-    // Return a structured JSON error for non-HTML requests
     return new Response(
       JSON.stringify({ error: 'offline', message: 'You appear to be offline.' }),
       {
@@ -608,10 +533,6 @@ async function networkWithCacheFallback(request) {
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// BACKGROUND SYNC
-// ─────────────────────────────────────────────────────────────────────────────
 
 self.addEventListener('sync', (event) => {
   log('Background sync triggered:', event.tag);
@@ -628,10 +549,6 @@ async function syncPayrollData() {
     throw e;
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PUSH NOTIFICATIONS
-// ─────────────────────────────────────────────────────────────────────────────
 
 self.addEventListener('push', (event) => {
   let payload = { title: 'Shwari Finance', body: 'You have a new update.' };
@@ -673,10 +590,6 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PERIODIC BACKGROUND SYNC (Chrome 80+)
-// ─────────────────────────────────────────────────────────────────────────────
-
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'refresh-payroll') {
     log('Periodic sync: refreshing payroll data');
@@ -690,10 +603,6 @@ self.addEventListener('periodicsync', (event) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MESSAGE HANDLING — Main thread ↔ Service Worker bridge
-// ─────────────────────────────────────────────────────────────────────────────
-
 self.addEventListener('message', (event) => {
   const { data } = event;
   if (!data) return;
@@ -701,7 +610,6 @@ self.addEventListener('message', (event) => {
   const type = typeof data === 'string' ? data : data.type;
 
   switch (type) {
-
     case 'SKIP_WAITING':
     case 'skipWaiting':
       log('Received SKIP_WAITING — activating immediately');
@@ -745,7 +653,6 @@ self.addEventListener('message', (event) => {
         });
       break;
 
-    // ── NEW: Force macro re-cache from main thread ────────────────────────
     case 'FORCE_MACRO_CACHE':
       if (data.html && data.html.length > 500) {
         event.waitUntil(SW_IDB.save(data.html));
@@ -756,7 +663,5 @@ self.addEventListener('message', (event) => {
       warn('Unknown message type received:', type);
   }
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 log('Loaded successfully');
