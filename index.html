@@ -621,30 +621,19 @@
             50%      { transform: scale(1.07); box-shadow: 0 0 0 18px rgba(85,208,130,0);   }
         }
         .ig-from {
-            display: none !important;
+            position: fixed;
+            bottom: max(28px, env(safe-area-inset-bottom));
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Inter', sans-serif;
+        }
+        .ig-from span {
+            color: rgba(85, 208, 130, 0.7);
         }
         .ig-from span { color: rgba(85,208,130,0.55); font-weight: 600; }
-
-        .ig-footer {
-            position: absolute;
-            bottom: max(36px, env(safe-area-inset-bottom));
-            left: 0; right: 0;
-            text-align: center;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #55d082;
-            opacity: 0;
-            animation: igFooterFadeIn 0.8s ease 1.2s forwards;
-            filter: drop-shadow(0 0 8px rgba(85, 208, 130, 0.4));
-        }
-
-        @keyframes igFooterFadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
 
         #forcedInstall { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.95); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .install-card { background: var(--bg-card); width: 100%; max-width: 360px; padding: 40px 30px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(85, 208, 130, 0.2); font-family: 'Inter', sans-serif; }
@@ -1686,7 +1675,6 @@
     <div id="ig-loader">
         <div class="ig-icon-wrap"><i class="fas fa-elephant"></i></div>
         <p class="ig-from"> <span>Shwari Finance</span></p>
-        <div class="ig-footer">Shwari Finance</div>
     </div>
 
     <div class="bg-layer" id="splash-layer" style="display:none!important;">
@@ -1724,14 +1712,14 @@
     
     <!-- New Sync and Stale Indicators -->
     <div id="sync-status-badge">
-        <i class="fas fa-check-circle"></i> Last synced: Just now
+        <i class="fas fa-check-circle"></i> Last synced: now
     </div>
     
     <div id="device-error">
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
-            <h2>Mobile Portrait Only</h2>
-            <p>Shwari Finance is strictly optimized for mobile devices in portrait mode. Please rotate your device or use a smartphone to access your dashboard.</p>
+            <h2>Mobile Application</h2>
+            <p>Shwari Finance App is strictly optimized for mobile devices mode. For any other issues, reset your Display / Font size in your smartphone to access your Account.</p>
         </div>
     </div>
 
@@ -2184,7 +2172,7 @@
                         if (offlineBanner) {
                             const age = Date.now() - (data.timestamp || 0);
                             const mins = Math.max(0, Math.floor(age / 60000));
-                            const timeLabel = mins < 1 ? 'just now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
+                            const timeLabel = mins < 1 ? 'now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
                             offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>Network · Lost ${timeLabel}</span>`;
                             offlineBanner.style.background = 'rgba(231, 76, 60, 0.95)';
                             offlineBanner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
@@ -2242,15 +2230,38 @@
                 }
                 
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+
+                this.frame.onerror = () => {
+                    console.warn("Iframe onerror fired — loading offline blob.");
+                    clearTimeout(this.timeoutId);
+                    this.loadOfflineBlob();
+                };
                 
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
                 this.frame.onload = () => {
+                    // Detect browser error pages (net::ERR_* shown inside iframe)
+                    let isErrorPage = false;
+                    try {
+                        const loc = this.frame.contentWindow && this.frame.contentWindow.location;
+                        if (loc && (loc.href === 'about:blank' || loc.href.startsWith('chrome-error://') || loc.href.startsWith('data:text/html'))) {
+                            isErrorPage = true;
+                        }
+                    } catch(e) {
+                        // cross-origin frames throw on access — that means real content loaded
+                        isErrorPage = false;
+                    }
+
+                    if (isErrorPage) {
+                        console.warn("Iframe loaded an error page — falling back to offline blob.");
+                        this.loadOfflineBlob();
+                        return;
+                    }
+
                     this.loaded = true;
                     this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
                     
-                    // Final confirmation removal of banner when successfully loaded live
                     if (offlineBanner) offlineBanner.classList.remove('show');
 
                     if (this.reconnectInterval) {
@@ -2746,10 +2757,7 @@
         window.waitingForMacroTransition = false;
 
         // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
-        // Load in true background — defer until after first paint
-        requestIdleCallback
-            ? requestIdleCallback(() => MacroEngine.load(), { timeout: 800 })
-            : setTimeout(() => MacroEngine.load(), 100);
+        MacroEngine.load();
 
         // PRE-WARM OFFLINE CACHE: Silently fetch and save macro HTML to IDB in background
         // so the FIRST ever offline visit still has something to show.
@@ -2855,32 +2863,7 @@
         };
 
         window.initAuth = () => {
-            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
-
-            if (!isPWA()) {
-                if (isInstalledLocally) {
-                    showAlreadyInstalledBlocker();
-                    return; 
-                } else {
-                    const forcedInstall = document.getElementById('forcedInstall');
-                    forcedInstall.style.display = 'flex';
-                    forcedInstall.querySelector('.install-card').style.animation = 'cardFloatUp 0.6s var(--anim-smooth)';
-                    return; 
-                }
-            }
-
-            const isRegistered = localStorage.getItem('shwari_registered');
-            if (isRegistered === 'true') {
-                // Bypassing the middle screens for a super smooth direct pop-out transition
-                if (window.checkAndRunTransition) {
-                    window.checkAndRunTransition();
-                }
-            } else {
-                localStorage.setItem('emp_name', 'Employee');
-                localStorage.setItem('emp_email', 'user@shwari.app');
-                localStorage.setItem('shwari_registered', 'true');
-                if (window.checkAndRunTransition) window.checkAndRunTransition();
-            }
+            localStorage.setItem('shwari_registered', 'true');
         };
 
         const validateEmail = (email) => {
@@ -3349,9 +3332,7 @@
             return false;
         }
 
-        function showAlreadyInstalledBlocker() {
-            document.getElementById('already-installed-blocker').classList.add('active');
-        }
+        function showAlreadyInstalledBlocker() { /* disabled – always allow */ }
 
         function showPostInstallGuide() {
             const guide = document.getElementById('post-install-guide');
@@ -3861,43 +3842,7 @@
         // ─────────────────────────────────────────────────────────────
 
         window.initAuth = () => {
-          AuditLog.record("AUTH_INIT_START");
-
-          // ── PWA Enforcement ──────────────────────────────────────
-          // Block normal browser tabs; only allow installed PWA context
-          if (!isPWAGateway()) {
-            const isInstalledLocally = localStorage.getItem('shwari_app_installed') === 'true' || localStorage.getItem('shwari_registered') === 'true';
-            if (isInstalledLocally) {
-              document.getElementById('already-installed-blocker').classList.add('active');
-              AuditLog.record("BROWSER_ACCESS_BLOCKED");
-              return;
-            }
-            const installBanner = UI.get("forcedInstall");
-            if (installBanner) installBanner.style.display = "flex";
-            AuditLog.record("PWA_INSTALL_REQUIRED");
-            return;
-          }
-
-          // ── Show Auth Portal ─────────────────────────────────────
-          const authPortal = UI.get("auth-portal");
-          if (authPortal) authPortal.classList.remove("hidden");
-
-          // ── Instant Memory Check: Read from Device Storage ───────
-          const isRegistered = Store.get(KEYS.REGISTERED);
-
-          if (isRegistered === "true") {
-            Store.set(KEYS.LAST_SEEN, new Date().toISOString());
-            AuditLog.record("RETURNING_USER_AUTO_CONTINUE");
-            if (window.checkAndRunTransition) window.checkAndRunTransition();
-          } else {
-            // ── First Time User ───────────────────────────────────
-            UI.show("reg-screen");
-            AuditLog.record("FIRST_TIME_USER_DETECTED");
-          }
-
-          // ── Render App Version Watermark (if element present) ────
-          const versionEl = UI.get("app-version");
-          if (versionEl) versionEl.innerText = `v${CONFIG.VERSION}`;
+          Store.set(KEYS.REGISTERED, "true");
         };
 
         // ─────────────────────────────────────────────────────────────
@@ -4285,7 +4230,7 @@
 
     (function(){
         // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
-        var PAYMENT_DATE = new Date('2026-05-24T23:59:59'); // Automatically stops at midnight on this date
+        var PAYMENT_DATE = new Date('2026-05-20T23:59:59'); // Automatically stops at midnight on this date
         // ─────────────────────────────────────────────────────────────
 
         var now = new Date();
