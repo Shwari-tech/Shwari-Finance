@@ -2287,12 +2287,15 @@
                     offlineBanner.classList.remove('show');
                 }
 
-                if (!navigator.onLine) {
+               if (!navigator.onLine) {
+                const checkData = await ShwariDB.get();
+                if (checkData && checkData.html) {
                     await this.loadOfflineBlob();
                     return;
                 }
-                
-                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+            }
+            
+            this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`; 
 
                 this.frame.onerror = () => {
                     console.warn("Iframe onerror fired — loading offline blob.");
