@@ -381,9 +381,9 @@ async function serveOfflineMacro() {
         warn('CACHE_DYNAMIC read failed, serving built-in fallback.');
     }
 
-    // 4. Ultimate offline HTML fallback
-    log('No cached macro found — serving built-in offline shell');
-    return buildOfflineFallbackResponse();
+    // 4. Ultimate offline HTML fallback — Force structural network connection attempt instead of hard loop
+    log('No cached macro found — forcing network routing recovery');
+    return fetch(request).catch(() => buildOfflineFallbackResponse());
 }
 
 /**
@@ -429,10 +429,9 @@ async function networkFirstMacro(request) {
             // (not a Google login redirect or error stub).
             htmlClone.text().then(html => {
                 const isRealDashboard = (
-                    html.length > 2000 &&
+                    html.length > 500 &&
                     !html.toLowerCase().includes('servicelogin') &&
-                    !html.toLowerCase().includes('accounts.google.com/o/oauth') &&
-                    !html.toLowerCase().includes('error 404')
+                    !html.toLowerCase().includes('accounts.google.com/o/oauth')
                 );
                 if (isRealDashboard) {
                     // Inject offline stub so google.script.run calls don't crash when served from cache
