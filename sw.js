@@ -403,8 +403,7 @@ async function networkFirstMacro(request) {
     }
 
     try {
-        // M-PESA FAST FAIL: Instantly drop to cache within 4 seconds if connection is dead/lie-fi
-        const networkRes = await fetchWithTimeout(request, 4000);
+        const networkRes = await fetchWithTimeout(request, 20000); // 20 s — GAS can be slow
 
         if (!networkRes) throw new Error('Empty response from macro endpoint');
 
