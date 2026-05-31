@@ -16,8 +16,8 @@
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const APP_VERSION      = '7.2.0';   // ← increment this for every release
-const CACHE_VERSION    = 'v9';      // ← increment this for every release
+const APP_VERSION      = '7.3.0';
+const CACHE_VERSION    = 'v10';
 
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
@@ -429,14 +429,17 @@ async function networkFirstMacro(request) {
             // (not a Google login redirect or error stub).
             htmlClone.text().then(html => {
                 const isRealDashboard = (
-                    html.length > 1000 &&
-                    !html.toLowerCase().includes('accounts.google.com') &&
-                    !html.toLowerCase().includes('signin') &&
+                    html.length > 2000 &&
+                    !html.toLowerCase().includes('servicelogin') &&
+                    !html.toLowerCase().includes('accounts.google.com/o/oauth') &&
                     !html.toLowerCase().includes('error 404')
                 );
                 if (isRealDashboard) {
-                    SW_IDB.save(html);
-                    log('Macro HTML snapshot saved to IDB —', Math.round(html.length / 1024), 'KB');
+                    // Inject offline stub so google.script.run calls don't crash when served from cache
+                    const patch = `<script>(function(){var chain={withSuccessHandler:function(fn){chain._sh=fn;return chain;},withFailureHandler:function(fn){chain._fh=fn;return chain;},withUserObject:function(){return chain;}};var rp=new Proxy(chain,{get:function(t,p){if(p in t)return t[p];return function(){if(chain._fh)chain._fh(new Error('Offline'));return chain;};}});var n=function(){};window.google=window.google||{};window.google.script={run:rp,history:{push:n,replace:n},url:{getLocation:function(cb){cb&&cb({hash:'',parameter:{},parameters:{},pathname:'/',port:'443',protocol:'https:',toString:function(){return '';}});}},host:{close:n,setHeight:n,setWidth:n,editor:{focus:n}}};window.addEventListener('online',function(){window.location.reload();});})();<\/script>`;
+                    const patched = html.includes('<head>') ? html.replace('<head>', '<head>' + patch) : patch + html;
+                    SW_IDB.save(patched);
+                    log('Macro HTML patched & saved to IDB —', Math.round(patched.length / 1024), 'KB — full offline run enabled');
                 } else {
                     warn('Macro response looks like a login/error page — NOT caching');
                 }
