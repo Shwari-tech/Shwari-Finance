@@ -1,13 +1,13 @@
 /**
- * Shwari Finance — Service Worker v7.4.0
+ * Shwari Finance — Service Worker v7
  * Production-grade caching, offline support, and background sync
  *
  * Strategies used:
- * - HTML pages        → Network First  (freshness > speed)
- * - Images            → Cache First    (stale-while-revalidate in BG)
- * - CSS / JS / Fonts  → Stale-While-Revalidate
- * - Macro / GAS calls → Network First  (with strict offline HTML fallback & Fast-Fail)
- * - Everything else   → Network with Cache Fallback
+ *  - HTML pages        → Network First  (freshness > speed)
+ *  - Images            → Cache First    (stale-while-revalidate in BG)
+ *  - CSS / JS / Fonts  → Stale-While-Revalidate
+ *  - Macro / GAS calls → Network First  (with strict offline HTML fallback)
+ *  - Everything else   → Network with Cache Fallback
  */
 
 'use strict';
@@ -16,8 +16,8 @@
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const APP_VERSION      = '7.4.0'; // Bumped version to force cache update on devices
-const CACHE_VERSION    = 'v11';
+const APP_VERSION      = '7.1.0';   // ← increment this for every release
+const CACHE_VERSION    = 'v8';      // ← increment this for every release
 
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
@@ -31,8 +31,8 @@ const KNOWN_CACHES     = new Set([CACHE_STATIC, CACHE_DYNAMIC, CACHE_IMAGES, CAC
 const MAX_DYNAMIC_ITEMS = 80;
 const MAX_IMAGE_ITEMS   = 60;
 
-// M-PESA STYLE FAST FAIL: Reduced from 5000/20000ms to 4000ms to instantly bypass "Lie-Fi"
-const NETWORK_TIMEOUT_MS = 4000;
+// Network request timeout (ms) before falling back to cache
+const NETWORK_TIMEOUT_MS = 5000;
 
 // Stable key used to store the macro snapshot in the dedicated cache
 const MACRO_CACHE_KEY = 'shwari-macro-snapshot';
@@ -281,9 +281,6 @@ self.addEventListener('fetch', (event) => {
   // Ignore non-GET
   if (request.method !== 'GET') return;
 
-  // CRITICAL: Never intercept blob: or data: URLs — these are our offline injections
-  if (request.url.startsWith('blob:') || request.url.startsWith('data:')) return;
-
   let url;
   try {
     url = new URL(request.url);
@@ -328,10 +325,10 @@ self.addEventListener('fetch', (event) => {
 
 /**
  * Reads the offline macro snapshot from all available sources in priority order:
- * 1. IndexedDB   (full HTML string, saved by both SW and main thread)
- * 2. CACHE_MACRO (dedicated Response cache with stable key)
- * 3. CACHE_DYNAMIC (general dynamic cache, older snapshot may live here)
- * 4. Built-in offline HTML fallback
+ *   1. IndexedDB   (full HTML string, saved by both SW and main thread)
+ *   2. CACHE_MACRO (dedicated Response cache with stable key)
+ *   3. CACHE_DYNAMIC (general dynamic cache, older snapshot may live here)
+ *   4. Built-in offline HTML fallback
  *
  * @returns {Promise<Response>}
  */
@@ -381,9 +378,9 @@ async function serveOfflineMacro() {
         warn('CACHE_DYNAMIC read failed, serving built-in fallback.');
     }
 
-    // 4. Ultimate offline HTML fallback — Force structural network connection attempt instead of hard loop
-    log('No cached macro found — forcing network routing recovery');
-    return fetch(request).catch(() => buildOfflineFallbackResponse());
+    // 4. Ultimate offline HTML fallback
+    log('No cached macro found — serving built-in offline shell');
+    return buildOfflineFallbackResponse();
 }
 
 /**
@@ -403,8 +400,7 @@ async function networkFirstMacro(request) {
     }
 
     try {
-        // M-PESA STYLE FAST FAIL: Only wait 4 seconds. If on Lie-Fi, drop to cache seamlessly.
-        const networkRes = await fetchWithTimeout(request, 4000); 
+        const networkRes = await fetchWithTimeout(request, 20000); // 20 s — GAS can be slow
 
         if (!networkRes) throw new Error('Empty response from macro endpoint');
 
@@ -430,16 +426,14 @@ async function networkFirstMacro(request) {
             // (not a Google login redirect or error stub).
             htmlClone.text().then(html => {
                 const isRealDashboard = (
-                    html.length > 500 &&
-                    !html.toLowerCase().includes('servicelogin') &&
-                    !html.toLowerCase().includes('accounts.google.com/o/oauth')
+                    html.length > 1000 &&
+                    !html.toLowerCase().includes('accounts.google.com') &&
+                    !html.toLowerCase().includes('signin') &&
+                    !html.toLowerCase().includes('error 404')
                 );
                 if (isRealDashboard) {
-                    // M-PESA STYLE FIX: Removed window.location.reload() to prevent jarring screen flashes
-                    const patch = `<script>(function(){var chain={withSuccessHandler:function(fn){chain._sh=fn;return chain;},withFailureHandler:function(fn){chain._fh=fn;return chain;},withUserObject:function(){return chain;}};var rp=new Proxy(chain,{get:function(t,p){if(p in t)return t[p];return function(){if(chain._fh)chain._fh(new Error('Offline'));return chain;};}});var n=function(){};window.google=window.google||{};window.google.script={run:rp,history:{push:n,replace:n},url:{getLocation:function(cb){cb&&cb({hash:'',parameter:{},parameters:{},pathname:'/',port:'443',protocol:'https:',toString:function(){return '';}});}},host:{close:n,setHeight:n,setWidth:n,editor:{focus:n}}};})();<\/script>`;
-                    const patched = html.includes('<head>') ? html.replace('<head>', '<head>' + patch) : patch + html;
-                    SW_IDB.save(patched);
-                    log('Macro HTML patched & saved to IDB —', Math.round(patched.length / 1024), 'KB — full offline run enabled');
+                    SW_IDB.save(html);
+                    log('Macro HTML snapshot saved to IDB —', Math.round(html.length / 1024), 'KB');
                 } else {
                     warn('Macro response looks like a login/error page — NOT caching');
                 }
@@ -449,7 +443,7 @@ async function networkFirstMacro(request) {
         return networkRes;
 
     } catch (e) {
-        log('Macro network fetch failed/timed out:', e.message, '— instantly dropping to offline sources');
+        log('Macro network fetch failed:', e.message, '— falling back to offline sources');
         return serveOfflineMacro();
     }
 }
@@ -507,7 +501,7 @@ function buildOfflineFallbackResponse() {
  */
 async function networkFirstHTML(request) {
   try {
-    const networkRes = await fetchWithTimeout(request, NETWORK_TIMEOUT_MS);
+    const networkRes = await fetchWithTimeout(request);
     if (networkRes.ok) {
       const cache = await caches.open(CACHE_STATIC);
       cache.put(request, networkRes.clone());
@@ -583,7 +577,7 @@ async function networkWithCacheFallback(request) {
   const url = new URL(request.url);
 
   try {
-    const networkRes = await fetchWithTimeout(request, NETWORK_TIMEOUT_MS);
+    const networkRes = await fetchWithTimeout(request);
     if (networkRes && networkRes.status === 200) {
       const isTrusted =
         url.origin === self.location.origin ||
