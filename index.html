@@ -2161,9 +2161,9 @@
                             document.getElementById('stale-warning').style.display = 'flex';
                         }
                         
-                        const stub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
-                        this.frame.removeAttribute('src');
-                        this.frame.srcdoc = data.html.replace('</head>', stub + '</head>');
+                        const blob = new Blob([data.html], { type: 'text/html' });
+                        const objUrl = URL.createObjectURL(blob);
+                        this.frame.src = objUrl;
                         this.loaded = true;
                         this.isOfflineView = true;
                         
@@ -2186,9 +2186,9 @@
                     }
                 } catch(e) {
     console.log("No offline snapshot found, injecting fallback shell...");
-    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#94a3b8;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
-    this.frame.removeAttribute('src');
-    this.frame.srcdoc = fallbackHtml;
+    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline — Shwari Finance</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:40px 30px}.icon{width:96px;height:96px;background:linear-gradient(145deg,#1f6e3f,#55d082);border-radius:28px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;font-size:52px;box-shadow:0 0 0 0 rgba(85,208,130,0.4);animation:beat 1.6s ease-in-out infinite}@keyframes beat{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(85,208,130,0.45)}50%{transform:scale(1.06);box-shadow:0 0 0 16px rgba(85,208,130,0)}}.title{font-size:28px;font-weight:900;color:#55d082;margin-bottom:14px;letter-spacing:-0.5px}.msg{font-size:15px;color:#94a3b8;line-height:1.7;max-width:300px;margin-bottom:36px}.spinner-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}.loader{width:44px;height:44px;border:3px solid rgba(85,208,130,0.15);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.retry-label{font-size:13px;color:rgba(255,255,255,0.3);font-weight:500}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No connection detected. Shwari Finance will automatically reload your dashboard the moment you&#39;re back online.</div><div class="spinner-wrap"><div class="loader"></div><div class="retry-label" id="rl">Still offline. Retrying in 5s...</div></div><script>var t=5;var iv=setInterval(function(){t--;document.getElementById('rl').textContent='Still offline. Retrying in '+t+'s...';if(t<=0){t=5;if(navigator.onLine){clearInterval(iv);window.location.reload();}}},1000);window.addEventListener('online',function(){clearInterval(iv);window.location.reload();});<\/script></body></html>`;
+    const blob = new Blob([fallbackHtml], { type: 'text/html' });
+    this.frame.src = URL.createObjectURL(blob);
     this.loaded = true;
     if (window.onMacroSuccess) window.onMacroSuccess();
 }
@@ -2216,77 +2216,86 @@
                 this.loaded = false;
                 this.isOfflineView = false;
                 clearTimeout(this.timeoutId);
-                console.log(`Loading Macro... Attempt ${this.retries + 1}`);
 
-                // Reset and hide the banner unless it's currently showing the reload animation
                 const offlineBanner = document.getElementById('offline-macro-banner');
                 if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spinner')) {
                     offlineBanner.classList.remove('show');
                 }
 
+                // ── ALWAYS show offline blob immediately when no connection ──
                 if (!navigator.onLine) {
                     await this.loadOfflineBlob();
                     return;
                 }
 
-                // Always serve cache instantly, refresh silently in background
-                const _cached = await ShwariDB.get().catch(() => null);
-                if (_cached && _cached.html && _cached.html.length > 2000) {
-                    const _stub = `<script>window.google=window.google||{};window.google.script={run:new Proxy({},{get:()=>({withSuccessHandler:function(f){this._s=f;return this;},withFailureHandler:function(f){this._f=f;return this;},withUserObject:function(){return this;}})}),history:{push:function(){},replace:function(){}},url:{getActive:function(){return location.href;}},host:{close:function(){},setHeight:function(){},setWidth:function(){}}};window.addEventListener('online',function(){window.location.reload();});<\/script>`;
-                    this.frame.removeAttribute('src');
-                    this.frame.srcdoc = _cached.html.replace('</head>', _stub + '</head>');
-                    this.loaded = true;
-                    this.isOfflineView = false;
-                    if (window.onMacroSuccess) window.onMacroSuccess();
-                    setTimeout(() => this.silentSync(), 2000);
-                    return;
-                }
+                // ── Set a blank src first so no stale error page shows ──
+                this.frame.src = 'about:blank';
 
-                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+                // ── Hide the iframe until we confirm real content loaded ──
+                this.frame.style.visibility = 'hidden';
 
+                // ── onerror: browser couldn't reach URL at all ──
                 this.frame.onerror = () => {
-                    console.warn("Iframe onerror fired — loading offline blob.");
+                    console.warn('[MacroEngine] onerror — loading offline blob');
                     clearTimeout(this.timeoutId);
+                    this.frame.style.visibility = 'visible';
                     this.loadOfflineBlob();
                 };
-                
-                this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
+                // ── onload: fires for both success AND chrome-error:// pages ──
                 this.frame.onload = () => {
-                    // Detect browser error pages (net::ERR_* shown inside iframe)
                     let isErrorPage = false;
                     try {
-                        const loc = this.frame.contentWindow && this.frame.contentWindow.location;
-                        if (loc && (loc.href === 'about:blank' || loc.href.startsWith('chrome-error://') || loc.href.startsWith('data:text/html'))) {
+                        const href = this.frame.contentWindow?.location?.href || '';
+                        // Chrome/WebView error pages
+                        if (
+                            href === 'about:blank' ||
+                            href.startsWith('chrome-error://') ||
+                            href.startsWith('data:text/html') ||
+                            href.includes('net::ERR_')
+                        ) {
                             isErrorPage = true;
                         }
-                    } catch(e) {
-                        // cross-origin frames throw on access — that means real content loaded
+                        // Also check page content for the broken-page icon
+                        const body = this.frame.contentDocument?.body?.innerText || '';
+                        if (body.includes('ERR_') || body.includes('temporarily down') || body.includes('moved permanently')) {
+                            isErrorPage = true;
+                        }
+                    } catch (e) {
+                        // Cross-origin throw = real Google content loaded ✓
                         isErrorPage = false;
                     }
 
                     if (isErrorPage) {
-                        console.warn("Iframe loaded an error page — serving IDB cache.");
-                        await this.loadOfflineBlob();
+                        console.warn('[MacroEngine] Error page detected — loading offline blob');
+                        clearTimeout(this.timeoutId);
+                        this.frame.style.visibility = 'visible';
+                        this.loadOfflineBlob();
                         return;
                     }
 
+                    // ── Real content confirmed ──
+                    this.frame.style.visibility = 'visible';
                     this.loaded = true;
                     this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
-                    
-                    if (offlineBanner) offlineBanner.classList.remove('show');
 
+                    if (offlineBanner) offlineBanner.classList.remove('show');
                     if (this.reconnectInterval) {
                         clearInterval(this.reconnectInterval);
                         this.reconnectInterval = null;
                     }
-                    console.log("Macro loaded successfully.");
-                    
+
+                    console.log('[MacroEngine] Macro loaded successfully');
                     if (navigator.onLine) this.silentSync();
-                    
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
+
+                // ── Now actually load the URL ──
+                setTimeout(() => {
+                    this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+                    this.timeoutId = setTimeout(() => this.handleTimeout(), 12000);
+                }, 50);
             },
 
             handleTimeout() {
