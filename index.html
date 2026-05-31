@@ -2168,24 +2168,7 @@
         url: { getLocation: function(cb){ cb && cb({ hash:'', parameter:{}, parameters:{}, pathname:'/', port:'443', protocol:'https:', toString: function(){ return ''; } }); } },
         host: { close: noop, setHeight: noop, setWidth: noop, editor:{ focus: noop } }
     };
-    document.addEventListener('DOMContentLoaded', function(){
-        var banner = document.createElement('div');
-        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:rgba(231,76,60,0.93);color:#fff;text-align:center;padding:8px 16px;font-size:12px;font-weight:700;font-family:system-ui,sans-serif;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:8px;backdrop-filter:blur(8px)';
-        var dot = document.createElement('span');
-        dot.style.cssText = 'width:7px;height:7px;background:#fff;border-radius:50%;display:inline-block;';
-        var style = document.createElement('style');
-        style.textContent = '@keyframes op{0%,100%{opacity:1}50%{opacity:0.3}} span{animation:op 1.2s infinite}';
-        document.head.appendChild(style);
-        banner.appendChild(dot);
-        banner.appendChild(document.createTextNode('OFFLINE MODE — Showing last saved data'));
-        document.body.insertBefore(banner, document.body.firstChild);
-        window.addEventListener('online', function(){
-            banner.style.background = 'rgba(44,122,71,0.93)';
-            banner.lastChild.textContent = ' Back online — tap to refresh';
-            banner.style.cursor = 'pointer';
-            banner.onclick = function(){ window.location.reload(); };
-        });
-    });
+    // M-PESA STYLE: No jarring red offline banners injected into the dashboard body.
     console.log('[Shwari] Offline engine active — full UI running from cache');
 })();
 <\/script>`;
@@ -2210,28 +2193,17 @@
                 try {
                     const data = await ShwariDB.get();
                     if (data && data.html) {
-                        const age = Date.now() - data.timestamp;
-                        if (age > 24 * 60 * 60 * 1000) {
-                            document.getElementById('stale-warning').style.display = 'flex';
-                        }
-                        
                         const blob = new Blob([data.html], { type: 'text/html' });
-                        const objUrl = URL.createObjectURL(blob);
-                        this.frame.src = objUrl;
-                        this.loaded = true;
-                        this.isOfflineView = true;
-                        
-                        // Show the enhanced animated offline banner
-                        const offlineBanner = document.getElementById('offline-macro-banner');
-                        if (offlineBanner) {
-                            const age = Date.now() - (data.timestamp || 0);
-                            const mins = Math.max(0, Math.floor(age / 60000));
-                            const timeLabel = mins < 1 ? 'now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
-                            offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>Network · Lost ${timeLabel}</span>`;
-                            offlineBanner.style.background = 'rgba(231, 76, 60, 0.95)';
-                            offlineBanner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
-                            offlineBanner.classList.add('show');
-                        }
+                        const objUrl = URL.createObjectURL(blob);
+                        this.frame.src = objUrl;
+                        this.loaded = true;
+                        this.isOfflineView = true;
+                        
+                        // M-PESA STYLE: Never show error messages. Operate purely seamlessly.
+                        const offlineBanner = document.getElementById('offline-macro-banner');
+                        if (offlineBanner) {
+                            offlineBanner.classList.remove('show');
+                        }
 
                         if (window.onMacroSuccess) window.onMacroSuccess();
                         this.updateSyncBadge(data.timestamp, true);
@@ -2287,15 +2259,18 @@
                     offlineBanner.classList.remove('show');
                 }
 
-               if (!navigator.onLine) {
-                const checkData = await ShwariDB.get();
-                if (checkData && checkData.html) {
-                    await this.loadOfflineBlob();
-                    return;
-                }
-            }
-            
-            this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`; 
+               // M-PESA STYLE: Instantly detect Lie-Fi (Data on, but no real internet)
+                const isReallyOnline = navigator.onLine ? await checkConnectivity() : false;
+
+                if (!isReallyOnline) {
+                    const checkData = await ShwariDB.get();
+                    if (checkData && checkData.html) {
+                        await this.loadOfflineBlob();
+                        return;
+                    }
+                }
+
+                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`; 
 
                 this.frame.onerror = () => {
                     console.warn("Iframe onerror fired — loading offline blob.");
@@ -3168,20 +3143,9 @@
             const banner = document.getElementById('offline-macro-banner');
 
             if (MacroEngine.isOfflineView || !MacroEngine.loaded) {
-                // Show "Reconnecting…" banner immediately so user sees feedback
-                if (banner) {
-                    banner.innerHTML = '<i class="fas fa-spinner fa-spin" style="animation:fa-spin 0.8s linear infinite"></i><span>Reconnecting…</span>';
-                    banner.style.background = 'rgba(44, 122, 71, 0.95)';
-                    banner.style.boxShadow = '0 8px 25px rgba(44, 122, 71, 0.4)';
-                    banner.classList.add('show');
-                }
-
-                // Short delay lets the UI settle before hitting the network
-                setTimeout(() => {
-                    MacroEngine.retries = 0;
-                    MacroEngine.loaded  = false;
-                    MacroEngine.load();
-                }, 600);
+                // M-PESA STYLE: Suppress jarring reconnecting screens. Just sync silently.
+                if (banner) banner.classList.remove('show');
+                MacroEngine.silentSync();
             } else {
                 // Macro already showing live — just sync data silently
                 if (banner) banner.classList.remove('show');
@@ -3195,14 +3159,11 @@
             showToast('Connection lost', false);
             console.log('[Network] Went offline');
 
-            // Show the offline banner inside the app immediately if visible
-            const banner = document.getElementById('offline-macro-banner');
-            if (banner && document.getElementById('app').classList.contains('active')) {
-                banner.innerHTML = '<div class="offline-pulse"></div><span>Offline Mode</span>';
-                banner.style.background = 'rgba(231, 76, 60, 0.95)';
-                banner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
-                banner.classList.add('show');
-            }
+            // M-PESA STYLE: Never show error messages, keep UI clean
+            const banner = document.getElementById('offline-macro-banner');
+            if (banner) {
+                banner.classList.remove('show');
+            }
 
             // Poll every 3 s for actual connectivity (not just navigator.onLine)
             if (!autoReloadTimer) {
