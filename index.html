@@ -4220,12 +4220,11 @@
         overlay.style.opacity = '0';
         
         // REVERT status bar color back to the dark app theme
+        setTimeout(function() { overlay.style.display = 'none'; }, 400);
         var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
         metaThemeColors.forEach(function(meta) {
             meta.setAttribute("content", "#111827");
         });
-
-        setTimeout(function() { overlay.style.display = 'none'; }, 400);
     }
 
     (function(){
@@ -4253,15 +4252,15 @@
         function showAd() {
             overlay.style.display = 'flex';
             
-            // CHANGE status bar color to white for the ad
-            var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
-            metaThemeColors.forEach(function(meta) {
-                meta.setAttribute("content", "#ffffff");
-            });
+            
 
             requestAnimationFrame(function(){
                 requestAnimationFrame(function(){
                     overlay.style.opacity = '1';
+            var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+            metaThemeColors.forEach(function(meta) {
+                meta.setAttribute("content", "#ffffff");
+            });
                 });
             });
         }
