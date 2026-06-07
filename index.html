@@ -4219,12 +4219,13 @@
         var overlay = document.getElementById('payment-ad-overlay');
         overlay.style.opacity = '0';
         
-        // REVERT status bar color back to the dark app theme
-        setTimeout(function() { overlay.style.display = 'none'; }, 400);
-        var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
-        metaThemeColors.forEach(function(meta) {
-            meta.setAttribute("content", "#111827");
-        });
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+            metaThemeColors.forEach(function(meta) {
+                meta.setAttribute("content", "#111827");
+            });
+        }, 400);
     }
 
     (function(){
