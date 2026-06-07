@@ -3009,10 +3009,12 @@
                 setTimeout(() => loader.classList.add('gone'), 480);
             }
 
-            // Reset theme-color meta
-            document.querySelectorAll('meta[name="theme-color"]').forEach(m =>
-                m.setAttribute('content', '#111827')
-            );
+            // Reset theme-color meta (skip if payment ad is visible)
+            if (!window._adVisible) {
+                document.querySelectorAll('meta[name="theme-color"]').forEach(m =>
+                    m.setAttribute('content', '#111827')
+                );
+            }
 
             setTimeout(() => {
                 if (uiWrapper && uiWrapper.parentNode) uiWrapper.parentNode.removeChild(uiWrapper);
@@ -4216,6 +4218,7 @@
 
     <script>
     function dismissAd() {
+        window._adVisible = false;
         var overlay = document.getElementById('payment-ad-overlay');
         overlay.style.opacity = '0';
         
@@ -4251,6 +4254,7 @@
         var overlay = document.getElementById('payment-ad-overlay');
 
         function showAd() {
+            window._adVisible = true;
             overlay.style.display = 'flex';
             
             
