@@ -2229,6 +2229,11 @@
                     return;
                 }
                 
+                // OFFLINE INTERCEPT: Never set live URL if offline — serve IDB snapshot directly
+                if (!navigator.onLine) {
+                    await this.loadOfflineBlob();
+                    return;
+                }
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
 
                 this.frame.onerror = () => {
@@ -2248,7 +2253,6 @@
                             isErrorPage = true;
                         }
                     } catch(e) {
-                        // cross-origin frames throw on access — that means real content loaded
                         isErrorPage = false;
                     }
 
@@ -2269,8 +2273,29 @@
                         this.reconnectInterval = null;
                     }
                     console.log("Macro loaded successfully.");
-                    
-                    if (navigator.onLine) this.silentSync();
+
+                    // SAVE TO IDB every time macro loads online — keeps offline snapshot fresh
+                    if (navigator.onLine) {
+                        this.silentSync();
+                        setTimeout(async () => {
+                            try {
+                                const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_offline_snap`);
+                                if (res.ok) {
+                                    const html = await res.text();
+                                    const isReal = html.length > 1000 &&
+                                        !html.toLowerCase().includes('accounts.google.com') &&
+                                        !html.toLowerCase().includes('sign in');
+                                    if (isReal) {
+                                        await ShwariDB.save(html);
+                                        console.log('[IDB] Offline snapshot saved —', Math.round(html.length/1024), 'KB');
+                                        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                                            navigator.serviceWorker.controller.postMessage({ type: 'FORCE_MACRO_CACHE', html });
+                                        }
+                                    }
+                                }
+                            } catch(e) { console.log('[IDB] Snapshot save skipped:', e.message); }
+                        }, 3000);
+                    }
                     
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
