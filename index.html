@@ -2154,7 +2154,7 @@
 
             async loadOfflineBlob() {
                 try {
-                    const data = await ShwariDB.get();
+                    const data = await ShwariDB.get('macro_html');
                     if (data && data.html) {
                         const age = Date.now() - data.timestamp;
                         if (age > 24 * 60 * 60 * 1000) {
@@ -2759,27 +2759,65 @@
         // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
         MacroEngine.load();
 
-        // PRE-WARM OFFLINE CACHE: Silently fetch and save macro HTML to IDB in background
-        // so the FIRST ever offline visit still has something to show.
-        if (navigator.onLine) {
-            setTimeout(async () => {
+        // PRE-WARM OFFLINE CACHE: Aggressively save macro HTML to IDB on every online load.
+        // Ensures offline mode always has a fresh snapshot regardless of SW cache eviction.
+        async function _saveIframeToIDB() {
+            if (!navigator.onLine) return;
+            try {
+                // Wait for iframe to fully load, then extract its HTML
+                const frame = document.getElementById('macro-frame');
+                let html = null;
+
+                // Method 1: Try reading from already-loaded iframe (cross-origin safe attempt)
                 try {
-                    const res = await fetch(`${MACRO_URL}?cb=${Date.now()}&client=shwari_prewarm`);
-                    if (res.ok) {
-                        const html = await res.text();
-                        const isReal = html.length > 1000 &&
-                            !html.toLowerCase().includes('accounts.google.com') &&
-                            !html.toLowerCase().includes('signin');
-                        if (isReal) {
-                            await ShwariDB.save(html);
-                            console.log('[PreWarm] Macro saved to IDB on first load —', Math.round(html.length/1024), 'KB');
-                        }
+                    if (frame && frame.contentDocument && frame.contentDocument.documentElement) {
+                        html = frame.contentDocument.documentElement.outerHTML;
                     }
-                } catch(e) {
-                    console.log('[PreWarm] Skipped —', e.message);
+                } catch(e) { /* cross-origin — expected */ }
+
+                // Method 2: Fresh fetch (most reliable — always gets latest)
+                if (!html || html.length < 1000) {
+                    const res = await fetch(`${MACRO_URL}?cb=${Date.now()}&client=shwari_offline_save`);
+                    if (res.ok) html = await res.text();
                 }
-            }, 3000); // 3 s delay — let the visible iframe load finish first
+
+                if (!html || html.length < 1000) return;
+
+                const isReal = !html.toLowerCase().includes('accounts.google.com') &&
+                               !html.toLowerCase().includes('sign in') &&
+                               !html.toLowerCase().includes('error 404');
+
+                if (isReal) {
+                    await ShwariDB.save(html);
+                    console.log('[OfflineSave] Macro snapshot saved —', Math.round(html.length/1024), 'KB');
+
+                    // Also tell the SW to cache it via message bridge
+                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({
+                            type: 'FORCE_MACRO_CACHE',
+                            html: html
+                        });
+                    }
+                }
+            } catch(e) {
+                console.log('[OfflineSave] Skipped —', e.message);
+            }
         }
+
+        // Save immediately on load, and again every 10 minutes while online
+        if (navigator.onLine) {
+            setTimeout(_saveIframeToIDB, 4000);
+            setInterval(() => {
+                if (navigator.onLine) _saveIframeToIDB();
+            }, 10 * 60 * 1000);
+        }
+
+        // Also save after every successful macro load (most reliable trigger)
+        const _origOnMacroSuccess = window.onMacroSuccess;
+        window.onMacroSuccess = function() {
+            if (_origOnMacroSuccess) _origOnMacroSuccess.apply(this, arguments);
+            if (navigator.onLine) setTimeout(_saveIframeToIDB, 2000);
+        };
 
         async function initializeApp() {
             initSuperResponsiveButtons();
