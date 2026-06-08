@@ -2153,9 +2153,261 @@
             isOfflineView: false,
 
             async loadOfflineBlob() {
-                try {
-                    const data = await ShwariDB.get('macro_html');
-                    if (data && data.html) {
+                // STEP 1: Show 2-second "Operating Offline" loading screen inside iframe
+                const offlineLoadingHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Shwari Finance</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    background:#0F172A;
+    color:#fff;
+    font-family:'Inter',system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    text-align:center;
+    padding:30px;
+    overflow:hidden;
+}
+.elephant-wrap{
+    position:relative;
+    width:100px;
+    height:100px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:28px;
+}
+.elephant-icon{
+    font-size:64px;
+    filter:drop-shadow(0 0 20px rgba(85,208,130,0.6));
+    animation:elephantBob 2s ease-in-out infinite;
+    display:block;
+}
+@keyframes elephantBob{
+    0%,100%{transform:translateY(0) scale(1);}
+    50%{transform:translateY(-8px) scale(1.05);}
+}
+.ring{
+    position:absolute;
+    border-radius:50%;
+    border:2px solid rgba(85,208,130,0.3);
+    animation:ringPulse 2s ease-out infinite;
+}
+.ring1{width:90px;height:90px;animation-delay:0s;}
+.ring2{width:120px;height:120px;animation-delay:0.5s;}
+.ring3{width:150px;height:150px;animation-delay:1s;}
+@keyframes ringPulse{
+    0%{transform:scale(0.8);opacity:0.8;}
+    100%{transform:scale(1.4);opacity:0;}
+}
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(239,68,68,0.15);
+    border:1px solid rgba(239,68,68,0.4);
+    color:#FCA5A5;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:6px 16px;
+    border-radius:20px;
+    margin-bottom:18px;
+}
+.pulse-dot{
+    width:8px;height:8px;
+    background:#EF4444;
+    border-radius:50%;
+    animation:dotPulse 1.2s ease-in-out infinite;
+}
+@keyframes dotPulse{
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:0.4;transform:scale(0.7);}
+}
+.title{
+    font-size:22px;
+    font-weight:900;
+    color:#F1F5F9;
+    margin-bottom:8px;
+    letter-spacing:-0.5px;
+}
+.subtitle{
+    font-size:13px;
+    color:#55d082;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+}
+.desc{
+    font-size:13px;
+    color:#64748B;
+    line-height:1.6;
+    max-width:280px;
+    margin-bottom:32px;
+}
+.progress-track{
+    width:220px;
+    height:4px;
+    background:rgba(255,255,255,0.08);
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:14px;
+}
+.progress-bar{
+    height:100%;
+    width:0%;
+    border-radius:10px;
+    background:linear-gradient(90deg,#1f6e3f,#55d082);
+    animation:fillBar 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes fillBar{
+    0%{width:0%;}
+    40%{width:45%;}
+    70%{width:75%;}
+    90%{width:92%;}
+    100%{width:100%;}
+}
+.status-text{
+    font-size:12px;
+    color:#475569;
+    font-weight:600;
+    letter-spacing:0.5px;
+    animation:statusCycle 1.8s steps(1) forwards;
+}
+@keyframes statusCycle{
+    0%{content:'Checking local storage...';}
+}
+#status-label{animation:none;}
+</style>
+</head>
+<body>
+<div class="elephant-wrap">
+    <div class="ring ring1"></div>
+    <div class="ring ring2"></div>
+    <div class="ring ring3"></div>
+    <span class="elephant-icon">🐘</span>
+</div>
+<div class="badge"><div class="pulse-dot"></div> Offline Mode</div>
+<div class="title">Shwari Finance</div>
+<div class="subtitle">Operating Offline</div>
+<div class="desc">Loading your last saved dashboard from local storage...</div>
+<div class="progress-track"><div class="progress-bar"></div></div>
+<div class="status-text" id="status-label">Checking local storage...</div>
+<script>
+var msgs = ['Checking local storage...','Reading cached data...','Preparing your dashboard...','Almost ready...'];
+var i = 0;
+var el = document.getElementById('status-label');
+var iv = setInterval(function(){
+    i++;
+    if(i < msgs.length){ el.textContent = msgs[i]; }
+    else { clearInterval(iv); }
+}, 450);
+</script>
+</body>
+</html>`;
+
+                // Inject loading screen into iframe immediately
+                const loadingBlob = new Blob([offlineLoadingHtml], { type: 'text/html' });
+                const loadingUrl  = URL.createObjectURL(loadingBlob);
+                this.frame.src    = loadingUrl;
+                this.loaded       = true;
+
+                // Show offline banner
+                const offlineBanner = document.getElementById('offline-macro-banner');
+                if (offlineBanner) {
+                    offlineBanner.innerHTML = '<div class="offline-pulse"></div><span>Operating Offline</span>';
+                    offlineBanner.style.background    = 'rgba(231,76,60,0.95)';
+                    offlineBanner.style.boxShadow     = '0 8px 25px rgba(231,76,60,0.4)';
+                    offlineBanner.classList.add('show');
+                }
+
+                // Trigger onMacroSuccess so the app shell reveals immediately
+                if (window.onMacroSuccess) window.onMacroSuccess();
+
+                // STEP 2: After 2 seconds, swap to real cached data
+                setTimeout(async () => {
+                    try {
+                        const data = await ShwariDB.get('macro_html');
+
+                        if (data && data.html && data.html.length > 1000) {
+                            // Valid snapshot found — inject it
+                            const age     = Date.now() - (data.timestamp || 0);
+                            const mins    = Math.max(0, Math.floor(age / 60000));
+                            const timeLabel = mins < 1 ? 'just now' :
+                                             mins < 60 ? mins + 'm ago' :
+                                             Math.floor(mins/60) + 'h ago';
+
+                            const blob   = new Blob([data.html], { type: 'text/html' });
+                            const objUrl = URL.createObjectURL(blob);
+
+                            this.frame.src      = objUrl;
+                            this.isOfflineView  = true;
+
+                            // Update banner to show cached time
+                            if (offlineBanner) {
+                                offlineBanner.innerHTML = '<div class="offline-pulse"></div><span>Offline · Cached ' + timeLabel + '</span>';
+                            }
+
+                            // Show stale warning if data older than 24h
+                            if (age > 24 * 60 * 60 * 1000) {
+                                const staleWarn = document.getElementById('stale-warning');
+                                if (staleWarn) staleWarn.style.display = 'flex';
+                            }
+
+                            console.log('[Offline] Loaded cached snapshot from', timeLabel);
+
+                        } else {
+                            // No snapshot — show friendly no-cache screen
+                            const noCacheHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Shwari Finance</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0F172A;color:#fff;font-family:'Inter',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px;}
+.icon{font-size:60px;margin-bottom:20px;filter:drop-shadow(0 0 15px rgba(85,208,130,0.4));}
+h2{font-size:22px;font-weight:900;color:#55d082;margin-bottom:10px;}
+p{font-size:14px;color:#64748B;line-height:1.6;max-width:280px;margin-bottom:24px;}
+.note{font-size:12px;color:#334155;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:12px 16px;border-radius:12px;max-width:280px;}
+.loader{width:36px;height:36px;border:3px solid rgba(85,208,130,0.15);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite;margin:20px auto 0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="icon">🐘</div>
+<h2>No Cached Data Yet</h2>
+<p>Open the app while online first to save your dashboard for offline use.</p>
+<div class="note">💡 Once you load the app online, it saves automatically for offline access.</div>
+<div class="loader"></div>
+<script>window.addEventListener('online',function(){window.location.reload();});setInterval(function(){if(navigator.onLine)window.location.reload();},3000);</script>
+</body>
+</html>`;
+                            const ncBlob   = new Blob([noCacheHtml], { type: 'text/html' });
+                            this.frame.src = URL.createObjectURL(ncBlob);
+
+                            if (offlineBanner) {
+                                offlineBanner.innerHTML = '<div class="offline-pulse"></div><span>No cached data · Go online first</span>';
+                            }
+                        }
+
+                    } catch(e) {
+                        console.error('[Offline] loadOfflineBlob error:', e);
+                    } finally {
+                        URL.revokeObjectURL(loadingUrl); // Free memory
+                    }
+                }, 2000); // 2 second loading screen
+            },
                         const age = Date.now() - data.timestamp;
                         if (age > 24 * 60 * 60 * 1000) {
                             document.getElementById('stale-warning').style.display = 'flex';
