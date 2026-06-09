@@ -16,8 +16,8 @@
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const APP_VERSION      = '7.1.0';   // ← increment this for every release
-const CACHE_VERSION    = 'v8';      // ← increment this for every release
+const APP_VERSION      = '7.2.0';   // ← increment this for every release
+const CACHE_VERSION    = 'v9';      // ← increment this for every release
 
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
@@ -174,6 +174,49 @@ function fetchWithTimeout(request, ms = NETWORK_TIMEOUT_MS) {
   return fetch(req).finally(() => clearTimeout(timer));
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ZERO-RATED / FREE DATA — Safaricom & Airtel Kenya sponsored access
+// These domains are whitelisted by the carriers and work without a data bundle.
+// We NEVER block or transform these requests — pass them straight to the network.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ZERO_RATED_PATTERNS = [
+  // Safaricom free zones
+  'safaricom.co.ke',
+  'bonga.safaricom.co.ke',
+  'mySafaricom',
+  'skiza.safaricom',
+  'safaricomfreezone',
+  // Airtel free zones
+  'airtel.co.ke',
+  'airtelfreezone',
+  'myairtel',
+  'airtel-money',
+  // Google free tier (Safaricom & Airtel both zero-rate core Google)
+  'google.com/generate_204',
+  'connectivitycheck.gstatic.com',
+  'clients1.google.com',
+  'clients3.google.com',
+  // Facebook Free Basics (both carriers)
+  'freebasics.com',
+  'internetorg.net',
+  's.facebook.com',
+  'z-m.facebook.com',
+  // Wikipedia Zero
+  'zero.wikipedia.org',
+  // Apps Script / GAS — already on Safaricom zero-rated Google tier
+  'script.google.com',
+  'script.googleusercontent.com',
+];
+
+/**
+ * Returns true if this URL is on a carrier zero-rated / free-data domain.
+ * These requests are ALWAYS allowed through with no cache manipulation.
+ */
+function isZeroRated(url) {
+  return ZERO_RATED_PATTERNS.some(pattern => url.href.includes(pattern));
+}
+
 /**
  * Returns true for URLs that should never be cached (live APIs).
  */
@@ -288,7 +331,21 @@ self.addEventListener('fetch', (event) => {
     return; // Malformed URL — ignore
   }
 
-  // ── STRATEGY 0: Google Macro URLs — always intercepted for offline support ─
+  // ── ZERO-RATED FAST PATH — Safaricom / Airtel free data domains ──────────
+  // Pass straight through with NO SW interference whatsoever.
+  // Carrier billing systems flag any modified request headers as non-zero-rated
+  // so we must never clone, cache, or wrap these requests.
+  if (isZeroRated(url)) {
+    // For the macro URL specifically — still apply offline IDB fallback
+    // because the zero-rated network may not always respond on free tier.
+    if (url.hostname.includes('script.google.com') || url.hostname.includes('script.googleusercontent.com')) {
+      event.respondWith(networkFirstMacroZeroRated(request));
+    }
+    // All other zero-rated URLs — pure pass-through, no cache touch
+    return;
+  }
+
+  // ── STRATEGY 0: Google Macro URLs (paid data) — network first + IDB ──────
   if (url.hostname.includes('script.google.com') || url.hostname.includes('script.googleusercontent.com')) {
     event.respondWith(networkFirstMacro(request));
     return;
@@ -389,15 +446,53 @@ async function serveOfflineMacro() {
  * Online  → Fetch live, save to IDB + CACHE_MACRO, return live response.
  * Offline → serveOfflineMacro() with 3-tier fallback chain.
  */
-async function networkFirstMacro(request) {
-    const urlObj   = new URL(request.url);
-    const cleanUrl = urlObj.origin + urlObj.pathname; // Strip cache-busters for stable key
-
-    // FAST OFFLINE BAILOUT — skip the network entirely if we know we're offline
+/**
+ * Zero-rated macro handler — used when request comes from Safaricom/Airtel free data.
+ *
+ * Key difference from normal networkFirstMacro:
+ *  - Request is passed to fetch() COMPLETELY UNMODIFIED (no cloning, no signal injection)
+ *    so carrier billing headers remain intact and the request stays zero-rated.
+ *  - Still saves to IDB on success for offline fallback.
+ *  - Falls back to IDB/cache if carrier free tier returns nothing.
+ */
+async function networkFirstMacroZeroRated(request) {
     if (!navigator.onLine) {
-        log('Device offline — serving macro from cache/IDB immediately');
+        log('[ZeroRated] Offline — serving macro from IDB');
         return serveOfflineMacro();
     }
+
+    try {
+        // CRITICAL: Do NOT clone or modify the request — carrier billing depends on original headers
+        const networkRes = await Promise.race([
+            fetch(request),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Zero-rated timeout')), 25000))
+        ]);
+
+        if (!networkRes) throw new Error('Empty zero-rated response');
+
+        const isGenuine = networkRes.ok || networkRes.type === 'opaque' || networkRes.status === 302;
+
+        if (isGenuine) {
+            // Save snapshot silently — IDB write does not touch the response headers
+            networkRes.clone().text().then(html => {
+                const isReal = html.length > 1000 &&
+                    !html.toLowerCase().includes('accounts.google.com') &&
+                    !html.toLowerCase().includes('signin') &&
+                    !html.toLowerCase().includes('error 404');
+                if (isReal) {
+                    SW_IDB.save(html);
+                    log('[ZeroRated] Macro snapshot saved to IDB —', Math.round(html.length/1024), 'KB');
+                }
+            }).catch(() => {});
+        }
+
+        return networkRes;
+
+    } catch(e) {
+        log('[ZeroRated] Macro fetch failed:', e.message, '— falling back to IDB');
+        return serveOfflineMacro();
+    }
+}
 
     try {
         const networkRes = await fetchWithTimeout(request, 20000); // 20 s — GAS can be slow
@@ -745,11 +840,26 @@ self.addEventListener('message', (event) => {
         });
       break;
 
-    // ── NEW: Force macro re-cache from main thread ────────────────────────
+    // ── Force macro re-cache from main thread ─────────────────────────────
     case 'FORCE_MACRO_CACHE':
       if (data.html && data.html.length > 500) {
         event.waitUntil(SW_IDB.save(data.html));
       }
+      break;
+
+    // ── Zero-rated connectivity ping — sent by main thread on carrier network ─
+    // Main thread posts this when it detects Safaricom/Airtel free zone.
+    // SW responds with cached macro immediately to avoid any billable fetch.
+    case 'ZERO_RATED_PING':
+      serveOfflineMacro().then(res => {
+        res.text().then(html => {
+          event.ports?.[0]?.postMessage({ type: 'ZERO_RATED_PONG', hasCache: html.length > 500 });
+        }).catch(() => {
+          event.ports?.[0]?.postMessage({ type: 'ZERO_RATED_PONG', hasCache: false });
+        });
+      }).catch(() => {
+        event.ports?.[0]?.postMessage({ type: 'ZERO_RATED_PONG', hasCache: false });
+      });
       break;
 
     default:
