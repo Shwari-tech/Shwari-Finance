@@ -16,8 +16,8 @@
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const APP_VERSION      = '7.2.0';   // ← increment this for every release
-const CACHE_VERSION    = 'v9';      // ← increment this for every release
+const APP_VERSION      = '7.1.0';   // ← increment this for every release
+const CACHE_VERSION    = 'v8';      // ← increment this for every release
 
 const CACHE_STATIC     = `shwari-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC    = `shwari-dynamic-${CACHE_VERSION}`;
