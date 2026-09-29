@@ -7,8 +7,8 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
-  "background_color": "#001208",
-  "theme_color": "#001208",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "orientation": "portrait-primary",
   "categories": ["finance", "business", "productivity"],
   "dir": "ltr",
@@ -93,9 +93,9 @@
 
   "screenshots": [
     {
-      "src": "https://cdn.prod.website-files.com/5e4d02fd9692e694f86e0e98/6462b9fc8b1022bf196f08e4_Payroll%20Run%402x.webp",
+      "src": "https://static.vecteezy.com/system/resources/previews/006/877/514/non_2x/work-character-solid-icon-illustration-office-workers-teachers-judges-police-artists-employees-free-vector.jpg",
       "sizes": "800x600",
-      "type": "image/webp",
+      "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Payroll Dashboard"
     },
