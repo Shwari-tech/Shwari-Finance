@@ -6,11 +6,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Shwari | Finance">
+    <meta name="apple-mobile-web-app-title" content="<strong><strong>Shwari | Finance</strong></strong>">
     
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e1e1e">
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1e1e1e">
-    <title>Shwari | Finance · Digital Assimilation</title>
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+    <title><strong><strong>Shwari | Finance</strong></strong> · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -23,8 +23,8 @@
             --vh: 1vh;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
-            --bg-dark: #1e1e1e; /* Matches image & status bar for seamless look */
-            --bg-card: #1f2937;
+            --bg-dark: #ffffff; /* Matches image & status bar for seamless look */
+--bg-card: #f0fdf4;
             --accent: #55d082;
             --anim-smooth: cubic-bezier(0.2, 0.8, 0.2, 1.05);
         }
@@ -456,7 +456,7 @@
         }
 
         .medium-font { font-size: 22px !important; color: #ffffff; font-weight: 900; letter-spacing: -0.5px; margin: 0 0 5px 0; line-height: 1.1; font-family: 'Inter', sans-serif;}
-        .small-email { font-size: 13px; color: #bbbbbb; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
+        .small-email { font-size: 13px; color: #4b5563; font-weight: 500; font-family: 'Inter', sans-serif; letter-spacing: 0.5px; margin: 0;}
         
         /* =========================================
            3. REGISTRATION PORTAL
@@ -505,7 +505,7 @@
         .desc-text { font-size: 13px; color: #666; margin-bottom: 20px; }
 
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-group input { pointer-events: auto; width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 14px; font-size: 15px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
+        .input-group input { pointer-events: auto; width: 100%; padding: 14px 16px; border: 2px solid #0B6E4F; border-radius: 14px; font-size: 15px; font-family: 'Inter', sans-serif; color: #333; background: #f8fafc; transition: all 0.3s ease; -webkit-appearance: none; }
         .input-group input:focus { border-color: #2c7a47; outline: none; background: #fff; box-shadow: 0 4px 15px rgba(44, 122, 71, 0.1); }
         .input-group input.error { border-color: #e74c3c; background: #fff5f5; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1); }
         .input-group input.success { border-color: #55d082; background: #f0fff5; }
@@ -596,8 +596,8 @@
            INSTAGRAM-STYLE LAUNCH LOADER
            ========================================= */
         #ig-loader {
-            position: fixed; inset: 0; z-index: 95000;
-            background: #1e1e1e;
+    position: fixed; inset: 0; z-index: 95000;
+    background: #ffffff;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             pointer-events: none;
@@ -627,7 +627,7 @@
             font-weight: 800;
             letter-spacing: 4px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
+            color: rgba(44,122,71,0.6);
             font-family: 'Inter', sans-serif;
         }
         .ig-from span {
@@ -674,12 +674,13 @@
            ========================================= */
         @media (prefers-color-scheme: light) {
             html, body, .app, iframe { background-color: var(--bg-dark) !important; }
-            .dept-title, .medium-font { color: #ffffff !important; }
+            .dept-title, .medium-font { color: #0a2e16 !important; }
             .dept-subtitle { color: #55d082 !important; }
             .small-email { color: #bbbbbb !important; }
             
             .continue-footer {
-                background: linear-gradient(to top, rgba(17,24,39,0.95) 0%, rgba(17,24,39,0.8) 40%, rgba(17,24,39,0) 100%) !important;
+    padding: 40px 20px 40px; text-align: center;
+    background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,0) 100%); !important;
             }
 
             #auth-portal { background: #000000 !important; }
@@ -1667,14 +1668,121 @@
         .pay-ad-cta:active { transform: scale(0.97); box-shadow: 0 4px 10px rgba(44,122,71,0.25); }
 
     </style>
+<style>
+/* EMPLOYEE RECORDS UPDATE AD (instant on launch) */
+#ea-overlay{position:fixed;inset:0;z-index:300000;display:flex;flex-direction:column;background:#fff;padding-top:env(safe-area-inset-top);font-family:'Inter',system-ui,-apple-system,sans-serif;opacity:1;transition:opacity .35s ease;overflow:hidden}
+#ea-overlay.ea-hide{opacity:0;pointer-events:none}
+.ea-hero{position:relative;flex:0 0 38%;max-height:38vh;margin:10px 14px 0;border-radius:26px;overflow:hidden;background:linear-gradient(110deg,#dcfce7 30%,#f0fdf4 50%,#dcfce7 70%);background-size:200% 100%;animation:eaShimmer 1.4s linear infinite;box-shadow:0 12px 30px rgba(44,122,71,.2)}
+@keyframes eaShimmer{to{background-position:-200% 0}}
+.ea-hero img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.ea-pill{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.96);color:#92400e;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:6px 13px;border-radius:50px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.ea-dot{width:8px;height:8px;background:#f59e0b;border-radius:50%;display:inline-block;animation:eaPulse 1.6s ease-in-out infinite}
+@keyframes eaPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.6)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0)}}
+.ea-body{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:18px 22px max(26px,calc(16px + env(safe-area-inset-bottom)));overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ea-body>*{animation:eaUp .55s cubic-bezier(.2,.8,.2,1.05) both}
+.ea-body>*:nth-child(2){animation-delay:.05s}
+.ea-body>*:nth-child(3){animation-delay:.1s}
+.ea-body>*:nth-child(4){animation-delay:.15s}
+.ea-body>*:nth-child(5){animation-delay:.2s}
+@keyframes eaUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.ea-title{font-size:24px;font-weight:900;color:#0f172a;letter-spacing:-.5px;line-height:1.2;margin:0 0 8px}
+.ea-text{font-size:14px;color:#64748b;line-height:1.6;max-width:320px;margin:0 0 16px}
+.ea-deadline{display:flex;align-items:center;gap:14px;width:100%;max-width:340px;background:linear-gradient(135deg,#1f6e3f 0%,#55d082 100%);color:#fff;border-radius:20px;padding:14px 18px;text-align:left;box-shadow:0 8px 24px rgba(44,122,71,.3)}
+.ea-deadline>i{font-size:24px;opacity:.9;flex-shrink:0}
+.ea-dl-inner{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0}
+.ea-dl-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;opacity:.85}
+#ea-deadline{font-size:19px;font-weight:900;letter-spacing:-.3px;line-height:1.2}
+.ea-chip{background:rgba(255,255,255,.22);border-radius:12px;padding:6px 11px;font-size:11px;font-weight:800;white-space:nowrap}
+.ea-chip.ea-urgent{background:#fef3c7;color:#92400e}
+.ea-meta{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.ea-meta span{display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:12px;font-weight:600;padding:6px 11px;border-radius:50px}
+.ea-actions{margin-top:auto;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;padding-top:18px}
+.ea-btn{width:100%;padding:16px;border-radius:16px;font-family:'Inter',sans-serif;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;text-decoration:none;touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:transform .15s ease}
+.ea-btn:active{transform:scale(.97)}
+.ea-primary{background:linear-gradient(270deg,#2c7a47,#005c4b,#1f6e3f);background-size:400% 400%;color:#fff;border:none;box-shadow:0 8px 22px rgba(44,122,71,.32);animation:colorShift 6s ease infinite}
+.ea-skip{background:#f1f5f9;color:#475569;border:none}
+</style>
 <base target="_blank">
+<link rel="preload" as="image" href="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg">
 </head>
 <body>
 
-    <!-- INSTAGRAM-STYLE LOADER -->
+    <!-- EMPLOYEE RECORDS UPDATE AD -->
+<div id="ea-overlay" role="dialog" aria-modal="true" aria-label="Update employee records">
+    <div class="ea-hero">
+        <img src="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg" alt="Employee records" fetchpriority="high" decoding="async" onerror="this.style.display='none'">
+        <div class="ea-pill"><span class="ea-dot"></span>Action Required</div>
+    </div>
+
+    <div class="ea-body">
+        <h2 class="ea-title">Update Your Employee Records</h2>
+        <p class="ea-text">Please complete the Google Form to keep your employee records accurate and up to date.</p>
+
+        <div class="ea-deadline">
+            <i class="fas fa-calendar-check"></i>
+            <div class="ea-dl-inner">
+                <span class="ea-dl-label">Update before</span>
+                <span id="ea-deadline">—</span>
+            </div>
+            <span class="ea-chip" id="ea-chip"></span>
+        </div>
+
+        <div class="ea-meta">
+            <span><i class="fas fa-clock"></i>2 min</span>
+            <span><i class="fas fa-lock"></i>Secure form</span>
+            <span><i class="fas fa-circle-check"></i>Required</span>
+        </div>
+
+        <div class="ea-actions">
+            <a class="ea-btn ea-primary" href="https://forms.gle/s7zHCfv4tUFx8Dd59" target="_blank" rel="noopener noreferrer" onclick="setTimeout(eaClose,300)">
+                <i class="fas fa-pen-to-square"></i><span>Update Now</span>
+            </a>
+            <button class="ea-btn ea-skip" type="button" onclick="eaClose()">Skip</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    // ── SET THE DEADLINE HERE (ad auto-disappears after this) ──
+    var DEADLINE = new Date('2026-09-30T23:59:59');
+    // ───────────────────────────────────────────────────────────
+    var ov = document.getElementById('ea-overlay');
+    if (!ov) return;
+    if (new Date() > DEADLINE) { ov.remove(); return; }
+
+    // White status/notification bar ONLY while this ad is showing
+    var metas = document.querySelectorAll('meta[name="theme-color"]');
+    function setBar(c){ metas.forEach(function(m){ m.setAttribute('content', c); }); }
+    window._adVisible = true;   // stops the app from recolouring the bar while ad is up
+    setBar('#ffffff');
+
+    var D = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var M = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('ea-deadline').textContent =
+        D[DEADLINE.getDay()].slice(0,3) + ', ' + DEADLINE.getDate() + ' ' + M[DEADLINE.getMonth()] + ' ' + DEADLINE.getFullYear();
+
+    var t0 = new Date(); t0.setHours(0,0,0,0);
+    var t1 = new Date(DEADLINE); t1.setHours(0,0,0,0);
+    var left = Math.round((t1 - t0) / 86400000);
+    var chip = document.getElementById('ea-chip');
+    chip.textContent = left <= 0 ? 'Last day' : left + (left === 1 ? ' day left' : ' days left');
+    if (left <= 3) chip.classList.add('ea-urgent');
+
+    window.eaClose = function(){
+        window._adVisible = false;
+        ov.classList.add('ea-hide');
+        setTimeout(function(){ ov.remove(); }, 400);
+        var appActive = document.getElementById('app').classList.contains('active');
+        setBar(appActive ? '#111827' : '#ffffff');   // back to normal colours
+    };
+})();
+</script>
+
+<!-- INSTAGRAM-STYLE LOADER -->
     <div id="ig-loader">
         <div class="ig-icon-wrap"><i class="fas fa-elephant"></i></div>
-        <p class="ig-from"> <span>Shwari | Finance</span></p>
+        <p class="ig-from"> <span><strong>Shwari | Finance</strong></span></p>
     </div>
 
     <div class="bg-layer" id="splash-layer" style="display:none!important;">
@@ -1719,7 +1827,7 @@
         <div class="error-card">
             <i class="fas fa-mobile-screen" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
             <h2>Mobile Application</h2>
-            <p>Shwari | Finance App is strictly optimized for mobile devices mode. For any other issues, reset your Display / Font size in your smartphone to access your Account.</p>
+            <p><strong>Shwari | Finance</strong> App is strictly optimized for mobile devices mode. For any other issues, reset your Display / Font size in your smartphone to access your Account.</p>
         </div>
     </div>
 
@@ -1729,7 +1837,7 @@
                 <i class="fas fa-triangle-exclamation"></i>
             </div>
             <h2>Duplicate App Detected</h2>
-            <p>Another version of Shwari | Finance is already installed on this device. Please uninstall the old version before using this one.</p>
+            <p>Another version of <strong>Shwari | Finance</strong> is already installed on this device. Please uninstall the old version before using this one.</p>
             <div class="duplicate-info">
                 <div class="duplicate-info-item">
                     <i class="fas fa-circle-exclamation"></i>
@@ -1757,7 +1865,7 @@
                 <i class="fas fa-database"></i>
             </div>
             <h2>Storage Permission Required</h2>
-            <p>Shwari | Finance needs permission to store data locally on your device for offline access and better performance.</p>
+            <p><strong>Shwari | Finance</strong> needs permission to store data locally on your device for offline access and better performance.</p>
             <div class="permission-buttons">
                 <button class="permission-btn deny" id="deny-storage-btn">Not Now</button>
                 <button class="permission-btn allow" id="allow-storage-btn">Allow</button>
@@ -1769,7 +1877,7 @@
         <div class="install-card">
             <i class="fas fa-mobile-screen-button" style="font-size:60px; color:#55d082; margin-bottom:20px;"></i>
             <h2 style="font-size: 24px; font-weight: 800; color: #55d082; margin-bottom: 12px;">Install App to Continue</h2>
-            <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">For your security, Shwari | Finance must be installed to your phone to access the dashboard.</p>
+            <p style="font-size: 15px; color: #aaaaaa; margin-bottom: 30px;">For your security, <strong><strong>Shwari | Finance</strong></strong> must be installed to your phone to access the dashboard.</p>
             <button class="install-btn" id="installAction">
                 <i class="fas fa-download"></i> <span>Install Now</span>
             </button>
@@ -1801,7 +1909,7 @@
 
     <div id="continue-overlay" class="hidden">
         <div class="continue-header">
-            <h3 class="dept-title">Shwari | Finance<br></h3>
+            <h3 class="dept-title"><strong><strong>Shwari | Finance</strong></strong><br></h3>
             <p class="dept-subtitle">Self Service Portal</p>
         </div>
 
@@ -1854,14 +1962,14 @@
             <i class="fas fa-elephant"></i>
         </div>
 
-        <p class="install-title">Installing Shwari | Finance</p>
+        <p class="install-title">Installing <strong><strong>Shwari | Finance</strong></strong></p>
         <p class="install-subtitle">Setting up your portal</p>
 
         <div class="install-track-wrap">
             <div class="install-track">
                 <div class="install-bar" id="install-bar"></div>
             </div>
-            <p class="install-status-text" id="install-status-text">Preparing files…</p>
+            <p class="install-status-text" id="install-status-text">Preparing files...</p>
         </div>
 
         <div class="tick-wrap" id="tick-wrap">
@@ -1879,7 +1987,7 @@
                 <i class="fas fa-mobile-screen"></i>
             </div>
             <h2>App Only Access</h2>
-            <p>The Shwari | Finance Account are not accessible via the browser. You have already installed the app on this device.</p>
+            <p>The <strong><strong>Shwari | Finance</strong></strong> Account are not accessible via the browser. You have already installed the app on this device.</p>
             <div class="blocker-info">
                 <div class="blocker-info-item">
                     <i class="fas fa-ban"></i>
@@ -1907,7 +2015,7 @@
                 <i class="fas fa-elephant"></i>
             </div>
             <h2>Installation Complete!</h2>
-            <p class="guide-subtitle">Follow these steps to start using Shwari | Finance</p>
+            <p class="guide-subtitle">Follow these steps to start using <strong><strong>Shwari | Finance</strong></strong></p>
             
             <div class="guide-steps">
                 <div class="guide-step">
@@ -1928,7 +2036,7 @@
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>Launch App</h3>
-                        <p>Tap the Shwari | Finance icon to open your portal</p>
+                        <p>Tap the <strong><strong>Shwari | Finance</strong></strong> icon to open your portal</p>
                     </div>
                 </div>
             </div>
@@ -1960,27 +2068,140 @@
                     req.onerror = (e) => reject(e.error);
                 });
             },
-            async save(html) {
+            async save(html, key) {
                 const db = await this.init();
+                const id = key || 'macro_html';
                 return new Promise((resolve, reject) => {
                     const tx = db.transaction(this.storeName, 'readwrite');
                     const store = tx.objectStore(this.storeName);
-                    store.put({ id: 'macro_html', html: html, timestamp: Date.now() });
+                    store.put({ id: id, html: html, timestamp: Date.now() });
                     tx.oncomplete = () => resolve();
                     tx.onerror = (e) => reject(e.error);
                 });
             },
-            async get() {
+            async get(key) {
                 const db = await this.init();
+                const id = (typeof key === 'string' && key) ? key : 'macro_html';
                 return new Promise((resolve, reject) => {
                     const tx = db.transaction(this.storeName, 'readonly');
                     const store = tx.objectStore(this.storeName);
-                    const req = store.get('macro_html');
+                    const req = store.get(id);
                     req.onsuccess = () => resolve(req.result);
                     req.onerror = (e) => reject(e.error);
                 });
+            },
+            /** Per-node snapshot — every balanced server keeps its own cache copy. */
+            async saveNode(index, html) {
+                await this.save(html, 'macro_node_' + index);
+                await this.save(html, 'macro_html'); // keep the primary snapshot hot too
+            },
+            /** Returns every stored record so we can pick the freshest across all nodes. */
+            async all() {
+                const db = await this.init();
+                return new Promise((resolve) => {
+                    try {
+                        const tx = db.transaction(this.storeName, 'readonly');
+                        const req = tx.objectStore(this.storeName).getAll();
+                        req.onsuccess = () => resolve(req.result || []);
+                        req.onerror = () => resolve([]);
+                    } catch (e) { resolve([]); }
+                });
+            },
+            /**
+             * Offline resolver: returns the newest usable snapshot from ANY node,
+             * so a user cached on node-3 still works when routed to node-7 offline.
+             */
+            async getBest() {
+                const rows = await this.all();
+                const snaps = rows.filter(r => r && typeof r.html === 'string' && r.html.length > 1000);
+                if (!snaps.length) return null;
+                snaps.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                return snaps[0];
             }
         };
+
+        // =========================================
+        // CROSS-NODE RESUME STATE MANAGER
+        // Persists WHO the user is and WHERE they were, independent of
+        // which of the 10 nodes serves them. Any node can resume them.
+        // =========================================
+        const SessionState = {
+            K_UID:    'shwari_uid',
+            K_STATE:  'shwari_resume_state',
+            K_VISITS: 'shwari_visit_count',
+
+            uid() {
+                let id = localStorage.getItem(this.K_UID);
+                if (!id) {
+                    const email = (localStorage.getItem('emp_email') || '').trim().toLowerCase();
+                    id = email
+                        ? 'u-' + btoa(email).replace(/[^a-zA-Z0-9]/g, '').slice(0, 24)
+                        : 'u-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+                    localStorage.setItem(this.K_UID, id);
+                }
+                return id;
+            },
+
+            read() {
+                try { return JSON.parse(localStorage.getItem(this.K_STATE)) || {}; }
+                catch (e) { return {}; }
+            },
+
+            /** Merge-write so a partial update never wipes the rest of the state. */
+            write(patch) {
+                const merged = Object.assign(this.read(), patch || {}, { ts: Date.now() });
+                try { localStorage.setItem(this.K_STATE, JSON.stringify(merged)); } catch (e) {}
+                return merged;
+            },
+
+            isReturning() {
+                return !!(this.read().route || parseInt(localStorage.getItem(this.K_VISITS) || '0', 10) > 0);
+            },
+
+            bumpVisit() {
+                const n = parseInt(localStorage.getItem(this.K_VISITS) || '0', 10) + 1;
+                try { localStorage.setItem(this.K_VISITS, String(n)); } catch (e) {}
+                return n;
+            },
+
+            /** Query string appended to EVERY node URL so any server resumes the user. */
+            params(nodeIndex) {
+                const s = this.read();
+                const parts = [
+                    'uid=' + encodeURIComponent(this.uid()),
+                    'returning=' + (this.isReturning() ? '1' : '0'),
+                    'visits=' + encodeURIComponent(localStorage.getItem(this.K_VISITS) || '0'),
+                    'node=' + nodeIndex,
+                    'lastNode=' + encodeURIComponent(s.node != null ? s.node : nodeIndex)
+                ];
+                if (s.route)   parts.push('resume=' + encodeURIComponent(s.route));
+                if (s.scrollY) parts.push('scrollY=' + encodeURIComponent(s.scrollY));
+                if (s.ts)      parts.push('lastSeen=' + encodeURIComponent(s.ts));
+                return parts.join('&');
+            },
+
+            /** Listens for the macro reporting its current view, and saves it. */
+            bind() {
+                window.addEventListener('message', (ev) => {
+                    const d = ev && ev.data;
+                    if (!d || d.type !== 'SHWARI_STATE') return;
+                    this.write({
+                        route:   d.route || this.read().route,
+                        scrollY: d.scrollY || 0,
+                        node:    (window.MacroEngineRef && window.MacroEngineRef.activeNodeIndex)
+                    });
+                }, false);
+
+                // Safety net: persist on background/close even if no postMessage arrived.
+                const flush = () => this.write({ node: (window.MacroEngineRef && window.MacroEngineRef.activeNodeIndex) });
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'hidden') flush();
+                });
+                window.addEventListener('pagehide', flush);
+            }
+        };
+        SessionState.bind();
+        window.ShwariResume = SessionState; // exposed for the gateway script below
 
         // =========================================
         // CAPABILITY-AWARE FULLSCREEN MANAGER
@@ -2139,11 +2360,233 @@
         // =========================================
         // BACKEND & ENHANCED MACRO INITIALIZATION
         // =========================================
-        const MACRO_URL = "https://script.google.com/macros/s/AKfycbz2ns6LkPboQ0HxsHqITIAqLZEP9Ju7b4FtGLaDHkxpGOCMyWV9mQNTOsyAFVnSzK8O/exec";
+        // ─────────────────────────────────────────────────────────────
+        //  LOAD BALANCER — 10 Independent Macro Deployments
+        //  Replace each URL below with a UNIQUE deployment of the same
+        //  Apps Script project (Deploy → New deployment → repeat x10).
+        //  Each deployment is a fully separate execution quota/server,
+        //  so spreading users across all 10 multiplies total throughput.
+        // ─────────────────────────────────────────────────────────────
+        const MACRO_ENDPOINTS = [
+            "https://script.google.com/macros/s/AKfycbxx5IEMNwZiSpXDpVkYBRsXgnnRhA9fGktb-Y0ZLbTnl1yEmzQ2WIJL_fSldPVhpqYT/exec", // node-1
+            "https://script.google.com/macros/s/AKfycbwcpZYWLIxSbDbI1x2VUfynuIXVrJLySVpH4yX7PIVUrh9pwj6ICdXktbIiBf2zJDIBgA/exec", // node-2
+            "https://script.google.com/macros/s/AKfycbxtcYrUPaJuKS5Yuw1ctsOqJZ3s0fS-ryCnqfjOYbaFOLmT9lboWureLRUDFtWU_KP1/exec", // node-3
+            "https://script.google.com/macros/s/AKfycbyT9M3qW5qOtVN6jjYLy9FOmSLBiShLEtcgcYdxltAQ-E_jzBIngDpeCdnhHqi0_8U-EA/exec", // node-4
+            "https://script.google.com/macros/s/AKfycbwR-ZOKSuPH8LmdCYKbf0LJLxHq3sgXHM0Cfp3wKjrBUED25NUn8Dq2_mghuEr-2gm_BA/exec", // node-5
+            "https://script.google.com/macros/s/AKfycbw5iXkB6A9QOqivYH90zyuPQ90Rv1afUUnyMlpFZ3v6vwB_lMaSCQq0kGf3Saih7rCu/exec", // node-6
+            "https://script.google.com/macros/s/AKfycbwRpq7WFrYfykSUsbTQmkaErGM4gsVGQtHWhuVg_Fvx8gCvLkVBylaNlJH-vqyP0BRb/exec", // node-7
+            "https://script.google.com/macros/s/AKfycbzg3rEMH98jIqYnAzL0jca6vfwd0OPstQQXFMHt7jKxXXGGlSwFwWBFyrvvbrzIPDEDUA/exec", // node-8
+            "https://script.google.com/macros/s/AKfycbyIUt_0-wgEg-CuJW1XauZqmgwRZlUfjxKfkTDb63MGBFe6-QdGNzNpJG0QA9TmpfxS/exec", // node-9
+            "https://script.google.com/macros/s/AKfycbwYhflj6O_sh1bwtJEE_-IzzdU6_v8d0T5jqeTiSs9Z4TUFHgtm44Kp0MyJ2dWJXOeW/exec" // node-10
+        ];
+
+        const LoadBalancer = {
+            LS_ACTIVE_KEY: 'shwari_lb_active_node',
+            LS_BLACKLIST_KEY: 'shwari_lb_blacklist',
+            LS_FAILCOUNT_KEY: 'shwari_lb_failcount',
+            HEALTH_TIMEOUT_MS: 6000,
+            BLACKLIST_DURATION_MS: 60000,
+            FAIL_THRESHOLD: 3,
+
+            _readJSON(key, fallback) {
+                try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+                catch (e) { return fallback; }
+            },
+            _writeJSON(key, val) {
+                try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+            },
+
+            /**
+             * Deterministic, even distribution: hashes a stable per-device ID
+             * into one of the 10 endpoints, spreading users roughly equally
+             * across all nodes without needing a shared coordinating server.
+             */
+            _hashToIndex(str, mod) {
+                let h = 0;
+                for (let i = 0; i < str.length; i++) {
+                    h = (h * 31 + str.charCodeAt(i)) >>> 0;
+                }
+                return h % mod;
+            },
+
+            _getDeviceSeed() {
+                let seed = localStorage.getItem('shwari_lb_seed');
+                if (!seed) {
+                    seed = 'seed-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+                    localStorage.setItem('shwari_lb_seed', seed);
+                }
+                return seed;
+            },
+
+            isBlacklisted(index) {
+                const blacklist = this._readJSON(this.LS_BLACKLIST_KEY, {});
+                const until = blacklist[index];
+                if (!until) return false;
+                if (Date.now() > until) {
+                    delete blacklist[index];
+                    this._writeJSON(this.LS_BLACKLIST_KEY, blacklist);
+                    return false;
+                }
+                return true;
+            },
+
+            blacklistNode(index) {
+                const blacklist = this._readJSON(this.LS_BLACKLIST_KEY, {});
+                blacklist[index] = Date.now() + this.BLACKLIST_DURATION_MS;
+                this._writeJSON(this.LS_BLACKLIST_KEY, blacklist);
+                console.warn(`[LoadBalancer] Node ${index} blacklisted for ${this.BLACKLIST_DURATION_MS / 1000}s — traffic rerouted.`);
+            },
+
+            recordFailure(index) {
+                const counts = this._readJSON(this.LS_FAILCOUNT_KEY, {});
+                counts[index] = (counts[index] || 0) + 1;
+                this._writeJSON(this.LS_FAILCOUNT_KEY, counts);
+                if (counts[index] >= this.FAIL_THRESHOLD) {
+                    this.blacklistNode(index);
+                    counts[index] = 0;
+                    this._writeJSON(this.LS_FAILCOUNT_KEY, counts);
+                }
+            },
+
+            recordSuccess(index) {
+                const counts = this._readJSON(this.LS_FAILCOUNT_KEY, {});
+                if (counts[index]) {
+                    counts[index] = 0;
+                    this._writeJSON(this.LS_FAILCOUNT_KEY, counts);
+                }
+            },
+
+            /**
+             * Ordered candidate list: this device's "home" node first (even
+             * distribution), then the remaining 9 in rotated order — skipping
+             * anything currently blacklisted so traffic drains off busy/failing
+             * nodes toward the healthy ones automatically.
+             */
+            getCandidateOrder() {
+                const total = MACRO_ENDPOINTS.length;
+                const homeIndex = this._hashToIndex(this._getDeviceSeed(), total);
+                const order = [];
+                for (let i = 0; i < total; i++) {
+                    order.push((homeIndex + i) % total);
+                }
+                return order.filter(idx => !this.isBlacklisted(idx))
+                       .concat(order.filter(idx => this.isBlacklisted(idx)));
+            },
+
+            getStickyIndex() {
+                const saved = localStorage.getItem(this.LS_ACTIVE_KEY);
+                if (saved !== null) {
+                    const idx = parseInt(saved, 10);
+                    if (!isNaN(idx) && idx >= 0 && idx < MACRO_ENDPOINTS.length && !this.isBlacklisted(idx)) {
+                        return idx;
+                    }
+                }
+                return null;
+            },
+
+            setStickyIndex(index) {
+                localStorage.setItem(this.LS_ACTIVE_KEY, String(index));
+            },
+
+            async _probe(url) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), this.HEALTH_TIMEOUT_MS);
+                try {
+                    await fetch(`${url}?probe=1&cb=${Date.now()}`, {
+                        method: 'HEAD',
+                        mode: 'no-cors',
+                        signal: controller.signal
+                    });
+                    clearTimeout(timer);
+                    return true;
+                } catch (e) {
+                    clearTimeout(timer);
+                    return false;
+                }
+            },
+
+            /**
+             * Health-checks the sticky/home node first, then walks the
+             * candidate order (skipping blacklisted nodes) until one responds.
+             */
+            async resolveActiveEndpoint() {
+                const sticky = this.getStickyIndex();
+                const candidates = sticky !== null
+                    ? [sticky, ...this.getCandidateOrder().filter(i => i !== sticky)]
+                    : this.getCandidateOrder();
+
+                for (const idx of candidates) {
+                    const url = MACRO_ENDPOINTS[idx];
+                    if (!url || url.includes('REPLACE_WITH_DEPLOYMENT')) continue;
+                    const healthy = await this._probe(url);
+                    if (healthy) {
+                        this.recordSuccess(idx);
+                        this.setStickyIndex(idx);
+                        console.log(`[LoadBalancer] Routed to node ${idx + 1}/${MACRO_ENDPOINTS.length}`);
+                        return { url, index: idx };
+                    } else {
+                        this.recordFailure(idx);
+                    }
+                }
+
+                const fallbackIdx = sticky !== null ? sticky : this._hashToIndex(this._getDeviceSeed(), MACRO_ENDPOINTS.length);
+                return { url: MACRO_ENDPOINTS[fallbackIdx], index: fallbackIdx };
+            },
+
+            reportLoadFailure(index) {
+                if (index == null) return;
+                this.recordFailure(index);
+                this.recordFailure(index); // weight real load failures double vs probe failures
+            },
+
+            /**
+             * Pre-warms the cache on EVERY deployment for this user.
+             * Each node gets hit once with the user's uid/resume params, so the
+             * session is registered server-side and a snapshot is stored locally
+             * per node. Result: whichever node serves them next, they resume.
+             */
+            async warmAllNodes(force) {
+                if (!navigator.onLine) return;
+                const LAST = 'shwari_lb_last_warm';
+                const last = parseInt(localStorage.getItem(LAST) || '0', 10);
+                if (!force && Date.now() - last < 60 * 60 * 1000) return; // hourly at most
+                try { localStorage.setItem(LAST, String(Date.now())); } catch (e) {}
+
+                for (let i = 0; i < MACRO_ENDPOINTS.length; i++) {
+                    const url = MACRO_ENDPOINTS[i];
+                    if (!url || url.includes('REPLACE_WITH_DEPLOYMENT')) continue;
+                    if (this.isBlacklisted(i)) continue;
+                    try {
+                        const res = await fetch(`${url}?cb=${Date.now()}&client=shwari_warm&${SessionState.params(i)}`);
+                        if (!res.ok) { this.recordFailure(i); continue; }
+                        const html = await res.text();
+                        const isReal = html.length > 1000 &&
+                            !html.toLowerCase().includes('accounts.google.com') &&
+                            !html.toLowerCase().includes('sign in');
+                        if (isReal) {
+                            await ShwariDB.saveNode(i, html);
+                            this.recordSuccess(i);
+                            console.log(`[LoadBalancer] Node ${i + 1} warmed & cached (${Math.round(html.length / 1024)} KB)`);
+                        }
+                    } catch (e) {
+                        this.recordFailure(i);
+                    }
+                    await new Promise(r => setTimeout(r, 400)); // gentle pacing, avoids quota spikes
+                }
+            },
+
+            reportLoadSuccess(index) {
+                if (index == null) return;
+                this.recordSuccess(index);
+            }
+        };
+
+        const MACRO_URL = MACRO_ENDPOINTS[0];
         
         // Super Stable Macro Engine with Blob Offline Injection
         const MacroEngine = {
             url: MACRO_URL,
+            activeNodeIndex: null,
             frame: document.getElementById('macro-frame'),
             retries: 0,
             maxRetries: 3,
@@ -2154,7 +2597,8 @@
 
             async loadOfflineBlob() {
                 try {
-                    const data = await ShwariDB.get('macro_html');
+                    // Pull the newest snapshot across ALL nodes, not just the primary key.
+                    const data = (await ShwariDB.getBest()) || (await ShwariDB.get('macro_html'));
                     if (data && data.html) {
                         const age = Date.now() - data.timestamp;
                         if (age > 24 * 60 * 60 * 1000) {
@@ -2196,14 +2640,17 @@
 
             async silentSync() {
                 try {
-                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app`);
+                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app&${SessionState.params(this.activeNodeIndex)}`);
                     if(res.ok) {
                         const html = await res.text();
-                        await ShwariDB.save(html);
+                        await ShwariDB.saveNode(this.activeNodeIndex, html);
                         this.updateSyncBadge(Date.now(), false);
+                        LoadBalancer.reportLoadSuccess(this.activeNodeIndex);
+                        LoadBalancer.warmAllNodes(false); // keep every other node's cache fresh
                     }
                 } catch (e) {
                     console.log("Silent sync fetch skipped or failed.");
+                    LoadBalancer.reportLoadFailure(this.activeNodeIndex);
                 }
             },
 
@@ -2234,10 +2681,21 @@
                     await this.loadOfflineBlob();
                     return;
                 }
-                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app`;
+
+                // LOAD BALANCING: resolve which of the 10 nodes to hit this time,
+                // rerouting away from any currently-blacklisted (overloaded/failing) node.
+                const resolved = await LoadBalancer.resolveActiveEndpoint();
+                this.url = resolved.url;
+                this.activeNodeIndex = resolved.index;
+
+                SessionState.bumpVisit();
+                SessionState.write({ node: resolved.index });
+                window.MacroEngineRef = this;
+                this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app&${SessionState.params(resolved.index)}`;
 
                 this.frame.onerror = () => {
                     console.warn("Iframe onerror fired — loading offline blob.");
+                    LoadBalancer.reportLoadFailure(this.activeNodeIndex);
                     clearTimeout(this.timeoutId);
                     this.loadOfflineBlob();
                 };
@@ -2265,6 +2723,7 @@
                     this.loaded = true;
                     this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
+                    LoadBalancer.reportLoadSuccess(this.activeNodeIndex);
                     
                     if (offlineBanner) offlineBanner.classList.remove('show');
 
@@ -2304,6 +2763,10 @@
             handleTimeout() {
                 if (this.loaded) return;
                 console.warn("Macro load timeout. Retrying...");
+
+                // Real timeout on this node = strong signal it's overloaded/down.
+                LoadBalancer.reportLoadFailure(this.activeNodeIndex);
+
                 this.retries++;
                 
                 if (this.retries <= this.maxRetries) {
@@ -2651,7 +3114,7 @@
                         transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
                     }
                     #fu-progress-label {
-                        font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 500;
+                        font-size: 12px; color: rgba(44,122,71,0.6); font-weight: 500;
                     }
                     #fu-update-btn {
                         width: 100%; padding: 16px;
@@ -2686,7 +3149,7 @@
                     <h2 id="fu-title">New Version Ready</h2>
 
                     <p id="fu-desc">
-                        A critical update for <strong style="color:#e2e8f0;">Shwari | Finance</strong> has been downloaded and is ready to install. Please update now to continue.
+                        A critical update for <strong style="color:#0B6E4F;"><strong><strong>Shwari | Finance</strong></strong></strong> has been downloaded and is ready to install. Please update now to continue.
                     </p>
 
                     <div id="fu-features">
@@ -2708,7 +3171,7 @@
                         <div id="fu-progress-track">
                             <div id="fu-progress-bar"></div>
                         </div>
-                        <span id="fu-progress-label">Applying update…</span>
+                        <span id="fu-progress-label">Applying update...</span>
                     </div>
 
                     <button id="fu-update-btn">
@@ -2728,10 +3191,10 @@
             const progLabel = modal.querySelector('#fu-progress-label');
 
             const steps = [
-                { pct: 20, label: 'Downloading update…'  },
-                { pct: 45, label: 'Verifying files…'      },
-                { pct: 70, label: 'Applying changes…'     },
-                { pct: 90, label: 'Almost done…'          },
+                { pct: 20, label: 'Downloading update...'  },
+                { pct: 45, label: 'Verifying files...'      },
+                { pct: 70, label: 'Applying changes...'     },
+                { pct: 90, label: 'Almost done...'          },
                 { pct: 100, label: 'Complete!'            },
             ];
 
@@ -2752,7 +3215,7 @@
                 clearTimeout(_forceTimer);
                 document.removeEventListener('keydown', _escBlock, true);
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Updating…</span>';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Updating...</span>';
                 progWrap.style.display = 'flex';
 
                 // Animate progress bar through steps
@@ -2801,8 +3264,9 @@
                 } catch(e) { /* cross-origin — expected */ }
 
                 // Method 2: Fresh fetch (most reliable — always gets latest)
+                // Uses whichever node the load balancer currently has active for this device.
                 if (!html || html.length < 1000) {
-                    const res = await fetch(`${MACRO_URL}?cb=${Date.now()}&client=shwari_offline_save`);
+                    const res = await fetch(`${MacroEngine.url}?cb=${Date.now()}&client=shwari_offline_save&${SessionState.params(MacroEngine.activeNodeIndex || 0)}`);
                     if (res.ok) html = await res.text();
                 }
 
@@ -2813,8 +3277,8 @@
                                !html.toLowerCase().includes('error 404');
 
                 if (isReal) {
-                    await ShwariDB.save(html);
-                    console.log('[OfflineSave] Macro snapshot saved —', Math.round(html.length/1024), 'KB');
+                    await ShwariDB.saveNode(MacroEngine.activeNodeIndex || 0, html);
+                    console.log('[OfflineSave] Macro snapshot saved for node', MacroEngine.activeNodeIndex, '—', Math.round(html.length/1024), 'KB');
 
                     // Also tell the SW to cache it via message bridge
                     if (navigator.serviceWorker && navigator.serviceWorker.controller) {
@@ -3164,9 +3628,9 @@
             const banner = document.getElementById('offline-macro-banner');
 
             if (MacroEngine.isOfflineView || !MacroEngine.loaded) {
-                // Show "Reconnecting…" banner immediately so user sees feedback
+                // Show "Reconnecting..." banner immediately so user sees feedback
                 if (banner) {
-                    banner.innerHTML = '<i class="fas fa-spinner fa-spin" style="animation:fa-spin 0.8s linear infinite"></i><span>Reconnecting…</span>';
+                    banner.innerHTML = '<i class="fas fa-spinner fa-spin" style="animation:fa-spin 0.8s linear infinite"></i><span>Reconnecting...</span>';
                     banner.style.background = 'rgba(44, 122, 71, 0.95)';
                     banner.style.boxShadow = '0 8px 25px rgba(44, 122, 71, 0.4)';
                     banner.classList.add('show');
@@ -3274,12 +3738,12 @@
         const tickRipple2    = document.getElementById('tick-ripple-2');
 
         const installSteps = [
-            { pct: 12, label: 'Downloading resources…'  },
-            { pct: 28, label: 'Verifying packages…'      },
-            { pct: 45, label: 'Configuring app data…'    },
-            { pct: 62, label: 'Securing your device…'    },
-            { pct: 80, label: 'Optimising performance…'  },
-            { pct: 95, label: 'Almost there…'            },
+            { pct: 12, label: 'Downloading resources...'  },
+            { pct: 28, label: 'Verifying packages...'      },
+            { pct: 45, label: 'Configuring app data...'    },
+            { pct: 62, label: 'Securing your device...'    },
+            { pct: 80, label: 'Optimising performance...'  },
+            { pct: 95, label: 'Almost there...'            },
             { pct: 100, label: 'Done!'                   },
         ];
 
@@ -3418,7 +3882,7 @@
         };
 
         document.getElementById('open-shwari-btn').addEventListener('click', function() {
-            alert('Please close this browser tab and launch Shwari | Finance from the green elephant icon on your home screen.');
+            alert('Please close this browser tab and launch <strong><strong>Shwari | Finance</strong></strong> from the green elephant icon on your home screen.');
             window.close();
         });
 
@@ -3450,6 +3914,10 @@
 
         checkIfAppAlreadyInstalled();
 
+        // Warm & cache every deployment shortly after boot, then hourly.
+        setTimeout(() => LoadBalancer.warmAllNodes(true), 8000);
+        setInterval(() => { if (navigator.onLine) LoadBalancer.warmAllNodes(false); }, 60 * 60 * 1000);
+
         // =========================================
         // NOTIFICATION BAR TOUCH DISMISS
         // =========================================
@@ -3466,7 +3934,7 @@
     <script>
         /**
          * ============================================================
-         *  Shwari | Finance — PWA Logic & Security Gateway
+         *  <strong><strong>Shwari | Finance</strong></strong> — PWA Logic & Security Gateway
          *  Version: 2.0.0
          *  Upgraded for: Offline Support, Instant Memory, Session
          *  Security, Audit Logging, Retry Logic & Network Resilience
@@ -3479,10 +3947,10 @@
         //  CONSTANTS & CONFIGURATION
         // ─────────────────────────────────────────────────────────────
 
-        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbz2ns6LkPboQ0HxsHqITIAqLZEP9Ju7b4FtGLaDHkxpGOCMyWV9mQNTOsyAFVnSzK8O/exec";
+        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbxx5IEMNwZiSpXDpVkYBRsXgnnRhA9fGktb-Y0ZLbTnl1yEmzQ2WIJL_fSldPVhpqYT/exec";
 
         const CONFIG = {
-          APP_NAME: "Shwari | Finance",
+          APP_NAME: "<strong><strong>Shwari | Finance</strong></strong>",
           STORAGE_PREFIX: "shwari_",       // Namespace all storage keys
           SESSION_TTL_MS: 8 * 60 * 60 * 1000, // 8-hour session expiry
           MAX_LOGIN_ATTEMPTS: 5,           // Lockout after 5 failed continues
@@ -3807,7 +4275,7 @@
               lastError = err;
               console.warn(`[Shwari] Retry attempt ${attempt}/${maxAttempts} failed:`, err.message);
               if (attempt < maxAttempts) {
-                const delay = baseDelayMs * Math.pow(2, attempt - 1); // 1.5s, 3s, 6s…
+                const delay = baseDelayMs * Math.pow(2, attempt - 1); // 1.5s, 3s, 6s...
                 await sleep(delay);
               }
             }
@@ -3958,7 +4426,7 @@
           }
 
           AuditLog.record("USER_REGISTERED", { email, device: getDeviceId() });
-          UI.toast("Registration successful! Logging you in…", "success");
+          UI.toast("Registration successful! Logging you in...", "success");
 
           // Brief pause for toast visibility before reload
           setTimeout(() => location.reload(), 800);
@@ -4005,7 +4473,10 @@
           // ── Inject Macro Iframe with Cache-Busting Param ─────────
           const iframe = UI.get("macro-frame");
           if (iframe) {
-            const macroURL = `${APP_MACRO_URL}?cb=${Date.now()}&device=${getDeviceId()}`;
+            const _lbResolved = await LoadBalancer.resolveActiveEndpoint();
+            const _activeMacroUrl = _lbResolved.url;
+            AuditLog.record("LOAD_BALANCER_NODE_SELECTED", { node_index: _lbResolved.index });
+            const macroURL = `${_activeMacroUrl}?cb=${Date.now()}&device=${getDeviceId()}`;
 
             // Track whether load succeeded or timed out
             let loadResolved = false;
@@ -4014,7 +4485,7 @@
             const timeoutHandle = setTimeout(() => {
               if (!loadResolved) {
                 UI.toast(
-                  "Dashboard is taking longer than expected. Retrying…",
+                  "Dashboard is taking longer than expected. Retrying...",
                   "warning"
                 );
                 AuditLog.record("IFRAME_LOAD_TIMEOUT");
@@ -4028,21 +4499,25 @@
                   new Promise((resolve, reject) => {
                     AuditLog.record("IFRAME_LOAD_ATTEMPT", { attempt });
 
-                    // Each retry gets a fresh cache-busting timestamp
-                    iframe.src = `${APP_MACRO_URL}?cb=${Date.now()}&device=${getDeviceId()}&attempt=${attempt}`;
+                    // Each retry gets a fresh cache-busting timestamp, and reroutes
+                    // to a different balanced node than the last attempt.
+                    const _resume = (window.ShwariResume ? '&' + window.ShwariResume.params(_lbResolved.index) : '');
+                    iframe.src = `${_activeMacroUrl}?cb=${Date.now()}&device=${getDeviceId()}&attempt=${attempt}${_resume}`;
 
                     // Resolve on load; reject on error
                     const onLoad = () => {
                       loadResolved = true;
                       clearTimeout(timeoutHandle);
                       iframe.removeEventListener("error", onError);
-                      AuditLog.record("IFRAME_LOADED_SUCCESS", { attempt });
+                      LoadBalancer.reportLoadSuccess(_lbResolved.index);
+                      AuditLog.record("IFRAME_LOADED_SUCCESS", { attempt, node_index: _lbResolved.index });
                       resolve();
                     };
 
                     const onError = () => {
                       iframe.removeEventListener("load", onLoad);
-                      reject(new Error(`Iframe load error on attempt ${attempt}`));
+                      LoadBalancer.reportLoadFailure(_lbResolved.index);
+                      reject(new Error(`Iframe load error on attempt ${attempt} (node ${_lbResolved.index})`));
                     };
 
                     iframe.addEventListener("load",  onLoad,  { once: true });
@@ -4092,7 +4567,7 @@
           Store.clear();
           AuditLog.clear(); // Also clear the log (privacy compliance)
 
-          UI.toast("Device reset complete. Reloading…", "info");
+          UI.toast("Device reset complete. Reloading...", "info");
           setTimeout(() => location.reload(), 600);
         };
 
@@ -4296,7 +4771,7 @@
 
     (function(){
         // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
-        var PAYMENT_DATE = new Date('2026-07-25T23:59:59'); // Automatically stops at midnight on this date
+        var PAYMENT_DATE = new Date('2026-09-24T23:59:59'); // Automatically stops at midnight on this date
         // ─────────────────────────────────────────────────────────────
 
         var now = new Date();
