@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="<strong><strong>Shwari | Finance</strong></strong>">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Shwari | Finance">
     
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#ffffff">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-    <title><strong><strong>Shwari | Finance</strong></strong> · Digital Assimilation</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>Shwari | Finance · Digital Assimilation</title>
     
     <link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
     <style>
@@ -680,7 +680,7 @@
             
             .continue-footer {
     padding: 40px 20px 40px; text-align: center;
-    background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,0) 100%); !important;
+    background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,0) 100%);
             }
 
             #auth-portal { background: #000000 !important; }
@@ -1704,6 +1704,52 @@
 </style>
 <base target="_blank">
 <link rel="preload" as="image" href="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg">
+<style>
+/* ===== FORCE WHITE THEME (all screens) ===== */
+:root{color-scheme:light only;--bg-dark:#ffffff;--bg-card:#f0fdf4}
+html,body,.app,iframe{background:#ffffff!important}
+
+/* full-screen layers: black/dark navy -> white */
+#auth-portal,body.keyboard-open #auth-portal,
+#device-error,#forcedInstall,#storage-permission-modal,
+#install-progress-screen,#duplicate-app-screen,
+#already-installed-blocker,#post-install-guide,
+#force-update-modal{background:#ffffff!important}
+
+/* cards */
+.error-card,.install-card,.duplicate-card,.blocker-card{
+  background:#f0fdf4!important;border-color:rgba(44,122,71,.25)!important}
+
+/* grey/hidden text -> readable dark text */
+.error-card p,.install-card p,#forcedInstall p,
+.duplicate-card p,.blocker-card p,.permission-card p,.desc-text{color:#374151!important}
+.duplicate-info-item,.blocker-info-item{color:#1f2937!important}
+.dept-title,.medium-font,.install-title{color:#0a2e16!important}
+.small-email,.install-status-text{color:#4b5563!important}
+.install-track{background:rgba(44,122,71,.15)!important}
+.continue-footer{background:linear-gradient(to top,rgba(255,255,255,.95),rgba(255,255,255,0))!important}
+
+/* connection toast */
+#network-toast{background:#ffffff!important;color:#111827!important;
+  border:1px solid #d1d5db!important;box-shadow:0 10px 30px rgba(0,0,0,.15)!important}
+
+/* "New Version Ready" modal */
+#fu-card{background:#ffffff!important;border-color:rgba(44,122,71,.3)!important;
+  box-shadow:0 20px 50px rgba(0,0,0,.15)!important}
+#fu-title{color:#0a2e16!important}
+#fu-desc{color:#4b5563!important}
+#fu-features{background:#f0fdf4!important;border-color:#bbf7d0!important}
+.fu-feature{color:#1f2937!important;border-bottom-color:#dcfce7!important}
+#fu-progress-track{background:#e5e7eb!important}
+#fu-progress-label{color:#166534!important}
+#fu-footer-note{color:#6b7280!important}
+
+/* ===== NO ZOOM / NO DOUBLE-TAP / APP-LIKE FEEL ===== */
+html,body,iframe{touch-action:pan-x pan-y!important;overscroll-behavior:none}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text;font-size:16px!important} /* 16px stops iOS auto-zoom on focus */
+img{-webkit-user-drag:none;user-drag:none}
+</style>
 </head>
 <body>
 
@@ -1774,7 +1820,7 @@
         ov.classList.add('ea-hide');
         setTimeout(function(){ ov.remove(); }, 400);
         var appActive = document.getElementById('app').classList.contains('active');
-        setBar(appActive ? '#111827' : '#ffffff');   // back to normal colours
+        setBar('#ffffff');   // back to normal colours
     };
 })();
 </script>
@@ -2336,7 +2382,7 @@
 
                         authPortal.style.height = vv.height + 'px';
                         authPortal.style.top = vv.offsetTop + 'px';
-                        authPortal.style.background = '#000000';
+                        authPortal.style.background = '#ffffff';
 
                         document.body.classList.toggle('keyboard-open', isKeyboardOpen);
                         authPortal.classList.toggle('keyboard-adjust', isKeyboardOpen);
@@ -2630,7 +2676,7 @@
                     }
                 } catch(e) {
     console.log("No offline snapshot found, injecting fallback shell...");
-    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#111827;color:#fff;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#94a3b8;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
+    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#ffffff;color:#0a2e16;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#4b5563;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
     const blob = new Blob([fallbackHtml], { type: 'text/html' });
     this.frame.src = URL.createObjectURL(blob);
     this.loaded = true;
@@ -3539,7 +3585,7 @@
             // Reset theme-color meta (skip if payment ad is visible)
             if (!window._adVisible) {
                 document.querySelectorAll('meta[name="theme-color"]').forEach(m =>
-                    m.setAttribute('content', '#111827')
+                    m.setAttribute('content', '#ffffff')
                 );
             }
 
@@ -3882,7 +3928,7 @@
         };
 
         document.getElementById('open-shwari-btn').addEventListener('click', function() {
-            alert('Please close this browser tab and launch <strong><strong>Shwari | Finance</strong></strong> from the green elephant icon on your home screen.');
+            alert('Please close this browser tab and launch Shwari | Finance from the green elephant icon on your home screen.');
             window.close();
         });
 
@@ -3934,7 +3980,7 @@
     <script>
         /**
          * ============================================================
-         *  <strong><strong>Shwari | Finance</strong></strong> — PWA Logic & Security Gateway
+         *  Shwari | Finance — PWA Logic & Security Gateway
          *  Version: 2.0.0
          *  Upgraded for: Offline Support, Instant Memory, Session
          *  Security, Audit Logging, Retry Logic & Network Resilience
@@ -3950,7 +3996,7 @@
         const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbxx5IEMNwZiSpXDpVkYBRsXgnnRhA9fGktb-Y0ZLbTnl1yEmzQ2WIJL_fSldPVhpqYT/exec";
 
         const CONFIG = {
-          APP_NAME: "<strong><strong>Shwari | Finance</strong></strong>",
+          APP_NAME: "Shwari | Finance",
           STORAGE_PREFIX: "shwari_",       // Namespace all storage keys
           SESSION_TTL_MS: 8 * 60 * 60 * 1000, // 8-hour session expiry
           MAX_LOGIN_ATTEMPTS: 5,           // Lockout after 5 failed continues
@@ -4728,7 +4774,7 @@
 
         <!-- Full Width Image Section -->
         <div style="width:100%;flex:0 0 45%;max-height:45vh;overflow:hidden;position:relative;background:#f8fafc;">
-            <img src="https://img.magnific.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80"Payment notification" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
+            <img src="https://img.magnific.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80" alt="Payment notification" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
             <!-- Fade gradient to blend image into the white bottom half -->
             <div style="position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);"></div>
         </div>
@@ -4764,7 +4810,7 @@
             overlay.style.display = 'none';
             var metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
             metaThemeColors.forEach(function(meta) {
-                meta.setAttribute("content", "#111827");
+                meta.setAttribute("content", "#ffffff");
             });
         }, 400);
     }
@@ -4817,5 +4863,37 @@
     })();
     </script>
 
+<script>
+(function () {
+    var opts = { passive: false };
+    var stop = function (e) { e.preventDefault(); };
+
+    // iOS pinch gestures
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) {
+        document.addEventListener(t, stop, opts);
+    });
+
+    // Pinch with 2+ fingers
+    document.addEventListener('touchmove', function (e) {
+        if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault();
+    }, opts);
+
+    // Double-tap zoom
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function (e) {
+        var now = Date.now();
+        var tag = (e.target.tagName || '').toLowerCase();
+        if (now - lastTouchEnd <= 300 && tag !== 'input' && tag !== 'textarea') e.preventDefault();
+        lastTouchEnd = now;
+    }, opts);
+    document.addEventListener('dblclick', stop, opts);
+
+    // Desktop / trackpad / keyboard zoom
+    document.addEventListener('wheel', function (e) { if (e.ctrlKey) e.preventDefault(); }, opts);
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].indexOf(e.key) > -1) e.preventDefault();
+    });
+})();
+</script>
 </body>
 </html>
