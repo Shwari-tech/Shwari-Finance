@@ -1,7 +1,7 @@
 {
   "id": "shwari-finance-v5",
   "name": "Shwari Finance",
-  "short_name": "Shwari",
+  "short_name": "Finance",
   "description": "Digital Payroll Certified by Shwari Finance Department",
   "start_url": "/index.html?source=pwa",
   "scope": "/",
