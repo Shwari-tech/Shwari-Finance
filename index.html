@@ -1702,7 +1702,7 @@
 .ea-primary{background:linear-gradient(270deg,#2c7a47,#005c4b,#1f6e3f);background-size:400% 400%;color:#fff;border:none;box-shadow:0 8px 22px rgba(44,122,71,.32);animation:colorShift 6s ease infinite}
 .ea-skip{background:#f1f5f9;color:#475569;border:none}
 </style>
-<base target="_blank">
+
 <link rel="preload" as="image" href="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg">
 <style>
 /* ===== FORCE WHITE THEME (all screens) ===== */
@@ -1749,6 +1749,9 @@ html,body,iframe{touch-action:pan-x pan-y!important;overscroll-behavior:none}
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea{-webkit-user-select:text;user-select:text;font-size:16px!important} /* 16px stops iOS auto-zoom on focus */
 img{-webkit-user-drag:none;user-drag:none}
+
+/* Browser tab = install-only mode */
+html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):not(#install-progress-screen):not(#post-install-guide):not(#device-error):not(script):not(style){display:none!important}
 </style>
 </head>
 <body>
@@ -2988,6 +2991,9 @@ img{-webkit-user-drag:none;user-drag:none}
         // =========================================
         function requestStoragePermission() {
             localStorage.setItem('shwari_storage_permission', 'granted');
+            if (navigator.storage && navigator.storage.persist) {
+                navigator.storage.persist().catch(function () {});
+            }
             return Promise.resolve(true);
         }
 
@@ -3290,8 +3296,21 @@ img{-webkit-user-drag:none;user-drag:none}
         // =========================================
         window.waitingForMacroTransition = false;
 
-        // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
-        MacroEngine.load();
+        const _isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                              window.matchMedia('(display-mode: fullscreen)').matches ||
+                              window.navigator.standalone === true ||
+                              document.referrer.includes('android-app://');
+        if (_isStandalone) {
+            MacroEngine.load();
+        } else {
+            document.documentElement.classList.add('browser-mode');
+            setTimeout(function () {
+                var fi = document.getElementById('forcedInstall');
+                if (fi && fi.style.display !== 'flex') {
+                    document.getElementById('already-installed-blocker').classList.add('active');
+                }
+            }, 6000);
+        }
 
         // PRE-WARM OFFLINE CACHE: Aggressively save macro HTML to IDB on every online load.
         // Ensures offline mode always has a fresh snapshot regardless of SW cache eviction.
@@ -3839,7 +3858,10 @@ img{-webkit-user-drag:none;user-drag:none}
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (!isPWA()) installOverlay.style.display = 'flex';
+            if (!isPWA()) {
+                installOverlay.style.display = 'flex';
+                document.getElementById('already-installed-blocker').classList.remove('active');
+            }
         });
 
         installBtn.addEventListener('click', async () => {
