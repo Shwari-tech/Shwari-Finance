@@ -2417,7 +2417,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         //  so spreading users across all 10 multiplies total throughput.
         // ─────────────────────────────────────────────────────────────
         const MACRO_ENDPOINTS = [
-            "https://script.google.com/macros/s/AKfycbw9Lm_5NrSn1PnAQXr5DgLM1ytIpHkcwODseM4lACJylDIJ5yyCf5UxMKuszZ1-4QoL/exec", // node-1
+            "https://script.google.com/macros/s/AKfycbw9Lm_5NrSn1PnAQXr5DgLM1ytIpHkcwODseM4lACJylDIJ5yyCf5UxMKuszZ1-4QoL/exec" // single deployment
         ];
 
         const LoadBalancer = {
@@ -2550,6 +2550,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
              * candidate order (skipping blacklisted nodes) until one responds.
              */
             async resolveActiveEndpoint() {
+                return { url: MACRO_ENDPOINTS[0], index: 0 };
                 const sticky = this.getStickyIndex();
                 const candidates = sticky !== null
                     ? [sticky, ...this.getCandidateOrder().filter(i => i !== sticky)]
@@ -2586,6 +2587,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
              * per node. Result: whichever node serves them next, they resume.
              */
             async warmAllNodes(force) {
+                return; // single URL: silentSync already caches it
                 if (!navigator.onLine) return;
                 const LAST = 'shwari_lb_last_warm';
                 const last = parseInt(localStorage.getItem(LAST) || '0', 10);
@@ -4006,7 +4008,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         //  CONSTANTS & CONFIGURATION
         // ─────────────────────────────────────────────────────────────
 
-        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbxx5IEMNwZiSpXDpVkYBRsXgnnRhA9fGktb-Y0ZLbTnl1yEmzQ2WIJL_fSldPVhpqYT/exec";
+        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbw9Lm_5NrSn1PnAQXr5DgLM1ytIpHkcwODseM4lACJylDIJ5yyCf5UxMKuszZ1-4QoL/exec";
 
         const CONFIG = {
           APP_NAME: "Shwari | Finance",
