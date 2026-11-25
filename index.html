@@ -1,18 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<style>
+html { -webkit-text-size-adjust: none !important; -moz-text-size-adjust: none !important; text-size-adjust: none !important; }
+body { -webkit-text-size-adjust: none !important; text-size-adjust: none !important; }
+</style>
+<script>
+/* undo Android "Font size" / "Display size" scaling */
+(function () {
+  function fix() {
+    var t = document.createElement('div');
+    t.style.cssText = 'position:absolute;visibility:hidden;font-size:100px;line-height:1;padding:0;margin:0';
+    t.textContent = 'M';
+    document.body.appendChild(t);
+    var real = t.getBoundingClientRect().height;   // height of a 100px font after phone scaling
+    document.body.removeChild(t);
+    var ratio = real / 100;
+    if (ratio > 1.02 || ratio < 0.98) {
+      document.documentElement.style.fontSize = (16 / ratio) + 'px';
+      document.documentElement.style.zoom = '';
+    }
+  }
+  if (document.body) fix(); else document.addEventListener('DOMContentLoaded', fix);
+  window.addEventListener('resize', fix);
+})();
+</script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Shwari | Finance">
     
-    <meta name="theme-color" content="#ffffff">
-    <title>Shwari | Finance · Digital Assimilation</title>
+    <meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
+<meta name="theme-color" content="#ffffff">
     
     <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
     <style>
@@ -38,7 +64,7 @@
             min-height: calc(var(--vh, 1vh) * 100);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             overflow: hidden; position: relative; perspective: 1200px;
-            -webkit-text-size-adjust: 100%; -moz-text-size-adjust: 100%; text-size-adjust: 100%;
+            -webkit-text-size-adjust: none !important; -moz-text-size-adjust: none !important; text-size-adjust: none !important;
             background-color: var(--bg-dark);
             padding: 0; margin: 0;
             touch-action: manipulation;
@@ -680,7 +706,7 @@
             
             .continue-footer {
     padding: 40px 20px 40px; text-align: center;
-    background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,0) 100%) !important;
             }
 
             #auth-portal { background: #000000 !important; }
@@ -1520,7 +1546,7 @@
         }
 
         /* =========================================
-           13. NEW: OFFLINE  BANNER
+           13. NEW: OFFLINE MACRO BANNER
            ========================================= */
         #offline-macro-banner {
             position: absolute;
@@ -1669,6 +1695,11 @@
 
     </style>
 <style>
+/* ===== FIXED APP SIZE: ignore phone font/display settings ===== */
+html { -webkit-text-size-adjust: none !important; -moz-text-size-adjust: none !important; text-size-adjust: none !important; font-size: 16px !important; }
+body, input, button, textarea, select { -webkit-text-size-adjust: none !important; text-size-adjust: none !important; }
+</style>
+<style>
 /* EMPLOYEE RECORDS UPDATE AD (instant on launch) */
 #ea-overlay{position:fixed;inset:0;z-index:300000;display:flex;flex-direction:column;background:#fff;padding-top:env(safe-area-inset-top);font-family:'Inter',system-ui,-apple-system,sans-serif;opacity:1;transition:opacity .35s ease;overflow:hidden}
 #ea-overlay.ea-hide{opacity:0;pointer-events:none}
@@ -1702,56 +1733,88 @@
 .ea-primary{background:linear-gradient(270deg,#2c7a47,#005c4b,#1f6e3f);background-size:400% 400%;color:#fff;border:none;box-shadow:0 8px 22px rgba(44,122,71,.32);animation:colorShift 6s ease infinite}
 .ea-skip{background:#f1f5f9;color:#475569;border:none}
 </style>
-
-<link rel="preload" as="image" href="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg">
 <style>
-/* ===== FORCE WHITE THEME (all screens) ===== */
-:root{color-scheme:light only;--bg-dark:#ffffff;--bg-card:#f0fdf4}
-html,body,.app,iframe{background:#ffffff!important}
+/* LOADER: Coat of Arms bouncing logo */
+#ig-loader .ig-icon-wrap{
+    width:min(62vw,260px);height:auto;background:none;border-radius:0;box-shadow:none;
+    font-size:52px;color:#2c7a47;
+    animation:igBounce 1.2s cubic-bezier(.28,.84,.42,1) infinite;
+}
+#ig-loader .ig-icon-wrap img{width:100%;height:auto;max-height:42vh;object-fit:contain;display:block}
+@keyframes igBounce{
+    0%,100%{transform:translateY(0) scale(1,1)}
+    45%{transform:translateY(-26px) scale(1,1.03)}
+    60%{transform:translateY(-26px) scale(1,1.03)}
+    88%{transform:translateY(0) scale(1.05,.95)}
+}
+@media (prefers-reduced-motion:reduce){#ig-loader .ig-icon-wrap{animation:none}}
 
-/* full-screen layers: black/dark navy -> white */
-#auth-portal,body.keyboard-open #auth-portal,
-#device-error,#forcedInstall,#storage-permission-modal,
-#install-progress-screen,#duplicate-app-screen,
-#already-installed-blocker,#post-install-guide,
-#force-update-modal{background:#ffffff!important}
+/* LOADER FOOTER: small icon + 2-line name, bottom right */
+#ig-loader .ig-from{
+    position:fixed;
+    left:50%;right:auto;
+    transform:translateX(-50%);
+    bottom:max(22px,env(safe-area-inset-bottom));
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    margin:0;letter-spacing:0;text-transform:none;
+    white-space:nowrap;
+}
+#ig-loader .ig-sep{
+    display:flex;flex-direction:column;gap:3px;width:3px;height:52px;flex-shrink:0;
+}
+#ig-loader .ig-sep i{display:block;width:100%;flex:1;border-radius:1px}
+#ig-loader .ig-sep i:nth-child(1){background:#000000}
+#ig-loader .ig-sep i:nth-child(2){background:#007A33}
+#ig-loader .ig-sep i:nth-child(3){background:#C8102E}
+#ig-loader .ig-from-ic{
+    width:52px;height:52px;object-fit:contain;border-radius:0;display:block;flex-shrink:0;background:none;
+}
+#ig-loader .ig-from-tx{white-space:nowrap;}
+#ig-loader .ig-from-tx{
+    font-family:'Inter',sans-serif;
+    font-size:10px;line-height:1.25;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;text-align:left;
+    color:rgba(44,122,71,.75);
+}
+</style>
+<base target="_blank">
+<link rel="preload" as="image" href="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg">
+<style id="force-white">
+:root, html, body, iframe, input, button, textarea, select { color-scheme: only light !important; }
 
-/* cards */
-.error-card,.install-card,.duplicate-card,.blocker-card{
-  background:#f0fdf4!important;border-color:rgba(44,122,71,.25)!important}
+html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overlay,
+#auth-portal, body.keyboard-open #auth-portal, #device-error, #forcedInstall,
+#install-progress-screen, #storage-permission-modal, #duplicate-app-screen,
+#already-installed-blocker, #post-install-guide, .continue-footer {
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+.error-card, .install-card, .duplicate-card, .blocker-card {
+    background: #ffffff !important;
+    box-shadow: 0 12px 35px rgba(15,23,42,.12) !important;
+}
+.error-card p, .install-card p, .duplicate-card p, .blocker-card p,
+.duplicate-info-item, .blocker-info-item, .install-status-text { color: #475569 !important; }
+.install-title, .dept-title, .medium-font { color: #0a2e16 !important; }
+.install-track { background: #e2efe7 !important; }
 
-/* grey/hidden text -> readable dark text */
-.error-card p,.install-card p,#forcedInstall p,
-.duplicate-card p,.blocker-card p,.permission-card p,.desc-text{color:#374151!important}
-.duplicate-info-item,.blocker-info-item{color:#1f2937!important}
-.dept-title,.medium-font,.install-title{color:#0a2e16!important}
-.small-email,.install-status-text{color:#4b5563!important}
-.install-track{background:rgba(44,122,71,.15)!important}
-.continue-footer{background:linear-gradient(to top,rgba(255,255,255,.95),rgba(255,255,255,0))!important}
+#network-toast { background: #ffffff !important; color: #0f172a !important; border-color: #e2e8f0 !important; }
+#force-update-modal { background: rgba(255,255,255,.97) !important; }
+#fu-card { background: #ffffff !important; box-shadow: 0 20px 50px rgba(15,23,42,.18) !important; }
+#fu-title { color: #0f172a !important; }
+#fu-desc, .fu-feature, #fu-footer-note { color: #475569 !important; }
+#fu-features { background: #f8fafc !important; border-color: #e2e8f0 !important; }
 
-/* connection toast */
-#network-toast{background:#ffffff!important;color:#111827!important;
-  border:1px solid #d1d5db!important;box-shadow:0 10px 30px rgba(0,0,0,.15)!important}
-
-/* "New Version Ready" modal */
-#fu-card{background:#ffffff!important;border-color:rgba(44,122,71,.3)!important;
-  box-shadow:0 20px 50px rgba(0,0,0,.15)!important}
-#fu-title{color:#0a2e16!important}
-#fu-desc{color:#4b5563!important}
-#fu-features{background:#f0fdf4!important;border-color:#bbf7d0!important}
-.fu-feature{color:#1f2937!important;border-bottom-color:#dcfce7!important}
-#fu-progress-track{background:#e5e7eb!important}
-#fu-progress-label{color:#166534!important}
-#fu-footer-note{color:#6b7280!important}
-
-/* ===== NO ZOOM / NO DOUBLE-TAP / APP-LIKE FEEL ===== */
-html,body,iframe{touch-action:pan-x pan-y!important;overscroll-behavior:none}
-body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-input,textarea{-webkit-user-select:text;user-select:text;font-size:16px!important} /* 16px stops iOS auto-zoom on focus */
-img{-webkit-user-drag:none;user-drag:none}
-
-/* Browser tab = install-only mode */
-html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):not(#install-progress-screen):not(#post-install-guide):not(#device-error):not(script):not(style){display:none!important}
+/* iPhone only */
+@supports (-webkit-touch-callout: none) {
+    .app {
+        top: env(safe-area-inset-top) !important;
+        bottom: env(safe-area-inset-bottom) !important;
+        height: auto !important;
+        overflow: hidden;
+    }
+    input, select, textarea { font-size: 16px !important; }  /* stops zoom on typing */
+}
 </style>
 </head>
 <body>
@@ -1830,8 +1893,12 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
 
 <!-- INSTAGRAM-STYLE LOADER -->
     <div id="ig-loader">
-        <div class="ig-icon-wrap"><i class="fas fa-elephant"></i></div>
-        <p class="ig-from"> <span><strong>Shwari | Finance</strong></span></p>
+        <div class="ig-icon-wrap"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer" decoding="async" fetchpriority="high" onerror="this.parentNode.innerHTML='<i class=&quot;fas fa-paw&quot;></i>'"></div>
+        <div class="ig-from">
+            <img class="ig-from-ic" src="https://i0.wp.com/www.paukwa.or.ke/wp-content/uploads/2018/12/Coat-of-Arms-ArkAfrica-1-scaled.jpg?ssl=1" alt="" referrerpolicy="no-referrer" decoding="async" onerror="this.style.display='none'">
+            <span class="ig-sep"><i></i><i></i><i></i></span>
+            <span class="ig-from-tx">Shwari Finance </span>
+        </div>
     </div>
 
     <div class="bg-layer" id="splash-layer" style="display:none!important;">
@@ -1862,15 +1929,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
     <img class="splash-center-img" src="https://media.licdn.com/dms/image/v2/D4D03AQErv_z_NGURRA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1672996075297?e=2147483647&v=beta&t=KlV4lX3Wb3kGqBVWLH0Pu3w-XYgXiQFOkp0JGwa9cOU" />
 </div>
 
-    <div id="network-toast">
-        <i class="fas fa-wifi"></i>
-        <span id="toast-message">Checking connection...</span>
-    </div>
     
-    <!-- New Sync and Stale Indicators -->
-    <div id="sync-status-badge">
-        <i class="fas fa-check-circle"></i> Last synced: now
-    </div>
     
     <div id="device-error">
         <div class="error-card">
@@ -1965,7 +2024,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         <div class="continue-footer">
             <div id="elephant-gate" class="elephant-gate">
                 <div class="unlock-ring"></div>
-                <i class="fas fa-elephant elephant-icon"></i>
+                <i class="fas fa-paw elephant-icon"></i>
             </div>
             
             <div id="employee-info" class="employee-info">
@@ -1988,16 +2047,6 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
     </div>
 
     <div class="app" id="app">
-        <div id="stale-warning">
-            <i class="fas fa-triangle-exclamation"></i> Data may be outdated (>24h old)
-        </div>
-        
-        <!-- NEW INSTANT OFFLINE BANNER -->
-        <div id="offline-macro-banner">
-            <div class="offline-pulse"></div>
-            <span>Offline Mode</span>
-        </div>
-
         <iframe id="macro-frame"></iframe>
     </div>
 
@@ -2008,7 +2057,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         <div class="install-particle ip4"></div>
 
         <div class="install-app-icon">
-            <i class="fas fa-elephant"></i>
+            <i class="fas fa-paw"></i>
         </div>
 
         <p class="install-title">Installing <strong><strong>Shwari | Finance</strong></strong></p>
@@ -2061,7 +2110,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
     <div id="post-install-guide">
         <div class="guide-card">
             <div class="guide-icon">
-                <i class="fas fa-elephant"></i>
+                <i class="fas fa-paw"></i>
             </div>
             <h2>Installation Complete!</h2>
             <p class="guide-subtitle">Follow these steps to start using <strong><strong>Shwari | Finance</strong></strong></p>
@@ -2078,7 +2127,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <h3>Find on Home Screen</h3>
-                        <p>Look for the Finance on your app list</p>
+                        <p>Look for the green elephant icon on your home screen</p>
                     </div>
                 </div>
                 <div class="guide-step">
@@ -2101,73 +2150,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
     (function () {
         "use strict";
 
-        // =========================================
-        // OFFLINE SYNC - INDEXEDDB WRAPPER
-        // =========================================
-        const ShwariDB = {
-            dbName: 'ShwariDB',
-            storeName: 'macro_cache',
-            init() {
-                return new Promise((resolve, reject) => {
-                    const req = indexedDB.open(this.dbName, 1);
-                    req.onupgradeneeded = (e) => {
-                        e.target.result.createObjectStore(this.storeName, { keyPath: 'id' });
-                    };
-                    req.onsuccess = (e) => resolve(e.target.result);
-                    req.onerror = (e) => reject(e.error);
-                });
-            },
-            async save(html, key) {
-                const db = await this.init();
-                const id = key || 'macro_html';
-                return new Promise((resolve, reject) => {
-                    const tx = db.transaction(this.storeName, 'readwrite');
-                    const store = tx.objectStore(this.storeName);
-                    store.put({ id: id, html: html, timestamp: Date.now() });
-                    tx.oncomplete = () => resolve();
-                    tx.onerror = (e) => reject(e.error);
-                });
-            },
-            async get(key) {
-                const db = await this.init();
-                const id = (typeof key === 'string' && key) ? key : 'macro_html';
-                return new Promise((resolve, reject) => {
-                    const tx = db.transaction(this.storeName, 'readonly');
-                    const store = tx.objectStore(this.storeName);
-                    const req = store.get(id);
-                    req.onsuccess = () => resolve(req.result);
-                    req.onerror = (e) => reject(e.error);
-                });
-            },
-            /** Per-node snapshot — every balanced server keeps its own cache copy. */
-            async saveNode(index, html) {
-                await this.save(html, 'macro_node_' + index);
-                await this.save(html, 'macro_html'); // keep the primary snapshot hot too
-            },
-            /** Returns every stored record so we can pick the freshest across all nodes. */
-            async all() {
-                const db = await this.init();
-                return new Promise((resolve) => {
-                    try {
-                        const tx = db.transaction(this.storeName, 'readonly');
-                        const req = tx.objectStore(this.storeName).getAll();
-                        req.onsuccess = () => resolve(req.result || []);
-                        req.onerror = () => resolve([]);
-                    } catch (e) { resolve([]); }
-                });
-            },
-            /**
-             * Offline resolver: returns the newest usable snapshot from ANY node,
-             * so a user cached on node-3 still works when routed to node-7 offline.
-             */
-            async getBest() {
-                const rows = await this.all();
-                const snaps = rows.filter(r => r && typeof r.html === 'string' && r.html.length > 1000);
-                if (!snaps.length) return null;
-                snaps.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                return snaps[0];
-            }
-        };
+        
 
         // =========================================
         // CROSS-NODE RESUME STATE MANAGER
@@ -2234,6 +2217,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
                 window.addEventListener('message', (ev) => {
                     const d = ev && ev.data;
                     if (!d || d.type !== 'SHWARI_STATE') return;
+                if (!/^https:\/\/[a-z0-9.-]+\.googleusercontent\.com$/i.test(ev.origin)) return;
                     this.write({
                         route:   d.route || this.read().route,
                         scrollY: d.scrollY || 0,
@@ -2385,7 +2369,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
 
                         authPortal.style.height = vv.height + 'px';
                         authPortal.style.top = vv.offsetTop + 'px';
-                        authPortal.style.background = '#ffffff';
+                        authPortal.style.background = '#000000';
 
                         document.body.classList.toggle('keyboard-open', isKeyboardOpen);
                         authPortal.classList.toggle('keyboard-adjust', isKeyboardOpen);
@@ -2417,7 +2401,16 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         //  so spreading users across all 10 multiplies total throughput.
         // ─────────────────────────────────────────────────────────────
         const MACRO_ENDPOINTS = [
-            "https://script.google.com/macros/s/AKfycbxn6OcxHIs2vvBGZXKpSZOnu96xBWCuqgyvGlSrTGUivZk1XLLKbuyFKqZ7dfs6AJi7/exec" // single deployment
+            "https://script.google.com/macros/s/AKfycbw64J9BEcnfe9s2EAkkFhfTiNviaVeHPtPR2cKwMDztRJKJ_XsUAjEvriR6Vl_ngJVdSQ/exec", // node-1
+            "https://script.google.com/macros/s/AKfycbwb58C3Jgyqkx1HG67LVsxy9zuQ3L4UqVSzokvOrmde7NhMXU0mQgM3LZHbm3Ln1jN0/exec", // node-2
+            "https://script.google.com/macros/s/AKfycbz-L7OTTjpencNfWpxYwQRW3I8rE2DgvOM00lcORFIj_V_xMtb8nXUCvg53ZG2yKEew3Q/exec", // node-3
+            "https://script.google.com/macros/s/AKfycbyYiu-OXa4aeGL851XimK_dIjeb9jtTYsrF2rX9_InbN9_g-qmXZIhFuqxEAi6bpEYBvg/exec", // node-4
+            "https://script.google.com/macros/s/AKfycbwFb_GELVF1WEeY_3uegSwBit7-axwmzsjmi0tQULYqwezRPHlAKB9IT8PmozpgNAlB/exec", // node-5
+            "https://script.google.com/macros/s/AKfycbzAWZJIsz9peZx57PHh_5UolsUiNvb7XoYa_v2Lw9wmSnYeqNXg8P3ioLuEGGNHFkAy/exec", // node-6
+            "https://script.google.com/macros/s/AKfycbwooiV40R7d3n9E42QWI4-JsHxWFv05Hm1_RcGRDIouD1_10vbMXlDGqz6FL6oV76aQEQ/exec", // node-7
+            "https://script.google.com/macros/s/AKfycbx5VJ9aPG1SBV-ljTYWNkeXTTrbPoKfrW36syB0n5letvjQD-NpWxwnn9DzkmxVw3pv/exec", // node-8
+            "https://script.google.com/macros/s/AKfycbzrf6PP3UNpKC19HaixVrkhWZYH3GtoJTL7iS_e0BxeFK-1PlB3qeh821gJY8LDckjB/exec", // node-9
+            "https://script.google.com/macros/s/AKfycbwH-LVUkFOQ5rqol3vgsAc2MXyWi-R-Cs9bEN1AXYSncCYTMh9xy3lzV0DeDydzzDED/exec" // node-10
         ];
 
         const LoadBalancer = {
@@ -2550,7 +2543,6 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
              * candidate order (skipping blacklisted nodes) until one responds.
              */
             async resolveActiveEndpoint() {
-                return { url: MACRO_ENDPOINTS[0], index: 0 };
                 const sticky = this.getStickyIndex();
                 const candidates = sticky !== null
                     ? [sticky, ...this.getCandidateOrder().filter(i => i !== sticky)]
@@ -2587,7 +2579,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
              * per node. Result: whichever node serves them next, they resume.
              */
             async warmAllNodes(force) {
-                return; // single URL: silentSync already caches it
+                return; // offline snapshot feature removed
                 if (!navigator.onLine) return;
                 const LAST = 'shwari_lb_last_warm';
                 const last = parseInt(localStorage.getItem(LAST) || '0', 10);
@@ -2625,7 +2617,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
 
         const MACRO_URL = MACRO_ENDPOINTS[0];
         
-        // Super Stable Macro Engine with Blob Offline Injection
+        // Direct Live URL Macro Engine
         const MacroEngine = {
             url: MACRO_URL,
             activeNodeIndex: null,
@@ -2634,98 +2626,12 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
             maxRetries: 3,
             loaded: false,
             timeoutId: null,
-            reconnectInterval: null,
-            isOfflineView: false,
-
-            async loadOfflineBlob() {
-                try {
-                    // Pull the newest snapshot across ALL nodes, not just the primary key.
-                    const data = (await ShwariDB.getBest()) || (await ShwariDB.get('macro_html'));
-                    if (data && data.html) {
-                        const age = Date.now() - data.timestamp;
-                        if (age > 24 * 60 * 60 * 1000) {
-                            document.getElementById('stale-warning').style.display = 'flex';
-                        }
-                        
-                        const blob = new Blob([data.html], { type: 'text/html' });
-                        const objUrl = URL.createObjectURL(blob);
-                        this.frame.src = objUrl;
-                        this.loaded = true;
-                        this.isOfflineView = true;
-                        
-                        // Show the enhanced animated offline banner
-                        const offlineBanner = document.getElementById('offline-macro-banner');
-                        if (offlineBanner) {
-                            const age = Date.now() - (data.timestamp || 0);
-                            const mins = Math.max(0, Math.floor(age / 60000));
-                            const timeLabel = mins < 1 ? 'now' : mins < 60 ? `${mins}m ago` : `${Math.floor(mins/60)}h ago`;
-                            offlineBanner.innerHTML = `<div class="offline-pulse"></div><span>Network · Lost ${timeLabel}</span>`;
-                            offlineBanner.style.background = 'rgba(231, 76, 60, 0.95)';
-                            offlineBanner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
-                            offlineBanner.classList.add('show');
-                        }
-
-                        if (window.onMacroSuccess) window.onMacroSuccess();
-                        this.updateSyncBadge(data.timestamp, true);
-                    } else {
-                        throw new Error("No offline data available");
-                    }
-                } catch(e) {
-    console.log("No offline snapshot found, injecting fallback shell...");
-    const fallbackHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"><title>Offline</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#ffffff;color:#0a2e16;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;text-align:center;padding:30px}.icon{width:80px;height:80px;background:linear-gradient(135deg,#1f6e3f,#55d082);border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:24px;font-size:40px}.title{font-size:24px;font-weight:800;color:#55d082;margin-bottom:12px}.msg{font-size:14px;color:#4b5563;line-height:1.6;max-width:300px;margin-bottom:30px}.loader{width:40px;height:40px;border:3px solid rgba(85,208,130,0.2);border-top:3px solid #55d082;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}</style></head><body><div class="icon">🐘</div><div class="title">Offline Mode</div><div class="msg">No cached data yet. Please open the app while online first to enable offline access.</div><div class="loader"></div><script>window.addEventListener('online',()=>window.location.reload());setInterval(()=>{if(navigator.onLine)window.location.reload();},4000);<\/script></body></html>`;
-    const blob = new Blob([fallbackHtml], { type: 'text/html' });
-    this.frame.src = URL.createObjectURL(blob);
-    this.loaded = true;
-    if (window.onMacroSuccess) window.onMacroSuccess();
-}
-            },
-
-            async silentSync() {
-                try {
-                    const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_app&${SessionState.params(this.activeNodeIndex)}`);
-                    if(res.ok) {
-                        const html = await res.text();
-                        await ShwariDB.saveNode(this.activeNodeIndex, html);
-                        this.updateSyncBadge(Date.now(), false);
-                        LoadBalancer.reportLoadSuccess(this.activeNodeIndex);
-                        LoadBalancer.warmAllNodes(false); // keep every other node's cache fresh
-                    }
-                } catch (e) {
-                    console.log("Silent sync fetch skipped or failed.");
-                    LoadBalancer.reportLoadFailure(this.activeNodeIndex);
-                }
-            },
-
-            updateSyncBadge(timestamp, isOffline = false) {
-                // Sync notification hidden
-                return;
-            },
 
             async load() {
                 this.loaded = false;
-                this.isOfflineView = false;
                 clearTimeout(this.timeoutId);
                 console.log(`Loading Macro... Attempt ${this.retries + 1}`);
 
-                // Reset and hide the banner unless it's currently showing the reload animation
-                const offlineBanner = document.getElementById('offline-macro-banner');
-                if (offlineBanner && !offlineBanner.innerHTML.includes('fa-spinner')) {
-                    offlineBanner.classList.remove('show');
-                }
-
-                if (!navigator.onLine) {
-                    await this.loadOfflineBlob();
-                    return;
-                }
-                
-                // OFFLINE INTERCEPT: Never set live URL if offline — serve IDB snapshot directly
-                if (!navigator.onLine) {
-                    await this.loadOfflineBlob();
-                    return;
-                }
-
-                // LOAD BALANCING: resolve which of the 10 nodes to hit this time,
-                // rerouting away from any currently-blacklisted (overloaded/failing) node.
                 const resolved = await LoadBalancer.resolveActiveEndpoint();
                 this.url = resolved.url;
                 this.activeNodeIndex = resolved.index;
@@ -2736,68 +2642,18 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
                 this.frame.src = `${this.url}?cb=${Date.now()}&client=shwari_app&${SessionState.params(resolved.index)}`;
 
                 this.frame.onerror = () => {
-                    console.warn("Iframe onerror fired — loading offline blob.");
                     LoadBalancer.reportLoadFailure(this.activeNodeIndex);
                     clearTimeout(this.timeoutId);
-                    this.loadOfflineBlob();
+                    this.handleTimeout();
                 };
                 
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
                 this.frame.onload = () => {
-                    // Detect browser error pages (net::ERR_* shown inside iframe)
-                    let isErrorPage = false;
-                    try {
-                        const loc = this.frame.contentWindow && this.frame.contentWindow.location;
-                        if (loc && (loc.href === 'about:blank' || loc.href.startsWith('chrome-error://') || loc.href.startsWith('data:text/html'))) {
-                            isErrorPage = true;
-                        }
-                    } catch(e) {
-                        isErrorPage = false;
-                    }
-
-                    if (isErrorPage) {
-                        console.warn("Iframe loaded an error page — falling back to offline blob.");
-                        this.loadOfflineBlob();
-                        return;
-                    }
-
                     this.loaded = true;
-                    this.isOfflineView = false;
                     clearTimeout(this.timeoutId);
                     LoadBalancer.reportLoadSuccess(this.activeNodeIndex);
-                    
-                    if (offlineBanner) offlineBanner.classList.remove('show');
-
-                    if (this.reconnectInterval) {
-                        clearInterval(this.reconnectInterval);
-                        this.reconnectInterval = null;
-                    }
                     console.log("Macro loaded successfully.");
-
-                    // SAVE TO IDB every time macro loads online — keeps offline snapshot fresh
-                    if (navigator.onLine) {
-                        this.silentSync();
-                        setTimeout(async () => {
-                            try {
-                                const res = await fetch(`${this.url}?cb=${Date.now()}&client=shwari_offline_snap`);
-                                if (res.ok) {
-                                    const html = await res.text();
-                                    const isReal = html.length > 1000 &&
-                                        !html.toLowerCase().includes('accounts.google.com') &&
-                                        !html.toLowerCase().includes('sign in');
-                                    if (isReal) {
-                                        await ShwariDB.save(html);
-                                        console.log('[IDB] Offline snapshot saved —', Math.round(html.length/1024), 'KB');
-                                        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                                            navigator.serviceWorker.controller.postMessage({ type: 'FORCE_MACRO_CACHE', html });
-                                        }
-                                    }
-                                }
-                            } catch(e) { console.log('[IDB] Snapshot save skipped:', e.message); }
-                        }, 3000);
-                    }
-                    
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
             },
@@ -2805,26 +2661,13 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
             handleTimeout() {
                 if (this.loaded) return;
                 console.warn("Macro load timeout. Retrying...");
-
-                // Real timeout on this node = strong signal it's overloaded/down.
                 LoadBalancer.reportLoadFailure(this.activeNodeIndex);
-
                 this.retries++;
                 
                 if (this.retries <= this.maxRetries) {
                     setTimeout(() => this.load(), 2000 * this.retries);
                 } else {
                     console.error("Macro failed to load after maximum retries.");
-                    this.loadOfflineBlob(); // Display offline fallback on max failures
-                    
-                    if (!this.reconnectInterval) {
-                        this.reconnectInterval = setInterval(() => {
-                            if (navigator.onLine && !this.loaded) {
-                                this.retries = 0;
-                                this.load();
-                            }
-                        }, 10000);
-                    }
                 }
             }
         };
@@ -2984,9 +2827,6 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         // =========================================
         function requestStoragePermission() {
             localStorage.setItem('shwari_storage_permission', 'granted');
-            if (navigator.storage && navigator.storage.persist) {
-                navigator.storage.persist().catch(function () {});
-            }
             return Promise.resolve(true);
         }
 
@@ -3289,82 +3129,8 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         // =========================================
         window.waitingForMacroTransition = false;
 
-        const _isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                              window.matchMedia('(display-mode: fullscreen)').matches ||
-                              window.navigator.standalone === true ||
-                              document.referrer.includes('android-app://');
-        if (_isStandalone) {
-            MacroEngine.load();
-        } else {
-            document.documentElement.classList.add('browser-mode');
-            setTimeout(function () {
-                var fi = document.getElementById('forcedInstall');
-                if (fi && fi.style.display !== 'flex') {
-                    document.getElementById('already-installed-blocker').classList.add('active');
-                }
-            }, 6000);
-        }
-
-        // PRE-WARM OFFLINE CACHE: Aggressively save macro HTML to IDB on every online load.
-        // Ensures offline mode always has a fresh snapshot regardless of SW cache eviction.
-        async function _saveIframeToIDB() {
-            if (!navigator.onLine) return;
-            try {
-                // Wait for iframe to fully load, then extract its HTML
-                const frame = document.getElementById('macro-frame');
-                let html = null;
-
-                // Method 1: Try reading from already-loaded iframe (cross-origin safe attempt)
-                try {
-                    if (frame && frame.contentDocument && frame.contentDocument.documentElement) {
-                        html = frame.contentDocument.documentElement.outerHTML;
-                    }
-                } catch(e) { /* cross-origin — expected */ }
-
-                // Method 2: Fresh fetch (most reliable — always gets latest)
-                // Uses whichever node the load balancer currently has active for this device.
-                if (!html || html.length < 1000) {
-                    const res = await fetch(`${MacroEngine.url}?cb=${Date.now()}&client=shwari_offline_save&${SessionState.params(MacroEngine.activeNodeIndex || 0)}`);
-                    if (res.ok) html = await res.text();
-                }
-
-                if (!html || html.length < 1000) return;
-
-                const isReal = !html.toLowerCase().includes('accounts.google.com') &&
-                               !html.toLowerCase().includes('sign in') &&
-                               !html.toLowerCase().includes('error 404');
-
-                if (isReal) {
-                    await ShwariDB.saveNode(MacroEngine.activeNodeIndex || 0, html);
-                    console.log('[OfflineSave] Macro snapshot saved for node', MacroEngine.activeNodeIndex, '—', Math.round(html.length/1024), 'KB');
-
-                    // Also tell the SW to cache it via message bridge
-                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                        navigator.serviceWorker.controller.postMessage({
-                            type: 'FORCE_MACRO_CACHE',
-                            html: html
-                        });
-                    }
-                }
-            } catch(e) {
-                console.log('[OfflineSave] Skipped —', e.message);
-            }
-        }
-
-        // Save immediately on load, and again every 10 minutes while online
-        if (navigator.onLine) {
-            setTimeout(_saveIframeToIDB, 4000);
-            setInterval(() => {
-                if (navigator.onLine) _saveIframeToIDB();
-            }, 10 * 60 * 1000);
-        }
-
-        // Also save after every successful macro load (most reliable trigger)
-        const _origOnMacroSuccess = window.onMacroSuccess;
-        window.onMacroSuccess = function() {
-            if (_origOnMacroSuccess) _origOnMacroSuccess.apply(this, arguments);
-            if (navigator.onLine) setTimeout(_saveIframeToIDB, 2000);
-        };
+        // WARM UP URL INSTANTLY: Trigger iframe load the exact millisecond the script runs
+        MacroEngine.load();
 
         async function initializeApp() {
             initSuperResponsiveButtons();
@@ -3616,173 +3382,10 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
                 if (window.checkAndRunTransition) {
                     window.checkAndRunTransition();
                 }
-            }, 4000);
+            }, 300);
         };
 
-        /* =====================================================
-           NETWORK CONNECTIVITY DETECTION & ERROR HANDLING
-           ====================================================== */
         
-        const networkToast = document.getElementById('network-toast');
-        const toastMessage = document.getElementById('toast-message');
-        let wasOffline = false;
-        let isCheckingConnection = false;
-        let autoReloadTimer = null;
-
-        const showToast = (message, isOnline) => {
-            toastMessage.textContent = message;
-            networkToast.className = isOnline ? 'online' : 'offline';
-            networkToast.classList.add('show');
-            
-            setTimeout(() => {
-                networkToast.classList.remove('show');
-            }, 3000);
-        };
-
-        const checkConnectivity = async () => {
-            if (isCheckingConnection) return navigator.onLine;
-            isCheckingConnection = true;
-
-            const probes = [
-                'https://www.google.com/favicon.ico',
-                'https://www.cloudflare.com/cdn-cgi/trace',
-                'https://httpbin.org/get',
-            ];
-
-            for (const url of probes) {
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 4000);
-                    await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    isCheckingConnection = false;
-                    return true;
-                } catch (_) { /* try next probe */ }
-            }
-
-            isCheckingConnection = false;
-            return false;
-        };
-
-        const handleOnline = async () => {
-            const isConnected = await checkConnectivity();
-            if (!isConnected) return; // Lie-fi guard — browser says online but can't reach internet
-
-            if (!wasOffline) {
-                // Not coming back from offline — just do a silent background sync
-                if (MacroEngine.loaded && !MacroEngine.isOfflineView) {
-                    MacroEngine.silentSync();
-                }
-                return;
-            }
-
-            // ── COMING BACK FROM OFFLINE ──────────────────────────────────
-            wasOffline = false;
-            if (autoReloadTimer) { clearInterval(autoReloadTimer); autoReloadTimer = null; }
-
-            showToast('Back online!', true);
-            console.log('[Network] Restored — triggering macro reload');
-
-            const banner = document.getElementById('offline-macro-banner');
-
-            if (MacroEngine.isOfflineView || !MacroEngine.loaded) {
-                // Show "Reconnecting..." banner immediately so user sees feedback
-                if (banner) {
-                    banner.innerHTML = '<i class="fas fa-spinner fa-spin" style="animation:fa-spin 0.8s linear infinite"></i><span>Reconnecting...</span>';
-                    banner.style.background = 'rgba(44, 122, 71, 0.95)';
-                    banner.style.boxShadow = '0 8px 25px rgba(44, 122, 71, 0.4)';
-                    banner.classList.add('show');
-                }
-
-                // Short delay lets the UI settle before hitting the network
-                setTimeout(() => {
-                    MacroEngine.retries = 0;
-                    MacroEngine.loaded  = false;
-                    MacroEngine.load();
-                }, 600);
-            } else {
-                // Macro already showing live — just sync data silently
-                if (banner) banner.classList.remove('show');
-                MacroEngine.silentSync();
-            }
-        };
-
-        const handleOffline = () => {
-            if (wasOffline) return; // Already handling offline state
-            wasOffline = true;
-            showToast('Connection lost', false);
-            console.log('[Network] Went offline');
-
-            // Show the offline banner inside the app immediately if visible
-            const banner = document.getElementById('offline-macro-banner');
-            if (banner && document.getElementById('app').classList.contains('active')) {
-                banner.innerHTML = '<div class="offline-pulse"></div><span>Offline Mode</span>';
-                banner.style.background = 'rgba(231, 76, 60, 0.95)';
-                banner.style.boxShadow = '0 8px 25px rgba(231, 76, 60, 0.4)';
-                banner.classList.add('show');
-            }
-
-            // Poll every 3 s for actual connectivity (not just navigator.onLine)
-            if (!autoReloadTimer) {
-                autoReloadTimer = setInterval(async () => {
-                    if (navigator.onLine) {
-                        const isConnected = await checkConnectivity();
-                        if (isConnected) {
-                            clearInterval(autoReloadTimer);
-                            autoReloadTimer = null;
-                            handleOnline();
-                        }
-                    }
-                }, 3000);
-            }
-        };
-
-        window.addEventListener('online', handleOnline);
-        window.addEventListener('offline', handleOffline);
-
-        // Heartbeat: only runs probe when browser already thinks we're offline,
-        // preventing unnecessary fetches every 5 s when everything is fine.
-        setInterval(async () => {
-            if (!navigator.onLine && !autoReloadTimer) {
-                handleOffline(); // Catches cases where the 'offline' event was missed
-            }
-        }, 5000);
-
-        window.addEventListener('load', async () => {
-            if (!navigator.onLine) {
-                handleOffline();
-                return;
-            }
-            // Check actual reachability, not just the OS flag
-            const isConnected = await checkConnectivity();
-            if (!isConnected) {
-                handleOffline();
-            } else if (MacroEngine.loaded && !MacroEngine.isOfflineView) {
-                // We're online and showing live content — do a fresh silent sync
-                MacroEngine.silentSync();
-            }
-        });
-
-        document.addEventListener('visibilitychange', async () => {
-            if (document.visibilityState !== 'visible') return;
-
-            if (!navigator.onLine) {
-                handleOffline();
-                return;
-            }
-
-            const isConnected = await checkConnectivity();
-
-            if (!isConnected) {
-                handleOffline();
-            } else if (wasOffline) {
-                // Came back to the tab AND we were offline before — reconnect fully
-                handleOnline();
-            } else if (MacroEngine.loaded && !MacroEngine.isOfflineView) {
-                // Normal foreground — silently sync data in the background
-                MacroEngine.silentSync();
-            }
-        });
 
         /* =====================================================
            INSTALL PROGRESS SCREEN
@@ -3851,10 +3454,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (!isPWA()) {
-                installOverlay.style.display = 'flex';
-                document.getElementById('already-installed-blocker').classList.remove('active');
-            }
+            if (!isPWA()) installOverlay.style.display = 'flex';
         });
 
         installBtn.addEventListener('click', async () => {
@@ -3943,7 +3543,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         };
 
         document.getElementById('open-shwari-btn').addEventListener('click', function() {
-            alert('Please close this browser tab and launch Shwari | Finance from your app list.');
+            alert('Please close this browser tab and launch Shwari | Finance from the green elephant icon on your home screen.');
             window.close();
         });
 
@@ -3976,18 +3576,9 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         checkIfAppAlreadyInstalled();
 
         // Warm & cache every deployment shortly after boot, then hourly.
-        setTimeout(() => LoadBalancer.warmAllNodes(true), 8000);
-        setInterval(() => { if (navigator.onLine) LoadBalancer.warmAllNodes(false); }, 60 * 60 * 1000);
 
-        // =========================================
-        // NOTIFICATION BAR TOUCH DISMISS
-        // =========================================
-        const toastEl = document.getElementById('network-toast');
-        toastEl.style.cursor = 'pointer';
-        toastEl.addEventListener('click', () => toastEl.classList.remove('show'));
-        toastEl.addEventListener('touchstart', (e) => {
-            toastEl.classList.remove('show');
-        }, { passive: true });
+
+        
 
     })();
     </script>
@@ -3995,7 +3586,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
     <script>
         /**
          * ============================================================
-         *  Shwari | Finance — PWA Logic & Security Gateway
+         *  <strong><strong>Shwari | Finance</strong></strong> — PWA Logic & Security Gateway
          *  Version: 2.0.0
          *  Upgraded for: Offline Support, Instant Memory, Session
          *  Security, Audit Logging, Retry Logic & Network Resilience
@@ -4008,7 +3599,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
         //  CONSTANTS & CONFIGURATION
         // ─────────────────────────────────────────────────────────────
 
-        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbxn6OcxHIs2vvBGZXKpSZOnu96xBWCuqgyvGlSrTGUivZk1XLLKbuyFKqZ7dfs6AJi7/exec";
+        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbzrf6PP3UNpKC19HaixVrkhWZYH3GtoJTL7iS_e0BxeFK-1PlB3qeh821gJY8LDckjB/exec";
 
         const CONFIG = {
           APP_NAME: "Shwari | Finance",
@@ -4510,16 +4101,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
             return;
           }
 
-          // ── Offline Guard ─────────────────────────────────────────
-          if (!navigator.onLine) {
-            BruteGuard.recordFailedAttempt(); // Count offline attempts too
-            UI.toast(
-              "You are offline. Please connect to the internet to access the dashboard.",
-              "warning"
-            );
-            AuditLog.record("CONTINUE_BLOCKED_OFFLINE");
-            return;
-          }
+          
 
           // ── Create Session Token ──────────────────────────────────
           const token = Session.create();
@@ -4688,30 +4270,7 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
           return diag;
         };
 
-        // ─────────────────────────────────────────────────────────────
-        //  18. NETWORK STATUS LISTENERS — React to Connection Changes
-        //  Informs the user immediately when connectivity changes
-        // ─────────────────────────────────────────────────────────────
-
-        window.addEventListener("offline", () => {
-          console.warn("[Shwari] Device went offline.");
-          AuditLog.record("NETWORK_WENT_OFFLINE");
-          UI.toast("You are now offline. Some features may be unavailable.", "warning");
-
-          // Visually mark the app as offline if element exists
-          const offlineIndicator = UI.get("offline-indicator");
-          if (offlineIndicator) offlineIndicator.classList.remove("hidden");
-        });
-
-        window.addEventListener("online", () => {
-          console.info("[Shwari] Device is back online.");
-          AuditLog.record("NETWORK_RESTORED");
-          UI.toast("Connection restored. You're back online.", "success");
-
-          // Hide the offline indicator
-          const offlineIndicator = UI.get("offline-indicator");
-          if (offlineIndicator) offlineIndicator.classList.add("hidden");
-        });
+        
 
         // ─────────────────────────────────────────────────────────────
         //  19. VISIBILITY API — Auto-refresh Session on Tab Focus
@@ -4878,36 +4437,17 @@ html.browser-mode body > *:not(#forcedInstall):not(#already-installed-blocker):n
     })();
     </script>
 
+<div id="ios-hint" style="display:none;position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:150000;background:#fff;color:#0f172a;border:1px solid #bbf7d0;border-radius:18px;padding:16px;box-shadow:0 10px 30px rgba(15,23,42,.18);font:14px/1.5 system-ui,sans-serif;text-align:center;">
+    <strong>Install on iPhone</strong><br>
+    Tap the <b>Share</b> button, then <b>Add to Home Screen</b>.<br>
+    <button type="button" onclick="this.parentNode.style.display='none'" style="margin-top:10px;padding:10px 24px;border:0;border-radius:12px;background:#1f6e3f;color:#fff;font-weight:700;">OK</button>
+</div>
 <script>
 (function () {
-    var opts = { passive: false };
-    var stop = function (e) { e.preventDefault(); };
-
-    // iOS pinch gestures
-    ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (t) {
-        document.addEventListener(t, stop, opts);
-    });
-
-    // Pinch with 2+ fingers
-    document.addEventListener('touchmove', function (e) {
-        if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault();
-    }, opts);
-
-    // Double-tap zoom
-    var lastTouchEnd = 0;
-    document.addEventListener('touchend', function (e) {
-        var now = Date.now();
-        var tag = (e.target.tagName || '').toLowerCase();
-        if (now - lastTouchEnd <= 300 && tag !== 'input' && tag !== 'textarea') e.preventDefault();
-        lastTouchEnd = now;
-    }, opts);
-    document.addEventListener('dblclick', stop, opts);
-
-    // Desktop / trackpad / keyboard zoom
-    document.addEventListener('wheel', function (e) { if (e.ctrlKey) e.preventDefault(); }, opts);
-    document.addEventListener('keydown', function (e) {
-        if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].indexOf(e.key) > -1) e.preventDefault();
-    });
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var installed = window.navigator.standalone === true ||
+                    window.matchMedia('(display-mode: standalone)').matches;
+    if (isIOS && !installed) document.getElementById('ios-hint').style.display = 'block';
 })();
 </script>
 </body>
