@@ -595,21 +595,25 @@ body { -webkit-text-size-adjust: none !important; text-size-adjust: none !import
         .app.active { visibility: visible; }
         .app.active { opacity: 1; pointer-events: auto; }
         
-        iframe { 
-            width: 111.11%; height: 111.11%; border: none; 
-            background: var(--bg-dark); opacity: 0;
-            transform: scale(0.8) translateY(15px);
-            transform-origin: top left;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, 
-                        transform 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
+        iframe {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
             padding: 0 !important;
             margin: 0 !important;
-            content-visibility: auto;
+            background: var(--bg-dark);
+            opacity: 0;
+            transform: none;
+            transition: opacity 0.35s ease;
         }
-        /* The final active state scales it exactly to 0.9 (90%) */
-        .app.active iframe { opacity: 1; transform: scale(0.9) translateY(0); }
+
+        .app.active iframe {
+            opacity: 1;
+            transform: none;
+        }
 
         /* RESTRICTION SCREENS */
         #device-error { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.98); z-index: 10000; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 30px; font-family: 'Inter', sans-serif; }
@@ -1777,7 +1781,7 @@ body, input, button, textarea, select { -webkit-text-size-adjust: none !importan
     color:rgba(44,122,71,.75);
 }
 </style>
-<base target="_blank">
+<base target="_self">
 <link rel="preload" as="image" href="https://mmenterprises.co.in/wp-content/uploads/2023/05/employer-of-records.jpg">
 <style id="force-white">
 :root, html, body, iframe, input, button, textarea, select { color-scheme: only light !important; }
@@ -1938,7 +1942,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
         </div>
 
         <div class="ea-actions">
-            <a class="ea-btn ea-primary" href="https://forms.gle/s7zHCfv4tUFx8Dd59" target="_blank" rel="noopener noreferrer" onclick="setTimeout(eaClose,300)">
+            <a class="ea-btn ea-primary" href="https://forms.gle/s7zHCfv4tUFx8Dd59" target="_self" onclick="setTimeout(eaClose,300)">
                 <i class="fas fa-pen-to-square"></i><span>Update Now</span>
             </a>
             <button class="ea-btn ea-skip" type="button" onclick="eaClose()">Skip</button>
@@ -2946,7 +2950,9 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
         async function registerServiceWorker() {
             if ('serviceWorker' in navigator) {
                 try {
-                    const registration = await navigator.serviceWorker.register('sw.js');
+                    const registration = await navigator.serviceWorker.register('/sw.js', {
+                        scope: '/'
+                    });
                     console.log('SW registered:', registration.scope);
 
                     // Show force-update modal when a new worker installs
