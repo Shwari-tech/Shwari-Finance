@@ -2216,11 +2216,28 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
             bind() {
                 window.addEventListener('message', (ev) => {
                     const d = ev && ev.data;
-                    if (!d || d.type !== 'SHWARI_STATE') return;
-                if (!/^https:\/\/[a-z0-9.-]+\.googleusercontent\.com$/i.test(ev.origin)) return;
+                    if (!d || !/^https:\/\/[a-z0-9.-]+\.googleusercontent\.com$/i.test(ev.origin)) return;
+
+                    // A page on any node has opened: hand it the user's last position
+                    if (d.type === 'SHWARI_READY') {
+                        const s = this.read();
+                        const fresh = s.savedAt && Date.now() - s.savedAt < 8 * 60 * 60 * 1000;
+                        if (fresh && ev.source) {
+                            ev.source.postMessage({ type: 'SHWARI_RESTORE',
+                                route: s.route, scrollY: s.scrollY, form: s.form }, ev.origin);
+                        }
+                        return;
+                    }
+                    if (d.type === 'SHWARI_CLEAR') {          // logout
+                        localStorage.removeItem(this.K_STATE);
+                        return;
+                    }
+                    if (d.type !== 'SHWARI_STATE') return;
                     this.write({
                         route:   d.route || this.read().route,
                         scrollY: d.scrollY || 0,
+                        form:    d.form || {},
+                        savedAt: Date.now(),
                         node:    (window.MacroEngineRef && window.MacroEngineRef.activeNodeIndex)
                     });
                 }, false);
@@ -2401,16 +2418,16 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
         //  so spreading users across all 10 multiplies total throughput.
         // ─────────────────────────────────────────────────────────────
         const MACRO_ENDPOINTS = [
-            "https://script.google.com/macros/s/AKfycbw64J9BEcnfe9s2EAkkFhfTiNviaVeHPtPR2cKwMDztRJKJ_XsUAjEvriR6Vl_ngJVdSQ/exec", // node-1
-            "https://script.google.com/macros/s/AKfycbwb58C3Jgyqkx1HG67LVsxy9zuQ3L4UqVSzokvOrmde7NhMXU0mQgM3LZHbm3Ln1jN0/exec", // node-2
-            "https://script.google.com/macros/s/AKfycbz-L7OTTjpencNfWpxYwQRW3I8rE2DgvOM00lcORFIj_V_xMtb8nXUCvg53ZG2yKEew3Q/exec", // node-3
-            "https://script.google.com/macros/s/AKfycbyYiu-OXa4aeGL851XimK_dIjeb9jtTYsrF2rX9_InbN9_g-qmXZIhFuqxEAi6bpEYBvg/exec", // node-4
-            "https://script.google.com/macros/s/AKfycbwFb_GELVF1WEeY_3uegSwBit7-axwmzsjmi0tQULYqwezRPHlAKB9IT8PmozpgNAlB/exec", // node-5
-            "https://script.google.com/macros/s/AKfycbzAWZJIsz9peZx57PHh_5UolsUiNvb7XoYa_v2Lw9wmSnYeqNXg8P3ioLuEGGNHFkAy/exec", // node-6
-            "https://script.google.com/macros/s/AKfycbwooiV40R7d3n9E42QWI4-JsHxWFv05Hm1_RcGRDIouD1_10vbMXlDGqz6FL6oV76aQEQ/exec", // node-7
-            "https://script.google.com/macros/s/AKfycbx5VJ9aPG1SBV-ljTYWNkeXTTrbPoKfrW36syB0n5letvjQD-NpWxwnn9DzkmxVw3pv/exec", // node-8
-            "https://script.google.com/macros/s/AKfycbzrf6PP3UNpKC19HaixVrkhWZYH3GtoJTL7iS_e0BxeFK-1PlB3qeh821gJY8LDckjB/exec", // node-9
-            "https://script.google.com/macros/s/AKfycbwH-LVUkFOQ5rqol3vgsAc2MXyWi-R-Cs9bEN1AXYSncCYTMh9xy3lzV0DeDydzzDED/exec" // node-10
+            "https://script.google.com/macros/s/AKfycbwzfl6Fz7707C6Ci20zD4YfbVlginKog4GTx7UbSqUZRwk1iJx8c1NUy-f1BQdyk9E0/exec", // node-1
+            "https://script.google.com/macros/s/AKfycbwiOE6J9Qiv4bKSbM7EiL0b5ZT26JqHtuA6buk7p32QNPrEfUz5HS9yYE6cQObK-G7g2Q/exec", // node-2
+            "https://script.google.com/macros/s/AKfycbxdtmFiaEBU5iaLLsYuo7rrLepmejXWJ0XWp3RHYs1f8lFwWUDyGe9n74y1QNZPPRsP/exec", // node-3
+            "https://script.google.com/macros/s/AKfycbzhH0741IhW0uS4j1dBxV0QGTTVb_7Xz0Rj6KkKNO_-uBDivi7z5pgMGe0bvsbk8C0Oxg/exec", // node-4
+            "https://script.google.com/macros/s/AKfycbwdQWo-4pkpo8HnB3a2Dl4mrkvi7ERB9GV51u4ucvvfO4CC0kSNiVQgQFhNtzC3E76L1A/exec", // node-5
+            "https://script.google.com/macros/s/AKfycbxQoe8ifjtyAdscos0Tzycp-a9IxHZlH3eYTS9DTkL4T9btLVatZQDRy4eMWzIkx9k/exec", // node-6
+            "https://script.google.com/macros/s/AKfycbzhN7Q6Y7JXc42saxIubpFV-WRY8wKyEynHYUmTsqSl6uYG7mSEU3eC2UnqQNa0Na-6/exec", // node-7
+            "https://script.google.com/macros/s/AKfycbzlKdWwNPn8nnOkig9JPBkB4tqWHimkbkC0AD1hryP1V4ZSlGPsXzdrHwjIbTUbT4Icvw/exec", // node-8
+            "https://script.google.com/macros/s/AKfycbyg_cWtSZ4W0xxOkchM1DrCc49RYuS8tBclA7G4CQngOYDFfHG2P3-bG-KWS_i2bjOP/exec", // node-9
+            "https://script.google.com/macros/s/AKfycbxZUTqdKMfeB8oIjtibgaguzQ4Qr5aL-xZW5Z8Nr7UdmgKbSVCkztw_NtEXrREXVR4G/exec" // node-10
         ];
 
         const LoadBalancer = {
@@ -2543,33 +2560,24 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
              * candidate order (skipping blacklisted nodes) until one responds.
              */
             async resolveActiveEndpoint() {
+                // Same node on every visit; move only if it is resting or recently slow
+                const stats = this._readJSON('shwari_lb_stats', {});
+                const slow = i => stats[i] && stats[i].avg > 8000 &&
+                                  Date.now() - stats[i].at < 30 * 60 * 1000;
                 const sticky = this.getStickyIndex();
-                const candidates = sticky !== null
-                    ? [sticky, ...this.getCandidateOrder().filter(i => i !== sticky)]
-                    : this.getCandidateOrder();
+                const order = this.getCandidateOrder();
+                if (sticky !== null) order.unshift(sticky);
 
-                for (const idx of candidates) {
-                    const url = MACRO_ENDPOINTS[idx];
-                    if (!url || url.includes('REPLACE_WITH_DEPLOYMENT')) continue;
-                    const healthy = await this._probe(url);
-                    if (healthy) {
-                        this.recordSuccess(idx);
-                        this.setStickyIndex(idx);
-                        console.log(`[LoadBalancer] Routed to node ${idx + 1}/${MACRO_ENDPOINTS.length}`);
-                        return { url, index: idx };
-                    } else {
-                        this.recordFailure(idx);
-                    }
-                }
-
-                const fallbackIdx = sticky !== null ? sticky : this._hashToIndex(this._getDeviceSeed(), MACRO_ENDPOINTS.length);
-                return { url: MACRO_ENDPOINTS[fallbackIdx], index: fallbackIdx };
+                const idx = order.find(i => !this.isBlacklisted(i) && !slow(i))
+                         ?? order.find(i => !this.isBlacklisted(i))
+                         ?? order[0];
+                this.setStickyIndex(idx);
+                return { url: MACRO_ENDPOINTS[idx], index: idx };
             },
 
             reportLoadFailure(index) {
                 if (index == null) return;
-                this.recordFailure(index);
-                this.recordFailure(index); // weight real load failures double vs probe failures
+                this.blacklistNode(index);   // rest this node for 60s, retry uses another
             },
 
             /**
@@ -2609,9 +2617,14 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
                 }
             },
 
-            reportLoadSuccess(index) {
+            reportLoadSuccess(index, ms) {
                 if (index == null) return;
                 this.recordSuccess(index);
+                if (!ms) return;
+                const stats = this._readJSON('shwari_lb_stats', {});
+                const old = stats[index] ? stats[index].avg : ms;
+                stats[index] = { avg: Math.round(old * 0.7 + ms * 0.3), at: Date.now() };
+                this._writeJSON('shwari_lb_stats', stats);
             }
         };
 
@@ -2649,10 +2662,12 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
                 
                 this.timeoutId = setTimeout(() => this.handleTimeout(), 15000);
 
+                const startedAt = Date.now();
                 this.frame.onload = () => {
                     this.loaded = true;
+                    this.retries = 0;
                     clearTimeout(this.timeoutId);
-                    LoadBalancer.reportLoadSuccess(this.activeNodeIndex);
+                    LoadBalancer.reportLoadSuccess(this.activeNodeIndex, Date.now() - startedAt);
                     console.log("Macro loaded successfully.");
                     if (window.onMacroSuccess) window.onMacroSuccess();
                 };
@@ -2668,6 +2683,9 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
                     setTimeout(() => this.load(), 2000 * this.retries);
                 } else {
                     console.error("Macro failed to load after maximum retries.");
+                    this.retries = 0;
+                    if (window.checkAndRunTransition) window.checkAndRunTransition();   // never stuck on loader
+                    window.addEventListener('online', () => this.load(), { once: true });
                 }
             }
         };
@@ -3599,7 +3617,7 @@ html, body, .app, iframe, .bg-layer, #ig-loader, #ea-overlay, #payment-ad-overla
         //  CONSTANTS & CONFIGURATION
         // ─────────────────────────────────────────────────────────────
 
-        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbzrf6PP3UNpKC19HaixVrkhWZYH3GtoJTL7iS_e0BxeFK-1PlB3qeh821gJY8LDckjB/exec";
+        const APP_MACRO_URL = "https://script.google.com/macros/s/AKfycbxZUTqdKMfeB8oIjtibgaguzQ4Qr5aL-xZW5Z8Nr7UdmgKbSVCkztw_NtEXrREXVR4G/exec";
 
         const CONFIG = {
           APP_NAME: "Shwari | Finance",
