@@ -4509,41 +4509,46 @@ installScreen.classList.add('active');
          Set PAYMENT_DATE to your target date.
          The ad auto-hides after that date passes.
          ========================================= -->
-    <div id="payment-ad-overlay" style="display:none;position:fixed;inset:0;z-index:200000;background:#ffffff;justify-content:flex-start;align-items:center;flex-direction:column;opacity:0;transition:opacity 0.4s ease;font-family:'Inter',system-ui,sans-serif;">
-        
-        <!-- Close Button -->
-        <button onclick="dismissAd()" style="position:absolute;top:max(20px, env(safe-area-inset-top));right:20px;z-index:10;width:40px;height:40px;background:rgba(255,255,255,0.9);border:none;border-radius:50%;cursor:pointer;font-size:18px;color:#111;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:transform 0.2s;">✕</button>
+    <div id="payment-ad-overlay" style="display:none;position:fixed;inset:0;z-index:200000;background:#ffffff;flex-direction:column;align-items:center;overflow:hidden;opacity:0;transition:opacity 0.4s ease;font-family:'Inter',system-ui,sans-serif;">
 
-        <!-- Full Width Image Section -->
-        <div style="width:100%;flex:0 0 45%;max-height:45vh;overflow:hidden;position:relative;background:#f8fafc;">
-            <img src="https://img.magnific.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80" alt="Payment notification" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
-            <!-- Fade gradient to blend image into the white bottom half -->
-            <div style="position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);"></div>
-        </div>
-
-        <!-- White Content Section -->
-        <div style="background:#ffffff;width:100%;flex:1;padding:30px 24px max(40px, env(safe-area-inset-bottom));text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-            
-            <div style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:16px;">
-                <span style="width:8px;height:8px;background:#10b981;border-radius:50%;display:inline-block;"></span>
-                Payment Scheduled
-            </div>
-            
-            <p style="font-size:15px;color:#6b7280;font-weight:600;margin:0 0 8px;letter-spacing:0.3px;">You will receive your payment on</p>
-            
-            <div style="font-size:32px;font-weight:900;color:#111827;letter-spacing:-0.5px;margin-bottom:4px;" id="pay-ad-date">—</div>
-            <div style="font-size:14px;color:#9ca3af;margin-bottom:24px;font-weight:500;" id="pay-ad-day"></div>
-
-            <div style="width:50px;height:4px;background:#10b981;border-radius:2px;margin:0 auto 24px;"></div>
-
-            <p style="font-size:16px;color:#374151;line-height:1.6;margin:0;max-width:340px;">FYI:<strong style="color:#111827;"> All Bank Charges are Payable by the Employee</strong> @ 2026 KCB Bank's tariff</p>
-
-            <button onclick="dismissAd()" style="margin-top:auto;width:100%;max-width:340px;padding:18px;background:#10b981;color:#fff;border:none;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 8px 25px rgba(16,185,129,0.35);">Got It, Thanks!</button>
-        </div>
+    <!-- Top Image -->
+    <div style="width:100%;flex:0 0 40%;max-height:40vh;overflow:hidden;position:relative;background:#f8fafc;">
+        <img src="https://img.magnific.com/free-vector/salary-payment-concept-illustration-with-man-get-income-his-job_513217-187.jpg?semt=ais_hybrid&w=740&q=80" alt="Payment notification" style="width:100%;height:100%;object-fit:cover;object-position:center top;" />
+        <div style="position:absolute;bottom:0;left:0;right:0;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,0),#ffffff);"></div>
     </div>
 
-    <script>
-    function dismissAd() {
+    <!-- Content -->
+    <div style="position:relative;z-index:2;width:100%;flex:1;min-height:0;overflow-y:auto;padding:16px 24px calc(env(safe-area-inset-bottom) + 58px);text-align:center;display:flex;flex-direction:column;align-items:center;">
+
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:12px;">
+            <span style="width:8px;height:8px;background:#10b981;border-radius:50%;"></span>
+            Payment Scheduled
+        </div>
+
+        <p style="font-size:15px;color:#6b7280;font-weight:600;margin:0 0 12px;">You will receive your payment on</p>
+
+        <!-- Date + Time Card -->
+        <div style="width:100%;max-width:340px;border:1.5px solid #a7f3d0;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(16,185,129,0.15);margin-bottom:16px;flex-shrink:0;">
+            <div style="padding:14px 12px;background:#ffffff;">
+                <div id="pay-ad-date" style="font-size:28px;font-weight:900;color:#111827;letter-spacing:-0.5px;">—</div>
+                <div id="pay-ad-day" style="font-size:14px;color:#6b7280;font-weight:600;margin-top:2px;"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:9px;padding:12px;background:#10b981;color:#ffffff;">
+                <i class="fas fa-clock" style="font-size:16px;"></i>
+                <span id="pay-ad-time" style="font-size:20px;font-weight:900;">—</span>
+            </div>
+        </div>
+
+        <p style="font-size:15px;color:#374151;line-height:1.6;margin:0 0 16px;max-width:340px;">FYI: <strong style="color:#111827;">All Bank Charges are Payable by the Employee</strong> @ 2026 KCB Bank's tariff</p>
+
+        <button onclick="dismissAd()" style="margin-top:auto;flex-shrink:0;width:100%;max-width:340px;padding:17px;background:#10b981;color:#fff;border:none;border-radius:18px;font-size:17px;font-weight:800;cursor:pointer;box-shadow:0 8px 25px rgba(16,185,129,0.35);">Got It, Thanks!</button>
+    </div>
+
+    <!-- Bottom Edge Green Squares (partly hidden) -->
+    <span style="position:absolute;left:-26px;bottom:-26px;width:72px;height:72px;background:#10b981;border-radius:14px;transform:rotate(20deg);pointer-events:none;"></span>
+    <span style="position:absolute;left:50%;bottom:-36px;width:60px;height:60px;margin-left:-30px;background:#10b981;border-radius:12px;transform:rotate(45deg);pointer-events:none;"></span>
+    <span style="position:absolute;right:-26px;bottom:-26px;width:72px;height:72px;background:#10b981;border-radius:14px;transform:rotate(-20deg);pointer-events:none;"></span>
+</div>
         window._adVisible = false;
         var overlay = document.getElementById('payment-ad-overlay');
         overlay.style.opacity = '0';
@@ -4558,24 +4563,31 @@ installScreen.classList.add('active');
     }
 
     (function(){
-        // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
-        var PAYMENT_DATE = new Date('2026-11-27T23:59:59'); // Automatically stops at midnight on this date
+                // ── SET PAYMENT DATE AND TIME HERE (24-hour clock) ──────────
+        var PAYMENT_DATE = new Date('2026-11-28T10:30:00');
         // ─────────────────────────────────────────────────────────────
 
-        var now = new Date();
-        if (now > PAYMENT_DATE) return; // Past the date — do nothing
+        // Ad stays visible until the end of the payment day
+        var AD_END = new Date(PAYMENT_DATE);
+        AD_END.setHours(23, 59, 59, 999);
+        if (new Date() > AD_END) return;
 
-        // Format date label dynamically based on PAYMENT_DATE
         var days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
         var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
         var d      = PAYMENT_DATE;
         var day    = d.getDate();
         var suffix = (day === 1 || day === 21 || day === 31) ? 'st' : (day === 2 || day === 22) ? 'nd' : (day === 3 || day === 23) ? 'rd' : 'th';
-        
+
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var timeText = (h % 12 || 12) + ':' + (m < 10 ? '0' : '') + m + (h < 12 ? ' AM' : ' PM');
+
         var dateEl = document.getElementById('pay-ad-date');
         var dayEl  = document.getElementById('pay-ad-day');
+        var timeEl = document.getElementById('pay-ad-time');
         if (dateEl) dateEl.textContent = day + suffix + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-        if (dayEl)  dayEl.textContent  = days[d.getDay()] + ' ·';
+        if (dayEl)  dayEl.textContent  = days[d.getDay()];
+        if (timeEl) timeEl.textContent = timeText;
 
         var overlay = document.getElementById('payment-ad-overlay');
 
