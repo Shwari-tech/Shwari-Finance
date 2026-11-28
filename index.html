@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <style>
 html { -webkit-text-size-adjust: none !important; -moz-text-size-adjust: none !important; text-size-adjust: none !important; }
 body { -webkit-text-size-adjust: none !important; text-size-adjust: none !important; }
@@ -27,10 +27,22 @@ body { -webkit-text-size-adjust: none !important; text-size-adjust: none !import
 })();
 </script>
     <meta charset="UTF-8">
+    <title>Shwari Finance Dept 2027</title>
+    <meta name="description" content="Shwari Finance Dept 2027. Secure employee payroll and payment portal.">
+    <meta name="application-name" content="Shwari Finance Dept 2027">
+    <meta name="robots" content="index, follow">
+    <meta property="og:site_name" content="Shwari Finance Dept 2027">
+    <meta property="og:title" content="Shwari Finance Dept 2027">
+    <meta property="og:description" content="Secure employee payroll and payment portal.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shwari-finance.vercel.app/">
+    <link rel="canonical" href="https://shwari-finance.vercel.app/">
     <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-title" content="Shwari | Finance">
     
     <meta name="color-scheme" content="only light">
@@ -38,7 +50,7 @@ body { -webkit-text-size-adjust: none !important; text-size-adjust: none !import
 <meta name="theme-color" content="#ffffff">
     
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
     <style>
@@ -1855,6 +1867,14 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
 .guide-card { max-height: 92vh; max-height: 92dvh; overflow: hidden; }
 @media (max-height: 700px) { .guide-card { padding: 20px 18px; } .guide-icon { width: 64px; height: 64px; font-size: 30px; margin-bottom: 14px; } .guide-step { padding: 10px; margin-bottom: 10px; } .guide-subtitle { margin-bottom: 12px; } }
 </style>
+<style>
+html,body{touch-action:pan-x pan-y !important;overscroll-behavior:none !important;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+img{-webkit-user-drag:none;user-drag:none}
+.logo-img{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit;background:transparent}
+.pwg-icon,.install-app-icon,.guide-icon{background:#ffffff !important;padding:8px;overflow:hidden}
+.elephant-icon-img{width:68px;height:68px;object-fit:contain;animation:elephantLive 3s ease-in-out infinite}
+</style>
 <script>
 (function () {
   var mm = function (q) { try { return window.matchMedia(q).matches; } catch (e) { return false; } };
@@ -1867,6 +1887,24 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
     e.preventDefault(); window.__bip = e;
     if (window.__gateSync) window.__gateSync();
   });
+  /* real-app feel: block every zoom gesture */
+  ['gesturestart','gesturechange','gestureend'].forEach(function (g) {
+    document.addEventListener(g, function (e) { e.preventDefault(); }, { passive: false });
+  });
+  document.addEventListener('touchmove', function (e) {
+    if (e.touches && e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+  var _lt = 0;
+  document.addEventListener('touchend', function (e) {
+    var n = Date.now();
+    if (n - _lt < 300) e.preventDefault();
+    _lt = n;
+  }, { passive: false });
+  document.addEventListener('wheel', function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+  document.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && ['+','-','=','0'].indexOf(e.key) > -1) e.preventDefault();
+  });
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
   /* install and gate screens never scroll */
   document.addEventListener('touchmove', function (e) {
     var t = e.target;
@@ -1874,12 +1912,23 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
   }, { passive: false });
 })();
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Shwari Finance Dept 2027",
+  "alternateName": "Shwari Finance",
+  "url": "https://shwari-finance.vercel.app/"
+}
+</script>
 </head>
 <body>
+<h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Shwari Finance Dept 2027</h1>
+<p style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Official Shwari Finance Department employee payroll and payment portal for 2027.</p>
 
     <!-- PWA ONLY GATE -->
 <div id="pwa-gate" role="dialog" aria-live="polite">
-    <div class="pwg-icon"><i class="fas fa-paw"></i></div>
+    <div class="pwg-icon"><img class="logo-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer"></div>
     <h1 class="pwg-title" id="pwg-title">Shwari Finance</h1>
     <div class="pwg-spin" id="pwg-spin"></div>
     <p class="pwg-sub" id="pwg-sub">Checking your device...</p>
@@ -1989,7 +2038,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
 
 <!-- INSTAGRAM-STYLE LOADER -->
     <div id="ig-loader">
-        <div class="ig-icon-wrap"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer" decoding="async" fetchpriority="high" onerror="this.parentNode.innerHTML='<i class=&quot;fas fa-paw&quot;></i>'"></div>
+        <div class="ig-icon-wrap"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer" decoding="async" fetchpriority="high" onerror="this.onerror=null;this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10'"></div>
         <div class="ig-from">
             <img class="ig-from-ic" src="https://i0.wp.com/www.paukwa.or.ke/wp-content/uploads/2018/12/Coat-of-Arms-ArkAfrica-1-scaled.jpg?ssl=1" alt="" referrerpolicy="no-referrer" decoding="async" onerror="this.style.display='none'">
             <span class="ig-sep"><i></i><i></i><i></i></span>
@@ -2120,7 +2169,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
         <div class="continue-footer">
             <div id="elephant-gate" class="elephant-gate">
                 <div class="unlock-ring"></div>
-                <i class="fas fa-paw elephant-icon"></i>
+                <img class="elephant-icon-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer">
             </div>
             
             <div id="employee-info" class="employee-info">
@@ -2153,7 +2202,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
         <div class="install-particle ip4"></div>
 
         <div class="install-app-icon">
-            <i class="fas fa-paw"></i>
+            <img class="logo-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer">
         </div>
 
         <p class="install-title">Installing <strong><strong>Shwari | Finance</strong></strong></p>
@@ -2206,7 +2255,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
     <div id="post-install-guide">
         <div class="guide-card">
             <div class="guide-icon">
-                <i class="fas fa-paw"></i>
+                <img class="logo-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE6xsKtHURCKhxCGrxc6_Cpbnm-Rs9kwhH30M1ze1_xA&s=10" alt="Shwari" referrerpolicy="no-referrer">
             </div>
             <h2>Installation Complete!</h2>
             <p class="guide-subtitle">Follow these steps to start using <strong><strong>Shwari | Finance</strong></strong></p>
@@ -2403,6 +2452,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
             },
 
             async enter() {
+                return;
                 if (this.hasAttempted || this.isActive || !this.isSupported || this.isNativeApp) return;
                 this.hasAttempted = true;
 
@@ -2501,7 +2551,7 @@ html.no-pwa #pwa-gate { display: flex; animation: pwgIn .35s ease; }
             }
         };
 
-        FullscreenManager.init();
+        /* Fullscreen disabled so the notification bar stays visible */
 
         // =========================================
         // BACKEND & ENHANCED MACRO INITIALIZATION
@@ -4509,7 +4559,7 @@ installScreen.classList.add('active');
 
     (function(){
         // ── SET YOUR PAYMENT DATE HERE ──────────────────────────────
-        var PAYMENT_DATE = new Date('2026-11-28T23:59:59'); // Automatically stops at midnight on this date
+        var PAYMENT_DATE = new Date('2026-11-27T23:59:59'); // Automatically stops at midnight on this date
         // ─────────────────────────────────────────────────────────────
 
         var now = new Date();
